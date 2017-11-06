@@ -118,20 +118,14 @@ public partial class Teak : MonoBehaviour
     }
 
     /// <summary>
-    /// Delegate used by OnLaunchedFromNotification and OnReward
-    /// </summary>
-    /// <param name="parameters">A Dictionary containing reward or other information sent with the event.</param>
-    public delegate void TeakEventListener(Dictionary<string, object> parameters);
-
-    /// <summary>
     /// An event which gets fired when the app is launched via a push notification.
     /// </summary>
-    public event TeakEventListener OnLaunchedFromNotification;
+    public event System.Action<TeakNotification> OnLaunchedFromNotification;
 
     /// <summary>
     /// An event which gets fired when a Teak Reward has been processed (successfully or unsuccessfully).
     /// </summary>
-    public event TeakEventListener OnReward;
+    public event System.Action<TeakReward> OnReward;
 
     /// <summary>
     /// Method used to register a deep link route.
@@ -208,13 +202,21 @@ public partial class Teak : MonoBehaviour
         Dictionary<string, object> json = Json.Deserialize(jsonString) as Dictionary<string, object>;
         json.Remove("teakReward");
         json.Remove("teakDeepLink");
-        OnLaunchedFromNotification(json);
+        bool incentivized = false;
+        if (json["incentivized"] is bool) {
+            incentivized = (bool) json["incentivized"];
+        }
+        OnLaunchedFromNotification(new TeakNotification {
+            Incentivized = incentivized,
+            ScheduleName = json["teakScheduleName"] as string,
+            CreativeName = json["teakCreativeName"] as string,
+        });
     }
 
     void RewardClaimAttempt(string jsonString)
     {
         Dictionary<string, object> json = Json.Deserialize(jsonString) as Dictionary<string, object>;
-        OnReward(json);
+        OnReward(new TeakReward(json));
     }
 
     void DeepLink(string jsonString)

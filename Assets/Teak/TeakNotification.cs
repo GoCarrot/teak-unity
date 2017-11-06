@@ -39,8 +39,32 @@ using System.Text;
 /// </summary>
 public partial class TeakNotification
 {
+    public bool Incentivized { get; set; }
+    public string ScheduleName { get; set; }
+    public string CreativeName { get; set; }
+
+    public partial class Reply
+    {
+        public enum ReplyStatus
+        {
+            Ok,
+            UnconfiguredKey,
+            InvalidDevice,
+            InternalError
+        }
+
+        public struct Notification
+        {
+            public string ScheduleId;
+            public string CreativeId;
+        }
+
+        public ReplyStatus Status { get; set; }
+        public List<Notification> Notifications { get; set; }
+    }
+
     // Returns an id that can be used to cancel a scheduled notification
-    public static IEnumerator ScheduleNotification(string creativeId, string defaultMessage, long delayInSeconds, System.Action<string, string> callback)
+    public static IEnumerator ScheduleNotification(string creativeId, string defaultMessage, long delayInSeconds, System.Action<Reply> callback)
     {
         string data = null;
         string status = null;
@@ -75,11 +99,11 @@ public partial class TeakNotification
             TeakRelease(notif);
         }
 #endif
-        callback(string.IsNullOrEmpty(data) ? null : data, string.IsNullOrEmpty(status) ? null : status);
+        callback(new Reply(status, data, creativeId));
     }
 
     // Cancel an existing notification
-    public static IEnumerator CancelScheduledNotification(string scheduleId, System.Action<string, string> callback)
+    public static IEnumerator CancelScheduledNotification(string scheduleId, System.Action<Reply> callback)
     {
         string data = null;
         string status = null;
@@ -113,11 +137,11 @@ public partial class TeakNotification
             TeakRelease(notif);
         }
 #endif
-        callback(string.IsNullOrEmpty(data) ? null : data, string.IsNullOrEmpty(status) ? null : status);
+        callback(new Reply(status, data, null));
     }
 
-    // Cancel all scheduled notification
-    public static IEnumerator CancelAllScheduledNotifications(System.Action<string, string> callback)
+    // Cancel all scheduled notifications
+    public static IEnumerator CancelAllScheduledNotifications(System.Action<Reply> callback)
     {
         string data = null;
         string status = null;
@@ -151,7 +175,7 @@ public partial class TeakNotification
             TeakRelease(notif);
         }
 #endif
-        callback(string.IsNullOrEmpty(data) ? null : data, string.IsNullOrEmpty(status) ? null : status);
+        callback(new Reply(status, data, null));
     }
 
     /// @cond hide_from_doxygen
@@ -177,5 +201,44 @@ public partial class TeakNotification
     [DllImport ("__Internal")]
     private static extern IntPtr TeakNotificationGetStatus(IntPtr notif);
 #endif
+    /// @endcond
+
+    /// @cond hide_from_doxygen
+    public partial class Reply
+    {
+        public Reply(string status, string data, string creativeId = null)
+        {
+            this.Status = ReplyStatus.InternalError;
+            switch(status)
+            {
+                case "ok":
+                    this.Status = ReplyStatus.Ok;
+                    break;
+                case "unconfigured_key":
+                    this.Status = ReplyStatus.UnconfiguredKey;
+                    break;
+                case "invalid_device":
+                    this.Status = ReplyStatus.InvalidDevice;
+                    break;
+            }
+
+            if (this.Status == ReplyStatus.Ok) {
+                List<object> replyList = Json.Deserialize(data) as List<object>;
+                if (replyList != null) {
+                    // Data contains array of pairs
+                    this.Notifications = new List<Notification>();
+                    foreach (object e in replyList) {
+                        Dictionary<string, object> entry = e as Dictionary<string, object>;
+                        this.Notifications.Add(new Notification { ScheduleId = entry["schedule_id"] as string, CreativeId = entry["creative_id"] as string });
+                    }
+                } else {
+                    this.Notifications = new List<Notification>
+                    {
+                        new Notification { ScheduleId = data, CreativeId = creativeId }
+                    };
+                }
+            }
+        }
+    }
     /// @endcond
 }
