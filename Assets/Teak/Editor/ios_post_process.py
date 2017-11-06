@@ -32,6 +32,9 @@ print('Adding AdSupport.framework')
 project.add_file_if_doesnt_exist('System/Library/Frameworks/AdSupport.framework', tree='SDKROOT')
 print('Adding StoreKit.framework')
 project.add_file_if_doesnt_exist('System/Library/Frameworks/StoreKit.framework', tree='SDKROOT')
+print('Adding UserNotifications.framework')
+project.add_file_if_doesnt_exist('System/Library/Frameworks/UserNotifications.framework', tree='SDKROOT')
+
 print('Adding libsqlite3.tbd')
 project.add_file_if_doesnt_exist('usr/lib/libsqlite3.tbd', tree='SDKROOT')
 
