@@ -35,9 +35,6 @@ project.add_file_if_doesnt_exist('System/Library/Frameworks/StoreKit.framework',
 print('Adding UserNotifications.framework')
 project.add_file_if_doesnt_exist('System/Library/Frameworks/UserNotifications.framework', tree='SDKROOT')
 
-print('Adding libsqlite3.tbd')
-project.add_file_if_doesnt_exist('usr/lib/libsqlite3.tbd', tree='SDKROOT')
-
 try:
     files_in_dir = os.listdir(fileToAddPath)
     for f in files_in_dir:

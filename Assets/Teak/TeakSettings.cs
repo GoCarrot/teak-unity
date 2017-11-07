@@ -109,6 +109,21 @@ public class TeakSettings : ScriptableObject
 #endif
     }
 
+    public static bool JustShutUpIKnowWhatImDoing
+    {
+        get { return Instance.mJustShutUpIKnowWhatImDoing; }
+#if UNITY_EDITOR
+        set
+        {
+            if(value != Instance.mJustShutUpIKnowWhatImDoing)
+            {
+                Instance.mJustShutUpIKnowWhatImDoing = value;
+                DirtyEditor();
+            }
+        }
+#endif
+    }
+
 #if UNITY_EDITOR
     [MenuItem("Edit/Teak")]
     public static void Edit()
@@ -128,6 +143,8 @@ public class TeakSettings : ScriptableObject
     private string mAPIKey = "";
     [SerializeField]
     private string mGCMSenderId = "";
+    [SerializeField]
+    private bool mJustShutUpIKnowWhatImDoing = true;
 
     private static TeakSettings mInstance;
 }

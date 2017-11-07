@@ -34,6 +34,8 @@ public class TeakPostProcessBuild
     [PostProcessBuild(100)]
     public static void OnPostprocessBuild(BuildTarget target, string pathToBuildProject)
     {
+        if (TeakSettings.JustShutUpIKnowWhatImDoing) return;
+
 #if UNITY_5
         if(target != BuildTarget.iOS) return;
         string objCPath = "";

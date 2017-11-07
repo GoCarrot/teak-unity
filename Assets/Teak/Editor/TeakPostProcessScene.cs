@@ -45,15 +45,18 @@ public class TeakPostProcessScene
                 Debug.LogError("Teak API Key needs to be assigned in the Edit/Teak menu.");
             }
 
-            Directory.CreateDirectory(Path.Combine(Application.dataPath, "Plugins/Android/res/values"));
-            XDocument doc = new XDocument(
-                new XElement("resources", 
-                    new XElement("string", TeakSettings.AppId, new XAttribute("name", "io_teak_app_id")),
-                    new XElement("string", TeakSettings.APIKey, new XAttribute("name", "io_teak_api_key")),
-                    String.IsNullOrEmpty(TeakSettings.GCMSenderId) ? null : new XElement("string", TeakSettings.GCMSenderId, new XAttribute("name", "io_teak_gcm_sender_id"))
-                )
-            );
-            doc.Save(Path.Combine(Application.dataPath, "Plugins/Android/res/values/teak.xml"));
+            if (!TeakSettings.JustShutUpIKnowWhatImDoing)
+            {
+                Directory.CreateDirectory(Path.Combine(Application.dataPath, "Plugins/Android/res/values"));
+                XDocument doc = new XDocument(
+                    new XElement("resources",
+                        new XElement("string", TeakSettings.AppId, new XAttribute("name", "io_teak_app_id")),
+                        new XElement("string", TeakSettings.APIKey, new XAttribute("name", "io_teak_api_key")),
+                        String.IsNullOrEmpty(TeakSettings.GCMSenderId) ? null : new XElement("string", TeakSettings.GCMSenderId, new XAttribute("name", "io_teak_gcm_sender_id"))
+                    )
+                );
+                doc.Save(Path.Combine(Application.dataPath, "Plugins/Android/res/values/teak.xml"));
+            }
         }
     }
 

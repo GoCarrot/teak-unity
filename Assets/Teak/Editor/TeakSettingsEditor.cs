@@ -59,5 +59,10 @@ public class TeakSettingsEditor : Editor
             GUIContent gcmSenderIdContent = new GUIContent("GCM Sender Id [?]",  "Put in your GCM Sender Id to have Teak auto-register for GCM notifications.");
             TeakSettings.GCMSenderId = EditorGUILayout.TextField(gcmSenderIdContent, TeakSettings.GCMSenderId);
         }
+
+        EditorGUILayout.Space();
+        GUILayout.Label("Build Settings", EditorStyles.boldLabel);
+        GUIContent justShutUpIKnowWhatImDoingContent = new GUIContent("Build Post-Processing [?]",  "When enabled, Teak will post-proces the Unity build and add dependencies, generate plist, XML, etc.");
+        TeakSettings.JustShutUpIKnowWhatImDoing = !EditorGUILayout.Toggle(justShutUpIKnowWhatImDoingContent, !TeakSettings.JustShutUpIKnowWhatImDoing);
     }
 }
