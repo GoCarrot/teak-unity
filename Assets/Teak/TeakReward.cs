@@ -51,10 +51,10 @@ public class TeakReward {
             case "grant_reward": {
                 // The user has been issued this reward by Teak
                 this.Status = RewardStatus.GrantReward;
-                this.RewardId = json["teakRewardId"] as string;
                 this.Reward = json["reward"] as Dictionary<string, object>;
-                this.ScheduleId = json["teakScheduleName"] as string;
-                this.CreativeId = json["teakCreativeName"] as string;
+                if (json.ContainsKey("teakRewardId")) this.RewardId = json["teakRewardId"] as string;
+                if (json.ContainsKey("teakScheduleName")) this.ScheduleId = json["teakScheduleName"] as string;
+                if (json.ContainsKey("teakCreativeName")) this.CreativeId = json["teakCreativeName"] as string;
             }
             break;
 
