@@ -94,6 +94,7 @@ If You See
 It means that the ``res/values/teak.xml`` file was not found. See below...
 
 .. _skip-to-edit-teak-xml:
+.. _android-edit-teak-xml:
 
 Edit res/values/teak.xml
 ------------------------

@@ -1,7 +1,17 @@
 iOS
 ===
+Dependencies
+------------
+The following frameworks are required by Teak
+
+* AdSupport.framework
+* StoreKit.framework
+* UserNotifications.framework
+
+.. _ios-edit-info-plist:
+
 Edit Info.plist
-------------------------
+---------------
 .. highlight:: xml
 
 The Teak Editor scripts for Unity will attempt to manage this file for you, if your build environment needs to provide the file itself, this is what it should look like::
@@ -20,6 +30,7 @@ The Teak Editor scripts for Unity will attempt to manage this file for you, if y
     <key>TeakApiKey</key>
     <string>YOUR_TEAK_API_KEY</string>
     <key>TeakAppId</key>
+    <string>YOUR_TEAK_APP_ID</string>
 
 .. note:: Replace ``YOUR_TEAK_APP_ID``, and ``YOUR_TEAK_API_KEY`` with your game's values.
 

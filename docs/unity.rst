@@ -35,7 +35,7 @@ Your Teak App Id and API Key can be found in the Settings for your app on the Te
 What This Does
 ^^^^^^^^^^^^^^
 
-This stores the Teak App Id and API Key for use by Teak's Unity Editor helper scripts.
+This stores the Teak App Id and API Key for use by Teak's runtime, and helpers.
 
 Testing It
 ^^^^^^^^^^^^^^
