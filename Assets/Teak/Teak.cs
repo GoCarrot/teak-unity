@@ -94,7 +94,7 @@ public partial class Teak : MonoBehaviour
 #elif UNITY_ANDROID
         AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
         teak.CallStatic("identifyUser", userIdentifier);
-#elif UNITY_IPHONE
+#elif UNITY_IPHONE || UNITY_WEBGL
         TeakIdentifyUser(userIdentifier);
 #endif
     }
@@ -112,7 +112,7 @@ public partial class Teak : MonoBehaviour
 #elif UNITY_ANDROID
         AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
         teak.CallStatic("trackEvent", actionId, objectTypeId, objectInstanceId);
-#elif UNITY_IPHONE
+#elif UNITY_IPHONE || UNITY_WEBGL
         TeakTrackEvent(actionId, objectTypeId, objectInstanceId);
 #endif
     }
@@ -142,7 +142,7 @@ public partial class Teak : MonoBehaviour
 #elif UNITY_ANDROID
         AndroidJavaClass teakUnity = new AndroidJavaClass("io.teak.sdk.wrapper.unity.TeakUnity");
         teakUnity.CallStatic("registerRoute", route, name, description);
-#elif UNITY_IPHONE
+#elif UNITY_IPHONE || UNITY_WEBGL
         TeakUnityRegisterRoute(route, name, description);
 #endif
     }
@@ -179,8 +179,7 @@ public partial class Teak : MonoBehaviour
         AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
         teak.CallStatic("pluginPurchaseFailed", errorCode);
     }
-
-#elif UNITY_IPHONE
+#elif UNITY_IPHONE || UNITY_WEBGL
     [DllImport ("__Internal")]
     private static extern void TeakIdentifyUser(string userId);
 
@@ -192,6 +191,11 @@ public partial class Teak : MonoBehaviour
 
     [DllImport ("__Internal")]
     private static extern void TeakUnityReadyForDeepLinks();
+#endif
+
+#if UNITY_WEBGL
+    [DllImport ("__Internal")]
+    private static extern string TeakInitWebGL(string appId, string apiKey);
 #endif
     /// @endcond
 
@@ -246,6 +250,9 @@ public partial class Teak : MonoBehaviour
     /// @cond hide_from_doxygen
     void Awake()
     {
+#if UNITY_WEBGL
+        TeakInitWebGL(TeakSettings.AppId, TeakSettings.APIKey);
+#endif
         Debug.Log("[Teak] Unity SDK Version: " + Teak.Version);
         DontDestroyOnLoad(this);
     }
@@ -257,7 +264,7 @@ public partial class Teak : MonoBehaviour
 #elif UNITY_ANDROID
         AndroidJavaClass teakUnity = new AndroidJavaClass("io.teak.sdk.wrapper.unity.TeakUnity");
         teakUnity.CallStatic("readyForDeepLinks");
-#elif UNITY_IPHONE
+#elif UNITY_IPHONE || UNITY_WEBGL
         TeakUnityReadyForDeepLinks();
 #endif
 

@@ -52,6 +52,7 @@ public class TeakPackageBuilder : Editor
         GenerateVersionFile();
         string[] assetPaths = new string[] {
             "Assets/Teak",
+            "Assets/Plugins/WebGL/Teak.jslib",
             "Assets/Plugins/Android/teak.jar",
             "Assets/Plugins/Android/res/layout/teak_big_notif_image_text.xml",
             "Assets/Plugins/Android/res/layout/teak_notif_no_title.xml",

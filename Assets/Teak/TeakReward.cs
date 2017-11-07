@@ -40,7 +40,6 @@ public class TeakReward {
     }
 
     public RewardStatus Status { get; set; }
-    public string RewardId { get; set; }
     public Dictionary<string, object> Reward { get; set; }
     public string ScheduleId { get; set; }
     public string CreativeId { get; set; }
@@ -50,11 +49,16 @@ public class TeakReward {
         switch (json["status"] as string) {
             case "grant_reward": {
                 // The user has been issued this reward by Teak
-                this.Status = RewardStatus.GrantReward;
-                this.Reward = json["reward"] as Dictionary<string, object>;
-                if (json.ContainsKey("teakRewardId")) this.RewardId = json["teakRewardId"] as string;
-                if (json.ContainsKey("teakScheduleName")) this.ScheduleId = json["teakScheduleName"] as string;
-                if (json.ContainsKey("teakCreativeName")) this.CreativeId = json["teakCreativeName"] as string;
+                try {
+                    this.Status = RewardStatus.GrantReward;
+                    this.Reward = json["reward"] as Dictionary<string, object>;
+
+                    // Optional
+                    if (json.ContainsKey("teakScheduleName")) this.ScheduleId = json["teakScheduleName"] as string;
+                    if (json.ContainsKey("teakCreativeName")) this.CreativeId = json["teakCreativeName"] as string;
+                } catch {
+                    this.Status = RewardStatus.InternalError;
+                }
             }
             break;
 
