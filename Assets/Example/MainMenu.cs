@@ -51,15 +51,15 @@ public class MainMenu : MonoBehaviour
         }
     }
 
-    void OnLaunchedFromNotification(Dictionary<string, object> notificationPayload)
+    void OnLaunchedFromNotification(TeakNotification notification)
     {
-        Debug.Log("OnLaunchedFromNotification: " + Json.Serialize(notificationPayload));
+        Debug.Log("OnLaunchedFromNotification: " + notification.CreativeName);
         teakScheduledNotification = null; // To get the UI back
     }
 
-    void OnReward(Dictionary<string, object> notificationPayload)
+    void OnReward(TeakReward reward)
     {
-        Debug.Log("OnReward: " + Json.Serialize(notificationPayload));
+        Debug.Log("OnReward: " + Json.Serialize(reward.Reward));
     }
 
 #if UNITY_IOS
@@ -111,29 +111,11 @@ public class MainMenu : MonoBehaviour
         {
             if(GUILayout.Button("Simple Notification", GUILayout.Height(buttonHeight)))
             {
-                StartCoroutine(TeakNotification.ScheduleNotification("test_none", "Simple push notification", 10, (string scheduleId, string status) => {
-                    teakScheduledNotification = scheduleId;
-                }));
-            }
-
-            if(GUILayout.Button("Deep Link", GUILayout.Height(buttonHeight)))
-            {
-                StartCoroutine(TeakNotification.ScheduleNotification("test_deeplink", "Push notification with deep link", 10, (string scheduleId, string status) => {
-                    teakScheduledNotification = scheduleId;
-                }));
-            }
-
-            if(GUILayout.Button("Reward", GUILayout.Height(buttonHeight)))
-            {
-                StartCoroutine(TeakNotification.ScheduleNotification("test_reward", "Push notification with reward", 10, (string scheduleId, string status) => {
-                    teakScheduledNotification = scheduleId;
-                }));
-            }
-
-            if(GUILayout.Button("Reward + Deep Link", GUILayout.Height(buttonHeight)))
-            {
-                StartCoroutine(TeakNotification.ScheduleNotification("test_rewarddeeplink", "Push notification with reward and deep link", 10, (string scheduleId, string status) => {
-                    teakScheduledNotification = scheduleId;
+                StartCoroutine(TeakNotification.ScheduleNotification("test_none", "Simple push notification", 10, (TeakNotification.Reply reply) => {
+                    if (reply.Status == TeakNotification.Reply.ReplyStatus.Ok)
+                    {
+                        teakScheduledNotification = reply.Notifications[0].ScheduleId;
+                    }
                 }));
             }
         }
@@ -141,7 +123,7 @@ public class MainMenu : MonoBehaviour
         {
             if(GUILayout.Button("Cancel Notification " + teakScheduledNotification, GUILayout.Height(buttonHeight)))
             {
-                StartCoroutine(TeakNotification.CancelScheduledNotification(teakScheduledNotification, (string scheduleId, string status) => {
+                StartCoroutine(TeakNotification.CancelScheduledNotification(teakScheduledNotification, (TeakNotification.Reply reply) => {
                     teakScheduledNotification = null;
                 }));
             }
