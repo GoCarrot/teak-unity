@@ -212,8 +212,8 @@ public partial class Teak : MonoBehaviour
         }
         OnLaunchedFromNotification(new TeakNotification {
             Incentivized = incentivized,
-            ScheduleName = json["teakScheduleName"] as string,
-            CreativeName = json["teakCreativeName"] as string,
+            ScheduleId = json["teakScheduleName"] as string,
+            CreativeId = json["teakCreativeName"] as string,
         });
     }
 

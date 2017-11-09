@@ -40,8 +40,8 @@ using System.Text;
 public partial class TeakNotification
 {
     public bool Incentivized { get; set; }
-    public string ScheduleName { get; set; }
-    public string CreativeName { get; set; }
+    public string ScheduleId { get; set; }
+    public string CreativeId { get; set; }
 
     public partial class Reply
     {

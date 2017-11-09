@@ -53,7 +53,7 @@ public class MainMenu : MonoBehaviour
 
     void OnLaunchedFromNotification(TeakNotification notification)
     {
-        Debug.Log("OnLaunchedFromNotification: " + notification.CreativeName);
+        Debug.Log("OnLaunchedFromNotification: " + notification.CreativeId);
         teakScheduledNotification = null; // To get the UI back
     }
 
