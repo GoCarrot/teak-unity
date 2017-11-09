@@ -71,6 +71,18 @@ public partial class Teak : MonoBehaviour
         }
     }
 
+    public static string AppId
+    {
+        get;
+        set;
+    }
+
+    public static string ApiKey
+    {
+        get;
+        set;
+    }
+
     /// <summary>The user identifier for the current user.</summary>
     public string UserId
     {
@@ -250,9 +262,6 @@ public partial class Teak : MonoBehaviour
     /// @cond hide_from_doxygen
     void Awake()
     {
-#if UNITY_WEBGL
-        TeakInitWebGL(TeakSettings.AppId, TeakSettings.APIKey);
-#endif
         Debug.Log("[Teak] Unity SDK Version: " + Teak.Version);
         DontDestroyOnLoad(this);
     }
@@ -261,10 +270,16 @@ public partial class Teak : MonoBehaviour
     {
 #if UNITY_EDITOR
         // Nothing currently
+#elif UNITY_WEBGL
+        string appId = (string.IsNullOrEmpty(Teak.AppId) ? TeakSettings.AppId : Teak.AppId);
+        string apiKey = (string.IsNullOrEmpty(Teak.APIKey) ? TeakSettings.APIKey : Teak.APIKey);
+        TeakInitWebGL(appId, apiKey);
+        TeakUnityReadyForDeepLinks();
 #elif UNITY_ANDROID
+
         AndroidJavaClass teakUnity = new AndroidJavaClass("io.teak.sdk.wrapper.unity.TeakUnity");
         teakUnity.CallStatic("readyForDeepLinks");
-#elif UNITY_IPHONE || UNITY_WEBGL
+#elif UNITY_IPHONE
         TeakUnityReadyForDeepLinks();
 #endif
 
