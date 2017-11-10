@@ -16,8 +16,8 @@
         <delete dir="./androidtemp"/>
         <mkdir dir="./androidtemp"/>
         <exec executable="curl" failonerror="true" dir="./androidtemp">
-            <arg line="-o teak.zip"/>
-            <arg line="https://s3.amazonaws.com/teak-build-artifacts/android/teak-${version.android}.zip"/>
+            <arg line="-o teak.aar"/>
+            <arg line="https://s3.amazonaws.com/teak-build-artifacts/android/teak-${version.android}.aar"/>
         </exec>
     </target>
 
@@ -25,28 +25,23 @@
         <delete dir="./androidtemp"/>
         <mkdir dir="./androidtemp"/>
 
-        <copy file="../../teak-android/build/distributions/teak-release.zip" tofile="./androidtemp/teak.zip" overwrite="true"/>
+        <copy file="../../teak-android/build/outputs/aar/teak-release.aar" tofile="./androidtemp/teak.aar" overwrite="true"/>
     </target>
 
     <target name="android_native" description="Copy Teak Android Library and Resources">
         <mkdir dir="./androidtemp/zip"/>
-        <unzip src="./androidtemp/teak.zip" dest="./androidtemp/zip"/>
-
-        <copy todir="../Assets/Plugins/Android/res/" overwrite="true">
-            <fileset dir="./androidtemp/zip/res/"/>
-        </copy>
+        <unzip src="./androidtemp/teak.aar" dest="./androidtemp/zip"/>
 
         <copy file="./teak_unity_version.xml.template"
-              tofile="../Assets/Plugins/Android/res/values/teak_unity_version.xml" overwrite="true"/>
+              tofile="./androidtemp/zip/res/values/teak_unity_version.xml" overwrite="true"/>
         <exec executable="git" failonerror="true" dir="..">
             <arg line='describe'/>
             <arg line='--tags'/>
             <redirector outputproperty="sdk.gitversion"/>
         </exec>
-        <replace file="../Assets/Plugins/Android/res/values/teak_unity_version.xml"
+        <replace file="./androidtemp/zip/res/values/teak_unity_version.xml"
                  token="@@@" value="${sdk.gitversion}"/>
 
-        <copy file="./androidtemp/zip/teak/teak.jar"
-              tofile="../Assets/Plugins/Android/teak.jar" overwrite="true"/>
+        <jar destfile="../Assets/Plugins/Android/teak.aar" basedir="./androidtemp/zip"/>
     </target>
 </project>

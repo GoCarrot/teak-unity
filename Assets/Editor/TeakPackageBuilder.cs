@@ -36,12 +36,7 @@ public class TeakPackageBuilder : Editor
         string[] assetPaths = new string[] {
             "Assets/Teak",
             "Assets/Plugins/WebGL/Teak.jslib",
-            "Assets/Plugins/Android/teak.jar",
-            "Assets/Plugins/Android/res/layout/teak_big_notif_image_text.xml",
-            "Assets/Plugins/Android/res/layout/teak_notif_no_title.xml",
-            "Assets/Plugins/Android/res/values/teak_styles.xml",
-            "Assets/Plugins/Android/res/values/teak_unity_version.xml",
-            "Assets/Plugins/Android/res/values-v21/teak_styles.xml"
+            "Assets/Plugins/Android/teak.aar"
         };
         AssetDatabase.ExportPackage(assetPaths, "Teak.unitypackage", ExportPackageOptions.Recurse | ExportPackageOptions.IncludeDependencies);
     }
