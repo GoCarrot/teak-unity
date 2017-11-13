@@ -77,7 +77,7 @@ public partial class Teak : MonoBehaviour
         set;
     }
 
-    public static string ApiKey
+    public static string APIKey
     {
         get;
         set;
