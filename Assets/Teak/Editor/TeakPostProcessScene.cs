@@ -35,18 +35,18 @@ public class TeakPostProcessScene
         {
             mRanThisBuild = true;
 
-            if(string.IsNullOrEmpty(TeakSettings.AppId))
-            {
-                Debug.LogError("Teak App Id needs to be assigned in the Edit/Teak menu.");
-            }
-
-            if(string.IsNullOrEmpty(TeakSettings.APIKey))
-            {
-                Debug.LogError("Teak API Key needs to be assigned in the Edit/Teak menu.");
-            }
-
             if (!TeakSettings.JustShutUpIKnowWhatImDoing)
             {
+                if(string.IsNullOrEmpty(TeakSettings.AppId))
+                {
+                    Debug.LogError("Teak App Id needs to be assigned in the Edit/Teak menu.");
+                }
+
+                if(string.IsNullOrEmpty(TeakSettings.APIKey))
+                {
+                    Debug.LogError("Teak API Key needs to be assigned in the Edit/Teak menu.");
+                }
+
                 Directory.CreateDirectory(Path.Combine(Application.dataPath, "Plugins/Android/res/values"));
                 XDocument doc = new XDocument(
                     new XElement("resources",
