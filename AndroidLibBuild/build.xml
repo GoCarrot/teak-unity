@@ -25,7 +25,7 @@
         <delete dir="./androidtemp"/>
         <mkdir dir="./androidtemp"/>
 
-        <copy file="../../teak-android/build/outputs/aar/teak-release.aar" tofile="./androidtemp/teak.aar" overwrite="true"/>
+        <copy file="../../teak-android/build/outputs/aar/teak-debug.aar" tofile="./androidtemp/teak.aar" overwrite="true"/>
     </target>
 
     <target name="android_native" description="Copy Teak Android Library and Resources">
