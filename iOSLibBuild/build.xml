@@ -13,6 +13,7 @@
 
     <target name="ios_local" description="Download iOS Library">
         <copy file="../../teak-ios/build/Release-iphoneos/libTeak.a" tofile="../Assets/Teak/Plugins/iOS/libTeak.a" overwrite="true"/>
+        <copy file="../../teak-ios/build/Release-iphoneos/TeakResources.bundle.zip" todir="../Assets/Teak/Plugins/iOS/" overwrite="true"/>
     </target>
 
     <target name="ios_download" description="Download iOS Library">
@@ -30,9 +31,20 @@
         </exec>
 
         <copy file="${ios.temp.path}/Teak.framework/Teak" tofile="../Assets/Teak/Plugins/iOS/libTeak.a" overwrite="true"/>
+
+        <exec executable="curl" failonerror="true" dir="../Assets/Teak/Plugins/iOS/">
+            <arg line="-o TeakResources.bundle.zip"/>
+            <arg line="https://s3.amazonaws.com/teak-build-artifacts/ios/TeakResources-${version.ios}.bundle.zip"/>
+        </exec>
     </target>
 
     <target name="ios" description="">
+        <delete dir="../Assets/Teak/Plugins/iOS/TeakResources.bundle" failonerror="false"/>
+        <exec executable="unzip" failonerror="true" dir="../Assets/Teak/Plugins/iOS/">
+            <arg line="TeakResources.bundle.zip"/>
+        </exec>
+        <delete file="../Assets/Teak/Plugins/iOS/TeakResources.bundle.zip"/>
+
         <copy file="./teak_version.m.template"
               tofile="../Assets/Teak/Plugins/iOS/teak_version.m" overwrite="true"/>
         <exec executable="git" failonerror="true" dir="..">

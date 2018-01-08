@@ -30,6 +30,10 @@ if not os.path.exists(teak_cp_path):
 
 print('Adding AdSupport.framework')
 project.add_file_if_doesnt_exist('System/Library/Frameworks/AdSupport.framework', tree='SDKROOT')
+print('Adding AVFoundation.framework')
+project.add_file_if_doesnt_exist('System/Library/Frameworks/AVFoundation.framework', tree='SDKROOT')
+print('Adding MobileCoreServices.framework')
+project.add_file_if_doesnt_exist('System/Library/Frameworks/MobileCoreServices.framework', tree='SDKROOT')
 print('Adding StoreKit.framework')
 project.add_file_if_doesnt_exist('System/Library/Frameworks/StoreKit.framework', tree='SDKROOT')
 print('Adding UserNotifications.framework')

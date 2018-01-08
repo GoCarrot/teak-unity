@@ -25,6 +25,9 @@ Assets/Plugins/Android/teak.aar*
 Assets/Teak/Plugins/iOS/libTeak.a*
 AndroidLibBuild/androidtemp
 
+# Teak resources
+Assets/Teak/Plugins/iOS/TeakResources.bundle*
+
 Teak.unitypackage
 unity.log
 
