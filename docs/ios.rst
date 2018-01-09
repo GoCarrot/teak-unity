@@ -5,8 +5,8 @@ Dependencies
 The following frameworks are required by Teak
 
 * AdSupport.framework
-+ AVFoundation.framework
-+ MobileCoreServices.framework
+* AVFoundation.framework
+* MobileCoreServices.framework
 * StoreKit.framework
 * UserNotifications.framework
 
