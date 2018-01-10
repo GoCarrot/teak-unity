@@ -89,7 +89,7 @@ You can use Teak to schedule notifications for the future.
 .. note:: All local notification related methods are coroutines. You may need to wrap calls to them in StartCoroutine()
 
 Scheduling a Local Notification
-^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 To schedule a notification from your game, simply use::
 
     IEnumerator TeakNotification.ScheduleNotification(string creativeId, string defaultMessage, long delayInSeconds, System.Action<string, string> callback)
