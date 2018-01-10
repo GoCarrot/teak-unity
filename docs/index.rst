@@ -13,6 +13,7 @@ Getting started with Teak on Unity
    unity
    android
    ios
+   ios-extensions
    working-with-unity
    it-broke
 
