@@ -77,7 +77,7 @@ You should now have a group in your Xcode project that looks like this:
 Dependencies
 ^^^^^^^^^^^^
 
-Add ``UserNotifications.framework``, ``UserNotificationsUI.framework``, ``AVFoundation.framework``, ``UIKit.framework``, ``ImageIO.framework``, and ``libTeak.a`` to the `Link Binary with Libraries` Build Phase of the extension:
+Add ``UserNotifications.framework``, ``UserNotificationsUI.framework``, ``AVFoundation.framework``, ``UIKit.framework``, ``ImageIO.framework``, ``CoreGraphics.framework`` and ``libTeak.a`` to the `Link Binary with Libraries` Build Phase of the extension:
 
 .. image:: images/content-extension-link.png
 
@@ -166,7 +166,7 @@ Open ``TeakNotificationContent/Info.plist`` *with a text editor* and replace the
                     <string>TeakNotificationClaimFreeBonus</string>
                 </array>
                 <key>UNNotificationExtensionDefaultContentHidden</key>
-                <true/>
+                <false/>
                 <key>UNNotificationExtensionInitialContentSizeRatio</key>
                 <real>1.0</real>
             </dict>
@@ -178,6 +178,8 @@ Open ``TeakNotificationContent/Info.plist`` *with a text editor* and replace the
     </dict>
     </plist>
 
+.. note:: You can also download the latest copy of this PList here https://s3.amazonaws.com/teak-build-artifacts/ios/Info.plist
+
 Testing
 -------
 Set up an iOS notification with an expanded view using both a button and an animated GIF.
@@ -188,11 +190,11 @@ Make it a happy one, so you can celebrate. Here's a classic https://media.giphy.
 
 Preview the notification, and send it to your test device. The preview should look like this:
 
-SMALL VIEW SCREENSHOT
+.. image:: images/small-view-ios.jpeg
 
 The expanded view should look like this:
 
-EXPANDED VIEW SCREENSHOT
+.. image:: images/big-view-ios.jpeg
 
 I see the GIF, but no buttons
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
