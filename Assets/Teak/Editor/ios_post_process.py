@@ -38,6 +38,8 @@ print('Adding StoreKit.framework')
 project.add_file_if_doesnt_exist('System/Library/Frameworks/StoreKit.framework', tree='SDKROOT')
 print('Adding UserNotifications.framework')
 project.add_file_if_doesnt_exist('System/Library/Frameworks/UserNotifications.framework', tree='SDKROOT')
+print('Adding ImageIO.framework')
+project.add_file_if_doesnt_exist('System/Library/Frameworks/ImageIO.framework', tree='SDKROOT')
 
 try:
     files_in_dir = os.listdir(fileToAddPath)

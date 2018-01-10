@@ -18,15 +18,15 @@ Assets/Plugins/Android/android-support-v4.jar*
 Assets/Plugins/Android/AndroidManifest.xml*
 Assets/Plugins/Android/google-play-services.jar*
 
-Assets/Teak/Plugins/iOS/teak_version.m*
+Assets/Teak/Plugins/iOS/teak_version.m
 
 # Teak binaries
-Assets/Plugins/Android/teak.aar*
-Assets/Teak/Plugins/iOS/libTeak.a*
+Assets/Plugins/Android/teak.aar
+Assets/Teak/Plugins/iOS/libTeak.a
 AndroidLibBuild/androidtemp
 
 # Teak resources
-Assets/Teak/Plugins/iOS/TeakResources.bundle*
+Assets/Teak/Plugins/iOS/TeakResources.bundle
 
 Teak.unitypackage
 unity.log
