@@ -10,11 +10,12 @@ The following frameworks are required by Teak
 * MobileCoreServices.framework
 * StoreKit.framework
 * UserNotifications.framework
+* CoreGraphics.framework
 
 .. ::note These should be present as dependencies on libTeak.a (as specified in libTeak.a.meta), this is only in case you run into problems.
 
 This is the list of dependencies as compiler flags::
-    -framework AdSupport -framework AVFoundation -framework MobileCoreServices -framework StoreKit -framework UserNotifications -framework ImageIO
+    -framework AdSupport -framework AVFoundation -framework MobileCoreServices -framework StoreKit -framework UserNotifications -framework ImageIO -framework CoreGraphics
 
 .. _ios-edit-info-plist:
 
