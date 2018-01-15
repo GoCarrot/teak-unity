@@ -47,12 +47,11 @@ Call Teak.onActivityResult **before** the call to super.onActivityResult::
         // ... etc
     }
 
-Call Teak.onNewIntent **before** the call to super.onNewIntent::
+Call setIntent()::
 
     protected void onNewIntent(Intent intent) {
-        Teak.onNewIntent(intent);
         super.onNewIntent(intent);
-        // ... etc
+        setIntent(intent); // << Add this line
     }
 
 What This Does
