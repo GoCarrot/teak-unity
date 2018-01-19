@@ -8,11 +8,9 @@ Whenever your game is launched via a push notification, or local notification Te
 
 You can listen for that event during by first writing a listener function, for example::
 
-    void MyOnLaunchedFromNotificationListener(Dictionary<string, object> notificationPayload)
+    void MyOnLaunchedFromNotificationListener(TeakNotification notification)
     {
-        // notificationPayload will usually be empty, but can contain custom information
-        // specified by your notification campaigns
-        Debug.Log("OnLaunchedFromNotification: " + Json.Serialize(notificationPayload));
+        Debug.Log("OnLaunchedFromNotification: " + notification.CreativeId + " - " + notification.ScheduleId + " Incentivized? " + notification.Incentivized);
     }
 
 And then adding it to the ``Teak.Instance.OnLaunchedFromNotification`` event during ``Start()`` in any ``MonoBehaviour``::
@@ -28,45 +26,44 @@ Whenever your game should grant a reward to a user Teak will let you know by sen
 
 You can listen for that event during by first writing a listener function, for example::
 
-    void MyRewardListener(Dictionary<string, object> rewardPayload)
+    void MyRewardListener(TeakReward reward)
     {
-        switch (rewardPayload["status"] as string) {
-            case "grant_reward": {
+        switch (reward.Status) {
+            case TeakReward.RewardStatus.GrantReward: {
                 // The user has been issued this reward by Teak
-                Dictionary<string, object> rewards = rewardPayload["reward"] as Dictionary<string, object>;
-                foreach(KeyValuePair<string, object> entry in rewards)
+                foreach(KeyValuePair<string, object> entry in reward.Reward)
                 {
-                    Debug.Log("OnReward -- Give the user " + entry.Value + " instances of " + entry.Key);
+                    Debug.Log("[Teak Unity Cleanroom] OnReward -- Give the user " + entry.Value + " instances of " + entry.Key);
                 }
             }
             break;
 
-            case "self_click": {
+            case TeakReward.RewardStatus.SelfClick: {
                 // The user has attempted to claim a reward from their own social post
             }
             break;
 
-            case "already_clicked": {
+            case TeakReward.RewardStatus.AlreadyClicked: {
                 // The user has already been issued this reward
             }
             break;
 
-            case "too_many_clicks": {
+            case TeakReward.RewardStatus.TooManyClicks: {
                 // The reward has already been claimed its maximum number of times globally
             }
             break;
 
-            case "exceed_max_clicks_for_day": {
+            case TeakReward.RewardStatus.ExceedMaxClicksForDay: {
                 // The user has already claimed their maximum number of rewards of this type for the day
             }
             break;
 
-            case "expired": {
+            case TeakReward.RewardStatus.Expired: {
                 // This reward has expired and is no longer valid
             }
             break;
 
-            case "invalid_post": {
+            case TeakReward.RewardStatus.InvalidPost: {
                 //Teak does not recognize this reward id
             }
             break;
