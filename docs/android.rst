@@ -29,13 +29,14 @@ If you can't change your main activity, then you need to add the Teak initializa
 Import Teak into your main activity::
 
     import io.teak.sdk.Teak;
+    import io.teak.sdk.wrapper.unity;
 
-Call Teak.onCreate **before** the call to super.onCreate::
+Call Teak.onCreate **before** the call to super.onCreate, then call TeakUnity.initialize **after** the call to super.onCreate::
 
     protected void onCreate(Bundle savedInstanceState) {
         Teak.onCreate(this);
-        // ... etc
         super.onCreate(savedInstanceState);
+        TeakUnity.initialize();
         // ... etc
     }
 
