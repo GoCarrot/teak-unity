@@ -30,14 +30,15 @@ If You See
 ^^^^^^^^^^
 ::
 
-    java.lang.RuntimeException: java.lang.ClassNotFoundException: android.support.v4.content.LocalBroadcastManager
+    java.lang.ClassNotFoundException: android.support.v4.content.LocalBroadcastManager
 
 You are missing the dependency ``com.android.support:support-core-utils:26+``
 
 If You See
 ^^^^^^^^^^
 ::
-    java.lang.RuntimeException: java.lang.ClassNotFoundException: android.support.v4.app.NotificationManagerCompat
+
+    java.lang.ClassNotFoundException: android.support.v4.app.NotificationManagerCompat
 
 You are missing the dependency ``com.android.support:support-compat:26+``
 
