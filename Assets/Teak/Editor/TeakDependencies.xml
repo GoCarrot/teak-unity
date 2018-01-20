@@ -1,0 +1,37 @@
+<dependencies>
+  <androidPackages>
+    <!-- Google Play Services -->
+    <androidPackage spec="com.google.android.gms:play-services-base:10+">
+      <androidSdkPackageIds>
+        <androidSdkPackageId>extra-google-m2repository</androidSdkPackageId>
+      </androidSdkPackageIds>
+    </androidPackage>
+    <androidPackage spec="com.google.android.gms:play-services-basement:10+">
+      <androidSdkPackageIds>
+        <androidSdkPackageId>extra-google-m2repository</androidSdkPackageId>
+      </androidSdkPackageIds>
+    </androidPackage>
+    <androidPackage spec="com.google.android.gms:play-services-gcm:10+">
+      <androidSdkPackageIds>
+        <androidSdkPackageId>extra-google-m2repository</androidSdkPackageId>
+      </androidSdkPackageIds>
+    </androidPackage>
+    <androidPackage spec="com.google.android.gms:play-services-iid:10+">
+      <androidSdkPackageIds>
+        <androidSdkPackageId>extra-google-m2repository</androidSdkPackageId>
+      </androidSdkPackageIds>
+    </androidPackage>
+
+    <!-- Android Support -->
+    <androidPackage spec="com.android.support:support-core-utils:26+">
+      <androidSdkPackageIds>
+        <androidSdkPackageId>extra-android-m2repository</androidSdkPackageId>
+      </androidSdkPackageIds>
+    </androidPackage>
+    <androidPackage spec="com.android.support:support-compat:26+">
+      <androidSdkPackageIds>
+        <androidSdkPackageId>extra-android-m2repository</androidSdkPackageId>
+      </androidSdkPackageIds>
+    </androidPackage>
+  </androidPackages>
+</dependencies>
