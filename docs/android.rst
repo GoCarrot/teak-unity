@@ -1,8 +1,17 @@
 Android
 =======
-.. important:: Teak requires that Google Play Services and Android Support v4 are included in your build.
+Dependencies
+------------
+The following dependencies are required by Teak
 
-    The Facebook SDK requires them as well, so you should be all set.
+* ``com.google.android.gms:play-services-base:10+``
+* ``com.google.android.gms:play-services-basement:10+``
+* ``com.google.android.gms:play-services-gcm:10+``
+* ``com.google.android.gms:play-services-iid:10+``
+* ``com.android.support:support-core-utils:26+``
+* ``com.android.support:support-compat:26+``
+
+.. note:: If you use the `Play Services Resolver plugin for Unity <https://github.com/googlesamples/unity-jar-resolver>`_, these dependencies should be taken care of automatically.
 
 Make Teak your Main Activity
 ----------------------------
