@@ -8,8 +8,8 @@ The following dependencies are required by Teak
 * ``com.google.android.gms:play-services-basement:10+``
 * ``com.google.android.gms:play-services-gcm:10+``
 * ``com.google.android.gms:play-services-iid:10+``
-* ``com.android.support:support-core-utils:26+``
-* ``com.android.support:support-compat:26+``
+* ``com.android.support:support-core-utils:26.1+``
+* ``com.android.support:support-compat:26.1+``
 
 .. note:: If you use the `Play Services Resolver plugin for Unity <https://github.com/googlesamples/unity-jar-resolver>`_, these dependencies should be taken care of automatically.
 

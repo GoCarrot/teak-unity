@@ -23,12 +23,12 @@
     </androidPackage>
 
     <!-- Android Support -->
-    <androidPackage spec="com.android.support:support-core-utils:26+">
+    <androidPackage spec="com.android.support:support-core-utils:26.1+">
       <androidSdkPackageIds>
         <androidSdkPackageId>extra-android-m2repository</androidSdkPackageId>
       </androidSdkPackageIds>
     </androidPackage>
-    <androidPackage spec="com.android.support:support-compat:26+">
+    <androidPackage spec="com.android.support:support-compat:26.1+">
       <androidSdkPackageIds>
         <androidSdkPackageId>extra-android-m2repository</androidSdkPackageId>
       </androidSdkPackageIds>
