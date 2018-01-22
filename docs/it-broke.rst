@@ -10,6 +10,7 @@ iOS
 
 Android
 -------
+.. highlight:: xml
 If You See
 ^^^^^^^^^^
 ::
@@ -25,6 +26,20 @@ or::
     R.string.io_teak_gcm_sender_id not present, push notifications disabled.
 
 This means that the XML values for Teak are not present. You need to :ref:`android-edit-teak-xml`.
+
+If You See
+^^^^^^^^^^
+::
+
+    java.util.ServiceConfigurationError: io.teak.sdk.InstanceIDListenerService not found in AndroidManifest
+
+This means that the InstanceIDListenerService is not in your AndroidManifest.xml, add the following to your AndroidManifest.xml in the ``<application>`` section::
+
+    <service android:name="io.teak.sdk.InstanceIDListenerService" android:exported="false" >
+        <intent-filter>
+            <action android:name="com.google.android.gms.iid.InstanceID" />
+        </intent-filter>
+    </service>
 
 If You See
 ^^^^^^^^^^
