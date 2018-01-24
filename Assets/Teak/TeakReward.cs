@@ -43,8 +43,10 @@ public class TeakReward {
     public Dictionary<string, object> Reward { get; set; }
     public string ScheduleId { get; set; }
     public string CreativeId { get; set; }
+    public string RewardId { get; set; }
 
     public TeakReward(Dictionary<string, object> json) {
+        this.RewardId = json["teakRewardId"] as string;
         this.Status = RewardStatus.InternalError;
         switch (json["status"] as string) {
             case "grant_reward": {
