@@ -10,6 +10,7 @@ test:
     - rake
 dependencies:
   pre:
+    - brew update # Fixes: Homebrew must be run under Ruby 2.3!
     - ./setup
   cache_directories:
     - ~/Library/Caches/Homebrew/
