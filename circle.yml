@@ -1,6 +1,6 @@
 machine:
   xcode:
-    version: 9.0
+    version: 8.3.3
   environment:
     UNITY_HOME: /Applications/Unity
 test:
@@ -17,6 +17,10 @@ checkout:
   post:
     - git fetch --tags
 deployment:
+  hotfix:
+    branch: /hotfix.*/
+    commands:
+      - aws s3 cp Teak.unitypackage s3://teak-build-artifacts/unity/Teak-$(git describe --tags --always).unitypackage --acl public-read
   prod:
     branch: master
     commands:
