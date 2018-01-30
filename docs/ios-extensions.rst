@@ -43,11 +43,11 @@ Change the code in ``TeakNotificationService/NotificationService.h`` to look lik
     // is in 'libTeak.a'. It is done this way so you do not need to fight with
     // include paths.
     @interface TeakNotificationServiceCore : UNNotificationServiceExtension
-    // This should be empty
+    - (void)serviceExtensionTimeWillExpire;
     @end
 
     @interface NotificationService : TeakNotificationServiceCore
-    // This should be empty
+    - (void)serviceExtensionTimeWillExpire;
     @end
 
 This declares ``TeakNotificationServiceCore`` and inherets from it, which will pull in the functionality from ``libTeak.a`` which will take care of everything else.
@@ -57,10 +57,10 @@ Change the code in ``TeakNotificationService/NotificationService.m`` to look lik
     #import "NotificationService.h"
 
     @implementation NotificationService
-    // This should be empty
+    - (void)serviceExtensionTimeWillExpire {
+        [super serviceExtensionTimeWillExpire];
+    }
     @end
-
-.. important:: Do not implement any methods, the ``@implementation`` block should be empty just as shown.
 
 Notification Content Extension
 ------------------------------
@@ -94,11 +94,11 @@ Change the code in ``TeakNotificationContent/NotificationViewController.h`` to l
     // is in 'libTeak.a'. It is done this way so you do not need to fight with
     // include paths.
     @interface TeakNotificationViewControllerCore : UIViewController
-    // This should be empty
+    - (void)viewDidLoad;
     @end
 
     @interface NotificationViewController : TeakNotificationViewControllerCore
-    // This should be empty
+    - (void)viewDidLoad;
     @end
 
 Change the code in ``TeakNotificationContent/NotificationViewController.m`` to look like this::
@@ -106,10 +106,10 @@ Change the code in ``TeakNotificationContent/NotificationViewController.m`` to l
     #import "NotificationViewController.h"
 
     @implementation NotificationViewController
-    // This should be empty
+    - (void)viewDidLoad {
+        [super viewDidLoad];
+    }
     @end
-
-.. important:: Do not implement any methods, the ``@implementation`` block should be empty just as shown.
 
 Plist
 ^^^^^
