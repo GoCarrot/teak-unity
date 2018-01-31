@@ -42,6 +42,7 @@ public partial class TeakNotification
     public bool Incentivized { get; set; }
     public string ScheduleId { get; set; }
     public string CreativeId { get; set; }
+    public string RewardId { get; set; }
 
     public partial class Reply
     {

@@ -218,14 +218,11 @@ public partial class Teak : MonoBehaviour
         Dictionary<string, object> json = Json.Deserialize(jsonString) as Dictionary<string, object>;
         json.Remove("teakReward");
         json.Remove("teakDeepLink");
-        bool incentivized = false;
-        if (json["incentivized"] is bool) {
-            incentivized = (bool) json["incentivized"];
-        }
         OnLaunchedFromNotification(new TeakNotification {
-            Incentivized = incentivized,
+            Incentivized = (json["incentivized"] is bool) ? (bool) json["incentivized"] : false,
             ScheduleId = json["teakScheduleName"] as string,
             CreativeId = json["teakCreativeName"] as string,
+            RewardId = json.ContainsKey("teakRewardId") ? json["teakRewardId"] as string : null
         });
     }
 
