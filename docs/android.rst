@@ -135,6 +135,8 @@ What This Does
 ^^^^^^^^^^^^^^
 This provides Teak with the credentials needed to send information to the Teak Service.
 
+.. _android-set-up-push-notifications:
+
 Setting Up Push Notifications
 -----------------------------
 Add the following to the ``<application>`` section of your ``Assets/Plugins/Android/AndroidManifest.xml``::
@@ -161,6 +163,8 @@ Add the following to the ``<application>`` section of your ``Assets/Plugins/Andr
 What This Does
 ^^^^^^^^^^^^^^
 This tells Android to inform Teak about push notifications.
+
+.. _android-set-up-deep-linking:
 
 Setting Up Deep Linking
 -----------------------
