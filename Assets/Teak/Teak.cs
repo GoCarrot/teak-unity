@@ -159,6 +159,25 @@ public partial class Teak : MonoBehaviour
 #endif
     }
 
+    /// <summary>
+    /// Method to set the number displayed on the icon of the app on the home screen.
+    /// </summary>
+    /// <param name="count">The number to display on the icon of the app on the home screen, or 0 to clear.</param>
+    /// <returns>True if Teak was able to set the badge count, false otherwise.</returns>
+    public bool SetBadgeCount(int count)
+    {
+#if UNITY_EDITOR
+        Debug.Log("[Teak] SetBadgeCount(" + count + ")");
+        return true;
+#elif UNITY_ANDROID
+        AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
+        return teak.CallStatic<bool>("setApplicationBadgeNumber", count);
+#elif UNITY_IPHONE
+        TeakSetBadgeCount(count);
+        return true;
+#endif
+    }
+
     /// @cond hide_from_doxygen
     private static Teak mInstance;
     Dictionary<string, Action<Dictionary<string, object>>> mDeepLinkRoutes = new Dictionary<string, Action<Dictionary<string, object>>>();
@@ -203,6 +222,11 @@ public partial class Teak : MonoBehaviour
 
     [DllImport ("__Internal")]
     private static extern void TeakUnityReadyForDeepLinks();
+#endif
+
+#if UNITY_IPHONE
+    [DllImport ("__Internal")]
+    private static extern void TeakSetBadgeCount(int count);
 #endif
 
 #if UNITY_WEBGL
