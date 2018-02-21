@@ -24,7 +24,7 @@ This will create a group in your Xcode project that looks like this:
 Dependencies
 ^^^^^^^^^^^^
 
-Add ``UserNotifications.framework``, ``MobileCoreServices.framework``, and ``libTeak.a`` to the `Link Binary with Libraries` Build Phase of the extension:
+Add ``UserNotifications.framework``, ``MobileCoreServices.framework``, ``UIKit.framework``, ``SystemConfiguration.framework`` and ``libTeak.a`` to the `Link Binary with Libraries` Build Phase of the extension:
 
 .. image:: images/service-extension-link.png
 
