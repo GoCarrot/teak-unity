@@ -242,18 +242,24 @@ public partial class Teak : MonoBehaviour
         Dictionary<string, object> json = Json.Deserialize(jsonString) as Dictionary<string, object>;
         json.Remove("teakReward");
         json.Remove("teakDeepLink");
-        OnLaunchedFromNotification(new TeakNotification {
-            Incentivized = (json["incentivized"] is bool) ? (bool) json["incentivized"] : false,
-            ScheduleId = json["teakScheduleName"] as string,
-            CreativeId = json["teakCreativeName"] as string,
-            RewardId = json.ContainsKey("teakRewardId") ? json["teakRewardId"] as string : null
-        });
+
+        if (OnLaunchedFromNotification != null) {
+            OnLaunchedFromNotification(new TeakNotification {
+                Incentivized = (json["incentivized"] is bool) ? (bool) json["incentivized"] : false,
+                ScheduleId = json["teakScheduleName"] as string,
+                CreativeId = json["teakCreativeName"] as string,
+                RewardId = json.ContainsKey("teakRewardId") ? json["teakRewardId"] as string : null
+            });
+        }
     }
 
     void RewardClaimAttempt(string jsonString)
     {
         Dictionary<string, object> json = Json.Deserialize(jsonString) as Dictionary<string, object>;
-        OnReward(new TeakReward(json));
+
+        if (OnReward != null) {
+            OnReward(new TeakReward(json));
+        }
     }
 
     void DeepLink(string jsonString)
