@@ -49,12 +49,14 @@ mergeInto(LibraryManager.library, {
     var objectInstanceId = Pointer_stringify(ptr_objectInstanceId);
     window.teak.trackEvent(actionId, objectTypeId, objectInstanceId);
   },
+  TeakDeepLinkTableInternal: {},
+  TeakUnityRegisterRoute__deps: ['TeakDeepLinkTableInternal'],
   TeakUnityRegisterRoute: function(ptr_route, ptr_name, ptr_description) {
     var route = Pointer_stringify(ptr_route);
     var name = Pointer_stringify(ptr_name);
     var description = Pointer_stringify(ptr_description);
 
-    TeakDeepLinkTableIntneral[route] = {
+    _TeakDeepLinkTableInternal[route] = {
       name: name,
       description: description
     };
@@ -64,6 +66,5 @@ mergeInto(LibraryManager.library, {
   },
   TeakSetBadgeCount: function(count) {
 
-  },
-  TeakDeepLinkTableIntneral: {}
+  }
 });
