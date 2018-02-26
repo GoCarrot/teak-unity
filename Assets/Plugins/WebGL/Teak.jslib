@@ -62,5 +62,8 @@ mergeInto(LibraryManager.library, {
   TeakUnityReadyForDeepLinks: function() {
 
   },
+  TeakSetBadgeCount: function(count) {
+
+  },
   TeakDeepLinkTableIntneral: {}
 });
