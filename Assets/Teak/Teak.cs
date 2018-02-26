@@ -289,22 +289,21 @@ public partial class Teak : MonoBehaviour
     {
         Debug.Log("[Teak] Unity SDK Version: " + Teak.Version);
         DontDestroyOnLoad(this);
+#if UNITY_WEBGL
+        string appId = (string.IsNullOrEmpty(Teak.AppId) ? TeakSettings.AppId : Teak.AppId);
+        string apiKey = (string.IsNullOrEmpty(Teak.APIKey) ? TeakSettings.APIKey : Teak.APIKey);
+        TeakInitWebGL(appId, apiKey);
+#endif
     }
 
     void Start()
     {
 #if UNITY_EDITOR
         // Nothing currently
-#elif UNITY_WEBGL
-        string appId = (string.IsNullOrEmpty(Teak.AppId) ? TeakSettings.AppId : Teak.AppId);
-        string apiKey = (string.IsNullOrEmpty(Teak.APIKey) ? TeakSettings.APIKey : Teak.APIKey);
-        TeakInitWebGL(appId, apiKey);
-        TeakUnityReadyForDeepLinks();
 #elif UNITY_ANDROID
-
         AndroidJavaClass teakUnity = new AndroidJavaClass("io.teak.sdk.wrapper.unity.TeakUnity");
         teakUnity.CallStatic("readyForDeepLinks");
-#elif UNITY_IPHONE
+#elif UNITY_IPHONE || UNITY_WEBGL
         TeakUnityReadyForDeepLinks();
 #endif
 
