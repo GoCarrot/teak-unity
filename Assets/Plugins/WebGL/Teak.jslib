@@ -44,9 +44,13 @@ mergeInto(LibraryManager.library, {
     });
   },
   TeakTrackEvent: function(ptr_actionId, ptr_objectTypeId, ptr_objectInstanceId) {
-    var actionId = Pointer_stringify(ptr_actionId);
-    var objectTypeId = Pointer_stringify(ptr_objectTypeId);
-    var objectInstanceId = Pointer_stringify(ptr_objectInstanceId);
+    var actionId = Pointer_stringify(ptr_actionId).trim();
+    var objectTypeId = Pointer_stringify(ptr_objectTypeId).trim();
+    var objectInstanceId = Pointer_stringify(ptr_objectInstanceId).trim();
+
+    objectTypeId = objectTypeId.length === 0 ? undefined : objectTypeId;
+    objectInstanceId = objectInstanceId.length === 0 ? undefined : objectInstanceId;
+
     window.teak.trackEvent(actionId, objectTypeId, objectInstanceId);
   },
   TeakDeepLinkTableInternal: {},
