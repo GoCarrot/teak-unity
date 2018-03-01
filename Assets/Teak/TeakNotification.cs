@@ -67,9 +67,7 @@ public partial class TeakNotification
     // Returns an id that can be used to cancel a scheduled notification
     public static IEnumerator ScheduleNotification(string creativeId, string defaultMessage, long delayInSeconds, System.Action<Reply> callback)
     {
-        string data = null;
-        string status = null;
-#if UNITY_EDITOR || UNITY_WEBGL
+#if UNITY_EDITOR
         yield return null;
 #elif UNITY_ANDROID
         AndroidJavaClass teakNotification = new AndroidJavaClass("io.teak.sdk.TeakNotification");
@@ -78,6 +76,8 @@ public partial class TeakNotification
         {
             while(!future.Call<bool>("isDone")) yield return null;
 
+            string data = null;
+            string status = null;
             try
             {
                 Dictionary<string, object> json = Json.Deserialize(future.Call<string>("get")) as Dictionary<string, object>;
@@ -90,7 +90,10 @@ public partial class TeakNotification
                 data = null;
             }
         }
+        callback(new Reply(status, data, creativeId));
 #elif UNITY_IPHONE
+        string data = null;
+        string status = null;
         IntPtr notif = TeakNotificationSchedule_Retained(creativeId, defaultMessage, delayInSeconds);
         if(notif != IntPtr.Zero)
         {
@@ -99,18 +102,23 @@ public partial class TeakNotification
             status = Marshal.PtrToStringAnsi(TeakNotificationGetStatus(notif));
             TeakRelease(notif);
         }
-#endif
         callback(new Reply(status, data, creativeId));
+#elif UNITY_WEBGL
+        string callbackId = DateTime.Now.Ticks.ToString();
+        webGlCallbackMap.Add(callbackId, callback);
+        TeakNotificationSchedule(callbackId, creativeId, defaultMessage, delayInSeconds);
+        yield return null;
+#endif
     }
 
     // Cancel an existing notification
     public static IEnumerator CancelScheduledNotification(string scheduleId, System.Action<Reply> callback)
     {
-        string data = null;
-        string status = null;
-#if UNITY_EDITOR || UNITY_WEBGL
+#if UNITY_EDITOR
         yield return null;
 #elif UNITY_ANDROID
+        string data = null;
+        string status = null;
         AndroidJavaClass teakNotification = new AndroidJavaClass("io.teak.sdk.TeakNotification");
         AndroidJavaObject future = teakNotification.CallStatic<AndroidJavaObject>("cancelNotification", scheduleId);
         if(future != null)
@@ -128,7 +136,10 @@ public partial class TeakNotification
                 data = null;
             }
         }
+        callback(new Reply(status, data, null));
 #elif UNITY_IPHONE
+        string data = null;
+        string status = null;
         IntPtr notif = TeakNotificationCancel_Retained(scheduleId);
         if(notif != IntPtr.Zero)
         {
@@ -137,18 +148,23 @@ public partial class TeakNotification
             status = Marshal.PtrToStringAnsi(TeakNotificationGetStatus(notif));
             TeakRelease(notif);
         }
-#endif
         callback(new Reply(status, data, null));
+#elif UNITY_WEBGL
+        string callbackId = DateTime.Now.Ticks.ToString();
+        webGlCallbackMap.Add(callbackId, callback);
+        TeakNotificationCancel(callbackId, scheduleId);
+        yield return null;
+#endif
     }
 
     // Cancel all scheduled notifications
     public static IEnumerator CancelAllScheduledNotifications(System.Action<Reply> callback)
     {
-        string data = null;
-        string status = null;
-#if UNITY_EDITOR || UNITY_WEBGL
+#if UNITY_EDITOR
         yield return null;
 #elif UNITY_ANDROID
+        string data = null;
+        string status = null;
         AndroidJavaClass teakNotification = new AndroidJavaClass("io.teak.sdk.TeakNotification");
         AndroidJavaObject future = teakNotification.CallStatic<AndroidJavaObject>("cancelAll");
         if(future != null)
@@ -166,7 +182,10 @@ public partial class TeakNotification
                 data = null;
             }
         }
+        callback(new Reply(status, data, null));
 #elif UNITY_IPHONE
+        string data = null;
+        string status = null;
         IntPtr notif = TeakNotificationCancelAll_Retained();
         if(notif != IntPtr.Zero)
         {
@@ -175,8 +194,13 @@ public partial class TeakNotification
             status = Marshal.PtrToStringAnsi(TeakNotificationGetStatus(notif));
             TeakRelease(notif);
         }
-#endif
         callback(new Reply(status, data, null));
+#elif UNITY_WEBGL
+        string callbackId = DateTime.Now.Ticks.ToString();
+        webGlCallbackMap.Add(callbackId, callback);
+        TeakNotificationCancelAll(callbackId);
+        yield return null;
+#endif
     }
 
     /// @cond hide_from_doxygen
@@ -201,6 +225,26 @@ public partial class TeakNotification
 
     [DllImport ("__Internal")]
     private static extern IntPtr TeakNotificationGetStatus(IntPtr notif);
+#elif UNITY_WEBGL
+    [DllImport ("__Internal")]
+    private static extern void TeakNotificationSchedule(string callbackId, string creativeId, string message, long delay);
+
+    [DllImport ("__Internal")]
+    private static extern void TeakNotificationCancel(string callbackId, string scheduleId);
+
+    [DllImport ("__Internal")]
+    private static extern void TeakNotificationCancelAll(string callbackId);
+
+    private static Dictionary<string, System.Action<Reply>> webGlCallbackMap = new Dictionary<string, System.Action<Reply>>();
+    public static void WebGLCallback(string callbackId, string status, string data, string creativeId)
+    {
+        if(webGlCallbackMap.ContainsKey(callbackId))
+        {
+            System.Action<Reply> callback = webGlCallbackMap[callbackId];
+            webGlCallbackMap.Remove(callbackId);
+            callback(new Reply(status, data, creativeId));
+        }
+    }
 #endif
     /// @endcond
 

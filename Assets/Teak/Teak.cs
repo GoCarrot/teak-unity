@@ -280,6 +280,23 @@ public partial class Teak : MonoBehaviour
             Debug.LogError("[Teak] Unable to find Action for route: " + route);
         }
     }
+
+    void NotificationCallback(string jsonString)
+    {
+        try
+        {
+            Dictionary<string, object> json = Json.Deserialize(jsonString) as Dictionary<string, object>;
+            string callbackId = json["callbackId"] as string;
+            string status = json["status"] as string;
+            string creativeId = json.ContainsKey("creativeId") ? json["creativeId"] as string : null;
+            string data = json["data"] is string ? json["data"] as string : Json.Serialize(json["data"]);
+            TeakNotification.WebGLCallback(callbackId, status, data, creativeId);
+        }
+        catch(Exception e)
+        {
+            Debug.LogError("[Teak] Error executing callback for notification data: " + jsonString + "\n" + e.ToString());
+        }
+    }
     /// @endcond
     #endregion
 
@@ -289,7 +306,7 @@ public partial class Teak : MonoBehaviour
     {
         Debug.Log("[Teak] Unity SDK Version: " + Teak.Version);
         DontDestroyOnLoad(this);
-#if UNITY_WEBGL
+#if UNITY_WEBGL && !UNITY_EDITOR
         string appId = (string.IsNullOrEmpty(Teak.AppId) ? TeakSettings.AppId : Teak.AppId);
         string apiKey = (string.IsNullOrEmpty(Teak.APIKey) ? TeakSettings.APIKey : Teak.APIKey);
         TeakInitWebGL(appId, apiKey);

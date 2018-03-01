@@ -70,5 +70,45 @@ mergeInto(LibraryManager.library, {
   },
   TeakSetBadgeCount: function(count) {
 
+  },
+  TeakNotificationSchedule: function(ptr_callbackId, ptr_creativeId, ptr_defaultMessage, delayInSeconds) {
+    var creativeId = Pointer_stringify(ptr_creativeId);
+    var defaultMessage = Pointer_stringify(ptr_defaultMessage);
+    var callbackId = Pointer_stringify(ptr_callbackId);
+
+    console.log("TeakNotificationSchedule: " + callbackId + ", " + creativeId + ", " + defaultMessage + ", " + delayInSeconds);
+
+    window.teak.scheduleNotification(creativeId, defaultMessage, delayInSeconds, function(reply) {
+      reply.creativeId = creativeId;
+      reply.callbackId = callbackId;
+      var replyAsString = JSON.stringify(reply);
+      console.log("TeakNotificationSchedule Completed: " + replyAsString);
+      SendMessage("TeakGameObject", "NotificationCallback", JSON.stringify(reply));
+    });
+  },
+  TeakNotificationCancel: function(ptr_callbackId, ptr_creativeId) {
+    var creativeId = Pointer_stringify(ptr_creativeId);
+    var callbackId = Pointer_stringify(ptr_callbackId);
+
+    console.log("TeakNotificationCancel: " + callbackId + ", " + creativeId);
+
+    window.teak.cancelNotification(creativeId, function(reply) {
+      reply.callbackId = callbackId;
+      var replyAsString = JSON.stringify(reply);
+      console.log("TeakNotificationCancel Completed: " + replyAsString);
+      SendMessage("TeakGameObject", "NotificationCallback", replyAsString);
+    });
+  },
+  TeakNotificationCancelAll: function(ptr_callbackId) {
+    var callbackId = Pointer_stringify(ptr_callbackId);
+
+    console.log("TeakNotificationCancelAll: " + callbackId);
+
+    window.teak.cancelAllNotifications(function(reply) {
+      reply.callbackId = callbackId;
+      var replyAsString = JSON.stringify(reply);
+      console.log("TeakNotificationCancelAll Completed: " + replyAsString);
+      SendMessage("TeakGameObject", "NotificationCallback", replyAsString);
+    });
   }
 });
