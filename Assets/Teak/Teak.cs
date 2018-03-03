@@ -281,6 +281,7 @@ public partial class Teak : MonoBehaviour
         }
     }
 
+#if UNITY_WEBGL
     void NotificationCallback(string jsonString)
     {
         try
@@ -297,6 +298,7 @@ public partial class Teak : MonoBehaviour
             Debug.LogError("[Teak] Error executing callback for notification data: " + jsonString + "\n" + e.ToString());
         }
     }
+#endif
     /// @endcond
     #endregion
 
