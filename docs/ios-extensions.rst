@@ -24,7 +24,7 @@ This will create a group in your Xcode project that looks like this:
 Dependencies
 ^^^^^^^^^^^^
 
-Add ``UserNotifications.framework``, ``MobileCoreServices.framework``, and ``libTeak.a`` to the `Link Binary with Libraries` Build Phase of the extension:
+Add ``UserNotifications.framework``, ``MobileCoreServices.framework``, ``UIKit.framework``, ``SystemConfiguration.framework`` and ``libTeak.a`` to the `Link Binary with Libraries` Build Phase of the extension:
 
 .. image:: images/service-extension-link.png
 
@@ -168,7 +168,7 @@ Open ``TeakNotificationContent/Info.plist`` *with a text editor* and replace the
                 <key>UNNotificationExtensionDefaultContentHidden</key>
                 <false/>
                 <key>UNNotificationExtensionInitialContentSizeRatio</key>
-                <real>1.0</real>
+                <real>0.01</real>
             </dict>
             <key>NSExtensionPointIdentifier</key>
             <string>com.apple.usernotifications.content-extension</string>

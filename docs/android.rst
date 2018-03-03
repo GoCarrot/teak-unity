@@ -27,7 +27,20 @@ to::
 
 .. note:: This should work just fine for most games. You can go right to :ref:`skip-to-edit-teak-xml`
 
-If there's a reason that you can't do this, then follow the steps below.
+If there's a reason that you can't do this, then follow the steps to Add Teak to your Main Activity.
+
+What About Shortcuts
+^^^^^^^^^^^^^^^^^^^^
+To preserve app shortcuts, add the following below (not inside) the ``<activity>`` you just changed::
+
+    <activity-alias android:name="com.unity3d.player.UnityPlayerActivity" android:targetActivity="io.teak.sdk.wrapper.unity.TeakUnityPlayerActivity" >
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
+    </activity-alias>
+
+This creates an 'activity alias' which tells Android, "Our main activity used to be com.unity3d.player.UnityPlayerActivity, but now it's io.teak.sdk.wrapper.unity.TeakUnityPlayerActivity"
 
 Otherwise Add Teak to your Main Activity
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

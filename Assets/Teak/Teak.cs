@@ -172,7 +172,7 @@ public partial class Teak : MonoBehaviour
 #elif UNITY_ANDROID
         AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
         return teak.CallStatic<bool>("setApplicationBadgeNumber", count);
-#elif UNITY_IPHONE
+#elif UNITY_IPHONE  || UNITY_WEBGL
         TeakSetBadgeCount(count);
         return true;
 #endif
@@ -222,9 +222,7 @@ public partial class Teak : MonoBehaviour
 
     [DllImport ("__Internal")]
     private static extern void TeakUnityReadyForDeepLinks();
-#endif
 
-#if UNITY_IPHONE
     [DllImport ("__Internal")]
     private static extern void TeakSetBadgeCount(int count);
 #endif
@@ -242,18 +240,24 @@ public partial class Teak : MonoBehaviour
         Dictionary<string, object> json = Json.Deserialize(jsonString) as Dictionary<string, object>;
         json.Remove("teakReward");
         json.Remove("teakDeepLink");
-        OnLaunchedFromNotification(new TeakNotification {
-            Incentivized = (json["incentivized"] is bool) ? (bool) json["incentivized"] : false,
-            ScheduleId = json["teakScheduleName"] as string,
-            CreativeId = json["teakCreativeName"] as string,
-            RewardId = json.ContainsKey("teakRewardId") ? json["teakRewardId"] as string : null
-        });
+
+        if (OnLaunchedFromNotification != null) {
+            OnLaunchedFromNotification(new TeakNotification {
+                Incentivized = (json["incentivized"] is bool) ? (bool) json["incentivized"] : false,
+                ScheduleId = json["teakScheduleName"] as string,
+                CreativeId = json["teakCreativeName"] as string,
+                RewardId = json.ContainsKey("teakRewardId") ? json["teakRewardId"] as string : null
+            });
+        }
     }
 
     void RewardClaimAttempt(string jsonString)
     {
         Dictionary<string, object> json = Json.Deserialize(jsonString) as Dictionary<string, object>;
-        OnReward(new TeakReward(json));
+
+        if (OnReward != null) {
+            OnReward(new TeakReward(json));
+        }
     }
 
     void DeepLink(string jsonString)
@@ -276,6 +280,23 @@ public partial class Teak : MonoBehaviour
             Debug.LogError("[Teak] Unable to find Action for route: " + route);
         }
     }
+
+    void NotificationCallback(string jsonString)
+    {
+        try
+        {
+            Dictionary<string, object> json = Json.Deserialize(jsonString) as Dictionary<string, object>;
+            string callbackId = json["callbackId"] as string;
+            string status = json["status"] as string;
+            string creativeId = json.ContainsKey("creativeId") ? json["creativeId"] as string : null;
+            string data = json["data"] is string ? json["data"] as string : Json.Serialize(json["data"]);
+            TeakNotification.WebGLCallback(callbackId, status, data, creativeId);
+        }
+        catch(Exception e)
+        {
+            Debug.LogError("[Teak] Error executing callback for notification data: " + jsonString + "\n" + e.ToString());
+        }
+    }
     /// @endcond
     #endregion
 
@@ -285,22 +306,21 @@ public partial class Teak : MonoBehaviour
     {
         Debug.Log("[Teak] Unity SDK Version: " + Teak.Version);
         DontDestroyOnLoad(this);
+#if UNITY_WEBGL && !UNITY_EDITOR
+        string appId = (string.IsNullOrEmpty(Teak.AppId) ? TeakSettings.AppId : Teak.AppId);
+        string apiKey = (string.IsNullOrEmpty(Teak.APIKey) ? TeakSettings.APIKey : Teak.APIKey);
+        TeakInitWebGL(appId, apiKey);
+#endif
     }
 
     void Start()
     {
 #if UNITY_EDITOR
         // Nothing currently
-#elif UNITY_WEBGL
-        string appId = (string.IsNullOrEmpty(Teak.AppId) ? TeakSettings.AppId : Teak.AppId);
-        string apiKey = (string.IsNullOrEmpty(Teak.APIKey) ? TeakSettings.APIKey : Teak.APIKey);
-        TeakInitWebGL(appId, apiKey);
-        TeakUnityReadyForDeepLinks();
 #elif UNITY_ANDROID
-
         AndroidJavaClass teakUnity = new AndroidJavaClass("io.teak.sdk.wrapper.unity.TeakUnity");
         teakUnity.CallStatic("readyForDeepLinks");
-#elif UNITY_IPHONE
+#elif UNITY_IPHONE || UNITY_WEBGL
         TeakUnityReadyForDeepLinks();
 #endif
 

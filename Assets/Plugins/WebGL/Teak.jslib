@@ -19,9 +19,10 @@ mergeInto(LibraryManager.library, {
     var apiKey = Pointer_stringify(ptr_apiKey);
 
     var doTeakInit = function() {
-      (function(){window.teak=window.teak||[];window.teak.methods=["init","on","asyncInit","identify","trackEvent","postAction","postAchievement","postHighScore","canMakeFeedPost","popupFeedPost","reportNotificationClick","reportFeedClick","sendRequest","acceptRequest","loadInboxData", "claimReward"];window.teak.factory=function(e){return function(){var t=Array.prototype.slice.call(arguments);t.unshift(e);window.teak.push(t);return window.teak}};for(var e=0;e<window.teak.methods.length;e++){var t=window.teak.methods[e];if(!window.teak[t]){window.teak[t]=window.teak.factory(t)}}var n=document.createElement("script");n.type="text/javascript";n.async=true;n.src="//d2h7sc2qwu171k.cloudfront.net/teak.min.js";var r=document.getElementsByTagName("script")[0];r.parentNode.insertBefore(n,r)})()
+      (function(){window.teak=window.teak||[];window.teak.methods=["init","on","asyncInit","identify","trackEvent","postAction","postAchievement","postHighScore","canMakeFeedPost","popupFeedPost","reportNotificationClick","reportFeedClick","sendRequest","acceptRequest","loadInboxData", "claimReward", "setIsUnity", "scheduleNotification", "cancelNotification", "cancelAllNotifications"];window.teak.factory=function(e){return function(){var t=Array.prototype.slice.call(arguments);t.unshift(e);window.teak.push(t);return window.teak}};for(var e=0;e<window.teak.methods.length;e++){var t=window.teak.methods[e];if(!window.teak[t]){window.teak[t]=window.teak.factory(t)}}var n=document.createElement("script");n.type="text/javascript";n.async=true;n.src="//d2h7sc2qwu171k.cloudfront.net/teak.min.js";var r=document.getElementsByTagName("script")[0];r.parentNode.insertBefore(n,r)})()
 
       window.teak.init(appId, apiKey);
+      window.teak.setIsUnity();
     };
 
     // Load jQuery, if it's not already loaded
@@ -39,22 +40,27 @@ mergeInto(LibraryManager.library, {
     window.teak.identify(userId);
 
     window.teak.claimReward(function(reply) {
-      console.log(reply);
       SendMessage("TeakGameObject", "RewardClaimAttempt", JSON.stringify(reply));
     });
   },
   TeakTrackEvent: function(ptr_actionId, ptr_objectTypeId, ptr_objectInstanceId) {
-    var actionId = Pointer_stringify(ptr_actionId);
-    var objectTypeId = Pointer_stringify(ptr_objectTypeId);
-    var objectInstanceId = Pointer_stringify(ptr_objectInstanceId);
+    var actionId = Pointer_stringify(ptr_actionId).trim();
+    var objectTypeId = Pointer_stringify(ptr_objectTypeId).trim();
+    var objectInstanceId = Pointer_stringify(ptr_objectInstanceId).trim();
+
+    objectTypeId = objectTypeId.length === 0 ? undefined : objectTypeId;
+    objectInstanceId = objectInstanceId.length === 0 ? undefined : objectInstanceId;
+
     window.teak.trackEvent(actionId, objectTypeId, objectInstanceId);
   },
+  TeakDeepLinkTableInternal: {},
+  TeakUnityRegisterRoute__deps: ['TeakDeepLinkTableInternal'],
   TeakUnityRegisterRoute: function(ptr_route, ptr_name, ptr_description) {
     var route = Pointer_stringify(ptr_route);
     var name = Pointer_stringify(ptr_name);
     var description = Pointer_stringify(ptr_description);
 
-    TeakDeepLinkTableIntneral[route] = {
+    _TeakDeepLinkTableInternal[route] = {
       name: name,
       description: description
     };
@@ -62,5 +68,47 @@ mergeInto(LibraryManager.library, {
   TeakUnityReadyForDeepLinks: function() {
 
   },
-  TeakDeepLinkTableIntneral: {}
+  TeakSetBadgeCount: function(count) {
+
+  },
+  TeakNotificationSchedule: function(ptr_callbackId, ptr_creativeId, ptr_defaultMessage, delayInSeconds) {
+    var creativeId = Pointer_stringify(ptr_creativeId);
+    var defaultMessage = Pointer_stringify(ptr_defaultMessage);
+    var callbackId = Pointer_stringify(ptr_callbackId);
+
+    console.log("TeakNotificationSchedule: " + callbackId + ", " + creativeId + ", " + defaultMessage + ", " + delayInSeconds);
+
+    window.teak.scheduleNotification(creativeId, defaultMessage, delayInSeconds, function(reply) {
+      reply.creativeId = creativeId;
+      reply.callbackId = callbackId;
+      var replyAsString = JSON.stringify(reply);
+      console.log("TeakNotificationSchedule Completed: " + replyAsString);
+      SendMessage("TeakGameObject", "NotificationCallback", JSON.stringify(reply));
+    });
+  },
+  TeakNotificationCancel: function(ptr_callbackId, ptr_creativeId) {
+    var creativeId = Pointer_stringify(ptr_creativeId);
+    var callbackId = Pointer_stringify(ptr_callbackId);
+
+    console.log("TeakNotificationCancel: " + callbackId + ", " + creativeId);
+
+    window.teak.cancelNotification(creativeId, function(reply) {
+      reply.callbackId = callbackId;
+      var replyAsString = JSON.stringify(reply);
+      console.log("TeakNotificationCancel Completed: " + replyAsString);
+      SendMessage("TeakGameObject", "NotificationCallback", replyAsString);
+    });
+  },
+  TeakNotificationCancelAll: function(ptr_callbackId) {
+    var callbackId = Pointer_stringify(ptr_callbackId);
+
+    console.log("TeakNotificationCancelAll: " + callbackId);
+
+    window.teak.cancelAllNotifications(function(reply) {
+      reply.callbackId = callbackId;
+      var replyAsString = JSON.stringify(reply);
+      console.log("TeakNotificationCancelAll Completed: " + replyAsString);
+      SendMessage("TeakGameObject", "NotificationCallback", replyAsString);
+    });
+  }
 });

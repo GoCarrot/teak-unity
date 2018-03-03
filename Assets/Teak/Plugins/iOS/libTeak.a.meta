@@ -114,7 +114,7 @@ PluginImporter:
     second:
       enabled: 1
       settings:
-        FrameworkDependencies: AdSupport;AVFoundation;MobileCoreServices;StoreKit;UserNotifications;ImageIO;CoreGraphics
+        FrameworkDependencies: AdSupport;AVFoundation;MobileCoreServices;StoreKit;UserNotifications;ImageIO;CoreGraphics;UIKit;SystemConfiguration
   userData: 
   assetBundleName: 
   assetBundleVariant: 
