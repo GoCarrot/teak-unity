@@ -70,14 +70,14 @@ public partial class TeakNotification
 #if UNITY_EDITOR
         yield return null;
 #elif UNITY_ANDROID
+        string data = null;
+        string status = null;
         AndroidJavaClass teakNotification = new AndroidJavaClass("io.teak.sdk.TeakNotification");
         AndroidJavaObject future = teakNotification.CallStatic<AndroidJavaObject>("scheduleNotification", creativeId, defaultMessage, delayInSeconds);
         if(future != null)
         {
             while(!future.Call<bool>("isDone")) yield return null;
 
-            string data = null;
-            string status = null;
             try
             {
                 Dictionary<string, object> json = Json.Deserialize(future.Call<string>("get")) as Dictionary<string, object>;
