@@ -13,9 +13,6 @@
  * limitations under the License.
  */
 
-// From Classes/main.mm
-extern const char* AppControllerClassName;
-
 // From TeakHooks.m
 extern void Teak_Plant(Class appDelegateClass, NSString* appId, NSString* appSecret);
 
@@ -146,7 +143,7 @@ static void teak_init()
 
    NSString* appId = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"TeakAppId"];
    NSString* apiKey = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"TeakApiKey"];
-   Teak_Plant(NSClassFromString([NSString stringWithUTF8String:AppControllerClassName]), appId, apiKey);
+   Teak_Plant(NSClassFromString(@"UnityAppController"), appId, apiKey);
 
    waitForDeepLinkOperation = [NSBlockOperation blockOperationWithBlock:^{
    }];
