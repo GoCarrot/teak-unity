@@ -146,6 +146,7 @@ Open ``TeakNotificationContent/Info.plist`` *with a text editor* and replace the
             <dict>
                 <key>UNNotificationExtensionCategory</key>
                 <array>
+                    <string>TeakNotificationContent</string>
                     <string>TeakNotificationPlayNow</string>
                     <string>TeakNotificationClaimForFree</string>
                     <string>TeakNotificationBox123</string>
