@@ -199,11 +199,11 @@ The expanded view should look like this:
 
 I see the GIF, but no buttons
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Check to make sure that ``NotificationViewController`` is being built properly, and that ``TeakNotificationContent/Info.plist`` contains the contents as specified above.
+Check to make sure that ``TeakNotificationViewController`` is being built properly, and that ``TeakNotificationContent/Info.plist`` contains the contents as specified above.
 
 I see no small image preview
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Make sure that ``NotificationViewController`` is being built properly.
+Make sure that ``TeakNotificationService`` is being built properly.
 
 .. tip:: We use a Ruby script for automating this process during our testing. Feel free to
     use it for your own build process as well. |br|
