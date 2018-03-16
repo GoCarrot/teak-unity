@@ -46,7 +46,7 @@ Change the code in ``TeakNotificationService/NotificationService.h`` to look lik
     - (void)serviceExtensionTimeWillExpire;
     @end
 
-    @interface NotificationService : TeakNotificationServiceCore
+    @interface TeakNotificationService : TeakNotificationServiceCore
     - (void)serviceExtensionTimeWillExpire;
     @end
 
@@ -56,7 +56,7 @@ Change the code in ``TeakNotificationService/NotificationService.m`` to look lik
 
     #import "NotificationService.h"
 
-    @implementation NotificationService
+    @implementation TeakNotificationService
     - (void)serviceExtensionTimeWillExpire {
         [super serviceExtensionTimeWillExpire];
     }
@@ -97,7 +97,7 @@ Change the code in ``TeakNotificationContent/NotificationViewController.h`` to l
     - (void)viewDidLoad;
     @end
 
-    @interface NotificationViewController : TeakNotificationViewControllerCore
+    @interface TeakNotificationViewController : TeakNotificationViewControllerCore
     - (void)viewDidLoad;
     @end
 
@@ -105,7 +105,7 @@ Change the code in ``TeakNotificationContent/NotificationViewController.m`` to l
 
     #import "NotificationViewController.h"
 
-    @implementation NotificationViewController
+    @implementation TeakNotificationViewController
     - (void)viewDidLoad {
         [super viewDidLoad];
     }
@@ -174,7 +174,7 @@ Open ``TeakNotificationContent/Info.plist`` *with a text editor* and replace the
             <key>NSExtensionPointIdentifier</key>
             <string>com.apple.usernotifications.content-extension</string>
             <key>NSExtensionPrincipalClass</key>
-            <string>NotificationViewController</string>
+            <string>TeakNotificationViewController</string>
         </dict>
     </dict>
     </plist>
