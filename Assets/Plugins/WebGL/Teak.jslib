@@ -110,5 +110,12 @@ mergeInto(LibraryManager.library, {
       console.log("TeakNotificationCancelAll Completed: " + replyAsString);
       SendMessage("TeakGameObject", "NotificationCallback", replyAsString);
     });
+  },
+  TeakSetNumericAttribute: function(ptr_key, value) {
+    var key = Pointer_stringify(ptr_key);
+  },
+  TeakSetStringAttribute: function(ptr_key, ptr_value) {
+    var key = Pointer_stringify(ptr_key);
+    var value = Pointer_stringify(ptr_value);
   }
 });

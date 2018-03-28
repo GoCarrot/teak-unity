@@ -178,6 +178,41 @@ public partial class Teak : MonoBehaviour
 #endif
     }
 
+
+    /// <summary>
+    /// Assign a numeric value to a user profile attribute
+    /// </summary>
+    /// <param name="key">The name of the numeric attribute.</param>
+    /// <param name="value">The value for the numeric attribute.</param>
+    public void SetNumericAttribute(string key, double value)
+    {
+#if UNITY_EDITOR
+        Debug.Log("[Teak] SetNumericAttribute(" + key + ", " + value + ")");
+#elif UNITY_ANDROID
+        AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
+        teak.CallStatic("setNumericAttribute", key, value);
+#elif UNITY_IPHONE  || UNITY_WEBGL
+        TeakSetNumericAttribute(key, value);
+#endif
+    }
+
+    /// <summary>
+    /// Assign a string value to a user profile attribute
+    /// </summary>
+    /// <param name="key">The name of the string attribute.</param>
+    /// <param name="value">The value for the string attribute.</param>
+    public void SetStringAttribute(string key, string value)
+    {
+#if UNITY_EDITOR
+        Debug.Log("[Teak] SetStringAttribute(" + key + ", " + value + ")");
+#elif UNITY_ANDROID
+        AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
+        teak.CallStatic("setStringAttribute", key, value);
+#elif UNITY_IPHONE  || UNITY_WEBGL
+        TeakSetStringAttribute(key, value);
+#endif
+    }
+
     /// @cond hide_from_doxygen
     private static Teak mInstance;
     Dictionary<string, Action<Dictionary<string, object>>> mDeepLinkRoutes = new Dictionary<string, Action<Dictionary<string, object>>>();
@@ -225,6 +260,12 @@ public partial class Teak : MonoBehaviour
 
     [DllImport ("__Internal")]
     private static extern void TeakSetBadgeCount(int count);
+
+    [DllImport ("__Internal")]
+    private static extern void TeakSetNumericAttribute(string key, double value);
+
+    [DllImport ("__Internal")]
+    private static extern void TeakSetStringAttribute(string key, string value);
 #endif
 
 #if UNITY_WEBGL
