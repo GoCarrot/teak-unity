@@ -178,6 +178,43 @@ public partial class Teak : MonoBehaviour
 #endif
     }
 
+    /// <summary>
+    /// Test if notifications are enabled.
+    /// </summary>
+    /// <returns>false if notifications have been disabled, true if they are enabled, or Teak could not determine the status.</returns>
+    public bool AreNotificationsEnabled()
+    {
+#if UNITY_EDITOR
+        Debug.Log("[Teak] AreNotificationsEnabled()");
+        return true;
+#elif UNITY_WEBGL
+        return true;
+#elif UNITY_ANDROID
+        AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
+        return !teak.CallStatic<bool>("userHasDisabledNotifications");
+#elif UNITY_IPHONE
+        return !TeakHasUserDisabledPushNotifications();
+#endif
+    }
+
+    /// <summary>
+    /// Open the settings for your app.
+    /// </summary>
+    /// <returns>false if Teak was unable to open the settings for your app, true otherwise.</returns>
+    public bool OpenSettingsAppToThisAppsSettings()
+    {
+#if UNITY_EDITOR
+        Debug.Log("[Teak] OpenSettingsAppToThisAppsSettings()");
+        return false;
+#elif UNITY_WEBGL
+        return false;
+#elif UNITY_ANDROID
+        AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
+        return !teak.CallStatic<bool>("openSettingsAppToThisAppsSettings");
+#elif UNITY_IPHONE
+        return TeakOpenSettingsAppToThisAppsSettings();
+#endif
+    }
 
     /// <summary>
     /// Assign a numeric value to a user profile attribute
@@ -245,6 +282,7 @@ public partial class Teak : MonoBehaviour
         AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
         teak.CallStatic("pluginPurchaseFailed", errorCode);
     }
+
 #elif UNITY_IPHONE || UNITY_WEBGL
     [DllImport ("__Internal")]
     private static extern void TeakIdentifyUser(string userId);
@@ -266,6 +304,14 @@ public partial class Teak : MonoBehaviour
 
     [DllImport ("__Internal")]
     private static extern void TeakSetStringAttribute(string key, string value);
+#endif
+
+#if UNITY_IPHONE
+    [DllImport ("__Internal")]
+    private static extern bool TeakHasUserDisabledPushNotifications();
+
+    [DllImport ("__Internal")]
+    private static extern bool TeakOpenSettingsAppToThisAppsSettings();
 #endif
 
 #if UNITY_WEBGL
