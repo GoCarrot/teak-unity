@@ -28,12 +28,6 @@ Copy the value in the Amazon security profile for **Client Secret** into the Tea
 
 This gives Teak the information it needs to send ADM messages to your app.
 
-Download Amazon SDK
-^^^^^^^^^^^^^^^^^^^
-Download the Android SDK (not the Unity SDK) and copy the ``amazon-device-messaging-1.0.1.jar`` into your ``Assets/Plugins/Android`` directory.
-
-https://developer.amazon.com/sdk-download
-
 Update Your AndroidManifest.xml
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 https://developer.amazon.com/docs/adm/integrate-your-app.html#update-your-app-manifest
@@ -44,8 +38,8 @@ In step 3, you should specify ``android:required="false"`` as Teak will graceful
 
 In step 4, these are the values you should use:
 
-* [YOUR SERVICE NAME] = io.teak.sdk.ADMMessageHandler
-* [YOUR RECEIVER NAME] = io.teak.sdk.ADMMessageHandler$MessageAlertReceiver
+* [YOUR SERVICE NAME] = io.teak.sdk.push.ADMPushProvider
+* [YOUR RECEIVER NAME] = io.teak.sdk.push.ADMPushProvider$MessageAlertReceiver
 
 Store Your API Key as an Asset
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
