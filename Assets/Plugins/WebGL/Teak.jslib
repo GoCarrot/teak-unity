@@ -40,6 +40,7 @@ mergeInto(LibraryManager.library, {
     window.teak.identify(userId);
 
     window.teak.claimReward(function(reply) {
+      reply.teakRewardId = window.teak.queryParameters.teak_reward_id;
       SendMessage("TeakGameObject", "RewardClaimAttempt", JSON.stringify(reply));
     });
   },
