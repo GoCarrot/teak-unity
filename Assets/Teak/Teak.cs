@@ -172,7 +172,7 @@ public partial class Teak : MonoBehaviour
 #elif UNITY_ANDROID
         AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
         return teak.CallStatic<bool>("setApplicationBadgeNumber", count);
-#elif UNITY_IPHONE  || UNITY_WEBGL
+#elif UNITY_IPHONE || UNITY_WEBGL
         TeakSetBadgeCount(count);
         return true;
 #endif
@@ -228,7 +228,7 @@ public partial class Teak : MonoBehaviour
 #elif UNITY_ANDROID
         AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
         teak.CallStatic("setNumericAttribute", key, value);
-#elif UNITY_IPHONE  || UNITY_WEBGL
+#elif UNITY_IPHONE || UNITY_WEBGL
         TeakSetNumericAttribute(key, value);
 #endif
     }
@@ -245,7 +245,7 @@ public partial class Teak : MonoBehaviour
 #elif UNITY_ANDROID
         AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
         teak.CallStatic("setStringAttribute", key, value);
-#elif UNITY_IPHONE  || UNITY_WEBGL
+#elif UNITY_IPHONE || UNITY_WEBGL
         TeakSetStringAttribute(key, value);
 #endif
     }
