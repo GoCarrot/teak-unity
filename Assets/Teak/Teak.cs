@@ -250,6 +250,40 @@ public partial class Teak : MonoBehaviour
 #endif
     }
 
+    /// <summary>
+    /// Get Teak's configuration data about the current device.
+    /// </summary>
+    /// <returns>A dictionary containing device info, or null if it's not ready</returns>
+    public Dictionary<string, object> GetDeviceConfiguration()
+    {
+#if UNITY_EDITOR || UNITY_WEBGL
+        return new Dictionary<string, object>();
+#elif UNITY_ANDROID
+        AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
+        return Json.Deserialize(teak.CallStatic<string>("getDeviceConfiguration")) as Dictionary<string,object>;
+#elif UNITY_IPHONE
+        string configuration = Marshal.PtrToStringAnsi(TeakGetDeviceConfiguration());
+        return Json.Deserialize(configuration) as Dictionary<string,object>;
+#endif
+    }
+
+    /// <summary>
+    /// Get Teak's configuration data about the current app.
+    /// </summary>
+    /// <returns>A dictionary containing app info, or null if it's not ready</returns>
+    public Dictionary<string, object> GetAppConfiguration()
+    {
+#if UNITY_EDITOR || UNITY_WEBGL
+        return new Dictionary<string, object>();
+#elif UNITY_ANDROID
+        AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
+        return Json.Deserialize(teak.CallStatic<string>("getAppConfiguration")) as Dictionary<string,object>;
+#elif UNITY_IPHONE
+        string configuration = Marshal.PtrToStringAnsi(TeakGetAppConfiguration());
+        return Json.Deserialize(configuration) as Dictionary<string,object>;
+#endif
+    }
+
     /// @cond hide_from_doxygen
     private static Teak mInstance;
     Dictionary<string, Action<Dictionary<string, object>>> mDeepLinkRoutes = new Dictionary<string, Action<Dictionary<string, object>>>();
@@ -317,6 +351,12 @@ public partial class Teak : MonoBehaviour
 #if UNITY_WEBGL
     [DllImport ("__Internal")]
     private static extern string TeakInitWebGL(string appId, string apiKey);
+#elif UNITY_IPHONE
+    [DllImport ("__Internal")]
+    private static extern IntPtr TeakGetAppConfiguration();
+
+    [DllImport ("__Internal")]
+    private static extern IntPtr TeakGetDeviceConfiguration();
 #endif
     /// @endcond
 
