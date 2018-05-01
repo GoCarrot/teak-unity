@@ -172,12 +172,49 @@ public partial class Teak : MonoBehaviour
 #elif UNITY_ANDROID
         AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
         return teak.CallStatic<bool>("setApplicationBadgeNumber", count);
-#elif UNITY_IPHONE  || UNITY_WEBGL
+#elif UNITY_IPHONE || UNITY_WEBGL
         TeakSetBadgeCount(count);
         return true;
 #endif
     }
 
+    /// <summary>
+    /// Test if notifications are enabled.
+    /// </summary>
+    /// <returns>false if notifications have been disabled, true if they are enabled, or Teak could not determine the status.</returns>
+    public bool AreNotificationsEnabled()
+    {
+#if UNITY_EDITOR
+        Debug.Log("[Teak] AreNotificationsEnabled()");
+        return true;
+#elif UNITY_WEBGL
+        return true;
+#elif UNITY_ANDROID
+        AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
+        return !teak.CallStatic<bool>("userHasDisabledNotifications");
+#elif UNITY_IPHONE
+        return !TeakHasUserDisabledPushNotifications();
+#endif
+    }
+
+    /// <summary>
+    /// Open the settings for your app.
+    /// </summary>
+    /// <returns>false if Teak was unable to open the settings for your app, true otherwise.</returns>
+    public bool OpenSettingsAppToThisAppsSettings()
+    {
+#if UNITY_EDITOR
+        Debug.Log("[Teak] OpenSettingsAppToThisAppsSettings()");
+        return false;
+#elif UNITY_WEBGL
+        return false;
+#elif UNITY_ANDROID
+        AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
+        return !teak.CallStatic<bool>("openSettingsAppToThisAppsSettings");
+#elif UNITY_IPHONE
+        return TeakOpenSettingsAppToThisAppsSettings();
+#endif
+    }
 
     /// <summary>
     /// Assign a numeric value to a user profile attribute
@@ -191,7 +228,7 @@ public partial class Teak : MonoBehaviour
 #elif UNITY_ANDROID
         AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
         teak.CallStatic("setNumericAttribute", key, value);
-#elif UNITY_IPHONE  || UNITY_WEBGL
+#elif UNITY_IPHONE || UNITY_WEBGL
         TeakSetNumericAttribute(key, value);
 #endif
     }
@@ -208,8 +245,42 @@ public partial class Teak : MonoBehaviour
 #elif UNITY_ANDROID
         AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
         teak.CallStatic("setStringAttribute", key, value);
-#elif UNITY_IPHONE  || UNITY_WEBGL
+#elif UNITY_IPHONE || UNITY_WEBGL
         TeakSetStringAttribute(key, value);
+#endif
+    }
+
+    /// <summary>
+    /// Get Teak's configuration data about the current device.
+    /// </summary>
+    /// <returns>A dictionary containing device info, or null if it's not ready</returns>
+    public Dictionary<string, object> GetDeviceConfiguration()
+    {
+#if UNITY_EDITOR || UNITY_WEBGL
+        return new Dictionary<string, object>();
+#elif UNITY_ANDROID
+        AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
+        return Json.Deserialize(teak.CallStatic<string>("getDeviceConfiguration")) as Dictionary<string,object>;
+#elif UNITY_IPHONE
+        string configuration = Marshal.PtrToStringAnsi(TeakGetDeviceConfiguration());
+        return Json.Deserialize(configuration) as Dictionary<string,object>;
+#endif
+    }
+
+    /// <summary>
+    /// Get Teak's configuration data about the current app.
+    /// </summary>
+    /// <returns>A dictionary containing app info, or null if it's not ready</returns>
+    public Dictionary<string, object> GetAppConfiguration()
+    {
+#if UNITY_EDITOR || UNITY_WEBGL
+        return new Dictionary<string, object>();
+#elif UNITY_ANDROID
+        AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
+        return Json.Deserialize(teak.CallStatic<string>("getAppConfiguration")) as Dictionary<string,object>;
+#elif UNITY_IPHONE
+        string configuration = Marshal.PtrToStringAnsi(TeakGetAppConfiguration());
+        return Json.Deserialize(configuration) as Dictionary<string,object>;
 #endif
     }
 
@@ -245,6 +316,7 @@ public partial class Teak : MonoBehaviour
         AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
         teak.CallStatic("pluginPurchaseFailed", errorCode);
     }
+
 #elif UNITY_IPHONE || UNITY_WEBGL
     [DllImport ("__Internal")]
     private static extern void TeakIdentifyUser(string userId);
@@ -268,9 +340,23 @@ public partial class Teak : MonoBehaviour
     private static extern void TeakSetStringAttribute(string key, string value);
 #endif
 
+#if UNITY_IPHONE
+    [DllImport ("__Internal")]
+    private static extern bool TeakHasUserDisabledPushNotifications();
+
+    [DllImport ("__Internal")]
+    private static extern bool TeakOpenSettingsAppToThisAppsSettings();
+#endif
+
 #if UNITY_WEBGL
     [DllImport ("__Internal")]
     private static extern string TeakInitWebGL(string appId, string apiKey);
+#elif UNITY_IPHONE
+    [DllImport ("__Internal")]
+    private static extern IntPtr TeakGetAppConfiguration();
+
+    [DllImport ("__Internal")]
+    private static extern IntPtr TeakGetDeviceConfiguration();
 #endif
     /// @endcond
 
