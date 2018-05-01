@@ -7,7 +7,7 @@ test:
   override:
     - (cd iOSLibBuild; ant)
     - (cd AndroidLibBuild; ant)
-    - bundle exec rake
+    - rake
 dependencies:
   pre:
     - ./setup
@@ -24,4 +24,4 @@ deployment:
     commands:
       - aws s3 cp Teak.unitypackage s3://teak-build-artifacts/unity/Teak-$(git describe --tags --always).unitypackage --acl public-read
       - aws s3 cp Teak.unitypackage s3://teak-build-artifacts/unity/Teak.unitypackage --acl public-read
-      - bundle exec rake build:cleanroom
+      - rake build:cleanroom
