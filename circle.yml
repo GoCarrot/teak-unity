@@ -22,3 +22,4 @@ deployment:
     commands:
       - aws s3 cp Teak.unitypackage s3://teak-build-artifacts/unity/Teak-$(git describe --tags --always).unitypackage --acl public-read
       - aws s3 cp Teak.unitypackage s3://teak-build-artifacts/unity/Teak.unitypackage --acl public-read
+      - rake build:cleanroom
