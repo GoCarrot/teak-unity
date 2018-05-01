@@ -1,4 +1,5 @@
 require "rake/clean"
+require "httparty"
 CLEAN.include "**/.DS_Store"
 
 desc "Build Unity package"
