@@ -1,5 +1,6 @@
 require "rake/clean"
 require "httparty"
+require "shellwords"
 CLEAN.include "**/.DS_Store"
 
 desc "Build Unity package"
@@ -11,30 +12,33 @@ UNITY_HOME="#{ENV['UNITY_HOME'] || '/Applications/Unity'}"
 PROJECT_PATH = Rake.application.original_dir
 
 #
+# Play a sound after finished
+#
+at_exit do
+  sh "afplay /System/Library/Sounds/Submarine.aiff" unless ci?
+  if ci?
+    add_unity_log_to_artifacts
+    sh "#{UNITY_HOME}/Unity.app/Contents/MacOS/Unity -batchmode -quit -returnlicense", verbose: false rescue nil
+    puts "Released Unity license..."
+  end
+end
+
+#
 # Helper methods
 #
-def unity(*args)
-  # Run Unity.
-  sh "#{UNITY_HOME}/Unity.app/Contents/MacOS/Unity -logFile #{PROJECT_PATH}/unity.log #{args.join(' ')}"
+
+def ci?
+  ENV.fetch('CI', false).to_s == 'true'
 end
 
-def unity?
-  # Return true if we can run Unity.
-  File.exist? "#{UNITY_HOME}/Unity.app/Contents/MacOS/Unity"
-end
+def unity(*args, quit: true, nographics: true)
+  args.push("-serial", ENV["UNITY_SERIAL"], "-username", ENV["UNITY_EMAIL"], "-password", ENV["UNITY_PASSWORD"]) if ci?
 
-# Docs task
-DOXYGEN_BINARY = "/Applications/Doxygen.app/Contents/Resources/doxygen"
-
-def doxygen?
-  return if not File.exist?(DOXYGEN_BINARY)
-  return true
-end
-
-if doxygen?
-  task :docs do
-    sh DOXYGEN_BINARY
-  end
+  escaped_args = args.map { |arg| Shellwords.escape(arg) }.join(' ')
+  sh "#{UNITY_HOME}/Unity.app/Contents/MacOS/Unity -logFile #{PROJECT_PATH}/unity.log#{quit ? ' -quit' : ''}#{nographics ? ' -nographics' : ''} -batchmode -projectPath #{PROJECT_PATH} #{escaped_args}", verbose: false
+  ensure
+    return unless ci?
+    add_unity_log_to_artifacts
 end
 
 namespace :build do
@@ -85,17 +89,12 @@ END
       file.write(versionfile)
     end
 
-    begin
-      unity "-quit -batchmode -nographics -projectPath #{project_path} -executeMethod TeakPackageBuilder.BuildUnityPackage"
-    rescue
-      # Unity tends to crash on exit for some reason, so just ignore it
-    end
+    unity "-executeMethod", "TeakPackageBuilder.BuildUnityPackage"
 
     begin
-      sh "python extractunitypackage.py Teak.unitypackage _temp_pkg/"
+      sh "python extractunitypackage.py Teak.unitypackage _temp_pkg/", verbose: false
       FileUtils.rm_rf("_temp_pkg")
     rescue
-      sh ">&2 cat unity.log"
       raise "Unity build failed"
     end
   end
