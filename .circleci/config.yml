@@ -30,6 +30,13 @@ jobs:
             (cd iOSLibBuild; ant)
             (cd AndroidLibBuild; ant)
             bundle exec rake
+      - run:
+          command: |
+            mkdir -p /tmp/unity_logs
+            cp unity.log /tmp/unity_logs
+          when: on_fail
+      - store_artifacts:
+          path: /tmp/unity_logs
       - persist_to_workspace:
           root: .
           paths:
