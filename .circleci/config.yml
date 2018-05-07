@@ -8,6 +8,7 @@ jobs:
       UNITY_HOME: /Applications/Unity
     steps:
       - checkout
+      - run: git fetch --tags
       - restore_cache:
           key: v0-{{ checksum "setup" }}-{{ checksum "Gemfile.lock" }}
       - run:
