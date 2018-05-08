@@ -35,7 +35,7 @@ at_exit do
   sh "afplay /System/Library/Sounds/Submarine.aiff" unless ci?
   if ci?
     add_unity_log_to_artifacts
-    sh "#{UNITY_HOME}/Unity.app/Contents/MacOS/Unity -batchmode -quit -returnlicense", verbose: false rescue nil
+    #sh "#{UNITY_HOME}/Unity.app/Contents/MacOS/Unity -batchmode -quit -returnlicense", verbose: false rescue nil
     puts "Released Unity license..."
   end
 end
@@ -52,8 +52,8 @@ def add_unity_log_to_artifacts
   cp('unity.log', "#{Rake.application.current_task.name.sub(':', '-')}.unity.log") unless $!.nil?
 end
 
-def unity(*args, quit: true, false) # HAX 'nographics' should be true, Unity bug w/ batchmode
-  args.push("-serial", ENV["UNITY_SERIAL"], "-username", ENV["UNITY_EMAIL"], "-password", ENV["UNITY_PASSWORD"]) if ci?
+def unity(*args, quit: true, nographics: false) # HAX 'nographics' should be true, Unity bug w/ batchmode
+  #args.push("-serial", ENV["UNITY_SERIAL"], "-username", ENV["UNITY_EMAIL"], "-password", ENV["UNITY_PASSWORD"]) if ci?
 
   escaped_args = args.map { |arg| Shellwords.escape(arg) }.join(' ')
   sh "#{UNITY_HOME}/Unity.app/Contents/MacOS/Unity -logFile #{PROJECT_PATH}/unity.log#{quit ? ' -quit' : ''}#{nographics ? ' -nographics' : ''} -batchmode -projectPath #{PROJECT_PATH} #{escaped_args}", verbose: false
