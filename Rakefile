@@ -3,6 +3,23 @@ require "httparty"
 require "shellwords"
 CLEAN.include "**/.DS_Store"
 
+#
+# Extend Rake to have current_task
+#
+require 'rake'
+module Rake
+  class Application
+    attr_accessor :current_task
+  end
+  class Task
+    alias :old_execute :execute
+    def execute(args=nil)
+      Rake.application.current_task = self
+      old_execute(args)
+    end
+  end #class Task
+end #module Rake
+
 desc "Build Unity package"
 task :default
 
