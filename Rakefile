@@ -1,7 +1,9 @@
-require "rake/clean"
-require "httparty"
-require "shellwords"
-CLEAN.include "**/.DS_Store"
+require 'rake/clean'
+require 'httparty'
+require 'shellwords'
+require 'tmpdir'
+require 'yaml'
+CLEAN.include '**/.DS_Store'
 
 #
 # Extend Rake to have current_task
@@ -20,11 +22,10 @@ module Rake
   end #class Task
 end #module Rake
 
-desc "Build Unity package"
-task :default
-
 CIRCLE_TOKEN = ENV.fetch('CIRCLE_TOKEN') { `aws kms decrypt --ciphertext-blob fileb://kms/encrypted_circle_ci_key.data --output text --query Plaintext | base64 --decode` }
 UNITY_HOME="#{ENV['UNITY_HOME'] || '/Applications/Unity'}"
+TEAK_SDK_VERSION=`git describe --tags`.strip
+NATIVE_CONFIG=YAML.load_file('native.config.yml')
 
 PROJECT_PATH = Rake.application.original_dir
 
@@ -75,17 +76,69 @@ namespace :build do
                     'Accept' => 'application/json'
                   })
   end
-end
 
-#
-# Unity build tasks
-#
+  task :android do
+    Dir.mktmpdir do |dir|
+      Dir.chdir(dir) do
+        # Download or copy Teak SDK AAR
+        sh "curl -o teak.aar https://s3.amazonaws.com/teak-build-artifacts/android/teak-#{NATIVE_CONFIG['version']['android']}.aar"
+        # TODO: or copy from '../teak-android/build/outputs/aar/teak-release.aar'
 
-task :default => "unity:package"
+        # Unzip AAR, delete original AAR
+        sh 'unzip teak.aar'
+        rm 'teak.aar'
 
-desc "Build Unity Package"
-task :unity => "unity:package"
-namespace :unity do
+        # Write Unity SDK version information to 'res/values/teak_unity_version.xml'
+versionfile = <<END
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="io_teak_wrapper_sdk_name">unity</string>
+  <string name="io_teak_wrapper_sdk_version">#{TEAK_SDK_VERSION}</string>
+</resources>
+END
+        File.open(File.join('res', 'values', 'teak_unity_version.xml'), 'w') do |file|
+          file.write(versionfile)
+        end
+
+        # Re-package AAR
+        sh "jar cf #{File.join(PROJECT_PATH, 'Assets', 'Plugins', 'Android', 'teak.aar')} ."
+      end
+    end
+  end
+
+  task :ios do
+    # Download or copy Teak SDK
+    Dir.mktmpdir do |dir|
+      Dir.chdir(dir) do
+        sh "curl -o Teak.framework.zip https://s3.amazonaws.com/teak-build-artifacts/ios/Teak-#{NATIVE_CONFIG['version']['ios']}.framework.zip"
+        sh 'unzip Teak.framework.zip'
+        mv 'Teak.framework/Teak', File.join(PROJECT_PATH, 'Assets', 'Teak', 'Plugins', 'iOS', 'libTeak.a')
+
+        # TODO: Copy from
+        # ../teak-ios/build/Release-iphoneos/libTeak.a
+      end
+    end
+
+    # Download or copy Teak SDK Resources bundle
+    Dir.mktmpdir do |dir|
+      Dir.chdir(dir) do
+        sh "curl -o TeakResources.bundle.zip https://s3.amazonaws.com/teak-build-artifacts/ios/TeakResources-#{NATIVE_CONFIG['version']['ios']}.bundle.zip"
+        # TODO: Copy from
+        # ../teak-ios/build/Release-iphoneos/TeakResources.bundle.zip
+
+        sh "unzip -o TeakResources.bundle.zip -d #{File.join(PROJECT_PATH, 'Assets', 'Teak', 'Plugins', 'iOS')}"
+      end
+    end
+
+    # Write Unity SDK version information to 'Assets/Teak/Plugins/iOS/teak_version.m'
+versionfile = <<END
+NSString* TeakUnitySDKVersion = @"#{TEAK_SDK_VERSION}";
+END
+    File.open(File.join('Assets', 'Teak', 'Plugins', 'iOS', 'teak_version.m'), 'w') do |file|
+      file.write(versionfile)
+    end
+  end
+
   task :package do
     project_path = File.expand_path("./")
     package_path = File.expand_path("./Teak.unitypackage")
