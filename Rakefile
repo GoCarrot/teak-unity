@@ -52,7 +52,7 @@ def add_unity_log_to_artifacts
   cp('unity.log', "#{Rake.application.current_task.name.sub(':', '-')}.unity.log") unless $!.nil?
 end
 
-def unity(*args, quit: true, nographics: true)
+def unity(*args, quit: true, false) # HAX 'nographics' should be true, Unity bug w/ batchmode
   args.push("-serial", ENV["UNITY_SERIAL"], "-username", ENV["UNITY_EMAIL"], "-password", ENV["UNITY_PASSWORD"]) if ci?
 
   escaped_args = args.map { |arg| Shellwords.escape(arg) }.join(' ')
