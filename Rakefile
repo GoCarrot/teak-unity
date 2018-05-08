@@ -85,7 +85,7 @@ namespace :build do
         # TODO: or copy from '../teak-android/build/outputs/aar/teak-release.aar'
 
         # Unzip AAR, delete original AAR
-        sh 'gunzip teak.aar'
+        sh 'unzip teak.aar'
         rm 'teak.aar'
 
         # Write Unity SDK version information to 'res/values/teak_unity_version.xml'
@@ -111,7 +111,7 @@ END
     Dir.mktmpdir do |dir|
       Dir.chdir(dir) do
         sh "curl -o Teak.framework.zip https://s3.amazonaws.com/teak-build-artifacts/ios/Teak-#{NATIVE_CONFIG['version']['ios']}.framework.zip"
-        sh 'gunzip Teak.framework.zip'
+        sh 'unzip Teak.framework.zip'
         mv 'Teak.framework/Teak', File.join(PROJECT_PATH, 'Assets', 'Teak', 'Plugins', 'iOS', 'libTeak.a')
 
         # TODO: Copy from
@@ -126,7 +126,7 @@ END
         # TODO: Copy from
         # ../teak-ios/build/Release-iphoneos/TeakResources.bundle.zip
 
-        sh "gunzip -o TeakResources.bundle.zip -d #{File.join(PROJECT_PATH, 'Assets', 'Teak', 'Plugins', 'iOS')}"
+        sh "unzip -o TeakResources.bundle.zip -d #{File.join(PROJECT_PATH, 'Assets', 'Teak', 'Plugins', 'iOS')}"
       end
     end
 
