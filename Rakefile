@@ -54,7 +54,7 @@ def add_unity_log_to_artifacts
 end
 
 def unity(*args, quit: true, nographics: true) # HAX 'nographics' should be true, Unity bug w/ batchmode
-  #args.push("-serial", ENV["UNITY_SERIAL"], "-username", ENV["UNITY_EMAIL"], "-password", ENV["UNITY_PASSWORD"]) if ci?
+  args.push("-serial", ENV["UNITY_SERIAL"], "-username", ENV["UNITY_EMAIL"], "-password", ENV["UNITY_PASSWORD"]) if ci?
 
   unity_cmd = UNITY_HOME.start_with?("/Applications") ? "#{UNITY_HOME}/Unity.app/Contents/MacOS/Unity" : "#{UNITY_HOME}/Unity"
   escaped_args = args.map { |arg| Shellwords.escape(arg) }.join(' ')
