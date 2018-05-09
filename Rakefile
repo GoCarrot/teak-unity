@@ -36,8 +36,7 @@ at_exit do
   sh "afplay /System/Library/Sounds/Submarine.aiff" unless ci?
   if ci?
     add_unity_log_to_artifacts
-    sh "#{UNITY_HOME}/Unity.app/Contents/MacOS/Unity -batchmode -quit -returnlicense", verbose: false rescue nil
-    puts "Released Unity license..."
+    Rake::Task["unity:returnlicense"].invoke
   end
 end
 
@@ -62,6 +61,13 @@ def unity(*args, quit: true, nographics: true)
   ensure
     return unless ci?
     add_unity_log_to_artifacts
+end
+
+namespace :unity do
+  task :returnlicense do
+    sh "#{UNITY_HOME}/Unity.app/Contents/MacOS/Unity -batchmode -quit -returnlicense", verbose: false rescue nil
+    puts "Released Unity license..."
+  end
 end
 
 namespace :build do
