@@ -36,7 +36,7 @@ at_exit do
   sh "afplay /System/Library/Sounds/Submarine.aiff" unless ci?
   if ci?
     add_unity_log_to_artifacts
-    #sh "#{UNITY_HOME}/Unity.app/Contents/MacOS/Unity -batchmode -quit -returnlicense", verbose: false rescue nil
+    sh "#{UNITY_HOME}/Unity.app/Contents/MacOS/Unity -batchmode -quit -returnlicense", verbose: false rescue nil
     puts "Released Unity license..."
   end
 end
@@ -53,7 +53,7 @@ def add_unity_log_to_artifacts
   cp('unity.log', "#{Rake.application.current_task.name.sub(':', '-')}.unity.log") unless $!.nil?
 end
 
-def unity(*args, quit: true, nographics: true) # HAX 'nographics' should be true, Unity bug w/ batchmode
+def unity(*args, quit: true, nographics: true)
   args.push("-serial", ENV["UNITY_SERIAL"], "-username", ENV["UNITY_EMAIL"], "-password", ENV["UNITY_PASSWORD"]) if ci?
 
   unity_cmd = UNITY_HOME.start_with?("/Applications") ? "#{UNITY_HOME}/Unity.app/Contents/MacOS/Unity" : "#{UNITY_HOME}/Unity"
