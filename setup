@@ -16,7 +16,3 @@ fi
 if [ ! -f /Applications/Unity/PlaybackEngines/AndroidPlayer/ivy.xml ]; then
   brew cask install unity-android-support-for-editor@2017.1.0f3
 fi
-
-#if [ ! -f /Applications/Unity/PlaybackEngines/WebGLSupport/ivy.xml ]; then
-#  brew cask install unity-webgl-support-for-editor
-#fi
