@@ -23,7 +23,7 @@ module Rake
 end #module Rake
 
 CIRCLE_TOKEN = ENV.fetch('CIRCLE_TOKEN') { `aws kms decrypt --ciphertext-blob fileb://kms/encrypted_circle_ci_key.data --output text --query Plaintext | base64 --decode` }
-UNITY_HOME="#{ENV['UNITY_HOME'] || '/Applications/Unity'}"
+UNITY_HOME = ENV.fetch('UNITY_HOME', '/Applications/Unity-2017.1.0f3')
 TEAK_SDK_VERSION=`git describe --tags`.strip
 NATIVE_CONFIG=YAML.load_file('native.config.yml')
 
