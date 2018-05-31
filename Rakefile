@@ -23,7 +23,9 @@ module Rake
   end #class Task
 end #module Rake
 
-CIRCLE_TOKEN = ENV.fetch('CIRCLE_TOKEN') { `aws kms decrypt --ciphertext-blob fileb://kms/encrypted_circle_ci_key.data --output text --query Plaintext | base64 --decode` }
+KMS_KEY = `aws kms decrypt --ciphertext-blob fileb://kms/store_encryption_key.key --output text --query Plaintext | base64 --decode`
+CIRCLE_TOKEN = ENV.fetch('CIRCLE_TOKEN') { `openssl enc -md MD5 -d -aes-256-cbc -in kms/encrypted_circle_ci_key.data -k #{KMS_KEY}` }
+
 UNITY_HOME = ENV.fetch('UNITY_HOME', '/Applications/Unity-2017.1.0f3')
 TEAK_SDK_VERSION=`git describe --tags`.strip
 NATIVE_CONFIG=YAML.load_file('native.config.yml')
