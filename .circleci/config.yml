@@ -1,0 +1,134 @@
+version: 2
+jobs:
+  build:
+    macos:
+      xcode: "8.3.3"
+    shell: /bin/bash --login -eo pipefail
+    environment:
+      UNITY_HOME: /Applications/Unity-2017.1.0f3/
+    steps:
+      - checkout
+      - run: git fetch --tags
+      - restore_cache:
+          key: v0-{{ checksum "setup" }}-{{ checksum "Gemfile.lock" }}
+      - run:
+          name: Fix 'Homebrew must be run under Ruby 2.3!'
+          command: brew update
+      - run:
+          name: Homebrew Depenendcies
+          command: ./setup
+      - run:
+          name: Ruby Gems
+          command: bundle check || bundle install --path vendor/bundle
+      - save_cache:
+          paths:
+            - ~/Library/Caches/Homebrew/
+            - vendor/bundle
+          key: v0-{{ checksum "setup" }}-{{ checksum "Gemfile.lock" }}
+      - run:
+          name: Build Teak SDK
+          command: bundle exec rake build:android build:ios build:package
+      - run:
+          command: |
+            mkdir -p /tmp/unity_logs
+            cp unity.log /tmp/unity_logs
+            bundle exec rake unity:returnlicense
+          when: on_fail
+      - store_artifacts:
+          path: /tmp/unity_logs
+      - persist_to_workspace:
+          root: .
+          paths:
+            - Teak.unitypackage
+  deploy_versioned:
+    docker:
+      - image: circleci/ruby:latest
+    steps:
+      - checkout
+      - run: git fetch --tags
+      - restore_cache:
+          key: v0-{{ checksum "Gemfile.lock" }}
+      - run:
+          name: Ruby Gems
+          command: bundle check || bundle install --path vendor/bundle
+      - run:
+          name: Install AWS CLI
+          command: sudo apt-get -y -qq install awscli
+      - save_cache:
+          paths:
+            - vendor/bundle
+          key: v0-{{ checksum "Gemfile.lock" }}
+      - attach_workspace:
+          at: .
+      - run:
+          name: Upload SDK to S3
+          command: |
+            aws s3 cp Teak.unitypackage s3://teak-build-artifacts/unity/Teak-$(git describe --tags --always).unitypackage --acl public-read
+      - run:
+          name: Trigger Cleanroom Build
+          command: bundle exec rake build:cleanroom
+  deploy_latest:
+    docker:
+      - image: circleci/ruby:latest
+    steps:
+      - checkout
+      - run: git fetch --tags
+      - restore_cache:
+          key: v0-{{ checksum "Gemfile.lock" }}
+      - run:
+          name: Ruby Gems
+          command: bundle check || bundle install --path vendor/bundle
+      - run:
+          name: Install AWS CLI
+          command: sudo apt-get -y -qq install awscli
+      - save_cache:
+          paths:
+            - vendor/bundle
+          key: v0-{{ checksum "Gemfile.lock" }}
+      - attach_workspace:
+          at: .
+      - run:
+          name: Upload SDK to S3
+          command: |
+            aws s3 cp Teak.unitypackage s3://teak-build-artifacts/unity/Teak.unitypackage --acl public-read
+workflows:
+  version: 2
+  un-tagged-build:
+    jobs:
+      - build:
+          filters:
+            tags:
+              ignore: /.*/
+  tagged-build:
+    jobs:
+      - build:
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /.*/
+      - deploy_versioned:
+          requires:
+            - build
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /.*/
+      - hold:
+          type: approval
+          requires:
+            - build
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /.*/
+      - deploy_latest:
+          requires:
+            - hold
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /.*/
