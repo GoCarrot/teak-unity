@@ -123,7 +123,7 @@ END
       Dir.chdir(dir) do
         sh "curl -o Teak.framework.zip https://s3.amazonaws.com/teak-build-artifacts/ios/Teak-#{NATIVE_CONFIG['version']['ios']}.framework.zip"
         sh 'unzip Teak.framework.zip'
-        mv 'Teak.framework/Teak', File.join(PROJECT_PATH, 'Assets', 'Teak', 'Plugins', 'iOS', 'libTeak.a')
+        cp 'Teak.framework/Teak', File.join(PROJECT_PATH, 'Assets', 'Teak', 'Plugins', 'iOS', 'libTeak.a')
 
         # TODO: Copy from
         # ../teak-ios/build/Release-iphoneos/libTeak.a
