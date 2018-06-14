@@ -1,6 +1,6 @@
-Scary Android Permissions
-=========================
-If you have recently updated Unity, you may notice that your game is now asking for Android permissions that you never requested.
+SDK 21+ and Unity's Scary Android Permissions
+=============================================
+If you have recently updated Unity, or updated your ``targetSdkVersion`` to 21 or greater, you may notice that your game is now asking for Android permissions that you never requested.
 
 .. image:: images/android-phone-state-permission.png
 
