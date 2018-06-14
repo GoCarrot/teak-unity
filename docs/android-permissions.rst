@@ -14,7 +14,8 @@ The "make and manage phone calls" permission is the ``READ_PHONE_STATE`` permiss
 
 Add this to your ``AndroidManifest.xml`` ::
 
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" android:maxSdkVersion="1" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"
+                     android:maxSdkVersion="1" />
 
 The other permission is the ``WRITE_EXTERNAL_STORAGE`` permission.
 
