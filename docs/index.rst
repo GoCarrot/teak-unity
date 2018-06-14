@@ -12,6 +12,7 @@ Getting started with Teak on Unity
 
    unity
    android
+   android-permissions
    amazon
    ios
    ios-extensions
