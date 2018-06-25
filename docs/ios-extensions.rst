@@ -1,3 +1,5 @@
+.. include:: global.rst
+
 .. |br| raw:: html
 
    <br />

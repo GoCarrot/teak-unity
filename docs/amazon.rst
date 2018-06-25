@@ -1,3 +1,5 @@
+.. include:: global.rst
+
 Amazon
 ======
 If you are shipping on Amazon devices, there are a few extra steps required to support Amazon Device Messaging (ADM).
