@@ -51,6 +51,10 @@ def ci?
   ENV.fetch('CI', false).to_s == 'true'
 end
 
+def build_local?
+  ENV.fetch('BUILD_LOCAL', false).to_s == 'true'
+end
+
 def add_unity_log_to_artifacts
   cp('unity.log', "#{Rake.application.current_task.name.sub(':', '-')}.unity.log") unless $!.nil?
 end
@@ -92,8 +96,11 @@ namespace :build do
     Dir.mktmpdir do |dir|
       Dir.chdir(dir) do
         # Download or copy Teak SDK AAR
-        sh "curl -o teak.aar https://s3.amazonaws.com/teak-build-artifacts/android/teak-#{NATIVE_CONFIG['version']['android']}.aar"
-        # TODO: or copy from '../teak-android/build/outputs/aar/teak-release.aar'
+        if build_local? then
+          cp "#{PROJECT_PATH}/../teak-android/build/outputs/aar/teak-release.aar", "teak.aar"
+        else
+          sh "curl -o teak.aar https://s3.amazonaws.com/teak-build-artifacts/android/teak-#{NATIVE_CONFIG['version']['android']}.aar"
+        end
 
         # Unzip AAR, delete original AAR
         sh 'unzip teak.aar'
@@ -119,23 +126,26 @@ END
 
   task :ios do
     # Download or copy Teak SDK
-    Dir.mktmpdir do |dir|
-      Dir.chdir(dir) do
-        sh "curl -o Teak.framework.zip https://s3.amazonaws.com/teak-build-artifacts/ios/Teak-#{NATIVE_CONFIG['version']['ios']}.framework.zip"
-        sh 'unzip Teak.framework.zip'
-        cp 'Teak.framework/Teak', File.join(PROJECT_PATH, 'Assets', 'Teak', 'Plugins', 'iOS', 'libTeak.a')
-
-        # TODO: Copy from
-        # ../teak-ios/build/Release-iphoneos/libTeak.a
+    if build_local? then
+      cp "#{PROJECT_PATH}/../teak-ios/build/Release-iphoneos/libTeak.a", File.join(PROJECT_PATH, 'Assets', 'Teak', 'Plugins', 'iOS', 'libTeak.a')
+    else
+      Dir.mktmpdir do |dir|
+        Dir.chdir(dir) do
+          sh "curl -o Teak.framework.zip https://s3.amazonaws.com/teak-build-artifacts/ios/Teak-#{NATIVE_CONFIG['version']['ios']}.framework.zip"
+          sh 'unzip Teak.framework.zip'
+          cp 'Teak.framework/Teak', File.join(PROJECT_PATH, 'Assets', 'Teak', 'Plugins', 'iOS', 'libTeak.a')
+        end
       end
     end
 
     # Download or copy Teak SDK Resources bundle
     Dir.mktmpdir do |dir|
       Dir.chdir(dir) do
-        sh "curl -o TeakResources.bundle.zip https://s3.amazonaws.com/teak-build-artifacts/ios/TeakResources-#{NATIVE_CONFIG['version']['ios']}.bundle.zip"
-        # TODO: Copy from
-        # ../teak-ios/build/Release-iphoneos/TeakResources.bundle.zip
+        if build_local? then
+          cp "#{PROJECT_PATH}/../teak-ios/build/Release-iphoneos/TeakResources.bundle.zip", 'TeakResources.bundle.zip'
+        else
+          sh "curl -o TeakResources.bundle.zip https://s3.amazonaws.com/teak-build-artifacts/ios/TeakResources-#{NATIVE_CONFIG['version']['ios']}.bundle.zip"
+        end
 
         sh "unzip -o TeakResources.bundle.zip -d #{File.join(PROJECT_PATH, 'Assets', 'Teak', 'Plugins', 'iOS')}"
       end
