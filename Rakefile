@@ -3,6 +3,7 @@ require 'httparty'
 require 'shellwords'
 require 'tmpdir'
 require 'yaml'
+require 'awesome_print'
 CLEAN.include '**/.DS_Store'
 
 #
@@ -22,7 +23,9 @@ module Rake
   end #class Task
 end #module Rake
 
-CIRCLE_TOKEN = ENV.fetch('CIRCLE_TOKEN') { `aws kms decrypt --ciphertext-blob fileb://kms/encrypted_circle_ci_key.data --output text --query Plaintext | base64 --decode` }
+KMS_KEY = `aws kms decrypt --ciphertext-blob fileb://kms/store_encryption_key.key --output text --query Plaintext | base64 --decode`
+CIRCLE_TOKEN = ENV.fetch('CIRCLE_TOKEN') { `openssl enc -md MD5 -d -aes-256-cbc -in kms/encrypted_circle_ci_key.data -k #{KMS_KEY}` }
+
 UNITY_HOME = ENV.fetch('UNITY_HOME', '/Applications/Unity-2017.1.0f3')
 TEAK_SDK_VERSION=`git describe --tags`.strip
 NATIVE_CONFIG=YAML.load_file('native.config.yml')
@@ -72,7 +75,7 @@ end
 
 namespace :build do
   task :cleanroom do
-    HTTParty.post("https://circleci.com/api/v1.1/project/github/GoCarrot/teak-unity-cleanroom/tree/master?circle-token=#{CIRCLE_TOKEN}",
+    json = HTTParty.post("https://circleci.com/api/v1.1/project/github/GoCarrot/teak-unity-cleanroom/tree/master?circle-token=#{CIRCLE_TOKEN}",
                   body: {
                     build_parameters: {
                       FL_TEAK_SDK_VERSION: `git describe --tags --always`.strip
@@ -81,7 +84,8 @@ namespace :build do
                   headers: {
                     'Content-Type' => 'application/json',
                     'Accept' => 'application/json'
-                  })
+                  }).body
+    ap(JSON.parse(json))
   end
 
   task :android do
@@ -119,7 +123,7 @@ END
       Dir.chdir(dir) do
         sh "curl -o Teak.framework.zip https://s3.amazonaws.com/teak-build-artifacts/ios/Teak-#{NATIVE_CONFIG['version']['ios']}.framework.zip"
         sh 'unzip Teak.framework.zip'
-        mv 'Teak.framework/Teak', File.join(PROJECT_PATH, 'Assets', 'Teak', 'Plugins', 'iOS', 'libTeak.a')
+        cp 'Teak.framework/Teak', File.join(PROJECT_PATH, 'Assets', 'Teak', 'Plugins', 'iOS', 'libTeak.a')
 
         # TODO: Copy from
         # ../teak-ios/build/Release-iphoneos/libTeak.a

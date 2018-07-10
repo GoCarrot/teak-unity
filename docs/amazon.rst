@@ -1,3 +1,5 @@
+.. include:: global.rst
+
 Amazon
 ======
 If you are shipping on Amazon devices, there are a few extra steps required to support Amazon Device Messaging (ADM).
@@ -48,7 +50,7 @@ https://developer.amazon.com/docs/adm/integrate-your-app.html#store-your-api-key
 When this documentation references the ``assets`` folder, it means ``Assets/Plugins/Android/assets``.
 
 Give it a Try
-^^^^^^^^^^^^^
+-------------
 You should now have what you need to test ADM support.
 
 Keep an eye on the debug console, if you see::

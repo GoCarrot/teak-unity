@@ -3,20 +3,33 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
+.. include:: global.rst
+
 Getting started with Teak on Unity
 ==================================
 
 .. toctree::
-   :maxdepth: 2
-   :hidden:
+    :caption: Teak Documentation
+    :maxdepth: 2
+    :hidden:
 
-   unity
-   android
-   amazon
-   ios
-   ios-extensions
-   working-with-unity
-   it-broke
+    Home <https://teak.readthedocs.io/en/latest/>
+    Adobe AIR <https://teak.readthedocs.io/projects/air/en/latest/index.html>
+
+.. toctree::
+    :caption: Unity
+    :maxdepth: 2
+    :hidden:
+
+    unity
+    android
+    android-permissions
+    amazon
+    ios
+    ios-extensions
+    working-with-unity
+    it-broke
+    limiting-data-collection
 
 Hey there!
 
