@@ -91,23 +91,54 @@ public partial class Teak : MonoBehaviour
     }
 
     /// <summary>
+    /// Value provided to IdentifyUser to opt out of collecting an IDFA for this specific user.
+    /// </summary>
+    /// <remarks>
+    /// If you prevent Teak from collecting the Identifier For Advertisers (IDFA),
+    /// Teak will no longer be able to add this user to Facebook Ad Audiences.
+    /// </remarks>
+    public const string OptOutIdfa = "opt_out_idfa";
+
+    /// <summary>
+    /// Value provided to IdentifyUser to opt out of collecting a Push Key for this specific user.
+    /// </summary>
+    /// <remarks>
+    /// If you prevent Teak from collecting the Push Key, Teak will no longer be able
+    /// to send Local Notifications or Push Notifications for this user.
+    /// </remarks>
+    public const string OptOutPushKey = "opt_out_push_key";
+
+    /// <summary>
+    /// Value provided to IdentifyUser to opt out of collecting a Facebook Access Token for this specific user.
+    /// </summary>
+    /// <remarks>
+    /// If you prevent Teak from collecting the Facebook Access Token,
+    /// Teak will no longer be able to correlate this user across multiple devices.
+    /// </remarks>
+
+    public const string OptOutFacebook = "opt_out_facebook";
+
+    /// <summary>
     /// Tell Teak how it should identify the current user.
     /// </summary>
     /// <remarks>
     /// This should be the same way you identify the user in your backend.
     /// </remarks>
     /// <param name="userIdentifier">An identifier which is unique for the current user.</param>
-    public void IdentifyUser(string userIdentifier)
+    /// <param name="optOut">A list containing zero or more of: OptOutIdfa, OptOutPushKey, OptOutFacebook</param>
+    public void IdentifyUser(string userIdentifier, List<string> optOut = null)
     {
+        if (optOut == null) optOut = new List<string>();
+
         this.UserId = userIdentifier;
 
 #if UNITY_EDITOR
         Debug.Log("[Teak] IdentifyUser(): " + userIdentifier);
 #elif UNITY_ANDROID
         AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
-        teak.CallStatic("identifyUser", userIdentifier);
+        teak.CallStatic("identifyUser", userIdentifier, optOut.ToArray());
 #elif UNITY_IPHONE || UNITY_WEBGL
-        TeakIdentifyUser(userIdentifier);
+        TeakIdentifyUser(userIdentifier, Json.Serialize(optOut));
 #endif
     }
 
@@ -319,7 +350,7 @@ public partial class Teak : MonoBehaviour
 
 #elif UNITY_IPHONE || UNITY_WEBGL
     [DllImport ("__Internal")]
-    private static extern void TeakIdentifyUser(string userId);
+    private static extern void TeakIdentifyUser(string userId, string optOut);
 
     [DllImport ("__Internal")]
     private static extern void TeakTrackEvent(string actionId, string objectTypeId, string objectInstanceId);
