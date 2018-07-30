@@ -28,6 +28,8 @@ extern void TeakRegisterRoute(const char* route, const char* name, const char* d
 extern void TeakRunNSOperation(NSOperation* op);
 extern void TeakAssignWaitForDeepLinkOperation(NSOperation* waitForDeepLinkOp);
 
+extern void TeakRequestProvisionalPushAuthorization();
+
 // TeakNotification
 extern NSObject* TeakNotificationSchedule(const char* creativeId, const char* message, uint64_t delay);
 extern NSObject* TeakNotificationCancel(const char* scheduleId);

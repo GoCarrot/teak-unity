@@ -315,6 +315,22 @@ public partial class Teak : MonoBehaviour
 #endif
     }
 
+    /// <summary>
+    /// Register for Provisional Push Notifications.
+    /// </summary>
+    /// <remarks>
+    /// This method only has any effect on iOS devices running iOS 12 or higher.
+    /// </remarks>
+    /// <returns>true if the device was an iOS 12+ device</returns>
+    public bool RegisterForProvisionalNotifications()
+    {
+#if UNITY_EDITOR
+#elif UNITY_IPHONE
+        return TeakRequestProvisionalPushAuthorization();
+#endif
+        return false;
+    }
+
     /// @cond hide_from_doxygen
     private static Teak mInstance;
     Dictionary<string, Action<Dictionary<string, object>>> mDeepLinkRoutes = new Dictionary<string, Action<Dictionary<string, object>>>();
@@ -377,6 +393,9 @@ public partial class Teak : MonoBehaviour
 
     [DllImport ("__Internal")]
     private static extern bool TeakOpenSettingsAppToThisAppsSettings();
+
+    [DllImport ("__Internal")]
+    private static extern bool TeakRequestProvisionalPushAuthorization();
 #endif
 
 #if UNITY_WEBGL
