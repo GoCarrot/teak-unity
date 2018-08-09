@@ -39,6 +39,21 @@ mergeInto(LibraryManager.library, {
     var userId = Pointer_stringify(ptr_userId);
     window.teak.identify(userId);
 
+    window.teak.on('udidAvailable', function() {
+      if (window.teak.queryParameters.teak_notif_id) {
+        var notification = {
+          incentivized: false,
+          teakScheduleName: window.teak.queryParameters.teak_schedule_name,
+          teakCreativeName: window.teak.queryParameters.teak_creative_name
+        };
+        if (window.teak.queryParameters.teak_reward_id) {
+          notification.incentivized = true;
+          notification.teakRewardId = window.teak.queryParameters.teak_reward_id;
+        }
+        SendMessage("TeakGameObject", "NotificationLaunch", JSON.stringify(notification));
+      }
+    });
+
     window.teak.claimReward(function(reply) {
       reply.teakRewardId = window.teak.queryParameters.teak_reward_id;
       SendMessage("TeakGameObject", "RewardClaimAttempt", JSON.stringify(reply));
