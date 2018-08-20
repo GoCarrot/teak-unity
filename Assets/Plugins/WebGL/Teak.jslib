@@ -76,13 +76,50 @@ mergeInto(LibraryManager.library, {
     var name = Pointer_stringify(ptr_name);
     var description = Pointer_stringify(ptr_description);
 
-    _TeakDeepLinkTableInternal[route] = {
+    // Escape some characters
+    var escapedRoute = route.replace(/[\?\%\\\/\*]/g, function(match) {
+      return '\\' + match;
+    });
+
+    // Go through and replace ':foo' with a capture group, and enqueue that capture name
+    var captureGroupNames = [];
+    var routeWithCaptures = escapedRoute.replace(/((:\w+)|\*)/g, function(match) {
+      captureGroupNames.push(match.substring(1));
+      return '([^\\/?#]+)';
+    });
+
+    // Store in the table
+    var compiledRoute = new RegExp(routeWithCaptures);
+    _TeakDeepLinkTableInternal[compiledRoute] = {
+      route: route,
+      captureGroupsNames: captureGroupNames,
       name: name,
       description: description
     };
   },
   TeakUnityReadyForDeepLinks: function() {
+    window.teak.on('udidAvailable', function() {
+      if (window.teak.queryParameters.teak_deep_link) {
+        // Iterate deep link table, keys are RegExp
+        for (var key in _TeakDeepLinkTableInternal) {
+          match = key.exec(window.teak.queryParameters.teak_deep_link);
+          if (match != null) {
+            var deepLinkEntry = _TeakDeepLinkTableInternal[key];
+            var jsonObject = {
+              route: deepLinkEntry.route,
+              parameters: {}
+            };
 
+            // Walk through capture groups and collect name/value pairs
+            for (var i = 0; i < deepLinkEntry.captureGroupsNames.length; i++) {
+              jsonObject.parameters[deepLinkEntry.captureGroupNames[i]] = match[i + 1];
+            }
+            SendMessage("TeakGameObject", "DeepLink", JSON.stringify(jsonObject));
+            break;
+          }
+        }
+      }
+    }
   },
   TeakSetBadgeCount: function(count) {
 
