@@ -89,10 +89,9 @@ mergeInto(LibraryManager.library, {
     });
 
     // Store in the table
-    var compiledRoute = new RegExp(routeWithCaptures);
-    _TeakDeepLinkTableInternal[compiledRoute] = {
+    _TeakDeepLinkTableInternal[routeWithCaptures] = {
       route: route,
-      captureGroupsNames: captureGroupNames,
+      captureGroupNames: captureGroupNames,
       name: name,
       description: description
     };
@@ -102,7 +101,7 @@ mergeInto(LibraryManager.library, {
       if (window.teak.queryParameters.teak_deep_link) {
         // Iterate deep link table, keys are RegExp
         for (var key in _TeakDeepLinkTableInternal) {
-          match = key.exec(window.teak.queryParameters.teak_deep_link);
+          match = new RegExp(key).exec(window.teak.queryParameters.teak_deep_link);
           if (match != null) {
             var deepLinkEntry = _TeakDeepLinkTableInternal[key];
             var jsonObject = {
@@ -111,7 +110,7 @@ mergeInto(LibraryManager.library, {
             };
 
             // Walk through capture groups and collect name/value pairs
-            for (var i = 0; i < deepLinkEntry.captureGroupsNames.length; i++) {
+            for (var i = 0; i < deepLinkEntry.captureGroupNames.length; i++) {
               jsonObject.parameters[deepLinkEntry.captureGroupNames[i]] = match[i + 1];
             }
             SendMessage("TeakGameObject", "DeepLink", JSON.stringify(jsonObject));
@@ -119,7 +118,7 @@ mergeInto(LibraryManager.library, {
           }
         }
       }
-    }
+    });
   },
   TeakSetBadgeCount: function(count) {
 
