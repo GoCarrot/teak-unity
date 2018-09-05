@@ -32,6 +32,7 @@ extern void TeakRequestProvisionalPushAuthorization();
 
 // TeakNotification
 extern NSObject* TeakNotificationSchedule(const char* creativeId, const char* message, uint64_t delay);
+extern NSObject* TeakNotificationScheduleLongDistance(const char* creativeId, int64_t delay, const char* inUserIds[], int inUserIdCount);
 extern NSObject* TeakNotificationCancel(const char* scheduleId);
 extern NSObject* TeakNotificationCancelAll();
 
@@ -60,6 +61,16 @@ void* TeakNotificationSchedule_Retained(const char* creativeId, const char* mess
    return notif;
 #else
    return [TeakNotificationSchedule(creativeId, message, delay) retain];
+#endif
+}
+
+void* TeakNotificationScheduleLongDistance_Retained(const char* creativeId, int64_t delay, const char* userIds[], int userIdCount)
+{
+#if __has_feature(objc_arc)
+   void* notif = (__bridge_retained void*)TeakNotificationScheduleLongDistance(creativeId, delay, userIds, userIdCount);
+   return notif;
+#else
+   return [TeakNotificationScheduleLongDistance(creativeId, delay, userIds, userIdCount) retain];
 #endif
 }
 

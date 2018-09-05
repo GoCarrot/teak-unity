@@ -324,11 +324,11 @@ public partial class Teak : MonoBehaviour
     /// <returns>true if the device was an iOS 12+ device</returns>
     public bool RegisterForProvisionalNotifications()
     {
-#if UNITY_EDITOR
-#elif UNITY_IPHONE
+#if !UNITY_EDITOR && UNITY_IPHONE
         return TeakRequestProvisionalPushAuthorization();
-#endif
+#else
         return false;
+#endif
     }
 
     /// @cond hide_from_doxygen
@@ -348,7 +348,7 @@ public partial class Teak : MonoBehaviour
     private void Prime31PurchaseFailed(string error, int errorCode)
     {
         AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
-        teak.CallStatic("pluginPurchaseFailed", errorCode);
+        teak.CallStatic("pluginPurchaseFailed", errorCode, "prime31");
     }
 
     private void OpenIABPurchaseSucceded<T>(T purchase)
@@ -361,7 +361,7 @@ public partial class Teak : MonoBehaviour
     private void OpenIABPurchaseFailed(int errorCode, string error)
     {
         AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
-        teak.CallStatic("pluginPurchaseFailed", errorCode);
+        teak.CallStatic("pluginPurchaseFailed", errorCode, "openiab");
     }
 
 #elif UNITY_IPHONE || UNITY_WEBGL

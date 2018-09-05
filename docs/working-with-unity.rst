@@ -95,76 +95,85 @@ And then adding it to the ``Teak.Instance.OnReward`` event during ``Start()`` in
         Teak.Instance.OnReward += MyRewardListener;
     }
 
-Working with Local Notifications
---------------------------------
-You can use Teak to schedule notifications for the future.
+Working with Notifications
+--------------------------
+You can use Teak to schedule notifications for the future; delivered either to the current user, or other users.
 
 .. note:: You get the full benefit of Teak's analytics, A/B testing, and Content Management System.
 
-.. note:: All local notification related methods are coroutines. You may need to wrap calls to them in StartCoroutine()
+.. note:: All notification related methods are coroutines. You may need to wrap calls to them in StartCoroutine()
+
+Callbacks
+^^^^^^^^^
+All notification related methods are coroutines, which use a callback to communicate the results back to the caller.
+
+The ``TeakNotification.Reply`` class has two properties:
+    :Status: A value that indicates success, or reason for the failure of the call:
+
+        :Ok: The call was successful.
+
+        :UnconfiguredKey: The call could not be completed because the device does not have a push key associated with it.
+
+        :InvalidDevice: The call could not be completed because Teak has not registered the device.
+
+        :InternalError: An unknown error occured, the call may be retried.
+
+    :Notifications: If the call was successful, a ``List`` containing the notification schedule ids that were created or canceled by the call.
+
 
 Scheduling a Local Notification
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-To schedule a notification from your game, simply use::
+To schedule a notification from your game, use::
 
-    IEnumerator TeakNotification.ScheduleNotification(string creativeId, string defaultMessage, long delayInSeconds, System.Action<string, string> callback)
+    IEnumerator TeakNotification.ScheduleNotification(string creativeId, string defaultMessage,
+        long delayInSeconds, System.Action<TeakNotification.Reply> callback)
 
 Parameters
-    ``creativeId`` - A value used to identify the message creative in the Teak CMS e.g. "daily_bonus"
+    :creativeId: A value used to identify the message creative in the Teak CMS e.g. "daily_bonus"
 
-    ``defaultMessage`` - The text to use in the notification if there are no modifications in the Teak CMS.
+    :defaultMessage: The text to use in the notification if there are no modifications in the Teak CMS.
 
-    ``delayInSeconds`` - The number of seconds from the current time before the notification should be sent.
+    :delayInSeconds: The number of seconds from the current time before the notification should be sent.
 
-    ``callback`` - The callback to be called after the notification is scheduled
+    :callback: The callback to be called after the notification is scheduled
 
-Callback
-    The callback takes two string parameters. The first parameter contains any data from the call, and the second indicates the status of the call. The status can be one of
-        ``ok`` - The notification was successfully scheduled
+Scheduling a Long-Distance Notification
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+To schedule a notification from your game, delivered to a different user of your game use::
 
-        ``invalid_device`` - The current device has not been registered with Teak
+    IEnumerator TeakNotification.ScheduleNotification(string creativeId, long delayInSeconds,
+        string[] userIds, System.Action<TeakNotification.Reply> callback)
 
-        ``unconfigured_key`` - The current device cannot display notifications
+Parameters
+    :creativeId: A value used to identify the message creative in the Teak CMS e.g. "daily_bonus"
 
-        ``error.internal`` - An unknown error occurred and the call should be retried
+    :delayInSeconds: The number of seconds from the current time before the notification should be sent.
 
-    If the call succeeded, the data in the first string will be an opaque identifer that can be passed to ``CancelScheduledNotification`` to cancel the notification.
+    :userIds: An array of user ids to which the notification should be delivered
 
-Canceling a Local Notification
+    :callback: The callback to be called after the notifications are scheduled
+
+Canceling a Notification
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-To cancel a previously scheduled local notification, use::
+To cancel a previously scheduled notification, use::
 
-    IEnumerator TeakNotification.ScheduleNotification(string scheduledId, System.Action<string, string> callback)
+    IEnumerator TeakNotification.CancelScheduledNotification(string scheduledId,
+        System.Action<TeakNotification.Reply> callback)
 
 Parameters
-    ``scheduleId`` - The id received from the ``ScheduleNotification()`` callback
+    :scheduleId: The id received from ``ScheduleNotification()``
 
-Callback
-    The callback takes two string parameters. The first parameter contains any data from the call, and the second indicates the status of the call. The status can be one of
-        ``ok`` - The notification was successfully cancelled
-
-        ``error.internal`` - An unknown error occurred and the call should be retried
-
-    If the call succeeded, the data in the first string will the ``scheduleId`` that was canceled
+    :callback: The callback to be called after the notification is canceled
 
 Canceling all Local Notifications
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 To cancel all previously scheduled local notifications, use::
 
-    IEnumerator TeaKNotification.CancelAllScheduledNotifications(System.Action<string, string> callback)
+    IEnumerator TeakNotification.CancelAllScheduledNotifications(
+        System.Action<TeakNotification.Reply> callback)
 
-Callback
-    The callback takes two string parameters. The first parameter contains any data from the call, and the second indicates the status of the call. The status can be one of
-        ``ok`` The request was succesfully processed
-
-        ``invalid_device`` The current device has not been registered with Teak. This is likely caused by ```identifyUser()``` not being called
-
-        ``error.internal`` An unexpected error occurred and the request should be retried
-
-    If status is ``ok`` then the first string will be a JSON encoded array. Each entry in the array will be a
-    dictionary with ``scheduleId`` and ``creativeId`` entries. ``scheduleId`` is the id originally received from the
-    ``TeakNotification.ScheduleNotification`` call. ``creativeId`` is the ``creativeId`` originally passed to
-    ``TeakNotification.ScheduleNotification()``
+Parameters
+    :callback: The callback to be called after the notifications are canceled
 
 .. note:: This call is processed asynchronously. If you immediately call ``TeakNotification.ScheduleNotification()`` after calling ``TeakNotification.CancelAllScheduledNotifications()`` it is possible for your newly scheduled notification to also be canceled. We recommend waiting until the callback has fired before scheduling any new notifications.
 

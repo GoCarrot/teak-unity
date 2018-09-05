@@ -111,6 +111,52 @@ public partial class TeakNotification
 #endif
     }
 
+    public static IEnumerator ScheduleNotification(string creativeId, long delayInSeconds, string[] userIds, System.Action<Reply> callback)
+    {
+#if UNITY_EDITOR
+        yield return null;
+#elif UNITY_ANDROID
+        string data = null;
+        string status = null;
+        AndroidJavaClass teakNotification = new AndroidJavaClass("io.teak.sdk.TeakNotification");
+        AndroidJavaObject future = teakNotification.CallStatic<AndroidJavaObject>("scheduleNotification", creativeId, delayInSeconds, userIds);
+        if(future != null)
+        {
+            while(!future.Call<bool>("isDone")) yield return null;
+
+            try
+            {
+                Dictionary<string, object> json = Json.Deserialize(future.Call<string>("get")) as Dictionary<string, object>;
+                data = json["data"] as string;
+                status = json["status"] as string;
+            }
+            catch
+            {
+                status = "error.internal";
+                data = null;
+            }
+        }
+        callback(new Reply(status, data, creativeId));
+#elif UNITY_IPHONE
+        string data = null;
+        string status = null;
+        IntPtr notif = TeakNotificationScheduleLongDistance_Retained(creativeId, delayInSeconds, userIds, userIds.Length);
+        if(notif != IntPtr.Zero)
+        {
+            while(!TeakNotificationIsCompleted(notif)) yield return null;
+            data = Marshal.PtrToStringAnsi(TeakNotificationGetTeakNotifId(notif));
+            status = Marshal.PtrToStringAnsi(TeakNotificationGetStatus(notif));
+            TeakRelease(notif);
+        }
+        callback(new Reply(status, data, creativeId));
+#elif UNITY_WEBGL
+        string callbackId = DateTime.Now.Ticks.ToString();
+        webGlCallbackMap.Add(callbackId, callback);
+        TeakNotificationSchedule(callbackId, creativeId, defaultMessage, delayInSeconds);
+        yield return null;
+#endif
+    }
+
     // Cancel an existing notification
     public static IEnumerator CancelScheduledNotification(string scheduleId, System.Action<Reply> callback)
     {
@@ -207,6 +253,9 @@ public partial class TeakNotification
 #if UNITY_IOS
     [DllImport ("__Internal")]
     private static extern IntPtr TeakNotificationSchedule_Retained(string creativeId, string message, long delay);
+
+    [DllImport ("__Internal")]
+    private static extern IntPtr TeakNotificationScheduleLongDistance_Retained(string creativeId, long delayInSeconds, string[] userIds, int lenUserIds);
 
     [DllImport ("__Internal")]
     private static extern IntPtr TeakNotificationCancel_Retained(string scheduleId);
