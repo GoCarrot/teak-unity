@@ -79,7 +79,7 @@ end
 
 namespace :build do
   task :cleanroom do
-    json = HTTParty.post("https://circleci.com/api/v1.1/project/github/GoCarrot/teak-unity-cleanroom/tree/master?circle-token=#{CIRCLE_TOKEN}",
+    json = HTTParty.post("https://circleci.com/api/v1.1/project/github/GoCarrot/teak-unity-cleanroom/build?circle-token=#{CIRCLE_TOKEN}",
                   body: {
                     build_parameters: {
                       FL_TEAK_SDK_VERSION: `git describe --tags --always`.strip
