@@ -152,7 +152,7 @@ public partial class TeakNotification
 #elif UNITY_WEBGL
         string callbackId = DateTime.Now.Ticks.ToString();
         webGlCallbackMap.Add(callbackId, callback);
-        TeakNotificationSchedule(callbackId, creativeId, defaultMessage, delayInSeconds);
+        TeakNotificationScheduleLongDistance(callbackId, creativeId, Json.Serialize(userIds), delayInSeconds);
         yield return null;
 #endif
     }
@@ -279,6 +279,9 @@ public partial class TeakNotification
     private static extern void TeakNotificationSchedule(string callbackId, string creativeId, string message, long delay);
 
     [DllImport ("__Internal")]
+    private static extern IntPtr TeakNotificationScheduleLongDistance(string callbackId, string creativeId, string jsonUserIds, long delay);
+
+    [DllImport ("__Internal")]
     private static extern void TeakNotificationCancel(string callbackId, string scheduleId);
 
     [DllImport ("__Internal")]
@@ -323,7 +326,11 @@ public partial class TeakNotification
                     this.Notifications = new List<Notification>();
                     foreach (object e in replyList) {
                         Dictionary<string, object> entry = e as Dictionary<string, object>;
-                        this.Notifications.Add(new Notification { ScheduleId = entry["schedule_id"] as string, CreativeId = entry["creative_id"] as string });
+                        if (entry != null) {
+                            this.Notifications.Add(new Notification { ScheduleId = entry["schedule_id"] as string, CreativeId = entry["creative_id"] as string });
+                        } else {
+                            this.Notifications.Add(new Notification { ScheduleId = e as string, CreativeId = creativeId });
+                        }
                     }
                 } else {
                     this.Notifications = new List<Notification>
