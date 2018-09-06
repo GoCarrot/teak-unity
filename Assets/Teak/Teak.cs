@@ -467,7 +467,7 @@ public partial class Teak : MonoBehaviour
             string callbackId = json["callbackId"] as string;
             string status = json["status"] as string;
             string creativeId = json.ContainsKey("creativeId") ? json["creativeId"] as string : null;
-            string data = json["data"] is string ? json["data"] as string : Json.Serialize(json["data"]);
+            string data = json.ContainsKey("data") ? (json["data"] is string ? json["data"] as string : Json.Serialize(json["data"])) : null;
             TeakNotification.WebGLCallback(callbackId, status, data, creativeId);
         }
         catch(Exception e)
