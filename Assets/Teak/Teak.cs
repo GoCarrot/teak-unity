@@ -485,11 +485,20 @@ public partial class Teak : MonoBehaviour
     {
         Debug.Log("[Teak] Unity SDK Version: " + Teak.Version);
         DontDestroyOnLoad(this);
-#if UNITY_WEBGL && !UNITY_EDITOR
-        string appId = (string.IsNullOrEmpty(Teak.AppId) ? TeakSettings.AppId : Teak.AppId);
-        string apiKey = (string.IsNullOrEmpty(Teak.APIKey) ? TeakSettings.APIKey : Teak.APIKey);
+
+        string appId = null;
+        string apiKey = null;
+#if UNITY_EDITOR
+#elif UNITY_WEBGL
+        appId = (string.IsNullOrEmpty(Teak.AppId) ? TeakSettings.AppId : Teak.AppId);
+        apiKey = (string.IsNullOrEmpty(Teak.APIKey) ? TeakSettings.APIKey : Teak.APIKey);
         TeakInitWebGL(appId, apiKey);
+#else
+        appId = GetAppConfiguration()["appId"] as string;
+        apiKey = GetAppConfiguration()["apiKey"] as string;
 #endif
+        if (appId != null) Teak.AppId = appId;
+        if (apiKey != null) Teak.APIKey = apiKey;
     }
 
     void Start()
