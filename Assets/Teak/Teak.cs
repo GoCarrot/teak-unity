@@ -530,8 +530,13 @@ public partial class Teak : MonoBehaviour
             if(purchase == null) purchase = Type.GetType("OnePF.Purchase, Assembly-CSharp");
 
             MethodInfo magic = GetType().GetMethod("OpenIABPurchaseSucceded", BindingFlags.NonPublic | BindingFlags.Instance).MakeGenericMethod(purchase);
-            successEvent.AddEventHandler(null, Delegate.CreateDelegate(successEvent.EventHandlerType, this, magic));
-            failEvent.AddEventHandler(null, Delegate.CreateDelegate(failEvent.EventHandlerType, this, "OpenIABPurchaseFailed"));
+            Delegate successDelegate = Delegate.CreateDelegate(successEvent.EventHandlerType, this, magic);
+            object[] successHandlerArgs = { successDelegate };
+            successEvent.GetAddMethod().Invoke(null, successHandlerArgs);
+
+            Delegate failDelegate = Delegate.CreateDelegate(failEvent.EventHandlerType, this, "OpenIABPurchaseFailed");
+            object[] failHandlerArgs = { failDelegate };
+            failEvent.GetAddMethod().Invoke(null, failHandlerArgs);
         }
         else if(prime31 != null)
         {
@@ -544,8 +549,13 @@ public partial class Teak : MonoBehaviour
             if(purchase == null) purchase = Type.GetType("Prime31.GooglePurchase, Assembly-CSharp");
 
             MethodInfo magic = GetType().GetMethod("Prime31PurchaseSucceded", BindingFlags.NonPublic | BindingFlags.Instance).MakeGenericMethod(purchase);
-            successEvent.AddEventHandler(null, Delegate.CreateDelegate(successEvent.EventHandlerType, this, magic));
-            failEvent.AddEventHandler(null, Delegate.CreateDelegate(failEvent.EventHandlerType, this, "Prime31PurchaseFailed"));
+            Delegate successDelegate = Delegate.CreateDelegate(successEvent.EventHandlerType, this, magic);
+            object[] successHandlerArgs = { successDelegate };
+            successEvent.GetAddMethod().Invoke(null, successHandlerArgs);
+
+            Delegate failDelegate = Delegate.CreateDelegate(failEvent.EventHandlerType, this, "Prime31PurchaseFailed");
+            object[] failHandlerArgs = { failDelegate };
+            failEvent.GetAddMethod().Invoke(null, failHandlerArgs);
         }
         else
         {
