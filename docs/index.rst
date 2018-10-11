@@ -28,6 +28,7 @@ Getting started with Teak on Unity
     ios
     ios-extensions
     working-with-unity
+    badging
     it-broke
     limiting-data-collection
 

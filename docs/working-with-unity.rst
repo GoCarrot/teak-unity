@@ -213,10 +213,13 @@ Example::
 
 Deep Links
 ----------
+Deep Linking with Teak is based on routes, which act like URLs. These routes allow you to specify variables
 
-Adding deep link targets in your game is easy with Teak.
+You can add routes during the ``Awake()`` function of any ``MonoBehaviour`` using::
 
-You can add routes during the ``Awake()`` function of any ``MonoBehaviour``. For example::
+    void RegisterRoute(string route, string name, string description, Action<Dictionary<string, object>> action)
+
+For example::
 
     void Awake()
     {
@@ -225,6 +228,27 @@ You can add routes during the ``Awake()`` function of any ``MonoBehaviour``. For
             Debug.Log("Open the store to this sku - " + parameters["sku"]);
         });
     }
+
+Parameters
+    :route: The route definition to register
+
+    :name: The name of the route, this will be used in the Teak Dashboard
+
+    :description: The description of the route, this will be used in the Teak Dashboard
+
+    :action: The method to execute when the app is opened via a deep link to this route
+
+How Routes Work
+^^^^^^^^^^^^^^^
+Routes work like URLs where parts of the path can be a variable. In the example above, the route is ``/store/:sku``. Variables in the path are designated with ``:``. So, in the route ``/store/:sku`` there is a variable named ``sku``.
+
+This means that if the deep link used to launch the app was ``/store/io.teak.test.dollar`` was used to open the app, it would call the function and assign the value ``io.teak.test.dollar`` to the key ``sku`` in the dictionary that is passed in.
+
+This dictionary will also contain any URL query parameters. For example::
+
+    /store/io.teak.test.dollar?campaign=email
+
+In this link, the value ``io.teak.test.dollar`` would be assigned to the key ``sku``, and the value ``email`` would be assigned to the key ``campaign``.
 
 .. The route system that Teak uses is very flexible, let's look at a slightly more complicated example.
 
