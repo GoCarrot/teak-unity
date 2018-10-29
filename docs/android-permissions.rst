@@ -12,12 +12,14 @@ Make it Stop
 ------------
 .. highlight:: xml
 
-The "make and manage phone calls" permission is the ``READ_PHONE_STATE`` permission. To remove this, what we are going to do is modify the ``<uses-permission>`` to only request it for Android version 1. Which is another way of saying, "Never ask for this."
+The "make and manage phone calls" permission is the ``READ_PHONE_STATE`` permission. This can be removed using the Android ``tools`` XML namespace.
 
 Add this to your ``AndroidManifest.xml`` ::
 
     <uses-permission android:name="android.permission.READ_PHONE_STATE"
-                     android:maxSdkVersion="1" />
+                     tools:node="remove" />
+
+Make sure that the ``<manifest>`` tag in your ``AndroidManifest.xml`` contains ``xmlns:tools="http://schemas.android.com/tools"``.
 
 The other permission is the ``WRITE_EXTERNAL_STORAGE`` permission.
 
