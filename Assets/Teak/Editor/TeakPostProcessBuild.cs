@@ -1,8 +1,3 @@
-#if UNITY_3_5 || UNITY_4_0 || UNITY_4_1 || UNITY_4_2 || UNITY_4_3 || UNITY_4_5 || UNITY_4_6 || UNITY_4_7
-#else
-#  define UNITY_5
-#endif
-
 #region License
 /* Teak -- Copyright (C) 2016 GoCarrot Inc.
  *
@@ -26,6 +21,7 @@ using UnityEditor;
 using UnityEditor.Callbacks;
 
 using System;
+using System.IO;
 using System.Diagnostics;
 #endregion
 
@@ -36,19 +32,19 @@ public class TeakPostProcessBuild
     {
         if (TeakSettings.JustShutUpIKnowWhatImDoing) return;
 
-#if UNITY_5
-        if(target != BuildTarget.iOS) return;
-        string objCPath = "";
-#else
-        if(target != BuildTarget.iPhone) return;
-        string objCPath = Application.dataPath + "/Teak/Plugins/iOS";
-#endif
         // Expand full path since otherwise the path seems to be relative if using BuildPipeline.BuildPlayer
-        pathToBuildProject = System.IO.Path.GetFullPath(pathToBuildProject);
+        pathToBuildProject = Path.GetFullPath(pathToBuildProject);
+
+        string objCPath = "";
+
+        string __FILE__ = new StackTrace(new StackFrame(true)).GetFrame(0).GetFileName();
+
+        if(target != BuildTarget.iOS) return;
 
         Process proc = new Process();
         proc.StartInfo.FileName = "python";
-        proc.StartInfo.Arguments = string.Format("Assets/Teak/Editor/ios_post_process.py \"{0}\" \"{1}\" \"{2}\" \"{3}\"", pathToBuildProject, objCPath, TeakSettings.AppId, TeakSettings.APIKey);
+        proc.StartInfo.Arguments = string.Format("{0}/ios_post_process.py \"{1}\" \"{2}\" \"{3}\" \"{4}\"",
+            Path.GetDirectoryName(__FILE__), pathToBuildProject, objCPath, TeakSettings.AppId, TeakSettings.APIKey);
         proc.StartInfo.UseShellExecute = false;
         proc.StartInfo.RedirectStandardOutput = true;
         proc.StartInfo.RedirectStandardError = true;
