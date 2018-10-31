@@ -559,7 +559,11 @@ public partial class Teak : MonoBehaviour
         }
         else
         {
+#if UNITY_PURCHASING
+            Debug.Log("[Teak] Found Unity IAP, use TeakStoreListener to wrap IStoreListener.");
+#else
             Debug.LogWarning("[Teak] No known store plugin found.");
+#endif
         }
 #endif
     }
