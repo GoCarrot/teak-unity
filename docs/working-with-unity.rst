@@ -31,9 +31,9 @@ You can listen for that event during by first writing a listener function, for e
         Debug.Log("OnLaunchedFromNotification: " + notification.CreativeId + " - " + notification.ScheduleId + " Incentivized? " + notification.Incentivized);
     }
 
-And then adding it to the ``Teak.Instance.OnLaunchedFromNotification`` event during ``Start()`` in any ``MonoBehaviour``::
+And then adding it to the ``Teak.Instance.OnLaunchedFromNotification`` event during ``Awake()`` in any ``MonoBehaviour``::
 
-    void Start()
+    void Awake()
     {
         Teak.Instance.OnLaunchedFromNotification += MyOnLaunchedFromNotificationListener;
     }
@@ -88,9 +88,9 @@ You can listen for that event during by first writing a listener function, for e
         }
     }
 
-And then adding it to the ``Teak.Instance.OnReward`` event during ``Start()`` in any ``MonoBehaviour``::
+And then adding it to the ``Teak.Instance.OnReward`` event during ``Awake()`` in any ``MonoBehaviour``::
 
-    void Start()
+    void Awake()
     {
         Teak.Instance.OnReward += MyRewardListener;
     }
