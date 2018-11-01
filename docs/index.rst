@@ -6,13 +6,8 @@
 Getting started with Teak on Unity
 ==================================
 
-.. toctree::
-    :caption: Teak Documentation
-    :maxdepth: 2
-    :hidden:
 
-    Home <https://teak.readthedocs.io/en/latest/>
-    Adobe AIR <https://teak.readthedocs.io/projects/air/en/latest/index.html>
+.. include:: teak-docs-common/sidebar-top.rst
 
 .. toctree::
     :caption: Unity
@@ -35,6 +30,8 @@ Getting started with Teak on Unity
     fcm-migration
     api-28-migration
     changelog
+
+.. include:: teak-docs-common/sidebar.rst
 
 Hey there!
 

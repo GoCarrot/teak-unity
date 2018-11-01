@@ -41,3 +41,7 @@ WebBuild/
 StandaloneBuild*/
 FlashBuild/
 Assets/AssetStoreTools*
+_build
+_static
+_templates
+_doxygen
