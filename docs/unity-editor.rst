@@ -1,4 +1,6 @@
-Unity
+.. include:: global.rst
+
+Unity Editor
 =====
 
 Add Teak.unitypackage

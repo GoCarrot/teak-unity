@@ -15,7 +15,7 @@ Getting started with Teak on Unity
     :hidden:
 
     before-you-start
-    unity
+    unity-editor
     android
     android-permissions
     amazon
