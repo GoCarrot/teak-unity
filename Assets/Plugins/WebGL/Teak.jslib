@@ -57,6 +57,11 @@ mergeInto(LibraryManager.library, {
     });
 
     window.teak.claimReward(function(reply) {
+      // The commented-out functionality is handled by the JS SDK.
+      // reply.reward = JSON.parse(reply.reward);
+      // reply.teakScheduleName = window.teak.queryParameters.teak_schedule_name;
+      // reply.teakCreativeName = window.teak.queryParameters.teak_creative_name;
+
       reply.teakRewardId = window.teak.queryParameters.teak_reward_id;
       SendMessage("TeakGameObject", "RewardClaimAttempt", JSON.stringify(reply));
     });
