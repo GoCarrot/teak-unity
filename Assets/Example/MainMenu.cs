@@ -1,8 +1,3 @@
-#if UNITY_3_5 || UNITY_4_0 || UNITY_4_1 || UNITY_4_2 || UNITY_4_3 || UNITY_4_5 || UNITY_4_6 || UNITY_4_7
-#else
-#  define UNITY_5
-#endif
-
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
@@ -67,11 +62,7 @@ public class MainMenu : MonoBehaviour
     {
         if(pushTokenString == null)
         {
-#if UNITY_5
             byte[] token = UnityEngine.iOS.NotificationServices.deviceToken;
-#else
-            byte[] token = NotificationServices.deviceToken;
-#endif
             if(token != null)
             {
                 // Teak will take care of storing this automatically
@@ -98,11 +89,7 @@ public class MainMenu : MonoBehaviour
         {
             if(GUILayout.Button("Request Push Notifications", GUILayout.Height(buttonHeight)))
             {
-#if UNITY_5
                 UnityEngine.iOS.NotificationServices.RegisterForNotifications(UnityEngine.iOS.NotificationType.Alert |  UnityEngine.iOS.NotificationType.Badge |  UnityEngine.iOS.NotificationType.Sound);
-#else
-                NotificationServices.RegisterForRemoteNotificationTypes(RemoteNotificationType.Alert |  RemoteNotificationType.Badge |  RemoteNotificationType.Sound);
-#endif
             }
         }
 #endif
