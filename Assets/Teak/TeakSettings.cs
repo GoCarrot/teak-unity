@@ -109,6 +109,22 @@ public class TeakSettings : ScriptableObject
 #endif
     }
 
+    public static string FirebaseAppId
+    {
+        get { return Instance.mFirebaseAppId; }
+#if UNITY_EDITOR
+        set
+        {
+            string valueTrim = value.Trim();
+            if(valueTrim != Instance.mFirebaseAppId)
+            {
+                Instance.mFirebaseAppId = valueTrim;
+                DirtyEditor();
+            }
+        }
+#endif
+    }
+
     public static bool JustShutUpIKnowWhatImDoing
     {
         get { return Instance.mJustShutUpIKnowWhatImDoing; }
@@ -143,6 +159,8 @@ public class TeakSettings : ScriptableObject
     private string mAPIKey = "";
     [SerializeField]
     private string mGCMSenderId = "";
+    [SerializeField]
+    private string mFirebaseAppId = "";
     [SerializeField]
     private bool mJustShutUpIKnowWhatImDoing = true;
 

@@ -39,7 +39,7 @@ public class TeakSettingsEditor : Editor
     {
         EditorApplication.update -= EditorRunOnceOnLoad;
 
-        mAndroidFoldout = !String.IsNullOrEmpty(TeakSettings.GCMSenderId);
+        mAndroidFoldout = !String.IsNullOrEmpty(TeakSettings.GCMSenderId) || !String.IsNullOrEmpty(TeakSettings.FirebaseAppId);
     }
 
     static bool mAndroidFoldout;
@@ -56,8 +56,11 @@ public class TeakSettingsEditor : Editor
         mAndroidFoldout = EditorGUILayout.Foldout(mAndroidFoldout, "Android");
         if(mAndroidFoldout)
         {
-            GUIContent gcmSenderIdContent = new GUIContent("GCM Sender Id [?]",  "Put in your GCM Sender Id to have Teak auto-register for GCM notifications.");
+            GUIContent gcmSenderIdContent = new GUIContent("GCM Sender Id [?]",  "Your GCM Sender Id, found on your Firebase Dashboard");
             TeakSettings.GCMSenderId = EditorGUILayout.TextField(gcmSenderIdContent, TeakSettings.GCMSenderId);
+
+            GUIContent firebaseAppIdContent = new GUIContent("Firebase App Id [?]",  "Your Firebase App Id, found on your Firebase Dashboard.");
+            TeakSettings.FirebaseAppId = EditorGUILayout.TextField(firebaseAppIdContent, TeakSettings.FirebaseAppId);
         }
 
         EditorGUILayout.Space();
