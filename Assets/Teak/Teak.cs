@@ -340,28 +340,41 @@ public partial class Teak : MonoBehaviour
 #if UNITY_ANDROID
     private void Prime31PurchaseSucceded<T>(T purchase)
     {
-        PropertyInfo originalJson = purchase.GetType().GetProperty("originalJson");
-        AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
-        teak.CallStatic("prime31PurchaseSucceeded", originalJson.GetValue(purchase, null));
+        try {
+            PropertyInfo originalJson = purchase.GetType().GetProperty("originalJson");
+            AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
+            teak.CallStatic("pluginPurchaseSucceeded", originalJson.GetValue(purchase, null), "prime31");
+        } catch (Exception  ignored) {
+        }
     }
 
     private void Prime31PurchaseFailed(string error, int errorCode)
     {
-        AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
-        teak.CallStatic("pluginPurchaseFailed", errorCode, "prime31");
+        try {
+            AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
+            teak.CallStatic("pluginPurchaseFailed", errorCode, "prime31");
+        } catch (Exception  ignored) {
+        }
     }
 
     private void OpenIABPurchaseSucceded<T>(T purchase)
     {
-        MethodInfo serialize = purchase.GetType().GetMethod("Serialize");
-        AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
-        teak.CallStatic("openIABPurchaseSucceeded", serialize.Invoke(purchase, null));
+        try {
+            MethodInfo serialize = purchase.GetType().GetMethod("Serialize");
+            AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
+            Dictionary<string, object> json = Json.Deserialize(serialize.Invoke(purchase, null)) as Dictionary<string, object>;
+            teak.CallStatic("pluginPurchaseSucceeded", Json.Serialize(json["originalJson"]), "openiab");
+        } catch (Exception  ignored) {
+        }
     }
 
     private void OpenIABPurchaseFailed(int errorCode, string error)
     {
-        AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
-        teak.CallStatic("pluginPurchaseFailed", errorCode, "openiab");
+        try {
+            AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
+            teak.CallStatic("pluginPurchaseFailed", errorCode, "openiab");
+        } catch (Exception  ignored) {
+        }
     }
 
 #elif UNITY_IPHONE || UNITY_WEBGL
