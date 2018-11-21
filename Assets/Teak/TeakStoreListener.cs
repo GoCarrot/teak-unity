@@ -41,7 +41,7 @@ public class TeakStoreListener : IStoreListener {
                 string receiptPayloadJsonString = Json.Serialize(receiptPayloadJson);
 
                 AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
-                teak.CallStatic("pluginPurchaseSucceeded", Json.Serialize(receiptPayloadJson), "unityiap");
+                teak.CallStatic("pluginPurchaseSucceeded", receiptPayloadJsonString, "unityiap");
             }
         } finally {
         }

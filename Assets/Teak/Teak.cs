@@ -344,7 +344,7 @@ public partial class Teak : MonoBehaviour
             PropertyInfo originalJson = purchase.GetType().GetProperty("originalJson");
             AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
             teak.CallStatic("pluginPurchaseSucceeded", originalJson.GetValue(purchase, null), "prime31");
-        } catch (Exception  ignored) {
+        } finally {
         }
     }
 
@@ -353,7 +353,7 @@ public partial class Teak : MonoBehaviour
         try {
             AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
             teak.CallStatic("pluginPurchaseFailed", errorCode, "prime31");
-        } catch (Exception  ignored) {
+        } finally {
         }
     }
 
@@ -362,9 +362,9 @@ public partial class Teak : MonoBehaviour
         try {
             MethodInfo serialize = purchase.GetType().GetMethod("Serialize");
             AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
-            Dictionary<string, object> json = Json.Deserialize(serialize.Invoke(purchase, null)) as Dictionary<string, object>;
+            Dictionary<string, object> json = Json.Deserialize(serialize.Invoke(purchase, null) as string) as Dictionary<string, object>;
             teak.CallStatic("pluginPurchaseSucceeded", Json.Serialize(json["originalJson"]), "openiab");
-        } catch (Exception  ignored) {
+        } finally {
         }
     }
 
@@ -373,7 +373,7 @@ public partial class Teak : MonoBehaviour
         try {
             AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
             teak.CallStatic("pluginPurchaseFailed", errorCode, "openiab");
-        } catch (Exception  ignored) {
+        } finally {
         }
     }
 
