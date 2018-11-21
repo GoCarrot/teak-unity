@@ -115,7 +115,6 @@ Change the code in ``TeakNotificationContent/NotificationViewController.m`` to l
 
 Plist
 ^^^^^
-
 .. highlight:: xml
 
 Open ``TeakNotificationContent/Info.plist`` *with a text editor* and replace the contents with::
