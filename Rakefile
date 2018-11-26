@@ -130,7 +130,7 @@ namespace :build do
         end
 
         # Re-package AAR
-        sh "jar cf #{File.join(PROJECT_PATH, 'Assets', 'Plugins', 'Android', 'teak.aar')} ."
+        sh "jar cf #{File.join(PROJECT_PATH, 'Assets', 'Teak', 'Plugins', 'Android', 'teak.aar')} ."
       end
     end
   end
