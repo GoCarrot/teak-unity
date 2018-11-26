@@ -20,9 +20,11 @@ using UnityEngine;
 using UnityEditor;
 using UnityEditor.Callbacks;
 using UnityEditor.iOS.Xcode;
+using UnityEditor.iOS.Xcode.Extensions;
 
 using System;
 using System.IO;
+using System.Linq;
 using System.Diagnostics;
 #endregion
 
@@ -43,12 +45,12 @@ public class TeakPostProcessBuild
         /////
         // Add Frameworks to Unity target
         string[] teakRequiredFrameworks = new string[] {
-            "AdSupport.framework",
-            "AVFoundation.framework",
-            "MobileCoreServices.framework",
-            "StoreKit.framework",
-            "UserNotifications.framework",
-            "ImageIO.framework"
+            "AdSupport",
+            "AVFoundation",
+            "MobileCoreServices",
+            "StoreKit",
+            "UserNotifications",
+            "ImageIO"
         };
         project = AddFrameworksToProjectTarget(teakRequiredFrameworks, project, unityTarget);
 
@@ -57,17 +59,28 @@ public class TeakPostProcessBuild
         string plistPath = pathToBuiltProject + "/Info.plist";
         File.WriteAllText(plistPath, AddTeakEntriesToPlist(File.ReadAllText(plistPath)));
 
+        ///// string name, string[] frameworks, PBXProject project, string target
+        // Add Teak app extensions
+        AddTeakExtensionToProjectTarget("TeakNotificationService",
+            new string[] {"MobileCoreServices", "UserNotifications", "UIKit", "SystemConfiguration"},
+            project, unityTarget);
+        AddTeakExtensionToProjectTarget("TeakNotificationContent",
+            new string[] {"UserNotifications", "UserNotificationsUI", "AVFoundation", "UIKit", "ImageIO", "CoreGraphics"},
+            project, unityTarget);
+
         /////
         // Write out modified project
         project.WriteToFile(projectPath);
     }
 
     private static PBXProject AddFrameworksToProjectTarget(string[] frameworks, PBXProject project, string target) {
-        foreach (string framework in frameworks) {
+        foreach (string f in frameworks) {
+            string framework = f;
+            if (!framework.EndsWith(".framework")) framework = framework + ".framework";
 #if UNITY_2017_1_OR_NEWER
-            if (!project.ContainsFramework(target, "CoreSpotlight.framework"))
+            if (!project.ContainsFramework(target, framework))
 #else
-            if (!project.HasFramework("AdSupport.framework"))
+            if (!project.HasFramework(framework))
 #endif
             {
                 project.AddFrameworkToProject(target, framework, false);
@@ -125,16 +138,44 @@ public class TeakPostProcessBuild
 
         return plist.WriteToString();
     }
-/*
-    private static string AddTeakExtensionToProjectTarget(PBXProject project, string target) {
-        string extensionTarget = project.AddAppExtension(target, "TeakNotificationThing", "com.unity3d.product.appext", "appext/Info.plist");
-        project.AddFileToBuild(extensionTarget, project.AddFile(buildPath + "/appext/TodayViewController.h", "appext/TodayViewController.h"));
 
+    private static string AddTeakExtensionToProjectTarget(string name, string[] frameworks, PBXProject project, string target) {
+        string __FILE__ = new StackTrace(new StackFrame(true)).GetFrame(0).GetFileName();
+        string teakEditorIosPath = Path.GetDirectoryName(__FILE__) + "/iOS";
+        string extensionSrcPath = teakEditorIosPath + "/" + name;
 
-        // AddFrameworksToProjectTarget
-//        project.AddFrameworkToProject(extensionTarget, "NotificationCenter.framework", true);
+        /////
+        // Create app extension target
+        string extensionTarget = project.AddAppExtension(target, name,
+            PlayerSettings.GetApplicationIdentifier(BuildTargetGroup.iOS) + "." + name,
+            extensionSrcPath + "/Info.plist");
 
-        //pbxProject.AddBuildProperty(extensionTarget, "PRODUCT_BUNDLE_IDENTIFIER", "com.yourcompany.yourgame.stickers");
+        /////
+        // Set TeamId
+        project.SetTeamId(extensionTarget, PlayerSettings.iOS.appleDeveloperTeamID);
+
+        /////
+        // Add source files
+        string[] extensionsIncluded = new string[] {".h", ".m", ".mm"};
+        string[] fileEntries = Directory.GetFiles(extensionSrcPath);
+        foreach (string fileName in fileEntries) {
+            if (!extensionsIncluded.Contains(Path.GetExtension(fileName))) continue;
+
+            project.AddFileToBuild(extensionTarget,
+                project.AddFile(fileName, name + "/" + Path.GetFileName(fileName)));
+        }
+
+        /////
+        // Add Frameworks
+        AddFrameworksToProjectTarget(frameworks, project, extensionTarget);
+
+        /////
+        // Add libTeak.a
+        project.AddFileToBuild(extensionTarget, project.AddFile("libTeak.a", name + "/libTeak.a"));
+        project.AddBuildProperty(extensionTarget, "LIBRARY_SEARCH_PATHS", "$(SRCROOT)/Libraries/Teak/Plugins/iOS");
+
+        /////
+        // Build properties
         project.SetBuildProperty(extensionTarget, "IPHONEOS_DEPLOYMENT_TARGET", "10.0");
         project.AddBuildProperty(extensionTarget, "TARGETED_DEVICE_FAMILY", "1,2");
 
@@ -142,5 +183,5 @@ public class TeakPostProcessBuild
         project.AddBuildProperty(extensionTarget, "ARCHS", "arm64");
 
         return extensionTarget;
-    }*/
+    }
 }

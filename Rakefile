@@ -162,6 +162,14 @@ namespace :build do
       end
     end
 
+    # Download the latest Info.plist for TeakNotificationContent
+    content_plist = File.join('Assets', 'Teak', 'Editor', 'iOS', 'TeakNotificationContent', 'Info.plist')
+    if build_local?
+      cp "#{PROJECT_PATH}/../teak-ios/TeakExtensions/TeakNotificationContent/Info.plist", content_plist
+    else
+      sh "curl --fail -o #{content_plist} https://sdks.teakcdn.com/ios/Info.plist"
+    end
+
     # Write Unity SDK version information to 'Assets/Teak/Plugins/iOS/teak_version.m'
     versionfile = <<~OBJC_VERISONFILE
       NSString* TeakUnitySDKVersion = @"#{TEAK_SDK_VERSION}";
