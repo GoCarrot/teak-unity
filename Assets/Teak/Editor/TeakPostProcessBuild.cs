@@ -19,6 +19,7 @@
 using UnityEngine;
 using UnityEditor;
 using UnityEditor.Callbacks;
+using UnityEditor.iOS.Xcode;
 
 using System;
 using System.IO;
@@ -28,31 +29,118 @@ using System.Diagnostics;
 public class TeakPostProcessBuild
 {
     [PostProcessBuild(100)]
-    public static void OnPostprocessBuild(BuildTarget target, string pathToBuildProject)
+    public static void OnPostprocessBuild(BuildTarget target, string pathToBuiltProject)
     {
         if (TeakSettings.JustShutUpIKnowWhatImDoing) return;
-
-        // Expand full path since otherwise the path seems to be relative if using BuildPipeline.BuildPlayer
-        pathToBuildProject = Path.GetFullPath(pathToBuildProject);
-
-        string objCPath = "";
-
-        string __FILE__ = new StackTrace(new StackFrame(true)).GetFrame(0).GetFileName();
-
         if(target != BuildTarget.iOS) return;
 
-        Process proc = new Process();
-        proc.StartInfo.FileName = "python";
-        proc.StartInfo.Arguments = string.Format("{0}/ios_post_process.py \"{1}\" \"{2}\" \"{3}\" \"{4}\"",
-            Path.GetDirectoryName(__FILE__), pathToBuildProject, objCPath, TeakSettings.AppId, TeakSettings.APIKey);
-        proc.StartInfo.UseShellExecute = false;
-        proc.StartInfo.RedirectStandardOutput = true;
-        proc.StartInfo.RedirectStandardError = true;
-        proc.Start();
-        UnityEngine.Debug.Log(proc.StandardOutput.ReadToEnd());
-        string errors = proc.StandardError.ReadToEnd();
-        if(!String.IsNullOrEmpty(errors))
-            UnityEngine.Debug.LogError(errors);
-        proc.WaitForExit();
+        string projectPath = PBXProject.GetPBXProjectPath(pathToBuiltProject);
+        PBXProject project = new PBXProject();
+        project.ReadFromFile(projectPath);
+
+        string unityTarget = project.TargetGuidByName(PBXProject.GetUnityTargetName());
+
+        /////
+        // Add Frameworks to Unity target
+        string[] teakRequiredFrameworks = new string[] {
+            "AdSupport.framework",
+            "AVFoundation.framework",
+            "MobileCoreServices.framework",
+            "StoreKit.framework",
+            "UserNotifications.framework",
+            "ImageIO.framework"
+        };
+        project = AddFrameworksToProjectTarget(teakRequiredFrameworks, project, unityTarget);
+
+        /////
+        // Modify plist
+        string plistPath = pathToBuiltProject + "/Info.plist";
+        File.WriteAllText(plistPath, AddTeakEntriesToPlist(File.ReadAllText(plistPath)));
+
+        /////
+        // Write out modified project
+        project.WriteToFile(projectPath);
     }
+
+    private static PBXProject AddFrameworksToProjectTarget(string[] frameworks, PBXProject project, string target) {
+        foreach (string framework in frameworks) {
+#if UNITY_2017_1_OR_NEWER
+            if (!project.ContainsFramework(target, "CoreSpotlight.framework"))
+#else
+            if (!project.HasFramework("AdSupport.framework"))
+#endif
+            {
+                project.AddFrameworkToProject(target, framework, false);
+            }
+        }
+
+        return project;
+    }
+
+    private static string AddTeakEntriesToPlist(string inputPlist) {
+        PlistDocument plist = new PlistDocument();
+        plist.ReadFromString(inputPlist);
+
+        // Teak credentials
+        plist.root.SetString("TeakAppId", TeakSettings.AppId);
+        plist.root.SetString("TeakApiKey", TeakSettings.APIKey);
+
+        // Get/create array of URL types
+        PlistElementArray urlTypesArray = null;
+        if (!plist.root.values.ContainsKey("CFBundleURLTypes")) {
+            urlTypesArray = plist.root.CreateArray("CFBundleURLTypes");
+        } else {
+            urlTypesArray = plist.root.values["CFBundleURLTypes"].AsArray();
+        }
+        if (urlTypesArray == null) {
+            urlTypesArray = plist.root.CreateArray("CFBundleURLTypes");
+        }
+
+        // Get/create an entry in the array
+        PlistElementDict urlTypesItems = null;
+        if (urlTypesArray.values.Count == 0) {
+            urlTypesItems = urlTypesArray.AddDict();
+        } else {
+            urlTypesItems = urlTypesArray.values[0].AsDict();
+
+            if (urlTypesItems == null) {
+                urlTypesItems = urlTypesArray.AddDict();
+            }
+        }
+
+        // Get/create array of URL schemes
+        PlistElementArray urlSchemesArray = null;
+        if (!urlTypesItems.values.ContainsKey("CFBundleURLSchemes")) {
+            urlSchemesArray = urlTypesItems.CreateArray("CFBundleURLSchemes");
+        } else {
+            urlSchemesArray = urlTypesItems.values["CFBundleURLSchemes"].AsArray();
+
+            if (urlSchemesArray == null) {
+                urlSchemesArray = urlTypesItems.CreateArray("CFBundleURLSchemes");
+            }
+        }
+
+        // Add Teak URL scheme
+        urlSchemesArray.AddString("teak" + TeakSettings.AppId);
+
+        return plist.WriteToString();
+    }
+/*
+    private static string AddTeakExtensionToProjectTarget(PBXProject project, string target) {
+        string extensionTarget = project.AddAppExtension(target, "TeakNotificationThing", "com.unity3d.product.appext", "appext/Info.plist");
+        project.AddFileToBuild(extensionTarget, project.AddFile(buildPath + "/appext/TodayViewController.h", "appext/TodayViewController.h"));
+
+
+        // AddFrameworksToProjectTarget
+//        project.AddFrameworkToProject(extensionTarget, "NotificationCenter.framework", true);
+
+        //pbxProject.AddBuildProperty(extensionTarget, "PRODUCT_BUNDLE_IDENTIFIER", "com.yourcompany.yourgame.stickers");
+        project.SetBuildProperty(extensionTarget, "IPHONEOS_DEPLOYMENT_TARGET", "10.0");
+        project.AddBuildProperty(extensionTarget, "TARGETED_DEVICE_FAMILY", "1,2");
+
+        // armv7 and armv7s do not support Notification Content Extensions
+        project.AddBuildProperty(extensionTarget, "ARCHS", "arm64");
+
+        return extensionTarget;
+    }*/
 }
