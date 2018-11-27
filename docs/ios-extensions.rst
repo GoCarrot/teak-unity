@@ -1,9 +1,5 @@
 .. include:: global.rst
 
-.. |br| raw:: html
-
-   <br />
-
 iOS Notification Extensions
 ===========================
 Do you want Playable Notifications? Buttons in your notifications? You need to do these things!

@@ -8,3 +8,7 @@
         window.location.replace(url.href);
       }
     </script>
+
+.. |br| raw:: html
+
+   <br />
