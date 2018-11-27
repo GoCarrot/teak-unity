@@ -84,8 +84,6 @@ Optionally Disable FirebaseInitProvider
 
 If Teak is the only thing in your game that uses Firebase, and you don't like seeing the log message::
 
-
-
 You can disable it, put this into your AndroidManifest.xml::
 
     <provider android:name="com.google.firebase.provider.FirebaseInitProvider"

@@ -51,7 +51,9 @@ What About Shortcuts?
 
 To preserve app shortcuts, add the following below (not inside) the ``<activity>`` you just changed::
 
-    <activity-alias android:name="com.unity3d.player.UnityPlayerActivity" android:targetActivity="io.teak.sdk.wrapper.unity.TeakUnityPlayerActivity" >
+    <activity-alias
+        android:name="com.unity3d.player.UnityPlayerActivity"
+        android:targetActivity="io.teak.sdk.wrapper.unity.TeakUnityPlayerActivity" >
         <intent-filter>
             <action android:name="android.intent.action.MAIN" />
             <category android:name="android.intent.category.LAUNCHER" />
