@@ -8,15 +8,10 @@ Requesting Push Notification Permissions
 ----------------------------------------
 In order to use push notifications on iOS, you will need to request permissions.
 
-If you are using Unity 5::
+::
 
     UnityEngine.iOS.NotificationServices.RegisterForNotifications(UnityEngine.iOS.NotificationType.Alert |
         UnityEngine.iOS.NotificationType.Badge |  UnityEngine.iOS.NotificationType.Sound);
-
-If you are using Unity 4::
-
-    NotificationServices.RegisterForRemoteNotificationTypes(RemoteNotificationType.Alert |
-        RemoteNotificationType.Badge |  RemoteNotificationType.Sound);
 
 .. note:: We suggest that you don't simply ask for push permissions when the app starts. We'll be happy to talk with you to figure out what works best for your title.
 

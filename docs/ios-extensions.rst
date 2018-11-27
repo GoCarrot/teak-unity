@@ -2,10 +2,18 @@
 
 iOS Notification Extensions
 ===========================
-Do you want Playable Notifications? Buttons in your notifications? You need to do these things!
+Do you want Playable Notifications? Buttons in your notifications? Well rest easy...
 
-.. important:: This functionality **is safe for all versions of iOS**, but will
-    only be displayed on iOS 10+
+:Since: 2.0.0
+
+Teak's post-processing scripts will take care of all of this for you, automatically!
+
+.. note:: Teak uses ``PlayerSettings.iOS.appleDeveloperTeamID`` to get the Team ID for the extension. |br|
+    If your build process changes this at a later time, you'll need to change it for the extensions as well.
+
+What if I Don't Use Teak's Post-processing Scripts?
+---------------------------------------------------
+You need to do these things!
 
 This document assumes that you have a working Xcode project for a game with Teak.
 
