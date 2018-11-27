@@ -25,7 +25,7 @@ Teak can take advantage of Firebase's initialization of ContentProviders to auto
 
 All you need to do is add this to the main activity in your AndroidManifest.xml::
 
-    <meta-data android:name="io_teak_initialize" android:value="true"/>
+    <meta-data android:name="io.teak.sdk.initialize" android:value="true"/>
 
 .. note:: This should work just fine for most games. You can go right to :ref:`skip-to-edit-teak-xml`
 
