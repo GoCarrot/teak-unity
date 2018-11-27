@@ -59,11 +59,12 @@ public class TeakPostProcessBuild
         string plistPath = pathToBuiltProject + "/Info.plist";
         File.WriteAllText(plistPath, AddTeakEntriesToPlist(File.ReadAllText(plistPath)));
 
-        ///// string name, string[] frameworks, PBXProject project, string target
+        /////
         // Add Teak app extensions
         AddTeakExtensionToProjectTarget("TeakNotificationService",
             new string[] {"MobileCoreServices", "UserNotifications", "UIKit", "SystemConfiguration"},
             project, unityTarget);
+
         AddTeakExtensionToProjectTarget("TeakNotificationContent",
             new string[] {"UserNotifications", "UserNotificationsUI", "AVFoundation", "UIKit", "ImageIO", "CoreGraphics"},
             project, unityTarget);
