@@ -77,6 +77,10 @@ ensure
   add_unity_log_to_artifacts if ci?
 end
 
+task :format do
+  sh 'astyle --project --recursive Assets/*.cs'
+end
+
 namespace :unity do
   task :returnlicense do
     begin

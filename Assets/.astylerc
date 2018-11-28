@@ -1,0 +1,15 @@
+# Braces attached to line
+style=attach
+
+# Indent things
+indent-switches
+indent-namespaces
+
+# Other formatting options
+keep-one-line-statements
+keep-one-line-blocks
+pad-header # this means if(foo) -> if (foo)
+
+# File options
+suffix=none
+exclude=Assets/Teak/MiniJSON.cs
