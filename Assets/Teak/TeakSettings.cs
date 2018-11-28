@@ -93,6 +93,22 @@ public class TeakSettings : ScriptableObject
 #endif
     }
 
+    public static string ShortlinkDomain
+    {
+        get { return Instance.mShortlinkDomain; }
+#if UNITY_EDITOR
+        set
+        {
+            string valueTrim = value.Trim();
+            if(valueTrim != Instance.mShortlinkDomain)
+            {
+                Instance.mShortlinkDomain = valueTrim;
+                DirtyEditor();
+            }
+        }
+#endif
+    }
+
     public static string GCMSenderId
     {
         get { return Instance.mGCMSenderId; }
@@ -157,6 +173,8 @@ public class TeakSettings : ScriptableObject
     private string mAppId = "";
     [SerializeField]
     private string mAPIKey = "";
+    [SerializeField]
+    private string mShortlinkDomain = "";
     [SerializeField]
     private string mGCMSenderId = "";
     [SerializeField]

@@ -50,6 +50,7 @@ public class TeakSettingsEditor : Editor
         GUILayout.Label("Settings", EditorStyles.boldLabel);
         TeakSettings.AppId = EditorGUILayout.TextField("Teak App Id", TeakSettings.AppId);
         TeakSettings.APIKey = EditorGUILayout.TextField("Teak API Key", TeakSettings.APIKey);
+        TeakSettings.ShortlinkDomain = EditorGUILayout.TextField("Short Link Domain", TeakSettings.ShortlinkDomain);
 
         EditorGUILayout.Space();
         GUILayout.Label("Additional Settings", EditorStyles.boldLabel);
