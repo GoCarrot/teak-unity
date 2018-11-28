@@ -26,6 +26,8 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Diagnostics;
+
+using TeakEditor.iOS.Xcode;
 #endregion
 
 public class TeakPostProcessBuild
@@ -52,12 +54,39 @@ public class TeakPostProcessBuild
             "UserNotifications",
             "ImageIO"
         };
-        project = AddFrameworksToProjectTarget(teakRequiredFrameworks, project, unityTarget);
+        project.AddFrameworksToTarget(unityTarget, teakRequiredFrameworks);
 
         /////
         // Modify plist
         string plistPath = pathToBuiltProject + "/Info.plist";
         File.WriteAllText(plistPath, AddTeakEntriesToPlist(File.ReadAllText(plistPath)));
+
+        /////
+        // Make sure push-notifications are enabled
+        project.AddCapability(unityTarget, PBXCapabilityType.PushNotifications);
+
+        // Unity 2018 TODO:
+        //      project.GetBuildPropertyForAnyConfig(unityTarget, "CODE_SIGN_ENTITLEMENTS")
+        // Try and get the name of the entitlements file, if it exists.
+
+        /////
+        // Add/modify entitlements
+        string entitlementsFileName = "Unity-iPhone.entitlements";
+        string entitlementsPath = pathToBuiltProject + "/Unity-iPhone/" + entitlementsFileName;
+
+        // If the entitlements file doesn't exist, create a blank one
+        if (!File.Exists(entitlementsPath)) {
+            PlistDocument plist = new PlistDocument();
+            plist.Create();
+            File.WriteAllText(entitlementsPath, plist.WriteToString());
+
+            // Add to Xcode Project
+            project.AddFile(entitlementsPath, entitlementsFileName);
+            project.AddBuildProperty(unityTarget, "CODE_SIGN_ENTITLEMENTS", entitlementsPath);
+        }
+
+        // Add entitlements
+        File.WriteAllText(entitlementsPath, AddTeakEntitlements(File.ReadAllText(entitlementsPath)));
 
         /////
         // Add Teak app extensions
@@ -74,21 +103,17 @@ public class TeakPostProcessBuild
         project.WriteToFile(projectPath);
     }
 
-    private static PBXProject AddFrameworksToProjectTarget(string[] frameworks, PBXProject project, string target) {
-        foreach (string f in frameworks) {
-            string framework = f;
-            if (!framework.EndsWith(".framework")) framework = framework + ".framework";
-#if UNITY_2017_1_OR_NEWER
-            if (!project.ContainsFramework(target, framework))
-#else
-            if (!project.HasFramework(framework))
-#endif
-            {
-                project.AddFrameworkToProject(target, framework, false);
-            }
-        }
+    private static string AddTeakEntitlements(string inputPlist) {
+        PlistDocument plist = new PlistDocument();
+        plist.ReadFromString(inputPlist);
 
-        return project;
+        // Add aps-environment
+        plist.root.SetString("aps-environment", UnityEngine.Debug.isDebugBuild ? "development" : "production");
+
+        // Add associated domains
+        AddElementToArrayIfMissing(plist, "com.apple.developer.associated-domains", "applinks:test.jckpt.me");
+
+        return plist.WriteToString();
     }
 
     private static string AddTeakEntriesToPlist(string inputPlist) {
@@ -135,9 +160,30 @@ public class TeakPostProcessBuild
         }
 
         // Add Teak URL scheme
-        urlSchemesArray.AddString("teak" + TeakSettings.AppId);
+        string teakUrlScheme = "teak" + TeakSettings.AppId;
+        if (!urlSchemesArray.ContainsElement(teakUrlScheme)) {
+            urlSchemesArray.Add(teakUrlScheme);
+        }
+
+        // Add remote notifications background mode
+        AddElementToArrayIfMissing(plist, "UIBackgroundModes", "remote-notification");
 
         return plist.WriteToString();
+    }
+
+    private static PlistElementArray AddElementToArrayIfMissing(PlistDocument plist, string key, object element) {
+        PlistElementArray plistArray = null;
+        if (!plist.root.values.ContainsKey(key)) {
+            plistArray = plist.root.CreateArray(key);
+        } else {
+            plistArray = plist.root.values[key].AsArray();
+        }
+
+        if (!plistArray.ContainsElement(element)) {
+            plistArray.Add(element);
+        }
+
+        return plistArray;
     }
 
     private static string AddTeakExtensionToProjectTarget(string name, string[] frameworks, PBXProject project, string target) {
@@ -168,7 +214,7 @@ public class TeakPostProcessBuild
 
         /////
         // Add Frameworks
-        AddFrameworksToProjectTarget(frameworks, project, extensionTarget);
+        project.AddFrameworksToTarget(extensionTarget, frameworks);
 
         /////
         // Add libTeak.a
