@@ -37,25 +37,21 @@ using System.Text;
 /// <summary>
 /// Interface for manipulating notifications from Teak.
 /// </summary>
-public partial class TeakNotification
-{
+public partial class TeakNotification {
     public bool Incentivized { get; set; }
     public string ScheduleId { get; set; }
     public string CreativeId { get; set; }
     public string RewardId { get; set; }
 
-    public partial class Reply
-    {
-        public enum ReplyStatus
-        {
+    public partial class Reply {
+        public enum ReplyStatus {
             Ok,
             UnconfiguredKey,
             InvalidDevice,
             InternalError
         }
 
-        public struct Notification
-        {
+        public struct Notification {
             public string ScheduleId;
             public string CreativeId;
         }
@@ -65,8 +61,7 @@ public partial class TeakNotification
     }
 
     // Returns an id that can be used to cancel a scheduled notification
-    public static IEnumerator ScheduleNotification(string creativeId, string defaultMessage, long delayInSeconds, System.Action<Reply> callback)
-    {
+    public static IEnumerator ScheduleNotification(string creativeId, string defaultMessage, long delayInSeconds, System.Action<Reply> callback) {
 #if UNITY_EDITOR
         yield return null;
 #elif UNITY_ANDROID
@@ -74,18 +69,14 @@ public partial class TeakNotification
         string status = null;
         AndroidJavaClass teakNotification = new AndroidJavaClass("io.teak.sdk.TeakNotification");
         AndroidJavaObject future = teakNotification.CallStatic<AndroidJavaObject>("scheduleNotification", creativeId, defaultMessage, delayInSeconds);
-        if(future != null)
-        {
-            while(!future.Call<bool>("isDone")) yield return null;
+        if (future != null) {
+            while (!future.Call<bool>("isDone")) yield return null;
 
-            try
-            {
+            try {
                 Dictionary<string, object> json = Json.Deserialize(future.Call<string>("get")) as Dictionary<string, object>;
                 data = json["data"] as string;
                 status = json["status"] as string;
-            }
-            catch
-            {
+            } catch {
                 status = "error.internal";
                 data = null;
             }
@@ -95,9 +86,8 @@ public partial class TeakNotification
         string data = null;
         string status = null;
         IntPtr notif = TeakNotificationSchedule_Retained(creativeId, defaultMessage, delayInSeconds);
-        if(notif != IntPtr.Zero)
-        {
-            while(!TeakNotificationIsCompleted(notif)) yield return null;
+        if (notif != IntPtr.Zero) {
+            while (!TeakNotificationIsCompleted(notif)) yield return null;
             data = Marshal.PtrToStringAnsi(TeakNotificationGetTeakNotifId(notif));
             status = Marshal.PtrToStringAnsi(TeakNotificationGetStatus(notif));
             TeakRelease(notif);
@@ -111,8 +101,7 @@ public partial class TeakNotification
 #endif
     }
 
-    public static IEnumerator ScheduleNotification(string creativeId, long delayInSeconds, string[] userIds, System.Action<Reply> callback)
-    {
+    public static IEnumerator ScheduleNotification(string creativeId, long delayInSeconds, string[] userIds, System.Action<Reply> callback) {
 #if UNITY_EDITOR
         yield return null;
 #elif UNITY_ANDROID
@@ -120,18 +109,14 @@ public partial class TeakNotification
         string status = null;
         AndroidJavaClass teakNotification = new AndroidJavaClass("io.teak.sdk.TeakNotification");
         AndroidJavaObject future = teakNotification.CallStatic<AndroidJavaObject>("scheduleNotification", creativeId, delayInSeconds, userIds);
-        if(future != null)
-        {
-            while(!future.Call<bool>("isDone")) yield return null;
+        if (future != null) {
+            while (!future.Call<bool>("isDone")) yield return null;
 
-            try
-            {
+            try {
                 Dictionary<string, object> json = Json.Deserialize(future.Call<string>("get")) as Dictionary<string, object>;
                 data = json["data"] as string;
                 status = json["status"] as string;
-            }
-            catch
-            {
+            } catch {
                 status = "error.internal";
                 data = null;
             }
@@ -141,9 +126,8 @@ public partial class TeakNotification
         string data = null;
         string status = null;
         IntPtr notif = TeakNotificationScheduleLongDistance_Retained(creativeId, delayInSeconds, userIds, userIds.Length);
-        if(notif != IntPtr.Zero)
-        {
-            while(!TeakNotificationIsCompleted(notif)) yield return null;
+        if (notif != IntPtr.Zero) {
+            while (!TeakNotificationIsCompleted(notif)) yield return null;
             data = Marshal.PtrToStringAnsi(TeakNotificationGetTeakNotifId(notif));
             status = Marshal.PtrToStringAnsi(TeakNotificationGetStatus(notif));
             TeakRelease(notif);
@@ -158,8 +142,7 @@ public partial class TeakNotification
     }
 
     // Cancel an existing notification
-    public static IEnumerator CancelScheduledNotification(string scheduleId, System.Action<Reply> callback)
-    {
+    public static IEnumerator CancelScheduledNotification(string scheduleId, System.Action<Reply> callback) {
 #if UNITY_EDITOR
         yield return null;
 #elif UNITY_ANDROID
@@ -167,17 +150,13 @@ public partial class TeakNotification
         string status = null;
         AndroidJavaClass teakNotification = new AndroidJavaClass("io.teak.sdk.TeakNotification");
         AndroidJavaObject future = teakNotification.CallStatic<AndroidJavaObject>("cancelNotification", scheduleId);
-        if(future != null)
-        {
-            while(!future.Call<bool>("isDone")) yield return null;
-            try
-            {
+        if (future != null) {
+            while (!future.Call<bool>("isDone")) yield return null;
+            try {
                 Dictionary<string, object> json = Json.Deserialize(future.Call<string>("get")) as Dictionary<string, object>;
                 data = json["data"] as string;
                 status = json["status"] as string;
-            }
-            catch
-            {
+            } catch {
                 status = "error.internal";
                 data = null;
             }
@@ -187,9 +166,8 @@ public partial class TeakNotification
         string data = null;
         string status = null;
         IntPtr notif = TeakNotificationCancel_Retained(scheduleId);
-        if(notif != IntPtr.Zero)
-        {
-            while(!TeakNotificationIsCompleted(notif)) yield return null;
+        if (notif != IntPtr.Zero) {
+            while (!TeakNotificationIsCompleted(notif)) yield return null;
             data = Marshal.PtrToStringAnsi(TeakNotificationGetTeakNotifId(notif));
             status = Marshal.PtrToStringAnsi(TeakNotificationGetStatus(notif));
             TeakRelease(notif);
@@ -204,8 +182,7 @@ public partial class TeakNotification
     }
 
     // Cancel all scheduled notifications
-    public static IEnumerator CancelAllScheduledNotifications(System.Action<Reply> callback)
-    {
+    public static IEnumerator CancelAllScheduledNotifications(System.Action<Reply> callback) {
 #if UNITY_EDITOR
         yield return null;
 #elif UNITY_ANDROID
@@ -213,17 +190,13 @@ public partial class TeakNotification
         string status = null;
         AndroidJavaClass teakNotification = new AndroidJavaClass("io.teak.sdk.TeakNotification");
         AndroidJavaObject future = teakNotification.CallStatic<AndroidJavaObject>("cancelAll");
-        if(future != null)
-        {
-            while(!future.Call<bool>("isDone")) yield return null;
-            try
-            {
+        if (future != null) {
+            while (!future.Call<bool>("isDone")) yield return null;
+            try {
                 Dictionary<string, object> json = Json.Deserialize(future.Call<string>("get")) as Dictionary<string, object>;
                 data = Json.Serialize(json["data"]);
                 status = json["status"] as string;
-            }
-            catch
-            {
+            } catch {
                 status = "error.internal";
                 data = null;
             }
@@ -233,9 +206,8 @@ public partial class TeakNotification
         string data = null;
         string status = null;
         IntPtr notif = TeakNotificationCancelAll_Retained();
-        if(notif != IntPtr.Zero)
-        {
-            while(!TeakNotificationIsCompleted(notif)) yield return null;
+        if (notif != IntPtr.Zero) {
+            while (!TeakNotificationIsCompleted(notif)) yield return null;
             data = Marshal.PtrToStringAnsi(TeakNotificationGetTeakNotifId(notif));
             status = Marshal.PtrToStringAnsi(TeakNotificationGetStatus(notif));
             TeakRelease(notif);
@@ -288,10 +260,8 @@ public partial class TeakNotification
     private static extern void TeakNotificationCancelAll(string callbackId);
 
     private static Dictionary<string, System.Action<Reply>> webGlCallbackMap = new Dictionary<string, System.Action<Reply>>();
-    public static void WebGLCallback(string callbackId, string status, string data, string creativeId)
-    {
-        if(webGlCallbackMap.ContainsKey(callbackId))
-        {
+    public static void WebGLCallback(string callbackId, string status, string data, string creativeId) {
+        if (webGlCallbackMap.ContainsKey(callbackId)) {
             System.Action<Reply> callback = webGlCallbackMap[callbackId];
             webGlCallbackMap.Remove(callbackId);
             callback(new Reply(status, data, creativeId));
@@ -301,13 +271,10 @@ public partial class TeakNotification
     /// @endcond
 
     /// @cond hide_from_doxygen
-    public partial class Reply
-    {
-        public Reply(string status, string data, string creativeId = null)
-        {
+    public partial class Reply {
+        public Reply(string status, string data, string creativeId = null) {
             this.Status = ReplyStatus.InternalError;
-            switch(status)
-            {
+            switch (status) {
                 case "ok":
                     this.Status = ReplyStatus.Ok;
                     break;
@@ -333,8 +300,7 @@ public partial class TeakNotification
                         }
                     }
                 } else {
-                    this.Notifications = new List<Notification>
-                    {
+                    this.Notifications = new List<Notification> {
                         new Notification { ScheduleId = data, CreativeId = creativeId }
                     };
                 }

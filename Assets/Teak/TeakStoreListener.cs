@@ -18,7 +18,7 @@ public class TeakStoreListener : IStoreListener {
         this.AttachedStoreListener = hostedListener;
     }
 
-#region IStoreListener
+    #region IStoreListener
     public void OnInitialized(IStoreController controller, IExtensionProvider extensions) {
         this.AttachedStoreListener.OnInitialized(controller, extensions);
     }
@@ -48,6 +48,6 @@ public class TeakStoreListener : IStoreListener {
 #endif // UNITY_ANDROID && !TEAK_NOT_AVAILABLE
         return this.AttachedStoreListener.ProcessPurchase(e);
     }
-#endregion IStoreListener
+    #endregion IStoreListener
 }
 #endif // UNITY_PURCHASING

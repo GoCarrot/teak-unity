@@ -30,13 +30,11 @@ using System.Diagnostics;
 using TeakEditor.iOS.Xcode;
 #endregion
 
-public class TeakPostProcessBuild
-{
+public class TeakPostProcessBuild {
     [PostProcessBuild(100)]
-    public static void OnPostprocessBuild(BuildTarget target, string pathToBuiltProject)
-    {
+    public static void OnPostprocessBuild(BuildTarget target, string pathToBuiltProject) {
         if (TeakSettings.JustShutUpIKnowWhatImDoing) return;
-        if(target != BuildTarget.iOS) return;
+        if (target != BuildTarget.iOS) return;
 
         string projectPath = PBXProject.GetPBXProjectPath(pathToBuiltProject);
         PBXProject project = new PBXProject();
@@ -91,12 +89,12 @@ public class TeakPostProcessBuild
         /////
         // Add Teak app extensions
         AddTeakExtensionToProjectTarget("TeakNotificationService",
-            new string[] {"MobileCoreServices", "UserNotifications", "UIKit", "SystemConfiguration"},
-            project, unityTarget);
+                                        new string[] {"MobileCoreServices", "UserNotifications", "UIKit", "SystemConfiguration"},
+                                        project, unityTarget);
 
         AddTeakExtensionToProjectTarget("TeakNotificationContent",
-            new string[] {"UserNotifications", "UserNotificationsUI", "AVFoundation", "UIKit", "ImageIO", "CoreGraphics"},
-            project, unityTarget);
+                                        new string[] {"UserNotifications", "UserNotificationsUI", "AVFoundation", "UIKit", "ImageIO", "CoreGraphics"},
+                                        project, unityTarget);
 
         /////
         // Write out modified project
@@ -194,8 +192,8 @@ public class TeakPostProcessBuild
         /////
         // Create app extension target
         string extensionTarget = project.AddAppExtension(target, name,
-            PlayerSettings.GetApplicationIdentifier(BuildTargetGroup.iOS) + "." + name,
-            extensionSrcPath + "/Info.plist");
+                                 PlayerSettings.GetApplicationIdentifier(BuildTargetGroup.iOS) + "." + name,
+                                 extensionSrcPath + "/Info.plist");
 
         /////
         // Set TeamId
@@ -209,7 +207,7 @@ public class TeakPostProcessBuild
             if (!extensionsIncluded.Contains(Path.GetExtension(fileName))) continue;
 
             project.AddFileToBuild(extensionTarget,
-                project.AddFile(fileName, name + "/" + Path.GetFileName(fileName)));
+                                   project.AddFile(fileName, name + "/" + Path.GetFileName(fileName)));
         }
 
         /////

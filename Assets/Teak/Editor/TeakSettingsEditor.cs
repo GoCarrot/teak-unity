@@ -29,14 +29,11 @@ using UnityEditor.Callbacks;
 
 [InitializeOnLoad]
 [CustomEditor(typeof(TeakSettings))]
-public class TeakSettingsEditor : Editor
-{
-    static TeakSettingsEditor()
-    {
+public class TeakSettingsEditor : Editor {
+    static TeakSettingsEditor() {
         EditorApplication.update += EditorRunOnceOnLoad;
     }
-    static void EditorRunOnceOnLoad()
-    {
+    static void EditorRunOnceOnLoad() {
         EditorApplication.update -= EditorRunOnceOnLoad;
 
         mAndroidFoldout = !String.IsNullOrEmpty(TeakSettings.GCMSenderId) || !String.IsNullOrEmpty(TeakSettings.FirebaseAppId);
@@ -44,8 +41,7 @@ public class TeakSettingsEditor : Editor
 
     static bool mAndroidFoldout;
 
-    public override void OnInspectorGUI()
-    {
+    public override void OnInspectorGUI() {
 
         GUILayout.Label("Settings", EditorStyles.boldLabel);
         TeakSettings.AppId = EditorGUILayout.TextField("Teak App Id", TeakSettings.AppId);
@@ -55,8 +51,7 @@ public class TeakSettingsEditor : Editor
         EditorGUILayout.Space();
         GUILayout.Label("Additional Settings", EditorStyles.boldLabel);
         mAndroidFoldout = EditorGUILayout.Foldout(mAndroidFoldout, "Android");
-        if(mAndroidFoldout)
-        {
+        if (mAndroidFoldout) {
             GUIContent gcmSenderIdContent = new GUIContent("GCM Sender Id [?]",  "Your GCM Sender Id, found on your Firebase Dashboard");
             TeakSettings.GCMSenderId = EditorGUILayout.TextField(gcmSenderIdContent, TeakSettings.GCMSenderId);
 

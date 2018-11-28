@@ -29,10 +29,8 @@ using UnityEditor.Callbacks;
 #endregion
 
 [InitializeOnLoad]
-public class TeakPackageBuilder : Editor
-{
-    public static void BuildUnityPackage()
-    {
+public class TeakPackageBuilder : Editor {
+    public static void BuildUnityPackage() {
         string[] assetPaths = new string[] {
             "Assets/Teak"
         };
