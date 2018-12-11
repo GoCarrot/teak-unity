@@ -32,6 +32,7 @@ Getting started with Teak on Unity
     it-broke
     limiting-data-collection
     fcm-migration
+    changelog
 
 Hey there!
 
