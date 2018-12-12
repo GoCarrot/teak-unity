@@ -1,0 +1,11 @@
+.. include:: ../changelog_entry.rst
+
+0.14.0
+======
+:Breaking Changes:
+    * None
+:New Features:
+    * None
+:Bug Fixes:
+    * OnReward and OnLaunchedFromNotification null checks (this didn’t seem to affect anyone, but still was a good fix)
+    * WebGL error with TeakDeepLinkTableInternal fixed

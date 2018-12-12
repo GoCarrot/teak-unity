@@ -1,0 +1,10 @@
+.. include:: ../changelog_entry.rst
+
+0.15.0
+======
+:Breaking Changes:
+    * None
+:New Features:
+    * None
+:Bug Fixes:
+    * If another plugin is using IMPL_APP_CONTROLLER_SUBCLASS it now works
