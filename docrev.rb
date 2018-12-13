@@ -21,13 +21,13 @@ if major.nil? && minor.nil? && patch.nil?
   return
 end
 
-File.open("docs/changelog/#{major}.#{minor}.#{patch}.rst", 'w') do |file|
+File.open("docs/versions/#{major}.#{minor}.#{patch}.rst", 'w') do |file|
   version_str = "#{major}.#{minor}.#{patch}"
   file.write <<~TEMPLATE
     .. include:: ../changelog_entry.rst
 
     #{version_str}
-    #{'=' * version_str.length}
+    #{'-' * version_str.length}
     #{lines.join("\n")}
   TEMPLATE
 end

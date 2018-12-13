@@ -181,5 +181,34 @@ texinfo_documents = [
      'Miscellaneous'),
 ]
 
+# Setup
+def cmp_versions(a, b):
+    v = re.compile('^(\d+)\.(\d+)\.(\d+)')
+    av = map(lambda x: map(int, x), v.findall(a))[0]
+    bv = map(lambda x: map(int, x), v.findall(b))[0]
 
+    if av[0] > bv[0]: return 1
+    elif av[0] < bv[0]: return -1
+    elif av[1] > bv[1]: return 1
+    elif av[1] < bv[1]: return -1
+    elif av[2] > bv[2]: return 1
+    elif av[2] < bv[2]: return -1
+    return 0
 
+def setup(app):
+    changelog = """.. include:: global.rst
+
+Changelog
+=========
+"""
+    for version in sorted(os.listdir('versions'), cmp_versions, reverse=True):
+        changelog += '.. include:: versions/{0}\n'.format(version)
+    if os.path.isfile('changelog.rst'):
+        with open('changelog.rst', 'r') as f:
+            data = f.read()
+    else:
+        data = ''
+
+    if data != changelog:
+        with open('changelog.rst', 'w') as f:
+            f.write(changelog)
