@@ -24,7 +24,8 @@ end
 File.open("docs/versions/#{major}.#{minor}.#{patch}.rst", 'w') do |file|
   version_str = "#{major}.#{minor}.#{patch}"
   file.write <<~TEMPLATE
-    .. include:: ../changelog_entry.rst
+    .. include:: /versions/version_entry.rst
+    .. include:: /global.rst
 
     #{version_str}
     #{'-' * version_str.length}

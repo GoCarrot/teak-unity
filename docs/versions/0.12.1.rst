@@ -1,7 +1,8 @@
-.. include:: ../changelog_entry.rst
+.. include:: /version_entry.rst
+.. include:: /global.rst
 
 0.12.1
-======
+------
 :Breaking Changes:
     * None
 :New Features:
