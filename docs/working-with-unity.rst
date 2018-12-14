@@ -1,5 +1,3 @@
-.. include:: global.rst
-
 Working with Notifications, Rewards and Deep Links inside Unity
 ===============================================================
 .. highlight:: csharp

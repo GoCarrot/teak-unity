@@ -1,5 +1,3 @@
-.. include:: global.rst
-
 It Broke
 ========
 Well, crap.

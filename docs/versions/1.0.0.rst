@@ -1,6 +1,3 @@
-.. include:: /version_entry.rst
-.. include:: /global.rst
-
 1.0.0
 -----
 :Breaking Changes:
@@ -11,8 +8,6 @@
 :Bug Fixes:
     * A WebGL scheduled/canceled notification could sometimes not trigger a callback, this has been fixed
 
-.. readthedocs-embed::
-    :project: myproject
-    :version: latest
-    :doc: index
-    :section: User Guide
+.. teakversion::
+    :sdk: android
+    :version: 1.0.0

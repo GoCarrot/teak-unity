@@ -1,5 +1,3 @@
-.. include:: global.rst
-
 iOS Notification Extensions
 ===========================
 Do you want Playable Notifications? Buttons in your notifications? Well rest easy...

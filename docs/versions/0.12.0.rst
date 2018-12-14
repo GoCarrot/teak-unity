@@ -1,6 +1,3 @@
-.. include:: /version_entry.rst
-.. include:: /global.rst
-
 0.12.0
 ------
 :Breaking Changes:

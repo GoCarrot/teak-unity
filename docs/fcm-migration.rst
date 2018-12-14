@@ -1,5 +1,3 @@
-.. include:: global.rst
-
 .. highlight:: xml
 
 Migrating to FCM and Teak 2.0
@@ -88,7 +86,7 @@ You can disable it, put this into your AndroidManifest.xml::
 
     <provider android:name="com.google.firebase.provider.FirebaseInitProvider"
               android:authorities="${applicationId}.firebaseinitprovider"
-                tools:node="remove" />
+              tools:node="remove" />
 
 (https://firebase.googleblog.com/2017/03/take-control-of-your-firebase-init-on.html)
 

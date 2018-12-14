@@ -1,5 +1,3 @@
-.. include:: global.rst
-
 Badging Your App
 ================
 .. highlight:: csharp
