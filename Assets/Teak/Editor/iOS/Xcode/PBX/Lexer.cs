@@ -4,68 +4,59 @@ using System.IO;
 using System.Linq;
 using System;
 
-namespace TeakEditor.iOS.Xcode.PBX
-{
-    enum TokenType
-    {
+namespace TeakEditor.iOS.Xcode.PBX {
+    enum TokenType {
         EOF,
         Invalid,
         String,
         QuotedString,
         Comment,
-        
+
         Semicolon,  // ;
         Comma,      // ,
         Eq,         // =
         LParen,     // (
         RParen,     // )
         LBrace,     // {
-        RBrace,     // }      
+        RBrace,     // }
     }
-    
-    class Token
-    {
+
+    class Token {
         public TokenType type;
-        
+
         // the line of the input stream the token starts in (0-based)
         public int line;
-        
+
         // start and past-the-end positions of the token in the input stream
         public int begin, end;
     }
-    
-    class TokenList : List<Token>
-    {
+
+    class TokenList : List<Token> {
     }
-    
-    class Lexer
-    {
+
+    class Lexer {
         string text;
         int pos;
         int length;
         int line;
 
-        public static TokenList Tokenize(string text)
-        {
+        public static TokenList Tokenize(string text) {
             var lexer = new Lexer();
             lexer.SetText(text);
             return lexer.ScanAll();
         }
-        
-        public void SetText(string text)
-        {
+
+        public void SetText(string text) {
             this.text = text + "    "; // to prevent out-of-bounds access during look ahead
             pos = 0;
             length = text.Length;
             line = 0;
         }
-        
-        public TokenList ScanAll()
-        {
+
+        public TokenList ScanAll() {
             var tokens = new TokenList();
-            
-            while (true)
-            {
+
+            while (true) {
                 var tok = new Token();
                 ScanOne(tok);
                 tokens.Add(tok);
@@ -74,34 +65,29 @@ namespace TeakEditor.iOS.Xcode.PBX
             }
             return tokens;
         }
-        
-        void UpdateNewlineStats(char ch)
-        {
+
+        void UpdateNewlineStats(char ch) {
             if (ch == '\n')
                 line++;
         }
-        
+
         // tokens list is modified in the case when we add BrokenLine token and need to remove already
         // added tokens for the current line
-        void ScanOne(Token tok)
-        {
-            while (true)
-            {
-                while (pos < length && Char.IsWhiteSpace(text[pos]))
-                {
+        void ScanOne(Token tok) {
+            while (true) {
+                while (pos < length && Char.IsWhiteSpace(text[pos])) {
                     UpdateNewlineStats(text[pos]);
                     pos++;
                 }
-                
-                if (pos >= length)
-                {
+
+                if (pos >= length) {
                     tok.type = TokenType.EOF;
                     break;
                 }
-                
+
                 char ch = text[pos];
                 char ch2 = text[pos+1];
-                
+
                 if (ch == '\"')
                     ScanQuotedString(tok);
                 else if (ch == '/' && ch2 == '*')
@@ -113,18 +99,16 @@ namespace TeakEditor.iOS.Xcode.PBX
                 else
                     ScanString(tok); // be more robust and accept whatever is left
                 return;
-            }    
+            }
         }
-        
-        void ScanString(Token tok)
-        {
+
+        void ScanString(Token tok) {
             tok.type = TokenType.String;
             tok.begin = pos;
-            while (pos < length)
-            {
+            while (pos < length) {
                 char ch = text[pos];
                 char ch2 = text[pos+1];
-                
+
                 if (Char.IsWhiteSpace(ch))
                     break;
                 else if (ch == '\"')
@@ -140,26 +124,23 @@ namespace TeakEditor.iOS.Xcode.PBX
             tok.end = pos;
             tok.line = line;
         }
-        
-        void ScanQuotedString(Token tok)
-        {
+
+        void ScanQuotedString(Token tok) {
             tok.type = TokenType.QuotedString;
             tok.begin = pos;
             pos++;
-            
-            while (pos < length)
-            {
+
+            while (pos < length) {
                 // ignore escaped quotes
-                if (text[pos] == '\\' && text[pos+1] == '\"')
-                {
+                if (text[pos] == '\\' && text[pos+1] == '\"') {
                     pos += 2;
                     continue;
                 }
-            
+
                 // note that we close unclosed quotes
                 if (text[pos] == '\"')
                     break;
-                
+
                 UpdateNewlineStats(text[pos]);
                 pos++;
             }
@@ -168,17 +149,15 @@ namespace TeakEditor.iOS.Xcode.PBX
             tok.line = line;
         }
 
-        void ScanMultilineComment(Token tok)
-        {
+        void ScanMultilineComment(Token tok) {
             tok.type = TokenType.Comment;
             tok.begin = pos;
             pos += 2;
-            
-            while (pos < length)
-            {
+
+            while (pos < length) {
                 if (text[pos] == '*' && text[pos+1] == '/')
                     break;
-                
+
                 // we support multiline comments
                 UpdateNewlineStats(text[pos]);
                 pos++;
@@ -188,14 +167,12 @@ namespace TeakEditor.iOS.Xcode.PBX
             tok.line = line;
         }
 
-        void ScanComment(Token tok)
-        {
+        void ScanComment(Token tok) {
             tok.type = TokenType.Comment;
             tok.begin = pos;
             pos += 2;
 
-            while (pos < length)
-            {
+            while (pos < length) {
                 if (text[pos] == '\n')
                     break;
                 pos++;
@@ -205,18 +182,15 @@ namespace TeakEditor.iOS.Xcode.PBX
             tok.end = pos;
             tok.line = line;
         }
-        
-        bool IsOperator(char ch)
-        {
+
+        bool IsOperator(char ch) {
             if (ch == ';' || ch == ',' || ch == '=' || ch == '(' || ch == ')' || ch == '{' || ch == '}')
                 return true;
             return false;
         }
 
-        void ScanOperator(Token tok)
-        {
-            switch (text[pos])
-            {
+        void ScanOperator(Token tok) {
+            switch (text[pos]) {
                 case ';': ScanOperatorSpecific(tok, TokenType.Semicolon); return;
                 case ',': ScanOperatorSpecific(tok, TokenType.Comma); return;
                 case '=': ScanOperatorSpecific(tok, TokenType.Eq); return;
@@ -227,9 +201,8 @@ namespace TeakEditor.iOS.Xcode.PBX
                 default: return;
             }
         }
-        
-        void ScanOperatorSpecific(Token tok, TokenType type)
-        {
+
+        void ScanOperatorSpecific(Token tok, TokenType type) {
             tok.type = type;
             tok.begin = pos;
             pos++;
@@ -237,6 +210,6 @@ namespace TeakEditor.iOS.Xcode.PBX
             tok.line = line;
         }
     }
-    
+
 
 } // namespace TeakEditor.iOS.Xcode

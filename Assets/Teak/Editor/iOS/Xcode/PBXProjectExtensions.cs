@@ -6,27 +6,22 @@ using System;
 
 using TeakEditor.iOS.Xcode.PBX;
 
-namespace TeakEditor.iOS.Xcode.Extensions
-{
+namespace TeakEditor.iOS.Xcode.Extensions {
     /*  This class implements a number of static methods for performing common tasks
-        on xcode projects. 
+        on xcode projects.
         TODO: Make sure enough stuff is exposed so that it's possible to perform the tasks
         without using internal APIs
     */
-    public static class PBXProjectExtensions
-    {
-        // Create a wrapper class so that collection initializers work and we can have a 
+    public static class PBXProjectExtensions {
+        // Create a wrapper class so that collection initializers work and we can have a
         // compact notation. Note that we can't use Dictionary because the keys may be duplicate
-        internal class FlagList : List<KeyValuePair<string, string>>
-        {
-            public void Add(string flag, string value)
-            {
+        internal class FlagList : List<KeyValuePair<string, string>> {
+            public void Add(string flag, string value) {
                 Add(new KeyValuePair<string, string>(flag, value));
             }
         }
 
-        internal static FlagList appExtensionReleaseBuildFlags = new FlagList
-        {
+        internal static FlagList appExtensionReleaseBuildFlags = new FlagList {
             // { "INFOPLIST_FILE", <path/to/info.plist> },
             { "LD_RUNPATH_SEARCH_PATHS", "$(inherited)" },
             { "LD_RUNPATH_SEARCH_PATHS", "@executable_path/Frameworks" },
@@ -36,8 +31,7 @@ namespace TeakEditor.iOS.Xcode.Extensions
             { "SKIP_INSTALL", "YES" },
         };
 
-        internal static FlagList appExtensionDebugBuildFlags = new FlagList
-        {
+        internal static FlagList appExtensionDebugBuildFlags = new FlagList {
             // { "INFOPLIST_FILE", <path/to/info.plist> },
             { "LD_RUNPATH_SEARCH_PATHS", "$(inherited)" },
             { "LD_RUNPATH_SEARCH_PATHS", "@executable_path/Frameworks" },
@@ -47,8 +41,7 @@ namespace TeakEditor.iOS.Xcode.Extensions
             { "SKIP_INSTALL", "YES" },
         };
 
-        internal static FlagList watchExtensionReleaseBuildFlags = new FlagList
-        {
+        internal static FlagList watchExtensionReleaseBuildFlags = new FlagList {
             { "ASSETCATALOG_COMPILER_COMPLICATION_NAME", "Complication" },
             { "CLANG_ANALYZER_NONNULL", "YES" },
             { "CLANG_WARN_DOCUMENTATION_COMMENTS", "YES" },
@@ -72,8 +65,7 @@ namespace TeakEditor.iOS.Xcode.Extensions
             { "SUPPORTED_PLATFORMS", "watchsimulator" },
         };
 
-        internal static FlagList watchExtensionDebugBuildFlags = new FlagList
-        {
+        internal static FlagList watchExtensionDebugBuildFlags = new FlagList {
             { "ASSETCATALOG_COMPILER_COMPLICATION_NAME", "Complication" },
             { "CLANG_ANALYZER_NONNULL", "YES" },
             { "CLANG_WARN_DOCUMENTATION_COMMENTS", "YES" },
@@ -98,8 +90,7 @@ namespace TeakEditor.iOS.Xcode.Extensions
             { "SUPPORTED_PLATFORMS", "watchsimulator" },
         };
 
-        internal static FlagList watchAppReleaseBuildFlags = new FlagList
-        {
+        internal static FlagList watchAppReleaseBuildFlags = new FlagList {
             { "ASSETCATALOG_COMPILER_APPICON_NAME", "AppIcon" },
             { "CLANG_ANALYZER_NONNULL", "YES" },
             { "CLANG_WARN_DOCUMENTATION_COMMENTS", "YES" },
@@ -121,8 +112,7 @@ namespace TeakEditor.iOS.Xcode.Extensions
             { "SUPPORTED_PLATFORMS", "watchsimulator" },
         };
 
-        internal static FlagList watchAppDebugBuildFlags = new FlagList
-        {
+        internal static FlagList watchAppDebugBuildFlags = new FlagList {
             { "ASSETCATALOG_COMPILER_APPICON_NAME", "AppIcon" },
             { "CLANG_ANALYZER_NONNULL", "YES" },
             { "CLANG_WARN_DOCUMENTATION_COMMENTS", "YES" },
@@ -145,39 +135,32 @@ namespace TeakEditor.iOS.Xcode.Extensions
             { "SUPPORTED_PLATFORMS", "watchsimulator" },
         };
 
-        static void SetBuildFlagsFromDict(this PBXProject proj, string configGuid, IEnumerable<KeyValuePair<string, string>> data)
-        {
+        static void SetBuildFlagsFromDict(this PBXProject proj, string configGuid, IEnumerable<KeyValuePair<string, string>> data) {
             foreach (var kv in data)
                 proj.AddBuildPropertyForConfig(configGuid, kv.Key, kv.Value);
         }
 
-        internal static void SetDefaultAppExtensionReleaseBuildFlags(this PBXProject proj, string configGuid)
-        {
+        internal static void SetDefaultAppExtensionReleaseBuildFlags(this PBXProject proj, string configGuid) {
             SetBuildFlagsFromDict(proj, configGuid, appExtensionReleaseBuildFlags);
         }
 
-        internal static void SetDefaultAppExtensionDebugBuildFlags(this PBXProject proj, string configGuid)
-        {
+        internal static void SetDefaultAppExtensionDebugBuildFlags(this PBXProject proj, string configGuid) {
             SetBuildFlagsFromDict(proj, configGuid, appExtensionDebugBuildFlags);
         }
 
-        internal static void SetDefaultWatchExtensionReleaseBuildFlags(this PBXProject proj, string configGuid)
-        {
+        internal static void SetDefaultWatchExtensionReleaseBuildFlags(this PBXProject proj, string configGuid) {
             SetBuildFlagsFromDict(proj, configGuid, watchExtensionReleaseBuildFlags);
         }
 
-        internal static void SetDefaultWatchExtensionDebugBuildFlags(this PBXProject proj, string configGuid)
-        {
+        internal static void SetDefaultWatchExtensionDebugBuildFlags(this PBXProject proj, string configGuid) {
             SetBuildFlagsFromDict(proj, configGuid, watchExtensionDebugBuildFlags);
         }
 
-        internal static void SetDefaultWatchAppReleaseBuildFlags(this PBXProject proj, string configGuid)
-        {
+        internal static void SetDefaultWatchAppReleaseBuildFlags(this PBXProject proj, string configGuid) {
             SetBuildFlagsFromDict(proj, configGuid, watchAppReleaseBuildFlags);
         }
 
-        internal static void SetDefaultWatchAppDebugBuildFlags(this PBXProject proj, string configGuid)
-        {
+        internal static void SetDefaultWatchAppDebugBuildFlags(this PBXProject proj, string configGuid) {
             SetBuildFlagsFromDict(proj, configGuid, watchAppDebugBuildFlags);
         }
 
@@ -191,14 +174,12 @@ namespace TeakEditor.iOS.Xcode.Extensions
         /// <param name="bundleId">The bundle ID of the app extension. The bundle ID must be
         /// prefixed with the parent app bundle ID.</param>
         /// <param name="infoPlistPath">Path to the app extension Info.plist document.</param>
-        public static string AddAppExtension(this PBXProject proj, string mainTargetGuid, 
-                                             string name, string bundleId, string infoPlistPath)
-        {
+        public static string AddAppExtension(this PBXProject proj, string mainTargetGuid,
+                                             string name, string bundleId, string infoPlistPath) {
             string ext = ".appex";
             var newTargetGuid = proj.AddTarget(name, ext, "com.apple.product-type.app-extension");
 
-            foreach (var configName in proj.BuildConfigNames())
-            {
+            foreach (var configName in proj.BuildConfigNames()) {
                 var configGuid = proj.BuildConfigByName(newTargetGuid, configName);
                 if (configName.Contains("Debug"))
                     SetDefaultAppExtensionDebugBuildFlags(proj, configGuid);
@@ -229,15 +210,13 @@ namespace TeakEditor.iOS.Xcode.Extensions
         /// <param name="name">The name of the watch app. It must the same as the name of the watch extension.</param>
         /// <param name="bundleId">The bundle ID of the watch app.</param>
         /// <param name="infoPlistPath">Path to the watch app Info.plist document.</param>
-        public static string AddWatchApp(this PBXProject proj, string mainTargetGuid, string watchExtensionTargetGuid, 
-                                         string name, string bundleId, string infoPlistPath)
-        {
+        public static string AddWatchApp(this PBXProject proj, string mainTargetGuid, string watchExtensionTargetGuid,
+                                         string name, string bundleId, string infoPlistPath) {
             var newTargetGuid = proj.AddTarget(name, ".app", "com.apple.product-type.application.watchapp2");
 
             var isbcModuleName = proj.nativeTargets[watchExtensionTargetGuid].name.Replace(" ", "_");
 
-            foreach (var configName in proj.BuildConfigNames())
-            {
+            foreach (var configName in proj.BuildConfigNames()) {
                 var configGuid = proj.BuildConfigByName(newTargetGuid, configName);
                 if (configName.Contains("Debug"))
                     SetDefaultWatchAppDebugBuildFlags(proj, configGuid);
@@ -271,13 +250,11 @@ namespace TeakEditor.iOS.Xcode.Extensions
         /// <param name="bundleId">The bundle ID of the watch extension. The bundle ID must be
         /// prefixed with the parent watch app bundle ID.</param>
         /// <param name="infoPlistPath">Path to the watch extension Info.plist document.</param>
-        public static string AddWatchExtension(this PBXProject proj, string mainTarget, 
-                                               string name, string bundleId, string infoPlistPath)
-        {
+        public static string AddWatchExtension(this PBXProject proj, string mainTarget,
+                                               string name, string bundleId, string infoPlistPath) {
             var newTargetGuid = proj.AddTarget(name, ".appex", "com.apple.product-type.watchkit2-extension");
 
-            foreach (var configName in proj.BuildConfigNames())
-            {
+            foreach (var configName in proj.BuildConfigNames()) {
                 var configGuid = proj.BuildConfigByName(newTargetGuid, configName);
                 if (configName.Contains("Debug"))
                     SetDefaultWatchExtensionDebugBuildFlags(proj, configGuid);
@@ -300,8 +277,7 @@ namespace TeakEditor.iOS.Xcode.Extensions
         /// <param name="path">The path to the external Xcode project (the .xcodeproj file).</param>
         /// <param name="projectPath">The project path to the new project.</param>
         /// <param name="sourceTree">The source tree the path is relative to. The [[PBXSourceTree.Group]] tree is not supported.</param>
-        internal static void AddExternalProjectDependency(this PBXProject proj, string path, string projectPath, PBXSourceTree sourceTree)
-        {
+        internal static void AddExternalProjectDependency(this PBXProject proj, string path, string projectPath, PBXSourceTree sourceTree) {
             if (sourceTree == PBXSourceTree.Group)
                 throw new Exception("sourceTree must not be PBXSourceTree.Group");
             path = PBXPath.FixSlashes(path);
@@ -312,7 +288,7 @@ namespace TeakEditor.iOS.Xcode.Extensions
             proj.GroupsAddDuplicate(productGroup); // don't use GroupsAdd here
 
             PBXFileReferenceData fileRef = PBXFileReferenceData.CreateFromFile(path, Path.GetFileName(projectPath),
-                                                                               sourceTree);
+                                           sourceTree);
             proj.FileRefsAdd(path, projectPath, null, fileRef);
             proj.CreateSourceGroup(PBXPath.GetDirectory(projectPath)).children.AddGUID(fileRef.guid);
 
@@ -329,8 +305,7 @@ namespace TeakEditor.iOS.Xcode.Extensions
             referenced library name without extension?
         */
         internal static void AddExternalLibraryDependency(this PBXProject proj, string targetGuid, string filename, string remoteFileGuid, string projectPath,
-                                                          string remoteInfo)
-        {
+                string remoteInfo) {
             PBXNativeTargetData target = proj.nativeTargets[targetGuid];
             filename = PBXPath.FixSlashes(filename);
             projectPath = PBXPath.FixSlashes(projectPath);
@@ -341,10 +316,8 @@ namespace TeakEditor.iOS.Xcode.Extensions
                 throw new Exception("No such project");
 
             string productsGroupGuid = null;
-            foreach (var projRef in proj.project.project.projectReferences)
-            {
-                if (projRef.projectRef == projectGuid)
-                {
+            foreach (var projRef in proj.project.project.projectReferences) {
+                if (projRef.projectRef == projectGuid) {
                     productsGroupGuid = projRef.group;
                     break;
                 }
@@ -393,16 +366,14 @@ namespace TeakEditor.iOS.Xcode.Extensions
         /// <param name="proj">A project passed as this argument.</param>
         /// <param name="targetGuid">The GUID of the target as returned by [[TargetGuidByName()]].</param>
         /// <param name="fileGuid">The file GUID returned by [[AddFile]] or [[AddFolderReference]].</param>
-        public static void AddFileToEmbedFrameworks(this PBXProject proj, string targetGuid, string fileGuid)
-        {
+        public static void AddFileToEmbedFrameworks(this PBXProject proj, string targetGuid, string fileGuid) {
             PBXNativeTargetData target = proj.nativeTargets[targetGuid];
 
             var phaseGuid = proj.AddCopyFilesBuildPhase(targetGuid, "Embed Frameworks", "", "10");
             var phase = proj.copyFiles[phaseGuid];
             var frameworkEmbedFileData = proj.FindFrameworkByFileGuid(phase, fileGuid);
 
-            if (frameworkEmbedFileData == null)
-            {
+            if (frameworkEmbedFileData == null) {
                 frameworkEmbedFileData = PBXBuildFileData.CreateFromFile(fileGuid, false, null);
                 proj.BuildFilesAdd(targetGuid, frameworkEmbedFileData);
 

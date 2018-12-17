@@ -74,8 +74,7 @@ namespace TeakEditor.iOS.Xcode {
             foreach (string f in frameworks) {
                 string framework = f;
                 if (!framework.EndsWith(".framework")) framework = framework + ".framework";
-                if (!project.ContainsFramework(target, framework))
-                {
+                if (!project.ContainsFramework(target, framework)) {
                     project.AddFrameworkToProject(target, framework, weak);
                 }
             }

@@ -5,8 +5,7 @@ using System.IO;
 
 using TeakEditor.iOS.Xcode.PBX;
 
-namespace TeakEditor.iOS.Xcode
-{
+namespace TeakEditor.iOS.Xcode {
     using PBXBuildFileSection           = KnownSectionBase<PBXBuildFileData>;
     using PBXFileReferenceSection       = KnownSectionBase<PBXFileReferenceData>;
     using PBXGroupSection               = KnownSectionBase<PBXGroupData>;
@@ -25,8 +24,7 @@ namespace TeakEditor.iOS.Xcode
     using UnknownSection                = KnownSectionBase<PBXObjectData>;
 
     // Determines the tree the given path is relative to
-    public enum PBXSourceTree
-    {
+    public enum PBXSourceTree {
         Absolute,   // The path is absolute
         Source,     // The path is relative to the source folder
         Group,      // The path is relative to the folder it's in. This enum is used only internally,
@@ -36,8 +34,7 @@ namespace TeakEditor.iOS.Xcode
         Sdk         // The path is relative to the sdk folder
     }
 
-    public class PBXProject
-    {
+    public class PBXProject {
         PBXProjectData m_Data = new PBXProjectData();
 
         // convenience accessors for public members of data. This is temporary; will be fixed by an interface change
@@ -77,58 +74,53 @@ namespace TeakEditor.iOS.Xcode
         internal FileGUIDListBase BuildSectionAny(string sectionGuid) { return m_Data.BuildSectionAny(sectionGuid); }
 
         /// <summary>
-        /// Returns the path to PBX project in the given Unity build path. This function can only 
+        /// Returns the path to PBX project in the given Unity build path. This function can only
         /// be used in Unity-generated projects
         /// </summary>
         /// <param name="buildPath">The project build path</param>
-        /// <returns>The path to the PBX project file that can later be opened via ReadFromFile function</returns> 
-        public static string GetPBXProjectPath(string buildPath)
-        {
+        /// <returns>The path to the PBX project file that can later be opened via ReadFromFile function</returns>
+        public static string GetPBXProjectPath(string buildPath) {
             return PBXPath.Combine(buildPath, "Unity-iPhone.xcodeproj/project.pbxproj");
         }
 
         /// <summary>
         /// Returns the default main target name in Unity project.
-        /// The returned target name can then be used to retrieve the GUID of the target via TargetGuidByName 
+        /// The returned target name can then be used to retrieve the GUID of the target via TargetGuidByName
         /// function. This function can only be used in Unity-generated projects.
         /// </summary>
         /// <returns>The default main target name.</returns>
-        public static string GetUnityTargetName()
-        {
+        public static string GetUnityTargetName() {
             return "Unity-iPhone";
         }
 
         /// <summary>
         /// Returns the default test target name in Unity project.
-        /// The returned target name can then be used to retrieve the GUID of the target via TargetGuidByName 
+        /// The returned target name can then be used to retrieve the GUID of the target via TargetGuidByName
         /// function. This function can only be used in Unity-generated projects.
         /// </summary>
         /// <returns>The default test target name.</returns>
-        public static string GetUnityTestTargetName()
-        {
+        public static string GetUnityTestTargetName() {
             return "Unity-iPhone Tests";
         }
 
         /// <summary>
         /// Returns the GUID of the project. The project GUID identifies a project-wide native target which
-        /// is used to set project-wide properties. This GUID can be passed to any functions that accepts 
+        /// is used to set project-wide properties. This GUID can be passed to any functions that accepts
         /// target GUIDs as parameters.
         /// </summary>
         /// <returns>The GUID of the project.</returns>
-        public string ProjectGuid()
-        {
+        public string ProjectGuid() {
             return project.project.guid;
         }
 
         /// <summary>
         /// Returns the GUID of the native target with the given name.
-        /// In projects produced by Unity the main target can be retrieved via GetUnityTargetName function, 
+        /// In projects produced by Unity the main target can be retrieved via GetUnityTargetName function,
         /// whereas the test target name can be retrieved by GetUnityTestTargetName function.
         /// </summary>
         /// <returns>The name of the native target.</returns>
         /// <param name="name">The GUID identifying the native target.</param>
-        public string TargetGuidByName(string name)
-        {
+        public string TargetGuidByName(string name) {
             foreach (var entry in nativeTargets.GetEntries())
                 if (entry.Value.name == name)
                     return entry.Key;
@@ -140,8 +132,7 @@ namespace TeakEditor.iOS.Xcode
         /// </summary>
         /// <returns>Returns <c>true</c> if is the extension is known, <c>false</c> otherwise.</returns>
         /// <param name="ext">The file extension (leading dot is not necessary, but accepted).</param>
-        public static bool IsKnownExtension(string ext)
-        {
+        public static bool IsKnownExtension(string ext) {
             return FileTypeUtils.IsKnownExtension(ext);
         }
 
@@ -151,14 +142,12 @@ namespace TeakEditor.iOS.Xcode
         /// </summary>
         /// <returns>Returns <c>true</c> if is the extension is known, <c>false</c> otherwise.</returns>
         /// <param name="ext">The file extension (leading dot is not necessary, but accepted).</param>
-        public static bool IsBuildable(string ext)
-        {
+        public static bool IsBuildable(string ext) {
             return FileTypeUtils.IsBuildableFile(ext);
         }
 
         // The same file can be referred to by more than one project path.
-        private string AddFileImpl(string path, string projectPath, PBXSourceTree tree, bool isFolderReference)
-        {
+        private string AddFileImpl(string path, string projectPath, PBXSourceTree tree, bool isFolderReference) {
             path = PBXPath.FixSlashes(path);
             projectPath = PBXPath.FixSlashes(projectPath);
 
@@ -168,8 +157,7 @@ namespace TeakEditor.iOS.Xcode
             string guid = FindFileGuidByProjectPath(projectPath);
             if (guid == null)
                 guid = FindFileGuidByRealPath(path);
-            if (guid == null)
-            {
+            if (guid == null) {
                 PBXFileReferenceData fileRef;
                 if (isFolderReference)
                     fileRef = PBXFileReferenceData.CreateFromFolderReference(path, PBXPath.GetFilename(projectPath), tree);
@@ -193,8 +181,7 @@ namespace TeakEditor.iOS.Xcode
         /// <param name="projectPath">The project path to the file.</param>
         /// <param name="sourceTree">The source tree the path is relative to. By default it's [[PBXSourceTree.Source]].
         /// The [[PBXSourceTree.Group]] tree is not supported.</param>
-        public string AddFile(string path, string projectPath, PBXSourceTree sourceTree = PBXSourceTree.Source)
-        {
+        public string AddFile(string path, string projectPath, PBXSourceTree sourceTree = PBXSourceTree.Source) {
             if (sourceTree == PBXSourceTree.Group)
                 throw new Exception("sourceTree must not be PBXSourceTree.Group");
             return AddFileImpl(path, projectPath, sourceTree, false);
@@ -210,23 +197,20 @@ namespace TeakEditor.iOS.Xcode
         /// <param name="projectPath">The project path to the folder.</param>
         /// <param name="sourceTree">The source tree the path is relative to. By default it's [[PBXSourceTree.Source]].
         /// The [[PBXSourceTree.Group]] tree is not supported.</param>
-        public string AddFolderReference(string path, string projectPath, PBXSourceTree sourceTree = PBXSourceTree.Source)
-        {
+        public string AddFolderReference(string path, string projectPath, PBXSourceTree sourceTree = PBXSourceTree.Source) {
             if (sourceTree == PBXSourceTree.Group)
                 throw new Exception("sourceTree must not be PBXSourceTree.Group");
             return AddFileImpl(path, projectPath, sourceTree, true);
         }
 
-        private void AddBuildFileImpl(string targetGuid, string fileGuid, bool weak, string compileFlags)
-        {
+        private void AddBuildFileImpl(string targetGuid, string fileGuid, bool weak, string compileFlags) {
             PBXNativeTargetData target = nativeTargets[targetGuid];
             PBXFileReferenceData fileRef = FileRefsGet(fileGuid);
-            
+
             string ext = Path.GetExtension(fileRef.path);
- 
+
             if (FileTypeUtils.IsBuildable(ext, fileRef.isFolderReference) &&
-                BuildFilesGetForSourceFile(targetGuid, fileGuid) == null)
-            {
+                    BuildFilesGetForSourceFile(targetGuid, fileGuid) == null) {
                 PBXBuildFileData buildFile = PBXBuildFileData.CreateFromFile(fileGuid, weak, compileFlags);
                 BuildFilesAdd(targetGuid, buildFile);
                 BuildSectionAny(target, ext, fileRef.isFolderReference).files.AddGUID(buildFile.guid);
@@ -235,44 +219,41 @@ namespace TeakEditor.iOS.Xcode
 
         /// <summary>
         /// Configures file for building for the given native target.
-        /// A projects containing multiple native targets, a single file or folder reference can be 
-        /// configured to be built in all, some or none of the targets. The file or folder reference is 
+        /// A projects containing multiple native targets, a single file or folder reference can be
+        /// configured to be built in all, some or none of the targets. The file or folder reference is
         /// added to appropriate build section depending on the file extension.
         /// </summary>
         /// <param name="targetGuid">The GUID of the target as returned by [[TargetGuidByName()]].</param>
         /// <param name="fileGuid">The file guid returned by [[AddFile]] or [[AddFolderReference]].</param>
-        public void AddFileToBuild(string targetGuid, string fileGuid)
-        {
+        public void AddFileToBuild(string targetGuid, string fileGuid) {
             AddBuildFileImpl(targetGuid, fileGuid, false, null);
         }
 
         /// <summary>
         /// Configures file for building for the given native target with specific compiler flags.
         /// The function is equivalent to [[AddFileToBuild()]] except that compile flags are specified.
-        /// A projects containing multiple native targets, a single file or folder reference can be 
-        /// configured to be built in all, some or none of the targets. The file or folder reference is 
+        /// A projects containing multiple native targets, a single file or folder reference can be
+        /// configured to be built in all, some or none of the targets. The file or folder reference is
         /// added to appropriate build section depending on the file extension.
         /// </summary>
         /// <param name="targetGuid">The GUID of the target as returned by [[TargetGuidByName()]].</param>
         /// <param name="fileGuid">The file guid returned by [[AddFile]] or [[AddFolderReference]].</param>
         /// <param name="compileFlags">Compile flags to use.</param>
-        public void AddFileToBuildWithFlags(string targetGuid, string fileGuid, string compileFlags)
-        {
+        public void AddFileToBuildWithFlags(string targetGuid, string fileGuid, string compileFlags) {
             AddBuildFileImpl(targetGuid, fileGuid, false, compileFlags);
         }
 
         /// <summary>
         /// Configures file for building for the given native target on specific build section.
         /// The function is equivalent to [[AddFileToBuild()]] except that specific build section is specified.
-        /// A projects containing multiple native targets, a single file or folder reference can be 
-        /// configured to be built in all, some or none of the targets. The file or folder reference is 
+        /// A projects containing multiple native targets, a single file or folder reference can be
+        /// configured to be built in all, some or none of the targets. The file or folder reference is
         /// added to appropriate build section depending on the file extension.
         /// </summary>
         /// <param name="targetGuid">The GUID of the target as returned by [[TargetGuidByName()]].</param>
         /// <param name="sectionGuid">The GUID of the section to add the file to.</param>
         /// <param name="fileGuid">The file guid returned by [[AddFile]] or [[AddFolderReference]].</param>
-        public void AddFileToBuildSection(string targetGuid, string sectionGuid, string fileGuid)
-        {
+        public void AddFileToBuildSection(string targetGuid, string sectionGuid, string fileGuid) {
             PBXBuildFileData buildFile = PBXBuildFileData.CreateFromFile(fileGuid, false, null);
             BuildFilesAdd(targetGuid, buildFile);
             BuildSectionAny(sectionGuid).files.AddGUID(buildFile.guid);
@@ -286,14 +267,13 @@ namespace TeakEditor.iOS.Xcode
         /// <returns>The compile flags for the specified file.</returns>
         /// <param name="targetGuid">The GUID of the target as returned by [[TargetGuidByName()]].</param>
         /// <param name="fileGuid">The GUID of the file.</param>
-        public List<string> GetCompileFlagsForFile(string targetGuid, string fileGuid)
-        {
+        public List<string> GetCompileFlagsForFile(string targetGuid, string fileGuid) {
             var buildFile = BuildFilesGetForSourceFile(targetGuid, fileGuid);
             if (buildFile == null)
                 return null;
             if (buildFile.compileFlags == null)
                 return new List<string>();
-            return new List<string>(buildFile.compileFlags.Split(new char[]{' '}, StringSplitOptions.RemoveEmptyEntries));
+            return new List<string>(buildFile.compileFlags.Split(new char[] {' '}, StringSplitOptions.RemoveEmptyEntries));
         }
 
         /// <summary>
@@ -302,8 +282,7 @@ namespace TeakEditor.iOS.Xcode
         /// <param name="targetGuid">The GUID of the target as returned by [[TargetGuidByName()]].</param>
         /// <param name="fileGuid">The GUID of the file.</param>
         /// <param name="compileFlags">The list of compile flags or null if the flags should be unset.</param>
-        public void SetCompileFlagsForFile(string targetGuid, string fileGuid, List<string> compileFlags)
-        {
+        public void SetCompileFlagsForFile(string targetGuid, string fileGuid, List<string> compileFlags) {
             var buildFile = BuildFilesGetForSourceFile(targetGuid, fileGuid);
             if (buildFile == null)
                 return;
@@ -315,14 +294,13 @@ namespace TeakEditor.iOS.Xcode
 
         /// <summary>
         /// Adds an asset tag for the given file.
-        /// The asset tags identify resources that will be downloaded via On Demand Resources functionality. 
+        /// The asset tags identify resources that will be downloaded via On Demand Resources functionality.
         /// A request for specific tag will initiate download of all files, configured for that tag.
         /// </summary>
         /// <param name="targetGuid">The GUID of the target as returned by [[TargetGuidByName()]].</param>
         /// <param name="fileGuid">The GUID of the file.</param>
         /// <param name="tag">The name of the asset tag.</param>
-        public void AddAssetTagForFile(string targetGuid, string fileGuid, string tag)
-        {
+        public void AddAssetTagForFile(string targetGuid, string fileGuid, string tag) {
             var buildFile = BuildFilesGetForSourceFile(targetGuid, fileGuid);
             if (buildFile == null)
                 return;
@@ -342,15 +320,13 @@ namespace TeakEditor.iOS.Xcode
         /// <param name="targetGuid">The GUID of the target as returned by [[TargetGuidByName()]].</param>
         /// <param name="fileGuid">The GUID of the file.</param>
         /// <param name="tag">The name of the asset tag.</param>
-        public void RemoveAssetTagForFile(string targetGuid, string fileGuid, string tag)
-        {
+        public void RemoveAssetTagForFile(string targetGuid, string fileGuid, string tag) {
             var buildFile = BuildFilesGetForSourceFile(targetGuid, fileGuid);
             if (buildFile == null)
                 return;
             buildFile.assetTags.Remove(tag);
             // remove from known tags if this was the last one
-            foreach (var buildFile2 in BuildFilesGetAll())
-            {
+            foreach (var buildFile2 in BuildFilesGetAll()) {
                 if (buildFile2.assetTags.Contains(tag))
                     return;
             }
@@ -363,8 +339,7 @@ namespace TeakEditor.iOS.Xcode
         /// </summary>
         /// <param name="targetGuid">The GUID of the target as returned by [[TargetGuidByName()]].</param>
         /// <param name="tag">The name of the asset tag.</param>
-        public void AddAssetTagToDefaultInstall(string targetGuid, string tag)
-        {
+        public void AddAssetTagToDefaultInstall(string targetGuid, string tag) {
             if (!project.project.knownAssetTags.Contains(tag))
                 return;
             AddBuildProperty(targetGuid, "ON_DEMAND_RESOURCES_INITIAL_INSTALL_TAGS", tag);
@@ -372,25 +347,23 @@ namespace TeakEditor.iOS.Xcode
 
         /// <summary>
         /// Removes the asset tag from the list of tags to download during initial installation.
-        /// The function does nothing if the tag is not already configured for downloading during 
+        /// The function does nothing if the tag is not already configured for downloading during
         /// initial installation.
         /// </summary>
         /// <param name="targetGuid">The GUID of the target as returned by [[TargetGuidByName()]].</param>
         /// <param name="tag">The name of the asset tag.</param>
-        public void RemoveAssetTagFromDefaultInstall(string targetGuid, string tag)
-        {
-            UpdateBuildProperty(targetGuid, "ON_DEMAND_RESOURCES_INITIAL_INSTALL_TAGS", null, new[]{tag});
+        public void RemoveAssetTagFromDefaultInstall(string targetGuid, string tag) {
+            UpdateBuildProperty(targetGuid, "ON_DEMAND_RESOURCES_INITIAL_INSTALL_TAGS", null, new[] {tag});
         }
 
         /// <summary>
         /// Removes an asset tag.
         /// Removes the given asset tag from the list of configured asset tags for all files on all targets,
-        /// the list of asset tags configured for initial installation and the list of known asset tags in 
+        /// the list of asset tags configured for initial installation and the list of known asset tags in
         /// the Xcode project.
         /// </summary>
         /// <param name="tag">The name of the asset tag.</param>
-        public void RemoveAssetTag(string tag)
-        {
+        public void RemoveAssetTag(string tag) {
             foreach (var buildFile in BuildFilesGetAll())
                 buildFile.assetTags.Remove(tag);
             foreach (var targetGuid in nativeTargets.GetGuids())
@@ -404,8 +377,7 @@ namespace TeakEditor.iOS.Xcode
         /// </summary>
         /// <returns>Returns <c>true</c> if the project contains the file, <c>false</c> otherwise.</returns>
         /// <param name="path">The physical path of the file.</param>
-        public bool ContainsFileByRealPath(string path)
-        {
+        public bool ContainsFileByRealPath(string path) {
             return FindFileGuidByRealPath(path) != null;
         }
 
@@ -415,8 +387,7 @@ namespace TeakEditor.iOS.Xcode
         /// <returns>Returns <c>true</c> if the project contains the file, <c>false</c> otherwise.</returns>
         /// <param name="path">The physical path of the file.</param>
         /// <param name="sourceTree">The source tree path is relative to. The [[PBXSourceTree.Group]] tree is not supported.</param>
-        public bool ContainsFileByRealPath(string path, PBXSourceTree sourceTree)
-        {
+        public bool ContainsFileByRealPath(string path, PBXSourceTree sourceTree) {
             if (sourceTree == PBXSourceTree.Group)
                 throw new Exception("sourceTree must not be PBXSourceTree.Group");
             return FindFileGuidByRealPath(path, sourceTree) != null;
@@ -427,8 +398,7 @@ namespace TeakEditor.iOS.Xcode
         /// </summary>
         /// <returns>Returns <c>true</c> if the project contains the file, <c>false</c> otherwise.</returns>
         /// <param name="path">The project path of the file.</param>
-        public bool ContainsFileByProjectPath(string path)
-        {
+        public bool ContainsFileByProjectPath(string path) {
             return FindFileGuidByProjectPath(path) != null;
         }
 
@@ -440,27 +410,25 @@ namespace TeakEditor.iOS.Xcode
         /// <c>false</c> otherwise.</returns>
         /// <param name="targetGuid">The GUID of the target as returned by [[TargetGuidByName()]].</param>
         /// <param name="framework">The name of the framework. The extension of the filename must be ".framework".</param>
-        public bool ContainsFramework(string targetGuid, string framework)
-        {
+        public bool ContainsFramework(string targetGuid, string framework) {
             var fileGuid = FindFileGuidByRealPath("System/Library/Frameworks/" + framework, PBXSourceTree.Sdk);
             if (fileGuid == null)
                 return false;
- 
+
             var buildFile = BuildFilesGetForSourceFile(targetGuid, fileGuid);
             return (buildFile != null);
         }
 
         /// <summary>
         /// Adds a system framework dependency for the specified target.
-        /// The function assumes system frameworks are located in System/Library/Frameworks folder in the SDK source tree. 
+        /// The function assumes system frameworks are located in System/Library/Frameworks folder in the SDK source tree.
         /// The framework is added to Frameworks logical folder in the project.
         /// </summary>
         /// <param name="targetGuid">The GUID of the target as returned by [[TargetGuidByName()]].</param>
         /// <param name="framework">The name of the framework. The extension of the filename must be ".framework".</param>
-        /// <param name="weak"><c>true</c> if the framework is optional (i.e. weakly linked) required, 
+        /// <param name="weak"><c>true</c> if the framework is optional (i.e. weakly linked) required,
         /// <c>false</c> if the framework is required.</param>
-        public void AddFrameworkToProject(string targetGuid, string framework, bool weak)
-        {
+        public void AddFrameworkToProject(string targetGuid, string framework, bool weak) {
             string fileGuid = AddFile("System/Library/Frameworks/" + framework, "Frameworks/" + framework, PBXSourceTree.Sdk);
             AddBuildFileImpl(targetGuid, fileGuid, weak, null);
         }
@@ -471,8 +439,7 @@ namespace TeakEditor.iOS.Xcode
         /// </summary>
         /// <param name="targetGuid">The GUID of the target as returned by [[TargetGuidByName()]].</param>
         /// <param name="framework">The name of the framework. The extension of the filename must be ".framework".</param>
-        public void RemoveFrameworkFromProject(string targetGuid, string framework)
-        {
+        public void RemoveFrameworkFromProject(string targetGuid, string framework) {
             var fileGuid = FindFileGuidByRealPath("System/Library/Frameworks/" + framework, PBXSourceTree.Sdk);
             if (fileGuid == null)
                 return;
@@ -481,19 +448,16 @@ namespace TeakEditor.iOS.Xcode
         }
 
         // Allow user to add a Capability
-        public bool AddCapability(string targetGuid, PBXCapabilityType capability, string entitlementsFilePath = null, bool addOptionalFramework = false)
-        {
+        public bool AddCapability(string targetGuid, PBXCapabilityType capability, string entitlementsFilePath = null, bool addOptionalFramework = false) {
             // If the capability requires entitlements then you have to provide the name of it or we don't add the capability.
-            if (capability.requiresEntitlements && entitlementsFilePath == "")
-            {
+            if (capability.requiresEntitlements && entitlementsFilePath == "") {
                 throw new Exception("Couldn't add the Xcode Capability " + capability.id + " to the PBXProject file because this capability requires an entitlement file.");
             }
             var p = project.project;
 
             // If an entitlement with a different name was added for another capability
             // we don't add this capacity.
-            if (p.entitlementsFile != null && entitlementsFilePath != null && p.entitlementsFile != entitlementsFilePath)
-            {
+            if (p.entitlementsFile != null && entitlementsFilePath != null && p.entitlementsFile != entitlementsFilePath) {
                 if (p.capabilities.Count > 0)
                     throw new WarningException("Attention, it seems that you have multiple entitlements file. Only one will be added the Project : " + p.entitlementsFile);
 
@@ -501,8 +465,7 @@ namespace TeakEditor.iOS.Xcode
             }
 
             // Add the capability only if it doesn't already exist.
-            if (p.capabilities.Contains(new PBXCapabilityType.TargetCapabilityPair(targetGuid, capability)))
-            {
+            if (p.capabilities.Contains(new PBXCapabilityType.TargetCapabilityPair(targetGuid, capability))) {
                 throw new WarningException("This capability has already been added. Method ignored");
             }
 
@@ -510,14 +473,12 @@ namespace TeakEditor.iOS.Xcode
 
             // Add the required framework.
             if (capability.framework != "" && !capability.optionalFramework ||
-               (capability.framework != "" && capability.optionalFramework && addOptionalFramework))
-            {
+                    (capability.framework != "" && capability.optionalFramework && addOptionalFramework)) {
                 AddFrameworkToProject(targetGuid, capability.framework, false);
             }
 
             // Finally add the entitlement code signing if it wasn't added before.
-            if (entitlementsFilePath != null && p.entitlementsFile == null)
-            {
+            if (entitlementsFilePath != null && p.entitlementsFile == null) {
                 p.entitlementsFile = entitlementsFilePath;
                 AddFileImpl(entitlementsFilePath,  entitlementsFilePath, PBXSourceTree.Source, false);
                 SetBuildProperty(targetGuid, "CODE_SIGN_ENTITLEMENTS", PBXPath.FixSlashes(entitlementsFilePath));
@@ -526,8 +487,7 @@ namespace TeakEditor.iOS.Xcode
         }
 
         // The Xcode project needs a team set to be able to complete code signing or to add some capabilities.
-        public void SetTeamId(string targetGuid, string teamId)
-        {
+        public void SetTeamId(string targetGuid, string teamId) {
             SetBuildProperty(targetGuid, "DEVELOPMENT_TEAM", teamId);
             project.project.teamIDs.Add(targetGuid, teamId);
         }
@@ -538,8 +498,7 @@ namespace TeakEditor.iOS.Xcode
         /// <returns>The GUID of the file if the search succeeded, null otherwise.</returns>
         /// <param name="path">The physical path of the file.</param>
         /// <param name="sourceTree">The source tree path is relative to. The [[PBXSourceTree.Group]] tree is not supported.</param>
-        public string FindFileGuidByRealPath(string path, PBXSourceTree sourceTree)
-        {
+        public string FindFileGuidByRealPath(string path, PBXSourceTree sourceTree) {
             if (sourceTree == PBXSourceTree.Group)
                 throw new Exception("sourceTree must not be PBXSourceTree.Group");
             path = PBXPath.FixSlashes(path);
@@ -555,12 +514,10 @@ namespace TeakEditor.iOS.Xcode
         /// </summary>
         /// <returns>The GUID of the file if the search succeeded, null otherwise.</returns>
         /// <param name="path">The physical path of the file.</param>
-        public string FindFileGuidByRealPath(string path)
-        {
+        public string FindFileGuidByRealPath(string path) {
             path = PBXPath.FixSlashes(path);
 
-            foreach (var tree in FileTypeUtils.AllAbsoluteSourceTrees())
-            {
+            foreach (var tree in FileTypeUtils.AllAbsoluteSourceTrees()) {
                 string res = FindFileGuidByRealPath(path, tree);
                 if (res != null)
                     return res;
@@ -573,8 +530,7 @@ namespace TeakEditor.iOS.Xcode
         /// </summary>
         /// <returns>The GUID of the file if the search succeeded, null otherwise.</returns>
         /// <param name="path">The project path of the file.</param>
-        public string FindFileGuidByProjectPath(string path)
-        {
+        public string FindFileGuidByProjectPath(string path) {
             path = PBXPath.FixSlashes(path);
             var fileRef = FileRefsGetByProjectPath(path);
             if (fileRef != null)
@@ -587,16 +543,14 @@ namespace TeakEditor.iOS.Xcode
         /// </summary>
         /// <param name="targetGuid">The GUID of the target as returned by [[TargetGuidByName()]].</param>
         /// <param name="fileGuid">The GUID of the file or folder reference.</param>
-        public void RemoveFileFromBuild(string targetGuid, string fileGuid)
-        {
+        public void RemoveFileFromBuild(string targetGuid, string fileGuid) {
             var buildFile = BuildFilesGetForSourceFile(targetGuid, fileGuid);
             if (buildFile == null)
                 return;
             BuildFilesRemove(targetGuid, fileGuid);
 
             string buildGuid = buildFile.guid;
-            if (buildGuid != null)
-            {
+            if (buildGuid != null) {
                 foreach (var section in sources.GetEntries())
                     section.Value.files.RemoveGUID(buildGuid);
                 foreach (var section in resources.GetEntries())
@@ -610,12 +564,11 @@ namespace TeakEditor.iOS.Xcode
 
         /// <summary>
         /// Removes the given file from project.
-        /// The file is removed from the list of files to build for each native target and also removed 
+        /// The file is removed from the list of files to build for each native target and also removed
         /// from the list of known files.
         /// </summary>
         /// <param name="fileGuid">The GUID of the file or folder reference.</param>
-        public void RemoveFile(string fileGuid)
-        {
+        public void RemoveFile(string fileGuid) {
             if (fileGuid == null)
                 return;
 
@@ -631,10 +584,8 @@ namespace TeakEditor.iOS.Xcode
             FileRefsRemove(fileGuid);
         }
 
-        void RemoveGroupIfEmpty(PBXGroupData gr)
-        {
-            if (gr.children.Count == 0 && gr != GroupsGetMainGroup())
-            {
+        void RemoveGroupIfEmpty(PBXGroupData gr) {
+            if (gr.children.Count == 0 && gr != GroupsGetMainGroup()) {
                 // remove from parent
                 PBXGroupData parent = GroupsGetByChild(gr.guid);
                 parent.children.RemoveGUID(gr.guid);
@@ -645,15 +596,12 @@ namespace TeakEditor.iOS.Xcode
             }
         }
 
-        private void RemoveGroupChildrenRecursive(PBXGroupData parent)
-        {
+        private void RemoveGroupChildrenRecursive(PBXGroupData parent) {
             List<string> children = new List<string>(parent.children);
             parent.children.Clear();
-            foreach (string guid in children)
-            {
+            foreach (string guid in children) {
                 PBXFileReferenceData file = FileRefsGet(guid);
-                if (file != null)
-                {
+                if (file != null) {
                     foreach (var target in nativeTargets.GetEntries())
                         RemoveFileFromBuild(target.Value.guid, guid);
                     FileRefsRemove(guid);
@@ -661,8 +609,7 @@ namespace TeakEditor.iOS.Xcode
                 }
 
                 PBXGroupData gr = GroupsGet(guid);
-                if (gr != null)
-                {
+                if (gr != null) {
                     RemoveGroupChildrenRecursive(gr);
                     GroupsRemove(gr.guid);
                     continue;
@@ -670,8 +617,7 @@ namespace TeakEditor.iOS.Xcode
             }
         }
 
-        internal void RemoveFilesByProjectPathRecursive(string projectPath)
-        {
+        internal void RemoveFilesByProjectPathRecursive(string projectPath) {
             projectPath = PBXPath.FixSlashes(projectPath);
             PBXGroupData gr = GroupsGetByProjectPath(projectPath);
             if (gr == null)
@@ -681,15 +627,13 @@ namespace TeakEditor.iOS.Xcode
         }
 
         // Returns null on error
-        internal List<string> GetGroupChildrenFiles(string projectPath)
-        {
+        internal List<string> GetGroupChildrenFiles(string projectPath) {
             projectPath = PBXPath.FixSlashes(projectPath);
             PBXGroupData gr = GroupsGetByProjectPath(projectPath);
             if (gr == null)
                 return null;
             var res = new List<string>();
-            foreach (var guid in gr.children)
-            {
+            foreach (var guid in gr.children) {
                 PBXFileReferenceData fileRef = FileRefsGet(guid);
                 if (fileRef != null)
                     res.Add(fileRef.name);
@@ -698,15 +642,13 @@ namespace TeakEditor.iOS.Xcode
         }
 
         // Returns an empty dictionary if no group or files are found
-        internal HashSet<string> GetGroupChildrenFilesRefs(string projectPath)
-        {
+        internal HashSet<string> GetGroupChildrenFilesRefs(string projectPath) {
             projectPath = PBXPath.FixSlashes(projectPath);
             PBXGroupData gr = GroupsGetByProjectPath(projectPath);
             if (gr == null)
                 return new HashSet<string>();
             HashSet<string> res = new HashSet<string>();
-            foreach (var guid in gr.children)
-            {
+            foreach (var guid in gr.children) {
                 PBXFileReferenceData fileRef = FileRefsGet(guid);
                 if (fileRef != null)
                     res.Add(fileRef.path);
@@ -714,11 +656,9 @@ namespace TeakEditor.iOS.Xcode
             return res == null ? new HashSet<string> () : res;
         }
 
-        internal HashSet<string> GetFileRefsByProjectPaths(IEnumerable<string> paths)
-        {
+        internal HashSet<string> GetFileRefsByProjectPaths(IEnumerable<string> paths) {
             HashSet<string> ret = new HashSet<string>();
-            foreach (string path in paths)
-            {
+            foreach (string path in paths) {
                 string fixedPath = PBXPath.FixSlashes(path);
                 var fileRef = FileRefsGetByProjectPath(fixedPath);
                 if (fileRef != null)
@@ -727,10 +667,8 @@ namespace TeakEditor.iOS.Xcode
             return ret;
         }
 
-        private PBXGroupData GetPBXGroupChildByName(PBXGroupData group, string name)
-        {
-            foreach (string guid in group.children)
-            {
+        private PBXGroupData GetPBXGroupChildByName(PBXGroupData group, string name) {
+            foreach (string guid in group.children) {
                 var gr = GroupsGet(guid);
                 if (gr != null && gr.name == name)
                     return gr;
@@ -740,8 +678,7 @@ namespace TeakEditor.iOS.Xcode
 
         /// Creates source group identified by sourceGroup, if needed, and returns it.
         /// If sourceGroup is empty or null, root group is returned
-        internal PBXGroupData CreateSourceGroup(string sourceGroup)
-        {
+        internal PBXGroupData CreateSourceGroup(string sourceGroup) {
             sourceGroup = PBXPath.FixSlashes(sourceGroup);
 
             if (sourceGroup == null || sourceGroup == "")
@@ -756,8 +693,7 @@ namespace TeakEditor.iOS.Xcode
 
             var elements = PBXPath.Split(sourceGroup);
             string projectPath = null;
-            foreach (string pathEl in elements)
-            {
+            foreach (string pathEl in elements) {
                 if (projectPath == null)
                     projectPath = pathEl;
                 else
@@ -766,8 +702,7 @@ namespace TeakEditor.iOS.Xcode
                 PBXGroupData child = GetPBXGroupChildByName(gr, pathEl);
                 if (child != null)
                     gr = child;
-                else
-                {
+                else {
                     PBXGroupData newGroup = PBXGroupData.Create(pathEl, pathEl, PBXSourceTree.Group);
                     gr.children.AddGUID(newGroup.guid);
                     GroupsAdd(projectPath, gr, newGroup);
@@ -781,7 +716,7 @@ namespace TeakEditor.iOS.Xcode
         /// Creates a new native target.
         /// Target-specific build configurations are automatically created for each known build configuration name.
         /// Note, that this is a requirement that follows from the structure of Xcode projects, not an implementation
-        /// detail of this function. The function creates a product file reference in the "Products" project folder 
+        /// detail of this function. The function creates a product file reference in the "Products" project folder
         /// which refers to the target artifact that is built via this target.
         /// </summary>
         /// <returns>The GUID of the new target.</returns>
@@ -790,11 +725,10 @@ namespace TeakEditor.iOS.Xcode
         /// <param name="type">The type of the target. For example:
         /// "com.apple.product-type.app-extension" - App extension,
         /// "com.apple.product-type.application.watchapp2" - WatchKit 2 application</param>
-        public string AddTarget(string name, string ext, string type)
-        {
+        public string AddTarget(string name, string ext, string type) {
             var buildConfigList = XCConfigurationListData.Create();
             buildConfigLists.AddEntry(buildConfigList);
-            
+
             // create build file reference
             string fullName = name + "." + FileTypeUtils.TrimExtension(ext);
             var productFileRef = AddFile(fullName, "Products/" + fullName, PBXSourceTree.Build);
@@ -804,12 +738,11 @@ namespace TeakEditor.iOS.Xcode
 
             foreach (var buildConfigName in BuildConfigNames())
                 AddBuildConfigForTarget(newTarget.guid, buildConfigName);
-            
+
             return newTarget.guid;
         }
 
-        private IEnumerable<string> GetAllTargetGuids()
-        {
+        private IEnumerable<string> GetAllTargetGuids() {
             var targets = new List<string>();
 
             targets.Add(project.project.guid);
@@ -823,8 +756,7 @@ namespace TeakEditor.iOS.Xcode
         /// </summary>
         /// <returns>The file reference of the artifact created by building target.</returns>
         /// <param name="targetGuid">The GUID of the target as returned by [[TargetGuidByName()]].</param>
-        public string GetTargetProductFileRef(string targetGuid)
-        {
+        public string GetTargetProductFileRef(string targetGuid) {
             return nativeTargets[targetGuid].productReference;
         }
 
@@ -833,8 +765,7 @@ namespace TeakEditor.iOS.Xcode
         /// </summary>
         /// <param name="targetGuid">The GUID of the target that is depending on the dependency.</param>
         /// <param name="targetDependencyGuid">The GUID of the dependency target</param>
-        internal void AddTargetDependency(string targetGuid, string targetDependencyGuid)
-        {
+        internal void AddTargetDependency(string targetGuid, string targetDependencyGuid) {
             string dependencyName = nativeTargets[targetDependencyGuid].name;
             var containerProxy = PBXContainerItemProxyData.Create(project.project.guid, "1", targetDependencyGuid, dependencyName);
             containerItems.AddEntry(containerProxy);
@@ -847,10 +778,8 @@ namespace TeakEditor.iOS.Xcode
 
         // Returns the GUID of the new configuration
         // targetGuid can be either native target or the project target.
-        private string AddBuildConfigForTarget(string targetGuid, string name)
-        {
-            if (BuildConfigByName(targetGuid, name) != null)
-            {
+        private string AddBuildConfigForTarget(string targetGuid, string name) {
+            if (BuildConfigByName(targetGuid, name) != null) {
                 throw new Exception(String.Format("A build configuration by name {0} already exists for target {1}",
                                                   targetGuid, name));
             }
@@ -861,8 +790,7 @@ namespace TeakEditor.iOS.Xcode
             return buildConfig.guid;
         }
 
-        private void RemoveBuildConfigForTarget(string targetGuid, string name)
-        {
+        private void RemoveBuildConfigForTarget(string targetGuid, string name) {
             var buildConfigGuid = BuildConfigByName(targetGuid, name);
             if (buildConfigGuid == null)
                 return;
@@ -877,10 +805,8 @@ namespace TeakEditor.iOS.Xcode
         /// <returns>The GUID of the build configuration or null if it does not exist.</returns>
         /// <param name="targetGuid">The GUID of the target as returned by [[TargetGuidByName()]].</param>
         /// <param name="name">The name of the build configuration.</param>
-        public string BuildConfigByName(string targetGuid, string name)
-        {
-            foreach (string guid in buildConfigLists[GetConfigListForTarget(targetGuid)].buildConfigs)
-            {
+        public string BuildConfigByName(string targetGuid, string name) {
+            foreach (string guid in buildConfigLists[GetConfigListForTarget(targetGuid)].buildConfigs) {
                 var buildConfig = buildConfigs[guid];
                 if (buildConfig != null && buildConfig.name == name)
                     return buildConfig.guid;
@@ -896,8 +822,7 @@ namespace TeakEditor.iOS.Xcode
         /// build configuration names returned by this function.
         /// </summary>
         /// <returns>An array of build config names.</returns>
-        public IEnumerable<string> BuildConfigNames()
-        {
+        public IEnumerable<string> BuildConfigNames() {
             var names = new List<string>();
             // We use the project target to fetch the build configs
             foreach (var guid in buildConfigLists[project.project.buildConfigList].buildConfigs)
@@ -910,13 +835,12 @@ namespace TeakEditor.iOS.Xcode
         /// Creates a new set of build configurations for all targets in the project.
         /// The number and names of the build configurations is a project-wide setting. Each target has the
         /// same number of build configurations and the names of these build configurations is the same.
-        /// The created configurations are initially empty. Care must be taken to fill them with reasonable 
+        /// The created configurations are initially empty. Care must be taken to fill them with reasonable
         /// defaults.
         /// The function throws an exception if a build configuration with the given name already exists.
         /// </summary>
         /// <param name="name">The name of the build configuration.</param>
-        public void AddBuildConfig(string name)
-        {
+        public void AddBuildConfig(string name) {
             foreach (var targetGuid in GetAllTargetGuids())
                 AddBuildConfigForTarget(targetGuid, name);
         }
@@ -928,10 +852,9 @@ namespace TeakEditor.iOS.Xcode
         /// The function does nothing if the build configuration with the specified name does not exist.
         /// </summary>
         /// <param name="name">The name of the build configuration.</param>
-        public void RemoveBuildConfig(string name)
-        {
+        public void RemoveBuildConfig(string name) {
             foreach (var targetGuid in GetAllTargetGuids())
-                RemoveBuildConfigForTarget(targetGuid, name);   
+                RemoveBuildConfigForTarget(targetGuid, name);
         }
 
         /// <summary>
@@ -939,8 +862,7 @@ namespace TeakEditor.iOS.Xcode
         /// </summary>
         /// <returns>Returns the GUID of the existing phase or null if it does not exist.</returns>
         /// <param name="targetGuid">The GUID of the target as returned by [[TargetGuidByName()]].</param>
-        public string GetSourcesBuildPhaseByTarget(string targetGuid)
-        {
+        public string GetSourcesBuildPhaseByTarget(string targetGuid) {
             var target = nativeTargets[targetGuid];
             foreach (var phaseGuid in target.phases) {
                 var phaseAny = BuildSectionAny(phaseGuid);
@@ -953,13 +875,12 @@ namespace TeakEditor.iOS.Xcode
         /// <summary>
         /// Creates a new sources build phase for given target.
         /// If the target already has sources build phase configured for it, the function returns the
-        /// existing phase. The new phase is placed at the end of the list of build phases configured 
+        /// existing phase. The new phase is placed at the end of the list of build phases configured
         /// for the target.
         /// </summary>
         /// <returns>Returns the GUID of the new phase.</returns>
         /// <param name="targetGuid">The GUID of the target as returned by [[TargetGuidByName()]].</param>
-        public string AddSourcesBuildPhase(string targetGuid)
-        {
+        public string AddSourcesBuildPhase(string targetGuid) {
             var phaseGuid = GetSourcesBuildPhaseByTarget(targetGuid);
             if (phaseGuid != null)
                 return phaseGuid;
@@ -975,8 +896,7 @@ namespace TeakEditor.iOS.Xcode
         /// </summary>
         /// <returns>Returns the GUID of the existing phase or null if it does not exist.</returns>
         /// <param name="targetGuid">The GUID of the target as returned by [[TargetGuidByName()]].</param>
-        public string GetResourcesBuildPhaseByTarget(string targetGuid)
-        {
+        public string GetResourcesBuildPhaseByTarget(string targetGuid) {
             var target = nativeTargets[targetGuid];
             foreach (var phaseGuid in target.phases) {
                 var phaseAny = BuildSectionAny(phaseGuid);
@@ -989,13 +909,12 @@ namespace TeakEditor.iOS.Xcode
         /// <summary>
         /// Creates a new resources build phase for given target.
         /// If the target already has resources build phase configured for it, the function returns the
-        /// existing phase. The new phase is placed at the end of the list of build phases configured 
+        /// existing phase. The new phase is placed at the end of the list of build phases configured
         /// for the target.
         /// </summary>
         /// <returns>Returns the GUID of the new phase.</returns>
         /// <param name="targetGuid">The GUID of the target as returned by [[TargetGuidByName()]].</param>
-        public string AddResourcesBuildPhase(string targetGuid)
-        {
+        public string AddResourcesBuildPhase(string targetGuid) {
             var phaseGuid = GetResourcesBuildPhaseByTarget(targetGuid);
             if (phaseGuid != null)
                 return phaseGuid;
@@ -1011,8 +930,7 @@ namespace TeakEditor.iOS.Xcode
         /// </summary>
         /// <returns>Returns the GUID of the existing phase or null if it does not exist.</returns>
         /// <param name="targetGuid">The GUID of the target as returned by [[TargetGuidByName()]].</param>
-        public string GetFrameworksBuildPhaseByTarget(string targetGuid)
-        {
+        public string GetFrameworksBuildPhaseByTarget(string targetGuid) {
             var target = nativeTargets[targetGuid];
             foreach (var phaseGuid in target.phases) {
                 var phaseAny = BuildSectionAny(phaseGuid);
@@ -1025,13 +943,12 @@ namespace TeakEditor.iOS.Xcode
         /// <summary>
         /// Creates a new frameworks build phase for given target.
         /// If the target already has frameworks build phase configured for it, the function returns the
-        /// existing phase. The new phase is placed at the end of the list of build phases configured 
+        /// existing phase. The new phase is placed at the end of the list of build phases configured
         /// for the target.
         /// </summary>
         /// <returns>Returns the GUID of the new phase.</returns>
         /// <param name="targetGuid">The GUID of the target as returned by [[TargetGuidByName()]].</param>
-        public string AddFrameworksBuildPhase(string targetGuid)
-        {
+        public string AddFrameworksBuildPhase(string targetGuid) {
             var phaseGuid = GetFrameworksBuildPhaseByTarget(targetGuid);
             if (phaseGuid != null)
                 return phaseGuid;
@@ -1055,17 +972,14 @@ namespace TeakEditor.iOS.Xcode
         /// "10" for embedding frameworks;
         /// "13" for embedding app extension content;
         /// "16" for embedding watch content</param>
-        public string GetCopyFilesBuildPhaseByTarget(string targetGuid, string name, string dstPath, string subfolderSpec)
-        {
+        public string GetCopyFilesBuildPhaseByTarget(string targetGuid, string name, string dstPath, string subfolderSpec) {
             var target = nativeTargets[targetGuid];
             foreach (var phaseGuid in target.phases) {
                 var phaseAny = BuildSectionAny(phaseGuid);
-                if (phaseAny is PBXCopyFilesBuildPhaseData)
-                {
+                if (phaseAny is PBXCopyFilesBuildPhaseData) {
                     var copyPhase = (PBXCopyFilesBuildPhaseData) phaseAny;
-                    if (copyPhase.name == name && copyPhase.dstPath == dstPath && 
-                        copyPhase.dstSubfolderSpec == subfolderSpec)
-                    {
+                    if (copyPhase.name == name && copyPhase.dstPath == dstPath &&
+                            copyPhase.dstSubfolderSpec == subfolderSpec) {
                         return phaseGuid;
                     }
                 }
@@ -1075,8 +989,8 @@ namespace TeakEditor.iOS.Xcode
 
         /// <summary>
         /// Creates a new copy files build phase for given target.
-        /// If the target already has copy files build phase with the same name, dstPath and subfolderSpec 
-        /// configured for it, the function returns the existing phase. 
+        /// If the target already has copy files build phase with the same name, dstPath and subfolderSpec
+        /// configured for it, the function returns the existing phase.
         /// The new phase is placed at the end of the list of build phases configured for the target.
         /// </summary>
         /// <returns>Returns the GUID of the new phase.</returns>
@@ -1087,8 +1001,7 @@ namespace TeakEditor.iOS.Xcode
         /// "10" for embedding frameworks;
         /// "13" for embedding app extension content;
         /// "16" for embedding watch content</param>
-        public string AddCopyFilesBuildPhase(string targetGuid, string name, string dstPath, string subfolderSpec)
-        {
+        public string AddCopyFilesBuildPhase(string targetGuid, string name, string dstPath, string subfolderSpec) {
             var phaseGuid = GetCopyFilesBuildPhaseByTarget(targetGuid, name, dstPath, subfolderSpec);
             if (phaseGuid != null)
                 return phaseGuid;
@@ -1098,26 +1011,22 @@ namespace TeakEditor.iOS.Xcode
             nativeTargets[targetGuid].phases.AddGUID(phase.guid);
             return phase.guid;
         }
- 
-        internal string GetConfigListForTarget(string targetGuid)
-        {
+
+        internal string GetConfigListForTarget(string targetGuid) {
             if (targetGuid == project.project.guid)
                 return project.project.buildConfigList;
             else
-            return nativeTargets[targetGuid].buildConfigList;
+                return nativeTargets[targetGuid].buildConfigList;
         }
 
-        // Sets the baseConfigurationReference key for a XCBuildConfiguration. 
+        // Sets the baseConfigurationReference key for a XCBuildConfiguration.
         // If the argument is null, the base configuration is removed.
-        internal void SetBaseReferenceForConfig(string configGuid, string baseReference)
-        {
+        internal void SetBaseReferenceForConfig(string configGuid, string baseReference) {
             buildConfigs[configGuid].baseConfigurationReference = baseReference;
         }
 
-        internal PBXBuildFileData FindFrameworkByFileGuid(PBXCopyFilesBuildPhaseData phase, string fileGuid)
-        {
-            foreach (string buildFileDataGuid in phase.files)
-            {
+        internal PBXBuildFileData FindFrameworkByFileGuid(PBXCopyFilesBuildPhaseData phase, string fileGuid) {
+            foreach (string buildFileDataGuid in phase.files) {
                 var buildFile = BuildFilesGet(buildFileDataGuid);
                 if (buildFile.fileRef == fileGuid)
                     return buildFile;
@@ -1127,156 +1036,136 @@ namespace TeakEditor.iOS.Xcode
 
         /// <summary>
         /// Adds a value to build property list in all build configurations for the specified target.
-        /// Duplicate build properties are ignored. Values for names "LIBRARY_SEARCH_PATHS" and 
+        /// Duplicate build properties are ignored. Values for names "LIBRARY_SEARCH_PATHS" and
         /// "FRAMEWORK_SEARCH_PATHS" are quoted if they contain spaces.
         /// </summary>
         /// <param name="targetGuid">The GUID of the target as returned by [[TargetGuidByName()]].</param>
         /// <param name="name">The name of the build property.</param>
         /// <param name="value">The value of the build property.</param>
-        public void AddBuildProperty(string targetGuid, string name, string value)
-        {
+        public void AddBuildProperty(string targetGuid, string name, string value) {
             foreach (string guid in buildConfigLists[GetConfigListForTarget(targetGuid)].buildConfigs)
                 AddBuildPropertyForConfig(guid, name, value);
         }
 
         /// <summary>
         /// Adds a value to build property list in all build configurations for the specified targets.
-        /// Duplicate build properties are ignored. Values for names "LIBRARY_SEARCH_PATHS" and 
+        /// Duplicate build properties are ignored. Values for names "LIBRARY_SEARCH_PATHS" and
         /// "FRAMEWORK_SEARCH_PATHS" are quoted if they contain spaces.
         /// </summary>
         /// <param name="targetGuids">The GUIDs of the target as returned by [[TargetGuidByName()]].</param>
         /// <param name="name">The name of the build property.</param>
         /// <param name="value">The value of the build property.</param>
-        public void AddBuildProperty(IEnumerable<string> targetGuids, string name, string value)
-        {
+        public void AddBuildProperty(IEnumerable<string> targetGuids, string name, string value) {
             foreach (string t in targetGuids)
                 AddBuildProperty(t, name, value);
         }
 
         /// <summary>
         /// Adds a value to build property list of the given build configuration
-        /// Duplicate build properties are ignored. Values for names "LIBRARY_SEARCH_PATHS" and 
+        /// Duplicate build properties are ignored. Values for names "LIBRARY_SEARCH_PATHS" and
         /// "FRAMEWORK_SEARCH_PATHS" are quoted if they contain spaces.
         /// </summary>
         /// <param name="configGuid">The GUID of the build configuration as returned by [[BuildConfigByName()]].</param>
         /// <param name="name">The name of the build property.</param>
         /// <param name="value">The value of the build property.</param>
-        public void AddBuildPropertyForConfig(string configGuid, string name, string value)
-        {
+        public void AddBuildPropertyForConfig(string configGuid, string name, string value) {
             buildConfigs[configGuid].AddProperty(name, value);
         }
 
         /// <summary>
         /// Adds a value to build property list of the given build configurations
-        /// Duplicate build properties are ignored. Values for names "LIBRARY_SEARCH_PATHS" and 
+        /// Duplicate build properties are ignored. Values for names "LIBRARY_SEARCH_PATHS" and
         /// "FRAMEWORK_SEARCH_PATHS" are quoted if they contain spaces.
         /// </summary>
         /// <param name="configGuids">The GUIDs of the build configurations as returned by [[BuildConfigByName()]].</param>
         /// <param name="name">The name of the build property.</param>
         /// <param name="value">The value of the build property.</param>
-        public void AddBuildPropertyForConfig(IEnumerable<string> configGuids, string name, string value)
-        {
+        public void AddBuildPropertyForConfig(IEnumerable<string> configGuids, string name, string value) {
             foreach (string guid in configGuids)
                 AddBuildPropertyForConfig(guid, name, value);
         }
 
         /// <summary>
         /// Adds a value to build property list in all build configurations for the specified target.
-        /// Duplicate build properties are ignored. Values for names "LIBRARY_SEARCH_PATHS" and 
+        /// Duplicate build properties are ignored. Values for names "LIBRARY_SEARCH_PATHS" and
         /// "FRAMEWORK_SEARCH_PATHS" are quoted if they contain spaces.
         /// </summary>
         /// <param name="targetGuid">The GUID of the target as returned by [[TargetGuidByName()]].</param>
         /// <param name="name">The name of the build property.</param>
         /// <param name="value">The value of the build property.</param>
-        public void SetBuildProperty(string targetGuid, string name, string value)
-        {
+        public void SetBuildProperty(string targetGuid, string name, string value) {
             foreach (string guid in buildConfigLists[GetConfigListForTarget(targetGuid)].buildConfigs)
                 SetBuildPropertyForConfig(guid, name, value);
         }
 
         /// <summary>
         /// Adds a value to build property list in all build configurations for the specified targets.
-        /// Duplicate build properties are ignored. Values for names "LIBRARY_SEARCH_PATHS" and 
+        /// Duplicate build properties are ignored. Values for names "LIBRARY_SEARCH_PATHS" and
         /// "FRAMEWORK_SEARCH_PATHS" are quoted if they contain spaces.
         /// </summary>
         /// <param name="targetGuids">The GUIDs of the target as returned by [[TargetGuidByName()]].</param>
         /// <param name="name">The name of the build property.</param>
         /// <param name="value">The value of the build property.</param>
-        public void SetBuildProperty(IEnumerable<string> targetGuids, string name, string value)
-        {
+        public void SetBuildProperty(IEnumerable<string> targetGuids, string name, string value) {
             foreach (string t in targetGuids)
                 SetBuildProperty(t, name, value);
         }
-        public void SetBuildPropertyForConfig(string configGuid, string name, string value)
-        {
+        public void SetBuildPropertyForConfig(string configGuid, string name, string value) {
             buildConfigs[configGuid].SetProperty(name, value);
         }
-        public void SetBuildPropertyForConfig(IEnumerable<string> configGuids, string name, string value)
-        {
+        public void SetBuildPropertyForConfig(IEnumerable<string> configGuids, string name, string value) {
             foreach (string guid in configGuids)
                 SetBuildPropertyForConfig(guid, name, value);
         }
 
-        internal void RemoveBuildProperty(string targetGuid, string name)
-        {
+        internal void RemoveBuildProperty(string targetGuid, string name) {
             foreach (string guid in buildConfigLists[GetConfigListForTarget(targetGuid)].buildConfigs)
                 RemoveBuildPropertyForConfig(guid, name);
         }
-        internal void RemoveBuildProperty(IEnumerable<string> targetGuids, string name)
-        {
+        internal void RemoveBuildProperty(IEnumerable<string> targetGuids, string name) {
             foreach (string t in targetGuids)
                 RemoveBuildProperty(t, name);
         }
-        internal void RemoveBuildPropertyForConfig(string configGuid, string name)
-        {
+        internal void RemoveBuildPropertyForConfig(string configGuid, string name) {
             buildConfigs[configGuid].RemoveProperty(name);
         }
-        internal void RemoveBuildPropertyForConfig(IEnumerable<string> configGuids, string name)
-        {
+        internal void RemoveBuildPropertyForConfig(IEnumerable<string> configGuids, string name) {
             foreach (string guid in configGuids)
                 RemoveBuildPropertyForConfig(guid, name);
         }
 
-        internal void RemoveBuildPropertyValueList(string targetGuid, string name, IEnumerable<string> valueList)
-        {
+        internal void RemoveBuildPropertyValueList(string targetGuid, string name, IEnumerable<string> valueList) {
             foreach (string guid in buildConfigLists[GetConfigListForTarget(targetGuid)].buildConfigs)
                 RemoveBuildPropertyValueListForConfig(guid, name, valueList);
         }
-        internal void RemoveBuildPropertyValueList(IEnumerable<string> targetGuids, string name, IEnumerable<string> valueList)
-        {
+        internal void RemoveBuildPropertyValueList(IEnumerable<string> targetGuids, string name, IEnumerable<string> valueList) {
             foreach (string t in targetGuids)
                 RemoveBuildPropertyValueList(t, name, valueList);
         }
-        internal void RemoveBuildPropertyValueListForConfig(string configGuid, string name, IEnumerable<string> valueList)
-        {
+        internal void RemoveBuildPropertyValueListForConfig(string configGuid, string name, IEnumerable<string> valueList) {
             buildConfigs[configGuid].RemovePropertyValueList(name, valueList);
         }
-        internal void RemoveBuildPropertyValueListForConfig(IEnumerable<string> configGuids, string name, IEnumerable<string> valueList)
-        {
+        internal void RemoveBuildPropertyValueListForConfig(IEnumerable<string> configGuids, string name, IEnumerable<string> valueList) {
             foreach (string guid in configGuids)
                 RemoveBuildPropertyValueListForConfig(guid, name, valueList);
         }
 
         /// Interprets the value of the given property as a set of space-delimited strings, then
         /// removes strings equal to items to removeValues and adds strings in addValues.
-        public void UpdateBuildProperty(string targetGuid, string name, 
-                                        IEnumerable<string> addValues, IEnumerable<string> removeValues)
-        {
+        public void UpdateBuildProperty(string targetGuid, string name,
+                                        IEnumerable<string> addValues, IEnumerable<string> removeValues) {
             foreach (string guid in buildConfigLists[GetConfigListForTarget(targetGuid)].buildConfigs)
                 UpdateBuildPropertyForConfig(guid, name, addValues, removeValues);
         }
-        public void UpdateBuildProperty(IEnumerable<string> targetGuids, string name, 
-                                        IEnumerable<string> addValues, IEnumerable<string> removeValues)
-        {
+        public void UpdateBuildProperty(IEnumerable<string> targetGuids, string name,
+                                        IEnumerable<string> addValues, IEnumerable<string> removeValues) {
             foreach (string t in targetGuids)
                 UpdateBuildProperty(t, name, addValues, removeValues);
         }
-        public void UpdateBuildPropertyForConfig(string configGuid, string name, 
-                                                 IEnumerable<string> addValues, IEnumerable<string> removeValues)
-        {
+        public void UpdateBuildPropertyForConfig(string configGuid, string name,
+                IEnumerable<string> addValues, IEnumerable<string> removeValues) {
             var config = buildConfigs[configGuid];
-            if (config != null)
-            {
+            if (config != null) {
                 if (removeValues != null)
                     foreach (var v in removeValues)
                         config.RemovePropertyValue(name, v);
@@ -1285,17 +1174,14 @@ namespace TeakEditor.iOS.Xcode
                         config.AddProperty(name, v);
             }
         }
-        public void UpdateBuildPropertyForConfig(IEnumerable<string> configGuids, string name, 
-                                                 IEnumerable<string> addValues, IEnumerable<string> removeValues)
-        {
+        public void UpdateBuildPropertyForConfig(IEnumerable<string> configGuids, string name,
+                IEnumerable<string> addValues, IEnumerable<string> removeValues) {
             foreach (string guid in configGuids)
                 UpdateBuildProperty(guid, name, addValues, removeValues);
         }
 
-        internal string ShellScriptByName(string targetGuid, string name)
-        {
-            foreach (var phase in nativeTargets[targetGuid].phases)
-            {
+        internal string ShellScriptByName(string targetGuid, string name) {
+            foreach (var phase in nativeTargets[targetGuid].phases) {
                 var script = shellScripts[phase];
                 if (script != null && script.name == name)
                     return script.guid;
@@ -1303,58 +1189,48 @@ namespace TeakEditor.iOS.Xcode
             return null;
         }
 
-        internal void AppendShellScriptBuildPhase(string targetGuid, string name, string shellPath, string shellScript)
-        {
+        internal void AppendShellScriptBuildPhase(string targetGuid, string name, string shellPath, string shellScript) {
             PBXShellScriptBuildPhaseData shellScriptPhase = PBXShellScriptBuildPhaseData.Create(name, shellPath, shellScript);
 
             shellScripts.AddEntry(shellScriptPhase);
             nativeTargets[targetGuid].phases.AddGUID(shellScriptPhase.guid);
         }
 
-        internal void AppendShellScriptBuildPhase(IEnumerable<string> targetGuids, string name, string shellPath, string shellScript)
-        {
+        internal void AppendShellScriptBuildPhase(IEnumerable<string> targetGuids, string name, string shellPath, string shellScript) {
             PBXShellScriptBuildPhaseData shellScriptPhase = PBXShellScriptBuildPhaseData.Create(name, shellPath, shellScript);
 
             shellScripts.AddEntry(shellScriptPhase);
-            foreach (string guid in targetGuids)
-            {
+            foreach (string guid in targetGuids) {
                 nativeTargets[guid].phases.AddGUID(shellScriptPhase.guid);
             }
         }
 
-        public void ReadFromFile(string path)
-        {
+        public void ReadFromFile(string path) {
             ReadFromString(File.ReadAllText(path));
         }
 
-        public void ReadFromString(string src)
-        {
+        public void ReadFromString(string src) {
             TextReader sr = new StringReader(src);
             ReadFromStream(sr);
         }
 
-        public void ReadFromStream(TextReader sr)
-        {
+        public void ReadFromStream(TextReader sr) {
             m_Data.ReadFromStream(sr);
         }
 
-        public void WriteToFile(string path)
-        {
+        public void WriteToFile(string path) {
             File.WriteAllText(path, WriteToString());
         }
 
-        public void WriteToStream(TextWriter sw)
-        {
+        public void WriteToStream(TextWriter sw) {
             sw.Write(WriteToString());
         }
 
-        public string WriteToString()
-        {
+        public string WriteToString() {
             return m_Data.WriteToString();
         }
 
-        internal PBXProjectObjectData GetProjectInternal()
-        {
+        internal PBXProjectObjectData GetProjectInternal() {
             return project.project;
         }
 
@@ -1376,40 +1252,30 @@ namespace TeakEditor.iOS.Xcode
          *      };
          *  };
          */
-        internal void SetTargetAttributes(string key, string value)
-        {
+        internal void SetTargetAttributes(string key, string value) {
             PBXElementDict properties = project.project.GetPropertiesRaw();
             PBXElementDict attributes;
             PBXElementDict targetAttributes;
-            if (properties.Contains("attributes"))
-			{
+            if (properties.Contains("attributes")) {
                 attributes = properties["attributes"] as PBXElementDict;
-            }
-			else
-			{
+            } else {
                 attributes = properties.CreateDict("attributes");
             }
 
-            if (attributes.Contains("TargetAttributes"))
-			{
+            if (attributes.Contains("TargetAttributes")) {
                 targetAttributes = attributes["TargetAttributes"] as PBXElementDict;
-            } 
-			else
-			{
+            } else {
                 targetAttributes = attributes.CreateDict("TargetAttributes");
             }
 
             foreach (KeyValuePair<string, PBXNativeTargetData> target in nativeTargets.GetEntries()) {
                 PBXElementDict targetAttributesRaw;
-                if (targetAttributes.Contains(target.Key))
-                {
+                if (targetAttributes.Contains(target.Key)) {
                     targetAttributesRaw = targetAttributes[target.Key].AsDict();
-                }
-				else
-				{
+                } else {
                     targetAttributesRaw = targetAttributes.CreateDict(target.Key);
                 }
-                targetAttributesRaw.SetString(key, value); 
+                targetAttributesRaw.SetString(key, value);
             }
             project.project.UpdateVars();
 

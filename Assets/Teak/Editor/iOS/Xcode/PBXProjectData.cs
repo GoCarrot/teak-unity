@@ -6,8 +6,7 @@ using System;
 
 using TeakEditor.iOS.Xcode.PBX;
 
-namespace TeakEditor.iOS.Xcode
-{
+namespace TeakEditor.iOS.Xcode {
     using PBXBuildFileSection           = KnownSectionBase<PBXBuildFileData>;
     using PBXFileReferenceSection       = KnownSectionBase<PBXFileReferenceData>;
     using PBXGroupSection               = KnownSectionBase<PBXGroupData>;
@@ -25,8 +24,7 @@ namespace TeakEditor.iOS.Xcode
     using XCConfigurationListSection    = KnownSectionBase<XCConfigurationListData>;
     using UnknownSection                = KnownSectionBase<PBXObjectData>;
 
-    internal class PBXProjectData
-    {
+    internal class PBXProjectData {
         private Dictionary<string, SectionBase> m_Section = null;
         private PBXElementDict m_RootElements = null;
         private PBXElementDict m_UnknownObjects = null;
@@ -63,46 +61,39 @@ namespace TeakEditor.iOS.Xcode
         private Dictionary<string, string> m_GroupGuidToProjectPathMap = null;
         private Dictionary<string, PBXGroupData> m_GuidToParentGroupMap = null;
 
-        public PBXBuildFileData BuildFilesGet(string guid)
-        {
+        public PBXBuildFileData BuildFilesGet(string guid) {
             return buildFiles[guid];
         }
 
         // targetGuid is the guid of the target that contains the section that contains the buildFile
-        public void BuildFilesAdd(string targetGuid, PBXBuildFileData buildFile)
-        {
+        public void BuildFilesAdd(string targetGuid, PBXBuildFileData buildFile) {
             if (!m_FileGuidToBuildFileMap.ContainsKey(targetGuid))
                 m_FileGuidToBuildFileMap[targetGuid] = new Dictionary<string, PBXBuildFileData>();
             m_FileGuidToBuildFileMap[targetGuid][buildFile.fileRef] = buildFile;
             buildFiles.AddEntry(buildFile);
         }
 
-        public void BuildFilesRemove(string targetGuid, string fileGuid)
-        {
+        public void BuildFilesRemove(string targetGuid, string fileGuid) {
             var buildFile = BuildFilesGetForSourceFile(targetGuid, fileGuid);
-            if (buildFile != null)
-            {
+            if (buildFile != null) {
                 m_FileGuidToBuildFileMap[targetGuid].Remove(buildFile.fileRef);
                 buildFiles.RemoveEntry(buildFile.guid);
             }
         }
 
-        public PBXBuildFileData BuildFilesGetForSourceFile(string targetGuid, string fileGuid)
-        {
+        public PBXBuildFileData BuildFilesGetForSourceFile(string targetGuid, string fileGuid) {
             if (!m_FileGuidToBuildFileMap.ContainsKey(targetGuid))
                 return null;
             if (!m_FileGuidToBuildFileMap[targetGuid].ContainsKey(fileGuid))
                 return null;
             return m_FileGuidToBuildFileMap[targetGuid][fileGuid];
         }
-        
-        public IEnumerable<PBXBuildFileData> BuildFilesGetAll() 
-        { 
+
+        public IEnumerable<PBXBuildFileData> BuildFilesGetAll() {
             return buildFiles.GetObjects();
         }
 
-        public void FileRefsAdd(string realPath, string projectPath, PBXGroupData parent, PBXFileReferenceData fileRef)
-        {
+        public void FileRefsAdd(string realPath, string projectPath, PBXGroupData parent, PBXFileReferenceData fileRef) {
             fileRefs.AddEntry(fileRef);
             m_ProjectPathToFileRefMap.Add(projectPath, fileRef);
             m_FileRefGuidToProjectPathMap.Add(fileRef.guid, projectPath);
@@ -110,27 +101,23 @@ namespace TeakEditor.iOS.Xcode
             m_GuidToParentGroupMap.Add(fileRef.guid, parent);
         }
 
-        public PBXFileReferenceData FileRefsGet(string guid)
-        {
+        public PBXFileReferenceData FileRefsGet(string guid) {
             return fileRefs[guid];
         }
 
-        public PBXFileReferenceData FileRefsGetByRealPath(string path, PBXSourceTree sourceTree)
-        {
+        public PBXFileReferenceData FileRefsGetByRealPath(string path, PBXSourceTree sourceTree) {
             if (m_RealPathToFileRefMap[sourceTree].ContainsKey(path))
                 return m_RealPathToFileRefMap[sourceTree][path];
             return null;
         }
 
-        public PBXFileReferenceData FileRefsGetByProjectPath(string path)
-        {
+        public PBXFileReferenceData FileRefsGetByProjectPath(string path) {
             if (m_ProjectPathToFileRefMap.ContainsKey(path))
                 return m_ProjectPathToFileRefMap[path];
             return null;
         }
 
-        public void FileRefsRemove(string guid)
-        {
+        public void FileRefsRemove(string guid) {
             PBXFileReferenceData fileRef = fileRefs[guid];
             fileRefs.RemoveEntry(guid);
             m_ProjectPathToFileRefMap.Remove(m_FileRefGuidToProjectPathMap[guid]);
@@ -140,57 +127,49 @@ namespace TeakEditor.iOS.Xcode
             m_GuidToParentGroupMap.Remove(guid);
         }
 
-        public PBXGroupData GroupsGet(string guid)
-        {
+        public PBXGroupData GroupsGet(string guid) {
             return groups[guid];
         }
 
-        public PBXGroupData GroupsGetByChild(string childGuid)
-        {
+        public PBXGroupData GroupsGetByChild(string childGuid) {
             return m_GuidToParentGroupMap[childGuid];
         }
 
-        public PBXGroupData GroupsGetMainGroup()
-        {
+        public PBXGroupData GroupsGetMainGroup() {
             return groups[project.project.mainGroup];
         }
 
         /// Returns the source group identified by sourceGroup. If sourceGroup is empty or null,
         /// root group is returned. If no group is found, null is returned.
-        public PBXGroupData GroupsGetByProjectPath(string sourceGroup)
-        {
+        public PBXGroupData GroupsGetByProjectPath(string sourceGroup) {
             if (m_ProjectPathToGroupMap.ContainsKey(sourceGroup))
                 return m_ProjectPathToGroupMap[sourceGroup];
             return null;
         }
 
-        public void GroupsAdd(string projectPath, PBXGroupData parent, PBXGroupData gr)
-        {
+        public void GroupsAdd(string projectPath, PBXGroupData parent, PBXGroupData gr) {
             m_ProjectPathToGroupMap.Add(projectPath, gr);
             m_GroupGuidToProjectPathMap.Add(gr.guid, projectPath);
             m_GuidToParentGroupMap.Add(gr.guid, parent);
             groups.AddEntry(gr);
         }
 
-        public void GroupsAddDuplicate(PBXGroupData gr)
-        {
+        public void GroupsAddDuplicate(PBXGroupData gr) {
             groups.AddEntry(gr);
         }
 
-        public void GroupsRemove(string guid)
-        {
+        public void GroupsRemove(string guid) {
             m_ProjectPathToGroupMap.Remove(m_GroupGuidToProjectPathMap[guid]);
             m_GroupGuidToProjectPathMap.Remove(guid);
             m_GuidToParentGroupMap.Remove(guid);
             groups.RemoveEntry(guid);
         }
-        
+
         // This function returns a build section that a particular file should be automatically added to.
         // Returns null for non-buildable file types.
         // Throws an exception if the file should be added to a section, but that particular section does not exist for given target
         // Note that for unknown file types we add them to resource build sections
-        public FileGUIDListBase BuildSectionAny(PBXNativeTargetData target, string path, bool isFolderRef)
-        {
+        public FileGUIDListBase BuildSectionAny(PBXNativeTargetData target, string path, bool isFolderRef) {
             string ext = Path.GetExtension(path);
             var phase = FileTypeUtils.GetFileType(ext, isFolderRef);
             switch (phase) {
@@ -225,8 +204,7 @@ namespace TeakEditor.iOS.Xcode
             throw new Exception(String.Format("The given path {0} does not refer to a file in a known build section", path));
         }
 
-        public FileGUIDListBase BuildSectionAny(string sectionGuid)
-        {
+        public FileGUIDListBase BuildSectionAny(string sectionGuid) {
             if (frameworks.HasEntry(sectionGuid))
                 return frameworks[sectionGuid];
             if (resources.HasEntry(sectionGuid))
@@ -241,44 +219,35 @@ namespace TeakEditor.iOS.Xcode
         }
 
         void RefreshBuildFilesMapForBuildFileGuidList(Dictionary<string, PBXBuildFileData> mapForTarget,
-                                                      FileGUIDListBase list)
-        {
-            foreach (string guid in list.files)
-            {
+                FileGUIDListBase list) {
+            foreach (string guid in list.files) {
                 var buildFile = buildFiles[guid];
                 mapForTarget[buildFile.fileRef] = buildFile;
             }
         }
 
-        void RefreshMapsForGroupChildren(string projectPath, string realPath, PBXSourceTree realPathTree, PBXGroupData parent)
-        {
+        void RefreshMapsForGroupChildren(string projectPath, string realPath, PBXSourceTree realPathTree, PBXGroupData parent) {
             var children = new List<string>(parent.children);
-            foreach (string guid in children)
-            {
+            foreach (string guid in children) {
                 PBXFileReferenceData fileRef = fileRefs[guid];
                 string pPath;
                 string rPath;
                 PBXSourceTree rTree;
 
-                if (fileRef != null)
-                {
+                if (fileRef != null) {
                     pPath = PBXPath.Combine(projectPath, fileRef.name);
                     PBXPath.Combine(realPath, realPathTree, fileRef.path, fileRef.tree, out rPath, out rTree);
 
-                    if (!m_ProjectPathToFileRefMap.ContainsKey(pPath))
-                    {
+                    if (!m_ProjectPathToFileRefMap.ContainsKey(pPath)) {
                         m_ProjectPathToFileRefMap.Add(pPath, fileRef);
                     }
-                    if (!m_FileRefGuidToProjectPathMap.ContainsKey(fileRef.guid))
-                    {
+                    if (!m_FileRefGuidToProjectPathMap.ContainsKey(fileRef.guid)) {
                         m_FileRefGuidToProjectPathMap.Add(fileRef.guid, pPath);
                     }
-                    if (!m_RealPathToFileRefMap[rTree].ContainsKey(rPath))
-                    {
+                    if (!m_RealPathToFileRefMap[rTree].ContainsKey(rPath)) {
                         m_RealPathToFileRefMap[rTree].Add(rPath, fileRef);
                     }
-                    if (!m_GuidToParentGroupMap.ContainsKey(guid))
-                    {
+                    if (!m_GuidToParentGroupMap.ContainsKey(guid)) {
                         m_GuidToParentGroupMap.Add(guid, parent);
                     }
 
@@ -286,21 +255,17 @@ namespace TeakEditor.iOS.Xcode
                 }
 
                 PBXGroupData gr = groups[guid];
-                if (gr != null)
-                {
+                if (gr != null) {
                     pPath = PBXPath.Combine(projectPath, gr.name);
                     PBXPath.Combine(realPath, realPathTree, gr.path, gr.tree, out rPath, out rTree);
 
-                    if (!m_ProjectPathToGroupMap.ContainsKey(pPath))
-                    {
+                    if (!m_ProjectPathToGroupMap.ContainsKey(pPath)) {
                         m_ProjectPathToGroupMap.Add(pPath, gr);
                     }
-                    if (!m_GroupGuidToProjectPathMap.ContainsKey(gr.guid))
-                    {
+                    if (!m_GroupGuidToProjectPathMap.ContainsKey(gr.guid)) {
                         m_GroupGuidToProjectPathMap.Add(gr.guid, pPath);
                     }
-                    if (!m_GuidToParentGroupMap.ContainsKey(guid))
-                    {
+                    if (!m_GuidToParentGroupMap.ContainsKey(guid)) {
                         m_GuidToParentGroupMap.Add(guid, parent);
                     }
 
@@ -309,13 +274,10 @@ namespace TeakEditor.iOS.Xcode
             }
         }
 
-        void RefreshAuxMaps()
-        {
-            foreach (var targetEntry in nativeTargets.GetEntries())
-            {
+        void RefreshAuxMaps() {
+            foreach (var targetEntry in nativeTargets.GetEntries()) {
                 var map = new Dictionary<string, PBXBuildFileData>();
-                foreach (string phaseGuid in targetEntry.Value.phases)
-                {
+                foreach (string phaseGuid in targetEntry.Value.phases) {
                     if (frameworks.HasEntry(phaseGuid))
                         RefreshBuildFilesMapForBuildFileGuidList(map, frameworks[phaseGuid]);
                     if (resources.HasEntry(phaseGuid))
@@ -330,8 +292,7 @@ namespace TeakEditor.iOS.Xcode
             RefreshMapsForGroupChildren("", "", PBXSourceTree.Source, GroupsGetMainGroup());
         }
 
-        public void Clear()
-        {
+        public void Clear() {
             buildFiles = new PBXBuildFileSection("PBXBuildFile");
             fileRefs = new PBXFileReferenceSection("PBXFileReference");
             groups = new PBXGroupSection("PBXGroup");
@@ -350,8 +311,7 @@ namespace TeakEditor.iOS.Xcode
             project = new PBXProjectSection();
             m_UnknownSections = new Dictionary<string, UnknownSection>();
 
-            m_Section = new Dictionary<string, SectionBase>
-            {
+            m_Section = new Dictionary<string, SectionBase> {
                 { "PBXBuildFile", buildFiles },
                 { "PBXFileReference", fileRefs },
                 { "PBXGroup", groups },
@@ -373,7 +333,7 @@ namespace TeakEditor.iOS.Xcode
             m_RootElements = new PBXElementDict();
             m_UnknownObjects = new PBXElementDict();
             m_ObjectVersion = null;
-            m_SectionOrder = new List<string>{
+            m_SectionOrder = new List<string> {
                 "PBXBuildFile", "PBXContainerItemProxy", "PBXCopyFilesBuildPhase", "PBXFileReference",
                 "PBXFrameworksBuildPhase", "PBXGroup", "PBXNativeTarget", "PBXProject", "PBXReferenceProxy",
                 "PBXResourcesBuildPhase", "PBXShellScriptBuildPhase", "PBXSourcesBuildPhase", "PBXTargetDependency",
@@ -390,18 +350,14 @@ namespace TeakEditor.iOS.Xcode
             m_GuidToParentGroupMap = new Dictionary<string, PBXGroupData>();
         }
 
-        private void BuildCommentMapForBuildFiles(GUIDToCommentMap comments, List<string> guids, string sectName)
-        {
-            foreach (var guid in guids)
-            {
+        private void BuildCommentMapForBuildFiles(GUIDToCommentMap comments, List<string> guids, string sectName) {
+            foreach (var guid in guids) {
                 var buildFile = BuildFilesGet(guid);
-                if (buildFile != null)
-                {
+                if (buildFile != null) {
                     var fileRef = FileRefsGet(buildFile.fileRef);
                     if (fileRef != null)
                         comments.Add(guid, String.Format("{0} in {1}", fileRef.name, sectName));
-                    else
-                    {
+                    else {
                         var reference = references[buildFile.fileRef];
                         if (reference != null)
                             comments.Add(guid, String.Format("{0} in {1}", reference.path, sectName));
@@ -410,8 +366,7 @@ namespace TeakEditor.iOS.Xcode
             }
         }
 
-        private GUIDToCommentMap BuildCommentMap()
-        {
+        private GUIDToCommentMap BuildCommentMap() {
             GUIDToCommentMap comments = new GUIDToCommentMap();
 
             // buildFiles are handled below
@@ -422,23 +377,19 @@ namespace TeakEditor.iOS.Xcode
                 comments.Add(e.guid, "PBXContainerItemProxy");
             foreach (var e in references.GetObjects())
                 comments.Add(e.guid, e.path);
-            foreach (var e in sources.GetObjects())
-            {
+            foreach (var e in sources.GetObjects()) {
                 comments.Add(e.guid, "Sources");
                 BuildCommentMapForBuildFiles(comments, e.files, "Sources");
             }
-            foreach (var e in resources.GetObjects())
-            {
+            foreach (var e in resources.GetObjects()) {
                 comments.Add(e.guid, "Resources");
                 BuildCommentMapForBuildFiles(comments, e.files, "Resources");
             }
-            foreach (var e in frameworks.GetObjects())
-            {
+            foreach (var e in frameworks.GetObjects()) {
                 comments.Add(e.guid, "Frameworks");
                 BuildCommentMapForBuildFiles(comments, e.files, "Frameworks");
             }
-            foreach (var e in copyFiles.GetObjects())
-            {
+            foreach (var e in copyFiles.GetObjects()) {
                 string sectName = e.name;
                 if (sectName == null)
                     sectName = "CopyFiles";
@@ -449,8 +400,7 @@ namespace TeakEditor.iOS.Xcode
                 comments.Add(e.guid, "ShellScript");
             foreach (var e in targetDependencies.GetObjects())
                 comments.Add(e.guid, "PBXTargetDependency");
-            foreach (var e in nativeTargets.GetObjects())
-            {
+            foreach (var e in nativeTargets.GetObjects()) {
                 comments.Add(e.guid, e.name);
                 comments.Add(e.buildConfigList, String.Format("Build configuration list for PBXNativeTarget \"{0}\"", e.name));
             }
@@ -458,8 +408,7 @@ namespace TeakEditor.iOS.Xcode
                 comments.Add(e.guid, e.name);
             foreach (var e in buildConfigs.GetObjects())
                 comments.Add(e.guid, e.name);
-            foreach (var e in project.GetObjects())
-            {
+            foreach (var e in project.GetObjects()) {
                 comments.Add(e.guid, "Project object");
                 comments.Add(e.buildConfigList, "Build configuration list for PBXProject \"Unity-iPhone\""); // FIXME: project name is hardcoded
             }
@@ -471,16 +420,14 @@ namespace TeakEditor.iOS.Xcode
             return comments;
         }
 
-        private static PBXElementDict ParseContent(string content)
-        {
+        private static PBXElementDict ParseContent(string content) {
             TokenList tokens = Lexer.Tokenize(content);
             var parser = new Parser(tokens);
             TreeAST ast = parser.ParseTree();
             return Serializer.ParseTreeAST(ast, tokens, content);
         }
 
-        public void ReadFromStream(TextReader sr)
-        {
+        public void ReadFromStream(TextReader sr) {
             Clear();
             m_RootElements = ParseContent(sr.ReadToEnd());
 
@@ -491,50 +438,41 @@ namespace TeakEditor.iOS.Xcode
             m_RootElements.Remove("objects");
             m_RootElements.SetString("objects", "OBJMARKER");
 
-            if (m_RootElements.Contains("objectVersion"))
-            {
+            if (m_RootElements.Contains("objectVersion")) {
                 m_ObjectVersion = m_RootElements["objectVersion"].AsString();
                 m_RootElements.Remove("objectVersion");
             }
 
             var allGuids = new List<string>();
             string prevSectionName = null;
-            foreach (var kv in objects.values)
-            {
+            foreach (var kv in objects.values) {
                 allGuids.Add(kv.Key);
                 var el = kv.Value;
 
-                if (!(el is PBXElementDict) || !el.AsDict().Contains("isa"))
-                {
+                if (!(el is PBXElementDict) || !el.AsDict().Contains("isa")) {
                     m_UnknownObjects.values.Add(kv.Key, el);
                     continue;
                 }
                 var dict = el.AsDict();
                 var sectionName = dict["isa"].AsString();
 
-                if (m_Section.ContainsKey(sectionName))
-                {
+                if (m_Section.ContainsKey(sectionName)) {
                     var section = m_Section[sectionName];
                     section.AddObject(kv.Key, dict);
-                }
-                else
-                {
+                } else {
                     UnknownSection section;
                     if (m_UnknownSections.ContainsKey(sectionName))
                         section = m_UnknownSections[sectionName];
-                    else
-                    {
+                    else {
                         section = new UnknownSection(sectionName);
                         m_UnknownSections.Add(sectionName, section);
                     }
                     section.AddObject(kv.Key, dict);
 
                     // update section order
-                    if (!m_SectionOrder.Contains(sectionName))
-                    {
+                    if (!m_SectionOrder.Contains(sectionName)) {
                         int pos = 0;
-                        if (prevSectionName != null)
-                        {
+                        if (prevSectionName != null) {
                             // this never fails, because we already added any previous unknown sections
                             // to m_SectionOrder
                             pos = m_SectionOrder.FindIndex(x => x == prevSectionName);
@@ -550,8 +488,7 @@ namespace TeakEditor.iOS.Xcode
         }
 
 
-        public string WriteToString()
-        {
+        public string WriteToString() {
             var commentMap = BuildCommentMap();
             var emptyChecker = new PropertyCommentChecker();
             var emptyCommentMap = new GUIDToCommentMap();
@@ -561,8 +498,7 @@ namespace TeakEditor.iOS.Xcode
             if (m_ObjectVersion != null) // objectVersion comes right before objects
                 objectsSb.AppendFormat("objectVersion = {0};\n\t", m_ObjectVersion);
             objectsSb.Append("objects = {");
-            foreach (string sectionName in m_SectionOrder)
-            {
+            foreach (string sectionName in m_SectionOrder) {
                 if (m_Section.ContainsKey(sectionName))
                     m_Section[sectionName].WriteSection(objectsSb, commentMap);
                 else if (m_UnknownSections.ContainsKey(sectionName))
@@ -575,7 +511,7 @@ namespace TeakEditor.iOS.Xcode
             StringBuilder contentSb = new StringBuilder();
             contentSb.Append("// !$*UTF8*$!\n");
             Serializer.WriteDict(contentSb, m_RootElements, 0, false,
-                                 new PropertyCommentChecker(new string[]{"rootObject/*"}), commentMap);
+                                 new PropertyCommentChecker(new string[] {"rootObject/*"}), commentMap);
             contentSb.Append("\n");
             string content = contentSb.ToString();
 
@@ -584,8 +520,7 @@ namespace TeakEditor.iOS.Xcode
         }
 
         // This method walks the project structure and removes invalid entries.
-        void RepairStructure(List<string> allGuids)
-        {
+        void RepairStructure(List<string> allGuids) {
             var guidSet = new Dictionary<string, bool>(); // emulate HashSet on .Net 2.0
             foreach (var guid in allGuids)
                 guidSet.Add(guid, false);
@@ -596,20 +531,16 @@ namespace TeakEditor.iOS.Xcode
 
         /* Iterates the given guid list and removes all guids that are not in allGuids dictionary.
         */
-        static void RemoveMissingGuidsFromGuidList(PBX.GUIDList guidList, Dictionary<string, bool> allGuids)
-        {
+        static void RemoveMissingGuidsFromGuidList(PBX.GUIDList guidList, Dictionary<string, bool> allGuids) {
             List<string> guidsToRemove = null;
-            foreach (var guid in guidList)
-            {
-                if (!allGuids.ContainsKey(guid))
-                {
+            foreach (var guid in guidList) {
+                if (!allGuids.ContainsKey(guid)) {
                     if (guidsToRemove == null)
                         guidsToRemove = new List<string>();
                     guidsToRemove.Add(guid);
                 }
             }
-            if (guidsToRemove != null)
-            {
+            if (guidsToRemove != null) {
                 foreach (var guid in guidsToRemove)
                     guidList.RemoveGUID(guid);
             }
@@ -621,22 +552,17 @@ namespace TeakEditor.iOS.Xcode
         */
         static bool RemoveObjectsFromSection<T>(KnownSectionBase<T> section,
                                                 Dictionary<string, bool> allGuids,
-                                                Func<T, bool> checker) where T : PBXObjectData, new()
-        {
+                                                Func<T, bool> checker) where T : PBXObjectData, new () {
             List<string> guidsToRemove = null;
-            foreach (var kv in section.GetEntries())
-            {
-                if (checker(kv.Value))
-                {
+            foreach (var kv in section.GetEntries()) {
+                if (checker(kv.Value)) {
                     if (guidsToRemove == null)
                         guidsToRemove = new List<string>();
                     guidsToRemove.Add(kv.Key);
                 }
             }
-            if (guidsToRemove != null)
-            {
-                foreach (var guid in guidsToRemove)
-                {
+            if (guidsToRemove != null) {
+                foreach (var guid in guidsToRemove) {
                     section.RemoveEntry(guid);
                     allGuids.Remove(guid);
                 }
@@ -646,8 +572,7 @@ namespace TeakEditor.iOS.Xcode
         }
 
         // Returns true if changes were done and one should call RepairStructureImpl again
-        bool RepairStructureImpl(Dictionary<string, bool> allGuids)
-        {
+        bool RepairStructureImpl(Dictionary<string, bool> allGuids) {
             bool changed = false;
 
             // PBXBuildFile

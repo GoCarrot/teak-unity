@@ -4,10 +4,8 @@ using System.IO;
 using System.Text;
 using System.Linq;
 
-namespace TeakEditor.iOS.Xcode
-{
-    internal class JsonElement
-    {
+namespace TeakEditor.iOS.Xcode {
+    internal class JsonElement {
         protected JsonElement() {}
 
         // convenience methods
@@ -17,43 +15,37 @@ namespace TeakEditor.iOS.Xcode
         public JsonElementArray AsArray() { return (JsonElementArray)this; }
         public JsonElementDict AsDict()   { return (JsonElementDict)this; }
 
-        public JsonElement this[string key]
-        {
+        public JsonElement this[string key] {
             get { return AsDict()[key]; }
             set { AsDict()[key] = value; }
         }
     }
 
-    internal class JsonElementString : JsonElement
-    {
+    internal class JsonElementString : JsonElement {
         public JsonElementString(string v) { value = v; }
 
         public string value;
     }
 
-    internal class JsonElementInteger : JsonElement
-    {
+    internal class JsonElementInteger : JsonElement {
         public JsonElementInteger(int v) { value = v; }
 
         public int value;
     }
 
-    internal class JsonElementBoolean : JsonElement
-    {
+    internal class JsonElementBoolean : JsonElement {
         public JsonElementBoolean(bool v) { value = v; }
 
         public bool value;
     }
 
-    internal class JsonElementDict : JsonElement
-    {
+    internal class JsonElementDict : JsonElement {
         public JsonElementDict() : base() {}
 
         private SortedDictionary<string, JsonElement> m_PrivateValue = new SortedDictionary<string, JsonElement>();
         public IDictionary<string, JsonElement> values { get { return m_PrivateValue; }}
 
-        new public JsonElement this[string key]
-        {
+        new public JsonElement this[string key] {
             get {
                 if (values.ContainsKey(key))
                     return values[key];
@@ -62,119 +54,99 @@ namespace TeakEditor.iOS.Xcode
             set { this.values[key] = value; }
         }
 
-        public bool Contains(string key)
-        {
+        public bool Contains(string key) {
             return values.ContainsKey(key);
         }
 
-        public void Remove(string key)
-        {
+        public void Remove(string key) {
             values.Remove(key);
         }
 
         // convenience methods
-        public void SetInteger(string key, int val)
-        {
+        public void SetInteger(string key, int val) {
             values[key] = new JsonElementInteger(val);
         }
 
-        public void SetString(string key, string val)
-        {
+        public void SetString(string key, string val) {
             values[key] = new JsonElementString(val);
         }
 
-        public void SetBoolean(string key, bool val)
-        {
+        public void SetBoolean(string key, bool val) {
             values[key] = new JsonElementBoolean(val);
         }
 
-        public JsonElementArray CreateArray(string key)
-        {
+        public JsonElementArray CreateArray(string key) {
             var v = new JsonElementArray();
             values[key] = v;
             return v;
         }
 
-        public JsonElementDict CreateDict(string key)
-        {
+        public JsonElementDict CreateDict(string key) {
             var v = new JsonElementDict();
             values[key] = v;
             return v;
         }
     }
 
-    internal class JsonElementArray : JsonElement
-    {
+    internal class JsonElementArray : JsonElement {
         public JsonElementArray() : base() {}
         public List<JsonElement> values = new List<JsonElement>();
 
         // convenience methods
-        public void AddString(string val)
-        {
+        public void AddString(string val) {
             values.Add(new JsonElementString(val));
         }
 
-        public void AddInteger(int val)
-        {
+        public void AddInteger(int val) {
             values.Add(new JsonElementInteger(val));
         }
 
-        public void AddBoolean(bool val)
-        {
+        public void AddBoolean(bool val) {
             values.Add(new JsonElementBoolean(val));
         }
 
-        public JsonElementArray AddArray()
-        {
+        public JsonElementArray AddArray() {
             var v = new JsonElementArray();
             values.Add(v);
             return v;
         }
 
-        public JsonElementDict AddDict()
-        {
+        public JsonElementDict AddDict() {
             var v = new JsonElementDict();
             values.Add(v);
             return v;
         }
     }
 
-    internal class JsonDocument
-    {
+    internal class JsonDocument {
         public JsonElementDict root;
         public string indentString = "  ";
 
-        public JsonDocument()
-        {
+        public JsonDocument() {
             root = new JsonElementDict();
         }
 
-        void AppendIndent(StringBuilder sb, int indent)
-        {
+        void AppendIndent(StringBuilder sb, int indent) {
             for (int i = 0; i < indent; ++i)
                 sb.Append(indentString);
         }
 
-        void WriteString(StringBuilder sb, string str)
-        {
+        void WriteString(StringBuilder sb, string str) {
             // TODO: escape
             sb.Append('"');
             sb.Append(str);
             sb.Append('"');
         }
 
-        void WriteBoolean(StringBuilder sb, bool value)
-        {
+        void WriteBoolean(StringBuilder sb, bool value) {
             sb.Append(value ? "true" : "false");
         }
 
-        void WriteInteger(StringBuilder sb, int value)
-        {
+        void WriteInteger(StringBuilder sb, int value) {
             sb.Append(value.ToString());
         }
 
-        void WriteDictKeyValue(StringBuilder sb, string key, JsonElement value, int indent)
-        {
+        void WriteDictKeyValue(StringBuilder sb, string key, JsonElement value, int indent) {
             sb.Append("\n");
             AppendIndent(sb, indent);
             WriteString(sb, key);
@@ -191,12 +163,10 @@ namespace TeakEditor.iOS.Xcode
                 WriteArray(sb, value.AsArray(), indent);
         }
 
-        void WriteDict(StringBuilder sb, JsonElementDict el, int indent)
-        {
+        void WriteDict(StringBuilder sb, JsonElementDict el, int indent) {
             sb.Append("{");
             bool hasElement = false;
-            foreach (var key in el.values.Keys)
-            {
+            foreach (var key in el.values.Keys) {
                 if (hasElement)
                     sb.Append(","); // trailing commas not supported
                 WriteDictKeyValue(sb, key, el[key], indent+1);
@@ -207,12 +177,10 @@ namespace TeakEditor.iOS.Xcode
             sb.Append("}");
         }
 
-        void WriteArray(StringBuilder sb, JsonElementArray el, int indent)
-        {
+        void WriteArray(StringBuilder sb, JsonElementArray el, int indent) {
             sb.Append("[");
             bool hasElement = false;
-            foreach (var value in el.values)
-            {
+            foreach (var value in el.values) {
                 if (hasElement)
                     sb.Append(","); // trailing commas not supported
                 sb.Append("\n");
@@ -235,18 +203,15 @@ namespace TeakEditor.iOS.Xcode
             sb.Append("]");
         }
 
-        public void WriteToFile(string path)
-        {
+        public void WriteToFile(string path) {
             File.WriteAllText(path, WriteToString());
         }
 
-        public void WriteToStream(TextWriter tw)
-        {
+        public void WriteToStream(TextWriter tw) {
             tw.Write(WriteToString());
         }
 
-        public string WriteToString()
-        {
+        public string WriteToString() {
             var sb = new StringBuilder();
             WriteDict(sb, root, 0);
             return sb.ToString();
