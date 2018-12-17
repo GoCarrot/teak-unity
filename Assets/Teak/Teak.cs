@@ -80,6 +80,45 @@ public partial class Teak : MonoBehaviour {
     }
 
     /// <summary>
+    /// Possible push notification states.
+    ///
+    /// Note that some states are specific to iOS versions.
+    /// </summary>
+    public enum NotificationState : int {
+        /// <summary>Unable to determine the notification state.</summary>
+        UnableToDetermine   = -1,
+        /// <summary>Notifications are enabled, your app can send push notifications.</summary>
+        Enabled             = 0,
+        /// <summary>Notifications are disabled, your app cannot send push notifications.</summary>
+        disabled            = 1,
+        /// <summary>
+        /// Provisional notifications are enabled, your app can send notifications but
+        /// they will only display in the Notification Center (iOS 12+ only).
+        /// </summary>
+        Provisional         = 2,
+        /// <summary>The user has not been asked to authorize push notifications (iOS only).</summary>
+        NotRequested        = 3
+    }
+
+    /// <summary>
+    /// State of push notifications.
+    /// </summary>
+    public NotificationState PushNotificationState {
+        get {
+#if UNITY_EDITOR
+            return NotificationState.UnableToDetermine;
+#elif UNITY_WEBGL
+            return NotificationState.Enabled;
+#elif UNITY_ANDROID
+            AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
+            return (NotificationState) teak.CallStatic<bool>("getNotificationStatus");
+#elif UNITY_IPHONE
+            return (NotificationState) TeakGetNotificationState();
+#endif
+        }
+    }
+
+    /// <summary>
     /// Value provided to IdentifyUser to opt out of collecting an IDFA for this specific user.
     /// </summary>
     /// <remarks>
@@ -191,24 +230,6 @@ public partial class Teak : MonoBehaviour {
 #elif UNITY_IPHONE || UNITY_WEBGL
         TeakSetBadgeCount(count);
         return true;
-#endif
-    }
-
-    /// <summary>
-    /// Test if notifications are enabled.
-    /// </summary>
-    /// <returns>false if notifications have been disabled, true if they are enabled, or Teak could not determine the status.</returns>
-    public bool AreNotificationsEnabled() {
-#if UNITY_EDITOR
-        Debug.Log("[Teak] AreNotificationsEnabled()");
-        return true;
-#elif UNITY_WEBGL
-        return true;
-#elif UNITY_ANDROID
-        AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
-        return !teak.CallStatic<bool>("userHasDisabledNotifications");
-#elif UNITY_IPHONE
-        return !TeakHasUserDisabledPushNotifications();
 #endif
     }
 
@@ -376,7 +397,7 @@ public partial class Teak : MonoBehaviour {
 
 #if UNITY_IPHONE
     [DllImport ("__Internal")]
-    private static extern bool TeakHasUserDisabledPushNotifications();
+    private static extern int TeakGetNotificationState();
 
     [DllImport ("__Internal")]
     private static extern bool TeakOpenSettingsAppToThisAppsSettings();
