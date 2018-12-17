@@ -18,7 +18,7 @@
 #region References
 using System;
 
-using UnityEditor.iOS.Xcode;
+using TeakEditor.iOS.Xcode;
 #endregion
 
 namespace TeakEditor.iOS.Xcode {
@@ -32,12 +32,10 @@ namespace TeakEditor.iOS.Xcode {
                 return ((int) test).Equals(element.AsInteger());
             } else if (test is bool) {
                 return ((bool) test).Equals(element.AsBoolean());
-#if UNITY_2018_1_OR_NEWER
             } else if (test is float) {
                 return ((float) test) == element.AsReal();
             } else if (test is DateTime) {
                 return ((DateTime) test).Equals(element.AsDate());
-#endif
             } else {
                 throw new NotImplementedException("Not implemented for type: " + test.GetType());
             }
@@ -52,12 +50,10 @@ namespace TeakEditor.iOS.Xcode {
                 array.AddInteger((int) val);
             } else if (val is bool) {
                 array.AddBoolean((bool) val);
-#if UNITY_2018_1_OR_NEWER
             } else if (val is float) {
                 array.AddReal((float) val);
             } else if (val is DateTime) {
                 array.AddDate((DateTime) val);
-#endif
             } else {
                 throw new NotImplementedException("Not implemented for type: " + val.GetType());
             }
@@ -78,11 +74,7 @@ namespace TeakEditor.iOS.Xcode {
             foreach (string f in frameworks) {
                 string framework = f;
                 if (!framework.EndsWith(".framework")) framework = framework + ".framework";
-#if UNITY_2017_1_OR_NEWER
                 if (!project.ContainsFramework(target, framework))
-#else
-                if (!project.HasFramework(framework))
-#endif
                 {
                     project.AddFrameworkToProject(target, framework, weak);
                 }

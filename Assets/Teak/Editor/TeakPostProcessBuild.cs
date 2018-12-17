@@ -19,15 +19,14 @@
 using UnityEngine;
 using UnityEditor;
 using UnityEditor.Callbacks;
-using UnityEditor.iOS.Xcode;
-using UnityEditor.iOS.Xcode.Extensions;
+
+using TeakEditor.iOS.Xcode;
+using TeakEditor.iOS.Xcode.Extensions;
 
 using System;
 using System.IO;
 using System.Linq;
 using System.Diagnostics;
-
-using TeakEditor.iOS.Xcode;
 #endregion
 
 public class TeakPostProcessBuild {
