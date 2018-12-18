@@ -19,6 +19,7 @@ Getting started with Teak on Unity
     :maxdepth: 2
     :hidden:
 
+    before-you-start
     unity
     android
     android-permissions
@@ -41,6 +42,10 @@ We're going to give you step-by-step instructions for integrating Teak with Unit
 .. tip:: You can always ask us for help, don't be shy.
 
 Here is an overview of what we'll be doing.
+
+Getting Ready
+-------------
+* :ref:`Before You Start` make sure Teak has all of the credentials needed to send push notifications
 
 Unity
 -----
