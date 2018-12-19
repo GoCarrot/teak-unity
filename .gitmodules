@@ -1,8 +1,8 @@
 [submodule "docs/android"]
 	path = docs/android
-	url = git@github.com:GoCarrot/teak-android-docs.git
+	url = https://github.com/GoCarrot/teak-android-docs.git
 	branch = master
 [submodule "docs/ios"]
 	path = docs/ios
-	url = git@github.com:GoCarrot/teak-ios-docs.git
+	url = https://github.com/GoCarrot/teak-ios-docs.git
 	branch = master
