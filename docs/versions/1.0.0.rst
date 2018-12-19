@@ -7,7 +7,3 @@
     * Deep link launch callbacks now work on WebGL
 :Bug Fixes:
     * A WebGL scheduled/canceled notification could sometimes not trigger a callback, this has been fixed
-
-.. teakversion::
-    :sdk: android
-    :version: 1.0.0

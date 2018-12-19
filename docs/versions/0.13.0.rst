@@ -1,8 +1,8 @@
 0.13.0
 ------
 :Breaking Changes:
-    * io.teak.sdk.TeakUnityPlayerNativeActivity renamed to io.teak.sdk.wrapper.unity.TeakUnityPlayerNativeActivity
-    * io.teak.sdk.TeakUnityPlayerActivity renamed to io.teak.sdk.wrapper.unity.TeakUnityPlayerActivity
+    * ``io.teak.sdk.TeakUnityPlayerNativeActivity`` renamed to ``io.teak.sdk.wrapper.unity.TeakUnityPlayerNativeActivity``
+    * ``io.teak.sdk.TeakUnityPlayerActivity`` renamed to ``io.teak.sdk.wrapper.unity.TeakUnityPlayerActivity``
 :New Features:
     * None
 :Bug Fixes:

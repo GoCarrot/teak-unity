@@ -5,5 +5,5 @@
 :New Features:
     * None
 :Bug Fixes:
-    * OnReward and OnLaunchedFromNotification null checks (this didn’t seem to affect anyone, but still was a good fix)
-    * WebGL error with TeakDeepLinkTableInternal fixed
+    * ``OnReward`` and ``OnLaunchedFromNotification`` null checks (this didn’t seem to affect anyone, but still was a good fix)
+    * WebGL error with ``TeakDeepLinkTableInternal`` fixed
