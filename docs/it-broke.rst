@@ -81,13 +81,3 @@ You are missing an ``<intent-filter>`` with ``<data android:scheme="teakYOUR_TEA
 You need to :ref:`android-set-up-deep-linking`.
 
 .. note:: This warning will only show up on apps that have enabled '**Use Enhanced Integration Checks**' on the Teak Mobile Settings Dashboard.
-
-If You See
-^^^^^^^^^^
-.. image:: images/teak-receiver.png
-
-You are missing the Teak ``<receiver>`` for GCM (push) notifications.
-
-You need to :ref:`android-set-up-push-notifications`.
-
-.. note:: This warning will only show up on apps that have enabled '**Use Enhanced Integration Checks**' on the Teak Mobile Settings Dashboard.
