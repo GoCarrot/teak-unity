@@ -1,8 +1,10 @@
 Android
 =======
+
+.. _android-dependencies:
+
 Dependencies
 ------------
-.. _android-dependencies:
 
 The following dependencies are required by Teak
 
