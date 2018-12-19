@@ -1,2 +1,7 @@
 formats: []
 requirements_file: docs/requirements.txt
+submodules:
+  include:
+    - docs/android
+    - docs/ios
+  recursive: true
