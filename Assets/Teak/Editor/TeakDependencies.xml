@@ -24,6 +24,13 @@
       </androidSdkPackageIds>
     </androidPackage>
 
+    <!-- Firebase Job Dispatcher -->
+    <androidPackage spec="com.firebase:firebase-jobdispatcher:0.8.5">
+      <androidSdkPackageIds>
+        <androidSdkPackageId>extra-google-m2repository</androidSdkPackageId>
+      </androidSdkPackageIds>
+    </androidPackage>
+
     <!-- Android Support -->
     <androidPackage spec="com.android.support:support-core-utils:26.1+">
       <androidSdkPackageIds>
