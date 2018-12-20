@@ -94,7 +94,7 @@ public partial class Teak : MonoBehaviour {
             return NotificationState.Enabled;
 #elif UNITY_ANDROID
             AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
-            return (NotificationState) teak.CallStatic<bool>("getNotificationStatus");
+            return (NotificationState) teak.CallStatic<int>("getNotificationStatus");
 #elif UNITY_IPHONE
             return (NotificationState) TeakGetNotificationState();
 #endif
