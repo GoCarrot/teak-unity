@@ -10,6 +10,8 @@ obj/
 *.pdb*
 *.mdb*
 
+ProjectSettings/ProjectVersion.txt
+
 Assets/Resources/TeakSettings.*
 Assets/Teak/TeakVersion.cs*
 
