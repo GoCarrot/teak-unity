@@ -1,0 +1,13 @@
+2.0.0
+-----
+:Breaking Changes:
+    * Unity 4 is no longer supported
+    * New Android dependencies required (:ref:`android-dependencies`)
+    * Firebase is now required (:ref:`fcm-migration`)
+:New Features:
+    * Support for the UnityPurchasing plugin
+    * iOS Extensions can now be auto-magically added by the post-processing scripts
+    * iOS Entitlements can now be added by the post-processing scripts
+:Bug Fixes:
+    * Prime31 and OpenIAB purchase plugins will now work when using IL2CPP on Android
+    * Fixed bug which could happen with jQuery initialization with WebGL

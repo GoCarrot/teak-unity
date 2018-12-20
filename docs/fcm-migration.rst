@@ -1,5 +1,7 @@
 .. highlight:: xml
 
+.. _fcm-migration:
+
 Migrating to FCM and Teak 2.0
 =============================
 GCM was deprecated April 10, 2018, and will be removed "as soon as April 11, 2019" `according to Google <https://developers.google.com/cloud-messaging/faq>`_.
