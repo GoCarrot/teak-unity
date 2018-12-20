@@ -6,7 +6,8 @@ Do you want Playable Notifications? Buttons in your notifications? Well rest eas
 
 Teak's post-processing scripts will take care of all of this for you, automatically!
 
-.. note:: Teak uses ``PlayerSettings.iOS.appleDeveloperTeamID`` to get the Team ID for the extension. |br|
+.. note:: Teak uses ``PlayerSettings.iOS.appleDeveloperTeamID`` to get the Team ID for the extension.
+
     If your build process changes this at a later time, you'll need to change it for the extensions as well.
 
 What if I Don't Use Teak's Post-processing Scripts?
@@ -209,6 +210,7 @@ I see no small image preview
 Make sure that ``TeakNotificationService`` is being built properly.
 
 .. tip:: We use a Ruby script for automating this process during our testing. Feel free to
-    use it for your own build process as well. |br|
+    use it for your own build process as well.
+
     https://github.com/GoCarrot/teak-ios/blob/master/TeakExtensions/add_teak_extensions.rb
 
