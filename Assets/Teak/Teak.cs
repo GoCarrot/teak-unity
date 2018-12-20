@@ -73,7 +73,7 @@ public partial class Teak : MonoBehaviour {
         /// <summary>Notifications are enabled, your app can send push notifications.</summary>
         Enabled             = 0,
         /// <summary>Notifications are disabled, your app cannot send push notifications.</summary>
-        disabled            = 1,
+        Disabled            = 1,
         /// <summary>
         /// Provisional notifications are enabled, your app can send notifications but
         /// they will only display in the Notification Center (iOS 12+ only).
