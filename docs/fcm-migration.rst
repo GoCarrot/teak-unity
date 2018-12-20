@@ -82,20 +82,6 @@ Otherwise, you will need to make the value available to Teak via XML::
 
     <string name="io_teak_firebase_app_id">YOUR_FIREBASE_APPLICATION_ID</string>
 
-Optionally Disable FirebaseInitProvider
----------------------------------------
-.. highlight:: xml
-
-If Teak is the only thing in your game that uses Firebase, and you don't like seeing the log message::
-
-You can disable it, put this into your AndroidManifest.xml::
-
-    <provider android:name="com.google.firebase.provider.FirebaseInitProvider"
-              android:authorities="${applicationId}.firebaseinitprovider"
-              tools:node="remove" />
-
-(`Source <https://firebase.googleblog.com/2017/03/take-control-of-your-firebase-init-on.html>`_)
-
 Optionally Disable Google's Automatic Analytics Collection
 ----------------------------------------------------------
 .. highlight:: xml
