@@ -17,9 +17,9 @@ Don't Panic
 
 Import your GCM project as a Firebase project
 ---------------------------------------------
-Follow these instructions to import your project to Firebase: https://developers.google.com/cloud-messaging/android/android-migrate-fcm#import-your-gcm-project-as-a-firebase-project
+Follow `Google's instructions to import your project to Firebase <https://developers.google.com/cloud-messaging/android/android-migrate-fcm#import-your-gcm-project-as-a-firebase-project>`_.
 
-.. note:: You only need to follow step One of the instructions.
+.. important:: You only need to perform the **Import your GCM project as a Firebase project** step of those instructions.
 
     This doc describes everything else you need to do.
 
@@ -74,7 +74,13 @@ Configuration
 -------------
 If you use Firebase's ``google-services.json`` and its accompanying Gradle plugin (or something else that turns ``google-services.json`` into XML resources), then you are all set.
 
-Otherwise, simply add 
+If you use Teak's configuration panel in Unity, it has a setting for ``Firebase App Id``.
+
+(`How to find this value <https://teak.readthedocs.io/en/latest/>`_)
+
+Otherwise, you will need to make the value available to Teak via XML::
+
+    <string name="io_teak_firebase_app_id">YOUR_FIREBASE_APPLICATION_ID</string>
 
 Optionally Disable FirebaseInitProvider
 ---------------------------------------
@@ -88,7 +94,7 @@ You can disable it, put this into your AndroidManifest.xml::
               android:authorities="${applicationId}.firebaseinitprovider"
               tools:node="remove" />
 
-(https://firebase.googleblog.com/2017/03/take-control-of-your-firebase-init-on.html)
+(`Source <https://firebase.googleblog.com/2017/03/take-control-of-your-firebase-init-on.html>`_)
 
 Optionally Disable Google's Automatic Analytics Collection
 ----------------------------------------------------------
@@ -96,9 +102,8 @@ Optionally Disable Google's Automatic Analytics Collection
 
 Don't want to send your purchase and session data to Google? You don't have to!
 
-https://firebase.google.com/support/guides/disable-analytics#permanently_deactivate_collection
-
 Add this line to your AndroidManifest.xml::
 
     <meta-data android:name="firebase_analytics_collection_deactivated" android:value="true" />
 
+(`Source <https://firebase.google.com/support/guides/disable-analytics#permanently_deactivate_collection>`_)
