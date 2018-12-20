@@ -147,7 +147,7 @@ Parameters
     :callback: The callback to be called after the notifications are scheduled
 
 Canceling a Notification
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^
 To cancel a previously scheduled notification, use::
 
     IEnumerator TeakNotification.CancelScheduledNotification(string scheduledId,
