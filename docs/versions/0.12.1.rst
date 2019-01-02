@@ -1,0 +1,8 @@
+0.12.1
+------
+:Breaking Changes:
+    * None
+:New Features:
+    * Unity 5 Compatibility
+:Bug Fixes:
+    * None

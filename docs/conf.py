@@ -19,8 +19,7 @@
 # import sys
 # sys.path.insert(0, os.path.abspath('.'))
 
-import os
-import subprocess
+import os, subprocess, re, sys, errno
 read_the_docs_build = os.environ.get('READTHEDOCS', None) == 'True'
 if read_the_docs_build:
     subprocess.call('cd .. ; doxygen', shell=True)
@@ -34,7 +33,9 @@ if read_the_docs_build:
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = [ "breathe" ]
+
+# sys.path.append(os.path.abspath('./ext'))
+extensions = [ "breathe" ] #, "teak-versions" ], "teak-sdk" ]
 
 breathe_projects = {
     "teak":"_doxygen/xml/",
@@ -80,7 +81,7 @@ language = None
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This patterns also effect to html_static_path and html_extra_path
-exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
+exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', 'versions', 'ios', 'android']
 
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = 'sphinx'
@@ -181,5 +182,97 @@ texinfo_documents = [
      'Miscellaneous'),
 ]
 
+####
+# Global include
+with open('global.irst', 'r') as f:
+    rst_prolog = f.read()
+
+#####
+# Setup
+def cmp_versions(a, b):
+    v = re.compile('^(\d+)\.(\d+)\.(\d+)')
+    av = map(lambda x: map(int, x), v.findall(a))[0]
+    bv = map(lambda x: map(int, x), v.findall(b))[0]
+
+    if av[0] > bv[0]: return 1
+    elif av[0] < bv[0]: return -1
+    elif av[1] > bv[1]: return 1
+    elif av[1] < bv[1]: return -1
+    elif av[2] > bv[2]: return 1
+    elif av[2] < bv[2]: return -1
+    return 0
+
+def ensure_versions():
+    ios = set(os.listdir('ios/versions'))
+    android = set(os.listdir('android/versions'))
+    sdk = set(os.listdir('versions'))
+
+    if len(ios.difference(android)) != 0:
+        raise Exception('Android versions missing: %s' % ios.difference(android))
+    if len(android.difference(ios)) != 0:
+        raise Exception('iOS versions missing: %s' % android.difference(ios))
+    if len(android.difference(sdk)):
+        raise Exception('Versions missing: %s' % android.difference(sdk))
+
+def mkdir_p(path):
+    try:
+        os.makedirs(path)
+    except OSError as exc:  # Python >2.5
+        if exc.errno == errno.EEXIST and os.path.isdir(path):
+            pass
+        else:
+            raise
+
+def gen_version(v):
+    version = os.path.splitext(v)[0]
+    mkdir_p('_versions')
+
+    with open('versions/%s.rst' % version, 'r') as f:
+        contents = f.read()
+
+    contents += '\nAndroid\n^^^^^^^\n\n'
+    with open('android/versions/%s.rst' % version, 'r') as f:
+        data = f.read().splitlines(True)
+        contents += '\n'.join(map(lambda ln: '    %s' % ln, data[2:]))
+
+    contents += '\niOS\n^^^\n\n'
+    with open('ios/versions/%s.rst' % version, 'r') as f:
+        data = f.read().splitlines(True)
+        contents += '\n'.join(map(lambda ln: '    %s' % ln, data[2:]))
+
+    if os.path.isfile('_versions/%s.rst' % version):
+        with open('_versions/%s.rst' % version, 'r') as f:
+            prev = f.read()
+    else:
+        prev = ''
+
+    if contents != prev:
+        with open('_versions/%s.rst' % version, 'w') as f:
+            f.write(contents)
 
 
+def setup(app):
+    # Ensure all versions of iOS/Android/X have entries
+    ensure_versions()
+
+    # Make array of includes
+    versions = []
+    for version in sorted(os.listdir('versions'), cmp_versions, reverse=True):
+        gen_version(version)
+        versions.append('.. include:: _versions/{0}'.format(version))
+
+    changelog = """
+Changelog
+=========
+%s
+""" % '\n'.join(versions)
+
+    if os.path.isfile('changelog.rst'):
+        with open('changelog.rst', 'r') as f:
+            data = f.read()
+    else:
+        data = ''
+
+    if data != changelog:
+        with open('changelog.rst', 'w') as f:
+            f.write(changelog)

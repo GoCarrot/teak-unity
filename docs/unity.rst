@@ -1,5 +1,3 @@
-.. include:: global.rst
-
 Unity
 =====
 
@@ -31,8 +29,6 @@ This will open the Teak configuration in the Unity Inspector, put in your Teak A
 .. note:: Make sure the Inspector tab is visible in your Unity window.
 
 Your Teak App Id and API Key can be found in the Settings for your app on the Teak dashboard.
-
-.. warning:: TODO: Screenshot
 
 What This Does
 ^^^^^^^^^^^^^^

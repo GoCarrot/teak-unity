@@ -1,22 +1,31 @@
 <dependencies>
   <androidPackages>
     <!-- Google Play Services -->
-    <androidPackage spec="com.google.android.gms:play-services-base:10+">
+    <androidPackage spec="com.google.android.gms:play-services-ads:16+">
       <androidSdkPackageIds>
         <androidSdkPackageId>extra-google-m2repository</androidSdkPackageId>
       </androidSdkPackageIds>
     </androidPackage>
-    <androidPackage spec="com.google.android.gms:play-services-basement:10+">
+    <androidPackage spec="com.google.android.gms:play-services-base:16+">
       <androidSdkPackageIds>
         <androidSdkPackageId>extra-google-m2repository</androidSdkPackageId>
       </androidSdkPackageIds>
     </androidPackage>
-    <androidPackage spec="com.google.android.gms:play-services-gcm:10+">
+    <androidPackage spec="com.google.android.gms:play-services-basement:16+">
       <androidSdkPackageIds>
         <androidSdkPackageId>extra-google-m2repository</androidSdkPackageId>
       </androidSdkPackageIds>
     </androidPackage>
-    <androidPackage spec="com.google.android.gms:play-services-iid:10+">
+
+    <!-- Firebase -->
+    <androidPackage spec="com.google.firebase:firebase-messaging:17+">
+      <androidSdkPackageIds>
+        <androidSdkPackageId>extra-google-m2repository</androidSdkPackageId>
+      </androidSdkPackageIds>
+    </androidPackage>
+
+    <!-- Firebase Job Dispatcher -->
+    <androidPackage spec="com.firebase:firebase-jobdispatcher:0.8.5">
       <androidSdkPackageIds>
         <androidSdkPackageId>extra-google-m2repository</androidSdkPackageId>
       </androidSdkPackageIds>

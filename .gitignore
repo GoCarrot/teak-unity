@@ -10,6 +10,8 @@ obj/
 *.pdb*
 *.mdb*
 
+ProjectSettings/ProjectVersion.txt
+
 Assets/Resources/TeakSettings.*
 Assets/Teak/TeakVersion.cs*
 
@@ -21,7 +23,7 @@ Assets/Plugins/Android/google-play-services.jar*
 Assets/Teak/Plugins/iOS/teak_version.m
 
 # Teak binaries
-Assets/Plugins/Android/teak.aar
+Assets/Teak/Plugins/Android/teak.aar
 Assets/Teak/Plugins/iOS/libTeak.a
 AndroidLibBuild/androidtemp
 

@@ -1,0 +1,8 @@
+0.12.7
+------
+:Breaking Changes:
+    * TeakUnityPlayerNativeActivity deprecated in favor of TeakUnityPlayerActivity
+:New Features:
+    * None
+:Bug Fixes:
+    * WebGL builds will now build cleanly

@@ -1,5 +1,3 @@
-.. include:: global.rst
-
 Working with Notifications, Rewards and Deep Links inside Unity
 ===============================================================
 .. highlight:: csharp
@@ -8,15 +6,10 @@ Requesting Push Notification Permissions
 ----------------------------------------
 In order to use push notifications on iOS, you will need to request permissions.
 
-If you are using Unity 5::
+::
 
     UnityEngine.iOS.NotificationServices.RegisterForNotifications(UnityEngine.iOS.NotificationType.Alert |
         UnityEngine.iOS.NotificationType.Badge |  UnityEngine.iOS.NotificationType.Sound);
-
-If you are using Unity 4::
-
-    NotificationServices.RegisterForRemoteNotificationTypes(RemoteNotificationType.Alert |
-        RemoteNotificationType.Badge |  RemoteNotificationType.Sound);
 
 .. note:: We suggest that you don't simply ask for push permissions when the app starts. We'll be happy to talk with you to figure out what works best for your title.
 
@@ -31,9 +24,9 @@ You can listen for that event during by first writing a listener function, for e
         Debug.Log("OnLaunchedFromNotification: " + notification.CreativeId + " - " + notification.ScheduleId + " Incentivized? " + notification.Incentivized);
     }
 
-And then adding it to the ``Teak.Instance.OnLaunchedFromNotification`` event during ``Start()`` in any ``MonoBehaviour``::
+And then adding it to the ``Teak.Instance.OnLaunchedFromNotification`` event during ``Awake()`` in any ``MonoBehaviour``::
 
-    void Start()
+    void Awake()
     {
         Teak.Instance.OnLaunchedFromNotification += MyOnLaunchedFromNotificationListener;
     }
@@ -88,9 +81,9 @@ You can listen for that event during by first writing a listener function, for e
         }
     }
 
-And then adding it to the ``Teak.Instance.OnReward`` event during ``Start()`` in any ``MonoBehaviour``::
+And then adding it to the ``Teak.Instance.OnReward`` event during ``Awake()`` in any ``MonoBehaviour``::
 
-    void Start()
+    void Awake()
     {
         Teak.Instance.OnReward += MyRewardListener;
     }
@@ -154,7 +147,7 @@ Parameters
     :callback: The callback to be called after the notifications are scheduled
 
 Canceling a Notification
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^
 To cancel a previously scheduled notification, use::
 
     IEnumerator TeakNotification.CancelScheduledNotification(string scheduledId,
@@ -179,21 +172,30 @@ Parameters
 
 Determining if User Has Disabled Push Notifications
 ---------------------------------------------------
-You can use Teak to determine if a user has disabled push notifications for your app.
+You can use Teak to get the state of push notifications for your app.
 
 If notifications are disabled, you can prompt them to re-enable them on the settings page for the app, and use Teak to go directly the settings for your app.
 
-Are Notifications Enabled?
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
-To determine if notifications are enabled, use::
+Notification State
+^^^^^^^^^^^^^^^^^^
+To get the state of push notifications, use::
 
-    bool AreNotificationsEnabled()
+    NotificationState PushNotificationState
 
-This function will return ``false`` if notifications are disabled, or ``true`` if notifications are enabled, or Teak could not determine the status.
+Return
+    :UnableToDetermine: Unable to determine the notification state.
+
+    :Enabled: Notifications are enabled, your app can send push notifications.
+
+    :Disabled: Notifications are disabled, your app cannot send push notifications.
+
+    :Provisional: Provisional notifications are enabled, your app can send notifications but they will only display in the Notification Center (iOS 12+ only).
+
+    :NotRequested: The user has not been asked to authorize push notifications (iOS only).
 
 Example::
 
-    if (!Teak.Instance.AreNotificationsEnabled()) {
+    if (Teak.Instance.PushNotificationState == Teak.NotificationState.Disabled) {
         // Show a button that will let users open the settings
     }
 
@@ -213,10 +215,13 @@ Example::
 
 Deep Links
 ----------
+Deep Linking with Teak is based on routes, which act like URLs. These routes allow you to specify variables
 
-Adding deep link targets in your game is easy with Teak.
+You can add routes during the ``Awake()`` function of any ``MonoBehaviour`` using::
 
-You can add routes during the ``Awake()`` function of any ``MonoBehaviour``. For example::
+    void RegisterRoute(string route, string name, string description, Action<Dictionary<string, object>> action)
+
+For example::
 
     void Awake()
     {
@@ -225,6 +230,27 @@ You can add routes during the ``Awake()`` function of any ``MonoBehaviour``. For
             Debug.Log("Open the store to this sku - " + parameters["sku"]);
         });
     }
+
+Parameters
+    :route: The route definition to register
+
+    :name: The name of the route, this will be used in the Teak Dashboard
+
+    :description: The description of the route, this will be used in the Teak Dashboard
+
+    :action: The method to execute when the app is opened via a deep link to this route
+
+How Routes Work
+^^^^^^^^^^^^^^^
+Routes work like URLs where parts of the path can be a variable. In the example above, the route is ``/store/:sku``. Variables in the path are designated with ``:``. So, in the route ``/store/:sku`` there is a variable named ``sku``.
+
+This means that if the deep link used to launch the app was ``/store/io.teak.test.dollar`` was used to open the app, it would call the function and assign the value ``io.teak.test.dollar`` to the key ``sku`` in the dictionary that is passed in.
+
+This dictionary will also contain any URL query parameters. For example::
+
+    /store/io.teak.test.dollar?campaign=email
+
+In this link, the value ``io.teak.test.dollar`` would be assigned to the key ``sku``, and the value ``email`` would be assigned to the key ``campaign``.
 
 .. The route system that Teak uses is very flexible, let's look at a slightly more complicated example.
 

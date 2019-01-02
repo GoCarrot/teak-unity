@@ -1,0 +1,13 @@
+0.13.2
+------
+:Breaking Changes:
+    * Now using AAR for Android, remove these files
+        * Assets/Editor/TeakPackageBuilder.cs
+        * Assets/Plugins/Android/res/layout/teak_big_notif_image_text.xml
+        * Assets/Plugins/Android/res/layout/teak_notif_no_title.xml
+        * Assets/Plugins/Android/res/values/teak_styles.xml
+        * Assets/Plugins/Android/res/values-v21/teak_styles.xml
+:New Features:
+    * None
+:Bug Fixes:
+    * Native SDK update

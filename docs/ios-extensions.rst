@@ -1,15 +1,18 @@
-.. include:: global.rst
-
-.. |br| raw:: html
-
-   <br />
-
 iOS Notification Extensions
 ===========================
-Do you want Playable Notifications? Buttons in your notifications? You need to do these things!
+Do you want Playable Notifications? Buttons in your notifications? Well rest easy...
 
-.. important:: This functionality **is safe for all versions of iOS**, but will
-    only be displayed on iOS 10+
+:Since: 2.0.0
+
+Teak's post-processing scripts will take care of all of this for you, automatically!
+
+.. note:: Teak uses ``PlayerSettings.iOS.appleDeveloperTeamID`` to get the Team ID for the extension.
+
+    If your build process changes this at a later time, you'll need to change it for the extensions as well.
+
+What if I Don't Use Teak's Post-processing Scripts?
+---------------------------------------------------
+You need to do these things!
 
 This document assumes that you have a working Xcode project for a game with Teak.
 
@@ -115,7 +118,6 @@ Change the code in ``TeakNotificationContent/NotificationViewController.m`` to l
 
 Plist
 ^^^^^
-
 .. highlight:: xml
 
 Open ``TeakNotificationContent/Info.plist`` *with a text editor* and replace the contents with::
@@ -208,6 +210,7 @@ I see no small image preview
 Make sure that ``TeakNotificationService`` is being built properly.
 
 .. tip:: We use a Ruby script for automating this process during our testing. Feel free to
-    use it for your own build process as well. |br|
+    use it for your own build process as well.
+
     https://github.com/GoCarrot/teak-ios/blob/master/TeakExtensions/add_teak_extensions.rb
 

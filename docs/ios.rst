@@ -1,10 +1,10 @@
-.. include:: global.rst
-
 iOS
 ===
 Dependencies
 ------------
-The following frameworks are required by Teak
+The Teak post-process scripts will add dependencies for you.
+
+If you do not use the the post-process scripts, the following frameworks are required by Teak
 
 * AdSupport.framework
 * AVFoundation.framework
@@ -47,9 +47,7 @@ The Teak Editor scripts for Unity will attempt to manage this file for you, if y
 
 .. note:: Replace ``YOUR_TEAK_APP_ID``, and ``YOUR_TEAK_API_KEY`` with your game's values.
 
-Your Teak App Id and API Key can be found in the Settings for your app on the Teak dashboard:
-
-.. warning:: TODO: Screenshot
+Your Teak App Id and API Key can be found in the Settings for your app on the Teak dashboard.
 
 Edit Unity-iPhone.entitlements
 ------------------------------
@@ -62,6 +60,4 @@ You'll need to add your Teak subdomain to the associated domains in order for de
 
 .. note:: Replace ``YOUR_SUBDOMAIN`` with your game's subdomain.
 
-Your Teak Subdomain can be found in the Settings for your app on the Teak dashboard:
-
-.. warning:: TODO: Screenshot
+Your Teak Subdomain can be found in the Settings for your app on the Teak dashboard.

@@ -1,0 +1,8 @@
+0.13.1
+------
+:Breaking Changes:
+    * None
+:New Features:
+    * New setting (default off) controls if Teak does build post processing. Now it does not unless you enable it in Settings.
+:Bug Fixes:
+    * Native SDK update
