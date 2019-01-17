@@ -186,11 +186,14 @@ You will need two versions of this file. One located in ``values`` and the other
         <!-- The tint-color for your silouette icon, format is: 0xAARRGGBB -->
         <integer name="io_teak_notification_accent_color">0xfff15a29</integer>
 
-        <!-- Icons should be 144x144, PNG with transparency -->
+        <!-- Icons should be white and transparent, and processed with Android Asset Studio -->
         <drawable name="io_teak_small_notification_icon">@drawable/YOUR_ICON_FILE_NAME</drawable>
     </resources>
 
-The file in ``values`` should specify a full-color icon, for devices running less than Android 5, and the file in ``values-v21`` should specify a white and transparent PNG for Android 5 and above.
+The file in ``values`` should point to a full-color icon, for devices running less than Android 5, and the file in ``values-v21`` should point to a white and transparent PNG for Android 5 and above.
+
+.. important:: To make sure that your white and transparent PNG shows up properly, use :doc:`Android Asset Studio's Notification icon generator <android/notification-icon>`.
+
 
 .. _android-set-up-deep-linking:
 
