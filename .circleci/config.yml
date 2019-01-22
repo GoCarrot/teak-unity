@@ -6,7 +6,9 @@ jobs:
     shell: /bin/bash --login -eo pipefail
     environment:
       UNITY_VERSION: 5.6.4f1
+      HOMEBREW_VERSION: 1.9.2
       UNITY_HOME: /Applications/Unity-5.6.4f1/
+      TEST_UNITY_HOME: /Applications/Unity-$UNITY_VERSION/
     steps:
       - checkout
       - run:
@@ -15,15 +17,12 @@ jobs:
           command: echo "ruby-2.3" > .ruby-version
       - run: git fetch --tags
       - restore_cache:
-          key: v1-{{ checksum "setup" }}-{{ checksum "Gemfile.lock" }}-{{ .Environment.UNITY_VERSION }}
+          key: v1-{{ checksum "setup" }}-{{ checksum "Gemfile.lock" }}-{{ .Environment.UNITY_VERSION }}-{{ .Environment.HOMEBREW_VERSION }}
       - run:
           name: Check Homebrew Version and Cache Location
           command: |
-            brew --version
-            brew --cache
-      # - run:
-      #     name: Homebrew Update
-      #     command: brew update # TODO: Conditional on brew version
+            echo $TEST_UNITY_HOME
+            [ `brew --version | sed -n 1p | sed 's/[^0-9.]*\([0-9.]*\).*/\1/'` = $HOMEBREW_VERSION ] || brew update
       - run:
           name: Homebrew Depenendcies
           command: HOMEBREW_NO_AUTO_UPDATE=1 ./setup
@@ -33,8 +32,9 @@ jobs:
       - save_cache:
           paths:
             - /usr/local/Homebrew/
+            - /Library/Caches/Homebrew
             - vendor/bundle
-          key: v1-{{ checksum "setup" }}-{{ checksum "Gemfile.lock" }}-{{ .Environment.UNITY_VERSION }}
+          key: v1-{{ checksum "setup" }}-{{ checksum "Gemfile.lock" }}-{{ .Environment.UNITY_VERSION }}-{{ .Environment.HOMEBREW_VERSION }}
       - run:
           name: Build Teak SDK
           command: bundle exec rake build:android build:ios build:package
