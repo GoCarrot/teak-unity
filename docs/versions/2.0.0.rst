@@ -4,7 +4,7 @@
     * Unity 4 is no longer supported
     * New Android dependencies required (:ref:`android-dependencies`)
     * Firebase is now required (:ref:`fcm-migration`)
-    * `AreNotificationsEnabled` -> `PushNotificationState` (:ref:`get-notification-state`)
+    * ``AreNotificationsEnabled`` -> ``PushNotificationState`` (:ref:`get-notification-state`)
 :New Features:
     * Support for the UnityPurchasing plugin
     * iOS Extensions can now be auto-magically added by the post-processing scripts
