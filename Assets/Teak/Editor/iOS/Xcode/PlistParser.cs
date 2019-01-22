@@ -161,7 +161,7 @@ namespace TeakEditor.iOS.Xcode {
 
             // ‘System.Xml.XmlReaderSettings.ProhibitDtd’ is obsolete: Use ‘XmlReaderSettings.DtdProcessing property instead’
             // -PW, 1/21/2019
-#if UNITY_2017_1_OR_NEWER && !NET_LEGACY
+#if NET_4_6
             settings.DtdProcessing = DtdProcessing.Parse;
 #else
             settings.ProhibitDtd = false;
