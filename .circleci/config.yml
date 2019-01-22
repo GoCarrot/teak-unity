@@ -7,8 +7,6 @@ jobs:
     environment:
       UNITY_VERSION: 5.6.4f1
       HOMEBREW_VERSION: 1.9.2
-      UNITY_HOME: /Applications/Unity-5.6.4f1/
-      TEST_UNITY_HOME: /Applications/Unity-$UNITY_VERSION/
     steps:
       - checkout
       - run:
@@ -19,9 +17,8 @@ jobs:
       - restore_cache:
           key: v1-{{ checksum "setup" }}-{{ checksum "Gemfile.lock" }}-{{ .Environment.UNITY_VERSION }}-{{ .Environment.HOMEBREW_VERSION }}
       - run:
-          name: Check Homebrew Version and Cache Location
+          name: Check Homebrew Version
           command: |
-            echo $TEST_UNITY_HOME
             [ `brew --version | sed -n 1p | sed 's/[^0-9.]*\([0-9.]*\).*/\1/'` = $HOMEBREW_VERSION ] || brew update
       - run:
           name: Homebrew Depenendcies
@@ -37,7 +34,9 @@ jobs:
           key: v1-{{ checksum "setup" }}-{{ checksum "Gemfile.lock" }}-{{ .Environment.UNITY_VERSION }}-{{ .Environment.HOMEBREW_VERSION }}
       - run:
           name: Build Teak SDK
-          command: bundle exec rake build:android build:ios build:package
+          command: |
+            export UNITY_HOME=/Applications/Unity-$UNITY_VERSION/
+            bundle exec rake build:android build:ios build:package
       - run:
           command: |
             mkdir -p /tmp/unity_logs
