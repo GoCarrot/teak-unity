@@ -9,6 +9,7 @@ jobs:
     steps:
       - checkout
       - run:
+          shell: /bin/bash -eo pipefail
           name: Set Ruby Version 2.3
           command: echo "ruby-2.3" > .ruby-version
       - run: git fetch --tags
