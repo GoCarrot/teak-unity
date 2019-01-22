@@ -16,7 +16,9 @@ jobs:
       - run: git fetch --tags
       - run:
           name: Hack around {{ .Environment.variableName }} Not Being Implemented
-          command: echo $UNITY_VERSION-$HOMEBREW_VERSION > UNITY_HOMEBREW_VERSIONS
+          command: |
+            echo $UNITY_VERSION-$HOMEBREW_VERSION > UNITY_HOMEBREW_VERSIONS
+            cat UNITY_HOMEBREW_VERSIONS
       - restore_cache:
           key: v1-{{ checksum "setup" }}-{{ checksum "Gemfile.lock" }}-{{ checksum "UNITY_HOMEBREW_VERSIONS" }}
       - run:
