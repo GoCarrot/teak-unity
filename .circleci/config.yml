@@ -15,7 +15,7 @@ jobs:
           command: echo "ruby-2.3" > .ruby-version
       - run: git fetch --tags
       - run:
-          name: Hack around {{ .Environment.variableName }} Not Being Implemented
+          name: Hack around {{ .Environment.variableName }} Not Being Implemented Properly
           command: |
             echo $UNITY_VERSION-$HOMEBREW_VERSION > UNITY_HOMEBREW_VERSIONS
             cat UNITY_HOMEBREW_VERSIONS
@@ -34,7 +34,7 @@ jobs:
       - save_cache:
           paths:
             - /usr/local/Homebrew/
-            - /Library/Caches/Homebrew
+            - ~/Library/Caches/Homebrew
             - vendor/bundle
           key: v1-{{ checksum "setup" }}-{{ checksum "Gemfile.lock" }}-{{ checksum "UNITY_HOMEBREW_VERSIONS" }}
       - run:
