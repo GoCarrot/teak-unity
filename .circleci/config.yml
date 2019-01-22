@@ -14,8 +14,11 @@ jobs:
           name: Set Ruby Version 2.3
           command: echo "ruby-2.3" > .ruby-version
       - run: git fetch --tags
+      - run:
+          name: Hack around {{ .Environment.variableName }} Not Being Implemented
+          command: echo $UNITY_VERSION-$HOMEBREW_VERSION > UNITY_HOMEBREW_VERSIONS
       - restore_cache:
-          key: v1-{{ checksum "setup" }}-{{ checksum "Gemfile.lock" }}-{{ .Environment.UNITY_VERSION }}-{{ .Environment.HOMEBREW_VERSION }}
+          key: v1-{{ checksum "setup" }}-{{ checksum "Gemfile.lock" }}-{{ checksum "UNITY_HOMEBREW_VERSIONS" }}
       - run:
           name: Check Homebrew Version
           command: |
@@ -31,7 +34,7 @@ jobs:
             - /usr/local/Homebrew/
             - /Library/Caches/Homebrew
             - vendor/bundle
-          key: v1-{{ checksum "setup" }}-{{ checksum "Gemfile.lock" }}-{{ .Environment.UNITY_VERSION }}-{{ .Environment.HOMEBREW_VERSION }}
+          key: v1-{{ checksum "setup" }}-{{ checksum "Gemfile.lock" }}-{{ checksum "UNITY_HOMEBREW_VERSIONS" }}
       - run:
           name: Build Teak SDK
           command: |
