@@ -74,6 +74,8 @@ ensure
   add_unity_log_to_artifacts if ci?
 end
 
+task default: ['build:android', 'build:ios', 'build:package']
+
 task :format do
   sh 'astyle --project --recursive Assets/*.cs'
 end

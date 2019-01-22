@@ -41,7 +41,7 @@ jobs:
           name: Build Teak SDK
           command: |
             export UNITY_HOME=/Applications/Unity-$UNITY_VERSION/
-            bundle exec rake build:android build:ios build:package
+            bundle exec rake
       - run:
           command: |
             mkdir -p /tmp/unity_logs
