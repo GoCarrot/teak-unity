@@ -158,7 +158,15 @@ namespace TeakEditor.iOS.Xcode {
         // Parses a string that contains a XML file. No validation is done.
         internal static XDocument ParseXmlNoDtd(string text) {
             XmlReaderSettings settings = new XmlReaderSettings();
+
+            // ‘System.Xml.XmlReaderSettings.ProhibitDtd’ is obsolete: Use ‘XmlReaderSettings.DtdProcessing property instead’
+            // -PW, 1/21/2019
+#if UNITY_2017_1_OR_NEWER && !NET_LEGACY
+            settings.DtdProcessing = DtdProcessing.Parse;
+#else
             settings.ProhibitDtd = false;
+#endif
+
             settings.XmlResolver = null; // prevent DTD download
 
             XmlReader xmlReader = XmlReader.Create(new StringReader(text), settings);
