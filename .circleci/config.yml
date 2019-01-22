@@ -13,19 +13,19 @@ jobs:
           name: Set Ruby Version 2.3
           command: echo "ruby-2.3" > .ruby-version
       - run: git fetch --tags
-      - restore_cache:
-          key: v0-{{ checksum "setup" }}-{{ checksum "Gemfile.lock" }}
+      # - restore_cache:
+      #     key: v0-{{ checksum "setup" }}-{{ checksum "Gemfile.lock" }}
       - run:
           name: Homebrew Depenendcies
           command: ./setup
       - run:
           name: Ruby Gems
           command: bundle check || bundle install --path vendor/bundle
-      - save_cache:
-          paths:
-            - ~/Library/Caches/Homebrew/
-            - vendor/bundle
-          key: v0-{{ checksum "setup" }}-{{ checksum "Gemfile.lock" }}
+      # - save_cache:
+      #     paths:
+      #       - ~/Library/Caches/Homebrew/
+      #       - vendor/bundle
+      #     key: v0-{{ checksum "setup" }}-{{ checksum "Gemfile.lock" }}
       - run:
           name: Build Teak SDK
           command: bundle exec rake build:android build:ios build:package
