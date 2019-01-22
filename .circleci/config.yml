@@ -17,8 +17,13 @@ jobs:
       - restore_cache:
           key: v1-{{ checksum "setup" }}-{{ checksum "Gemfile.lock" }}-{{ .Environment.UNITY_VERSION }}
       - run:
-          name: Homebrew Update
-          command: brew update # TODO: Conditional on brew version
+          name: Check Homebrew Version and Cache Location
+          command: |
+            brew --version
+            brew --cache
+      # - run:
+      #     name: Homebrew Update
+      #     command: brew update # TODO: Conditional on brew version
       - run:
           name: Homebrew Depenendcies
           command: HOMEBREW_NO_AUTO_UPDATE=1 ./setup
