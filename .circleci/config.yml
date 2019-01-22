@@ -4,9 +4,6 @@ jobs:
     macos:
       xcode: "8.3.3"
     shell: /bin/bash --login -eo pipefail
-    environment:
-      UNITY_VERSION: 5.6.4f1
-      HOMEBREW_VERSION: 1.9.2
     steps:
       - checkout
       - run:
@@ -14,16 +11,12 @@ jobs:
           name: Set Ruby Version 2.3
           command: echo "ruby-2.3" > .ruby-version
       - run: git fetch --tags
-      - run:
-          name: Hack around {{ .Environment.variableName }} Not Being Implemented Properly
-          command: |
-            echo $UNITY_VERSION-$HOMEBREW_VERSION > UNITY_HOMEBREW_VERSIONS
-            cat UNITY_HOMEBREW_VERSIONS
       - restore_cache:
-          key: v1-{{ checksum "setup" }}-{{ checksum "Gemfile.lock" }}-{{ checksum "UNITY_HOMEBREW_VERSIONS" }}
+          key: v1-{{ checksum "setup" }}-{{ checksum "Gemfile.lock" }}-{{ .Environment.HOMEBREW_VERSION }}-{{ .Environment.UNITY_VERSION }}
       - run:
           name: Check Homebrew Version
           command: |
+            echo "Checking for Homebrew version $HOMEBREW_VERSION"
             [ `brew --version | sed -n 1p | sed 's/[^0-9.]*\([0-9.]*\).*/\1/'` = $HOMEBREW_VERSION ] || brew update
       - run:
           name: Homebrew Depenendcies
@@ -36,7 +29,7 @@ jobs:
             - /usr/local/Homebrew/
             - ~/Library/Caches/Homebrew
             - vendor/bundle
-          key: v1-{{ checksum "setup" }}-{{ checksum "Gemfile.lock" }}-{{ checksum "UNITY_HOMEBREW_VERSIONS" }}
+          key: v1-{{ checksum "setup" }}-{{ checksum "Gemfile.lock" }}-{{ .Environment.HOMEBREW_VERSION }}-{{ .Environment.UNITY_VERSION }}
       - run:
           name: Build Teak SDK
           command: |
