@@ -5,8 +5,6 @@ IFS=$'\n\t'
 brew tap caskroom/cask
 brew tap wooga/unityversions
 
-if [ "$(which ant)" == "" ]; then brew install ant; fi
-if [ "$(which aws)" == "" ]; then brew install awscli; fi
 
 # Install Unity 5
 if [ ! -f /Applications/Unity/Unity.app/Contents/Pkginfo ]; then
