@@ -5,6 +5,7 @@ jobs:
       xcode: "8.3.3"
     shell: /bin/bash --login -eo pipefail
     environment:
+      UNITY_VERSION: 5.6.4f1
       UNITY_HOME: /Applications/Unity-5.6.4f1/
     steps:
       - checkout
@@ -13,19 +14,22 @@ jobs:
           name: Set Ruby Version 2.3
           command: echo "ruby-2.3" > .ruby-version
       - run: git fetch --tags
-      # - restore_cache:
-      #     key: v0-{{ checksum "setup" }}-{{ checksum "Gemfile.lock" }}
+      - restore_cache:
+          key: v1-{{ checksum "setup" }}-{{ checksum "Gemfile.lock" }}-{{ .Environment.UNITY_VERSION }}
+      - run:
+          name: Homebrew Update
+          command: brew update # TODO: Conditional on brew version
       - run:
           name: Homebrew Depenendcies
-          command: ./setup
+          command: HOMEBREW_NO_AUTO_UPDATE=1 ./setup
       - run:
           name: Ruby Gems
           command: bundle check || bundle install --path vendor/bundle
-      # - save_cache:
-      #     paths:
-      #       - ~/Library/Caches/Homebrew/
-      #       - vendor/bundle
-      #     key: v0-{{ checksum "setup" }}-{{ checksum "Gemfile.lock" }}
+      - save_cache:
+          paths:
+            - /usr/local/Homebrew/
+            - vendor/bundle
+          key: v1-{{ checksum "setup" }}-{{ checksum "Gemfile.lock" }}-{{ .Environment.UNITY_VERSION }}
       - run:
           name: Build Teak SDK
           command: bundle exec rake build:android build:ios build:package
