@@ -170,6 +170,8 @@ Parameters
 
 .. note:: This call is processed asynchronously. If you immediately call ``TeakNotification.ScheduleNotification()`` after calling ``TeakNotification.CancelAllScheduledNotifications()`` it is possible for your newly scheduled notification to also be canceled. We recommend waiting until the callback has fired before scheduling any new notifications.
 
+.. _get-notification-state:
+
 Determining if User Has Disabled Push Notifications
 ---------------------------------------------------
 You can use Teak to get the state of push notifications for your app.
