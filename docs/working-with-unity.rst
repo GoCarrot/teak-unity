@@ -215,17 +215,17 @@ Example::
     // When a user presses a button indicating they want to change their notification settings
     Teak.Instance.OpenSettingsAppToThisAppsSettings()
 
-.. user-attributes:
+.. player-properties:
 
-User Attributes
----------------
-Teak can store up to 16 numeric, and 16 string attributes per user. These attributes can then be used for targeting.
+Player Properties
+-----------------
+Teak can store up to 16 numeric, and 16 string properties per player. These properties can then be used for targeting.
 
-You do not need to register the attribute in the Teak Dashboard prior to sending them from your game, however you will need to enable them in the Teak Dashboard before using them in targeting.
+You do not need to register the property in the Teak Dashboard prior to sending them from your game, however you will need to register them in the Teak Dashboard before using them in targeting.
 
-Numeric Attributes
-^^^^^^^^^^^^^^^^^^
-To set a numeric attribute, use::
+Numeric Property
+^^^^^^^^^^^^^^^^
+To set a numeric property, use::
 
     void SetNumericAttribute(string key, double value)
 
@@ -233,9 +233,9 @@ Example::
 
     Teak.Instance.SetNumericAttribute("coins", new_coin_balance);
 
-String Attributes
-^^^^^^^^^^^^^^^^^
-To set a string attribute, use::
+String Property
+^^^^^^^^^^^^^^^
+To set a string property, use::
 
     void SetStringAttribute(string key, string value)
 
