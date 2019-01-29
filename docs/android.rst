@@ -169,7 +169,8 @@ Your Teak App Id and API Key can be found in the Settings for your app on the Te
 
 Your Firebase Application Id and GCM Sender Id can be found in your Firebase dashboard.
 
-(`How to find these values <https://teak.readthedocs.io/en/latest/>`_)
+`How to find your GCM Sender Id <https://teak.readthedocs.io/en/latest/firebase-gcm.html>`_
+`How to find your Firebase App Id <https://teak.readthedocs.io/en/latest/firebase-app-id.html>`_
 
 What This Does
 ^^^^^^^^^^^^^^
