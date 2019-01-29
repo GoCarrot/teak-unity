@@ -1,5 +1,5 @@
-Working with Notifications, Rewards and Deep Links inside Unity
-===============================================================
+Working with Teak in Unity
+==========================
 .. highlight:: csharp
 
 Requesting Push Notification Permissions
