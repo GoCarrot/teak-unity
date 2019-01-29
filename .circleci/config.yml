@@ -35,6 +35,8 @@ jobs:
           command: |
             export UNITY_HOME=/Applications/Unity-$UNITY_VERSION/
             bundle exec rake
+            mkdir $UNITY_VERSION
+            mv Teak.unitypackage $UNITY_VERSION/Teak.unitypackage
       - run:
           command: |
             mkdir -p /tmp/unity_logs
@@ -46,7 +48,7 @@ jobs:
       - persist_to_workspace:
           root: .
           paths:
-            - Teak.unitypackage
+            - $UNITY_VERSION/Teak.unitypackage
       - run:
           name: ReadTheDocs.org Unified Docs
           command: curl -X POST -d "branches=master" -d "token=$RTD_TOKEN" https://readthedocs.org/api/v2/webhook/teak/41148/
@@ -73,7 +75,7 @@ jobs:
       - run:
           name: Upload SDK to S3
           command: |
-            aws s3 cp Teak.unitypackage s3://teak-build-artifacts/unity/Teak-$(git describe --tags --always).unitypackage --acl public-read
+            aws s3 cp $UNITY_VERSION/Teak.unitypackage s3://teak-build-artifacts/unity/Teak-$(git describe --tags --always).unitypackage --acl public-read
       - run:
           name: Trigger Cleanroom Build
           command: bundle exec rake build:cleanroom
@@ -100,7 +102,7 @@ jobs:
       - run:
           name: Upload SDK to S3
           command: |
-            aws s3 cp Teak.unitypackage s3://teak-build-artifacts/unity/Teak.unitypackage --acl public-read
+            aws s3 cp $UNITY_VERSION/Teak.unitypackage s3://teak-build-artifacts/unity/Teak.unitypackage --acl public-read
 workflows:
   version: 2
   un-tagged-build:
@@ -112,12 +114,14 @@ workflows:
   tagged-build:
     jobs:
       - build:
+          context: unity-5
           filters:
             branches:
               ignore: /.*/
             tags:
               only: /.*/
       - deploy_versioned:
+          context: unity-5
           requires:
             - build
           filters:
@@ -135,6 +139,7 @@ workflows:
             tags:
               only: /.*/
       - deploy_latest:
+          context: unity-5
           requires:
             - hold
           filters:
