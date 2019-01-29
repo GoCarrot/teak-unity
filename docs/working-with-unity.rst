@@ -285,3 +285,9 @@ In this link, the value ``io.teak.test.dollar`` would be assigned to the key ``s
 .. The route system that Teak uses is very flexible, let's look at a slightly more complicated example.
 
 .. What if we wanted to make a deep link which opened the game to a specific slot machine.
+
+Preprocessor Defines
+--------------------
+Teak sets some preprocessor defines for your use in ``Teak/Editor/TeakPreProcessDefiner.cs``.
+
+    :TEAK_2_0_OR_NEWER: The Teak SDK version is at least 2.0
