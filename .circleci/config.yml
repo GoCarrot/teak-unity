@@ -35,10 +35,8 @@ jobs:
           command: |
             export UNITY_HOME=/Applications/Unity-$UNITY_VERSION/
             bundle exec rake
-            mkdir $UNITY_VERSION
-            mv Teak.unitypackage $UNITY_VERSION/Teak.unitypackage
-            echo $UNITY_VERSION
-            ls $UNITY_VERSION
+            mkdir -p build/$UNITY_VERSION
+            mv Teak.unitypackage build/$UNITY_VERSION/Teak.unitypackage
       - run:
           command: |
             mkdir -p /tmp/unity_logs
@@ -48,9 +46,9 @@ jobs:
       - store_artifacts:
           path: /tmp/unity_logs
       - persist_to_workspace:
-          root: $UNITY_VERSION
+          root: .
           paths:
-            - Teak.unitypackage
+            - build/*
       - run:
           name: ReadTheDocs.org Unified Docs
           command: curl -X POST -d "branches=master" -d "token=$RTD_TOKEN" https://readthedocs.org/api/v2/webhook/teak/41148/
@@ -77,7 +75,7 @@ jobs:
       - run:
           name: Upload SDK to S3
           command: |
-            aws s3 cp $UNITY_VERSION/Teak.unitypackage s3://teak-build-artifacts/unity/Teak-$(git describe --tags --always).unitypackage --acl public-read
+            aws s3 cp build/$UNITY_VERSION/Teak.unitypackage s3://teak-build-artifacts/unity/Teak-$(git describe --tags --always).unitypackage --acl public-read
       - run:
           name: Trigger Cleanroom Build
           command: bundle exec rake build:cleanroom
@@ -104,7 +102,7 @@ jobs:
       - run:
           name: Upload SDK to S3
           command: |
-            aws s3 cp $UNITY_VERSION/Teak.unitypackage s3://teak-build-artifacts/unity/Teak.unitypackage --acl public-read
+            aws s3 cp build/$UNITY_VERSION/Teak.unitypackage s3://teak-build-artifacts/unity/Teak.unitypackage --acl public-read
 workflows:
   version: 2
   un-tagged-build:
