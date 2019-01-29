@@ -37,6 +37,8 @@ jobs:
             bundle exec rake
             mkdir $UNITY_VERSION
             mv Teak.unitypackage $UNITY_VERSION/Teak.unitypackage
+            echo $UNITY_VERSION
+            ls $UNITY_VERSION
       - run:
           command: |
             mkdir -p /tmp/unity_logs
@@ -46,9 +48,9 @@ jobs:
       - store_artifacts:
           path: /tmp/unity_logs
       - persist_to_workspace:
-          root: .
+          root: $UNITY_VERSION
           paths:
-            - $UNITY_VERSION/Teak.unitypackage
+            - Teak.unitypackage
       - run:
           name: ReadTheDocs.org Unified Docs
           command: curl -X POST -d "branches=master" -d "token=$RTD_TOKEN" https://readthedocs.org/api/v2/webhook/teak/41148/
