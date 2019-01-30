@@ -29,9 +29,13 @@ class TeakPreProcessDefiner :
 #endif
 
     private void SetTeakPreprocesorDefines(BuildTargetGroup targetGroup) {
-        string[] existingDefines = PlayerSettings.GetScriptingDefineSymbolsForGroup(targetGroup).Split(";");
-        HashSet<string> defines = new HashSet<string>(existingDefines);
-        defines.UnionWith(TeakDefines);
-        PlayerSettings.SetScriptingDefineSymbolsForGroup(targetGroup, string.Join(";", defines.ToArray()));
+        string[] existingDefines = PlayerSettings.GetScriptingDefineSymbolsForGroup(targetGroup).Split(';');
+
+        HashSet<string> updatedDefines = new HashSet<string>(existingDefines);
+        updatedDefines.UnionWith(TeakDefines);
+
+        string[] defines = new string[updatedDefines.Count];
+        updatedDefines.CopyTo(defines);
+        PlayerSettings.SetScriptingDefineSymbolsForGroup(targetGroup, string.Join(";", defines));
     }
 }
