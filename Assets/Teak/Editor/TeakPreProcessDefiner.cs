@@ -5,6 +5,8 @@ using UnityEditor.Build.Reporting;
 #endif
 using UnityEngine;
 
+using System.Collections.Generic;
+
 class TeakPreProcessDefiner :
 #if UNITY_2018_1_OR_NEWER
     IPreprocessBuildWithReport
@@ -27,9 +29,9 @@ class TeakPreProcessDefiner :
 #endif
 
     private void SetTeakPreprocesorDefines(BuildTargetGroup targetGroup) {
-        string defines = PlayerSettings.GetScriptingDefineSymbolsForGroup(targetGroup);
-        if (!defines.EndsWith(";")) defines += ";";
-        defines += string.Join(";", TeakDefines);
-        PlayerSettings.SetScriptingDefineSymbolsForGroup(targetGroup, defines);
+        string[] existingDefines = PlayerSettings.GetScriptingDefineSymbolsForGroup(targetGroup).Split(";");
+        HashSet<string> defines = new HashSet<string>(existingDefines);
+        defines.UnionWith(TeakDefines);
+        PlayerSettings.SetScriptingDefineSymbolsForGroup(targetGroup, string.Join(";", defines.ToArray()));
     }
 }
