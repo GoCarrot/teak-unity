@@ -1,0 +1,9 @@
+1.0.0
+-----
+:Breaking Changes:
+    * None
+:New Features:
+    * None
+:Bug Fixes:
+    * iOS Push State fix in Native SDK
+    * Fix Android IL2CPP when using Prime31
