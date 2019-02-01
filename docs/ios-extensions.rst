@@ -212,5 +212,7 @@ Make sure that ``TeakNotificationService`` is being built properly.
 .. tip:: We use a Ruby script for automating this process during our testing. Feel free to
     use it for your own build process as well.
 
-    https://github.com/GoCarrot/teak-ios/blob/master/TeakExtensions/add_teak_extensions.rb
+    This zip file contains the script, and all needed code and dependencies:
+
+    https://s3.amazonaws.com/teak-build-artifacts/ios/TeakExtensions.zip
 
