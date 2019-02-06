@@ -8,7 +8,7 @@ Dependencies
 
 The following dependencies are required by Teak
 
-* ``com.google.android.gms:play-services-ads:16+``
+* ``com.google.android.gms:play-services-ads-identifier:16+``
 * ``com.google.android.gms:play-services-base:16+``
 * ``com.google.android.gms:play-services-basement:16+``
 * ``com.google.firebase:firebase-messaging:17+``
