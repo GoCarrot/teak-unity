@@ -149,6 +149,9 @@ public partial class Teak : MonoBehaviour {
         teak.CallStatic("identifyUser", userIdentifier, optOut.ToArray());
 #elif UNITY_IPHONE || UNITY_WEBGL
         TeakIdentifyUser(userIdentifier, Json.Serialize(optOut));
+#   if UNITY_WEBGL
+        TeakUnityReadyForDeepLinks();
+#   endif
 #endif
     }
 
@@ -166,6 +169,24 @@ public partial class Teak : MonoBehaviour {
         teak.CallStatic("trackEvent", actionId, objectTypeId, objectInstanceId);
 #elif UNITY_IPHONE || UNITY_WEBGL
         TeakTrackEvent(actionId, objectTypeId, objectInstanceId);
+#endif
+    }
+
+    /// <summary>
+    /// Increment an arbitrary event in Teak.
+    /// </summary>
+    /// <param name="actionId">The identifier for the action, e.g. 'complete'.</param>
+    /// <param name="objectTypeId">The type of object that is being posted, e.g. 'quest'.</param>
+    /// <param name="objectInstanceId">The specific instance of the object, e.g. 'gather-quest-1'</param>
+    /// <param name="count">The amount by which to increment</param>
+    public void IncrementEvent(string actionId, string objectTypeId, string objectInstanceId, uint count) {
+#if UNITY_EDITOR
+        Debug.Log("[Teak] IncrementEvent(): " + actionId + " - " + objectTypeId + " - " + objectInstanceId);
+#elif UNITY_ANDROID
+        AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
+        teak.CallStatic("incrementEvent", actionId, objectTypeId, objectInstanceId, count);
+#elif UNITY_IPHONE || UNITY_WEBGL
+        TeakIncrementEvent(actionId, objectTypeId, objectInstanceId, count);
 #endif
     }
 
@@ -363,10 +384,10 @@ public partial class Teak : MonoBehaviour {
     private static extern void TeakTrackEvent(string actionId, string objectTypeId, string objectInstanceId);
 
     [DllImport ("__Internal")]
-    private static extern void TeakUnityRegisterRoute(string route, string name, string description);
+    private static extern void TeakIncrementEvent(string actionId, string objectTypeId, string objectInstanceId, uint count);
 
     [DllImport ("__Internal")]
-    private static extern void TeakUnityReadyForDeepLinks();
+    private static extern void TeakUnityRegisterRoute(string route, string name, string description);
 
     [DllImport ("__Internal")]
     private static extern void TeakSetBadgeCount(int count);
@@ -392,6 +413,9 @@ public partial class Teak : MonoBehaviour {
 #if UNITY_WEBGL
     [DllImport ("__Internal")]
     private static extern string TeakInitWebGL(string appId, string apiKey);
+
+    [DllImport ("__Internal")]
+    private static extern void TeakUnityReadyForDeepLinks();
 #elif UNITY_IPHONE
     [DllImport ("__Internal")]
     private static extern IntPtr TeakGetAppConfiguration();
@@ -479,15 +503,6 @@ public partial class Teak : MonoBehaviour {
     }
 
     void Start() {
-#if UNITY_EDITOR
-        // Nothing currently
-#elif UNITY_ANDROID
-        AndroidJavaClass teakUnity = new AndroidJavaClass("io.teak.sdk.wrapper.unity.TeakUnity");
-        teakUnity.CallStatic("readyForDeepLinks");
-#elif UNITY_IPHONE || UNITY_WEBGL
-        TeakUnityReadyForDeepLinks();
-#endif
-
 #if UNITY_ANDROID
         // Try and find an active store plugin
         Type onePF = Type.GetType("OpenIABEventManager, Assembly-CSharp-firstpass");

@@ -25,9 +25,6 @@ extern NSDictionary* TeakWrapperSDK;
 typedef void (^TeakLinkBlock)(NSDictionary* _Nonnull parameters);
 extern void TeakRegisterRoute(const char* route, const char* name, const char* description, TeakLinkBlock block);
 
-extern void TeakRunNSOperation(NSOperation* op);
-extern void TeakAssignWaitForDeepLinkOperation(NSOperation* waitForDeepLinkOp);
-
 extern void TeakRequestProvisionalPushAuthorization();
 
 // TeakNotification
@@ -40,8 +37,6 @@ extern NSObject* TeakNotificationCancelAll();
 extern void UnitySendMessage(const char*, const char*, const char*);
 
 extern NSString* TeakUnitySDKVersion;
-
-NSOperation* waitForDeepLinkOperation = nil;
 
 void TeakRelease(id ptr)
 {
@@ -126,11 +121,6 @@ void teakOnReward(NSDictionary* userInfo)
    }
 }
 
-void TeakUnityReadyForDeepLinks()
-{
-   TeakRunNSOperation(waitForDeepLinkOperation);
-}
-
 void TeakUnityRegisterRoute(const char* route, const char* name, const char* description)
 {
    NSString* nsRoute = [NSString stringWithUTF8String:route];
@@ -157,10 +147,6 @@ static void teak_init()
    NSString* appId = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"TeakAppId"];
    NSString* apiKey = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"TeakApiKey"];
    Teak_Plant(NSClassFromString(@"UnityAppController"), appId, apiKey);
-
-   waitForDeepLinkOperation = [NSBlockOperation blockOperationWithBlock:^{
-   }];
-   TeakAssignWaitForDeepLinkOperation(waitForDeepLinkOperation);
 
    [[NSNotificationCenter defaultCenter] addObserverForName:TeakNotificationAppLaunch
                                                      object:nil
