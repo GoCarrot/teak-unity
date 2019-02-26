@@ -334,6 +334,17 @@ public partial class Teak : MonoBehaviour {
 #endif
     }
 
+    public void ProcessDeepLinks() {
+#if UNITY_EDITOR || UNITY_WEBGL
+        // Empty
+#elif UNITY_ANDROID
+        AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
+        teak.CallStatic("processDeepLinks");
+#elif UNITY_IPHONE
+        TeakProcessDeepLinks();
+#endif
+    }
+
     /// @cond hide_from_doxygen
     private static Teak mInstance;
     Dictionary<string, Action<Dictionary<string, object>>> mDeepLinkRoutes = new Dictionary<string, Action<Dictionary<string, object>>>();
@@ -397,6 +408,9 @@ public partial class Teak : MonoBehaviour {
 
     [DllImport ("__Internal")]
     private static extern void TeakSetStringAttribute(string key, string value);
+
+    [DllImport ("__Internal")]
+    private static extern void TeakProcessDeepLinks();
 #endif
 
 #if UNITY_IPHONE
