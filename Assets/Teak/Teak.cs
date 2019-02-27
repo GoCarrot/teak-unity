@@ -46,11 +46,13 @@ public partial class Teak : MonoBehaviour {
         }
     }
 
+    /// <summary>Teak App Id.</summary>
     public static string AppId {
         get;
         set;
     }
 
+    /// <summary>Teak API Key.</summary>
     public static string APIKey {
         get;
         set;
@@ -334,6 +336,14 @@ public partial class Teak : MonoBehaviour {
 #endif
     }
 
+    /// <summary>
+    /// Indicate that your app is ready for deep links.
+    /// </summary>
+    /// <remarks>
+    /// Deep links will not be processed sooner than the earliest of:
+    /// - <see cref="IdentifyUser"/> is called
+    /// - This method is called
+    /// </remarks>
     public void ProcessDeepLinks() {
 #if UNITY_EDITOR || UNITY_WEBGL
         // Empty
