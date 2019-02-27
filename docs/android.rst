@@ -8,7 +8,7 @@ Dependencies
 
 The following dependencies are required by Teak
 
-* ``com.google.android.gms:play-services-ads:16+``
+* ``com.google.android.gms:play-services-ads-identifier:16+``
 * ``com.google.android.gms:play-services-base:16+``
 * ``com.google.android.gms:play-services-basement:16+``
 * ``com.google.firebase:firebase-messaging:17+``
@@ -169,7 +169,8 @@ Your Teak App Id and API Key can be found in the Settings for your app on the Te
 
 Your Firebase Application Id and GCM Sender Id can be found in your Firebase dashboard.
 
-(`How to find these values <https://teak.readthedocs.io/en/latest/>`_)
+`How to find your GCM Sender Id <https://teak.readthedocs.io/en/latest/firebase-gcm.html>`_
+`How to find your Firebase App Id <https://teak.readthedocs.io/en/latest/firebase-app-id.html>`_
 
 What This Does
 ^^^^^^^^^^^^^^
@@ -186,11 +187,14 @@ You will need two versions of this file. One located in ``values`` and the other
         <!-- The tint-color for your silouette icon, format is: 0xAARRGGBB -->
         <integer name="io_teak_notification_accent_color">0xfff15a29</integer>
 
-        <!-- Icons should be 144x144, PNG with transparency -->
+        <!-- Icons should be white and transparent, and processed with Android Asset Studio -->
         <drawable name="io_teak_small_notification_icon">@drawable/YOUR_ICON_FILE_NAME</drawable>
     </resources>
 
-The file in ``values`` should specify a full-color icon, for devices running less than Android 5, and the file in ``values-v21`` should specify a white and transparent PNG for Android 5 and above.
+The file in ``values`` should point to a full-color icon, for devices running less than Android 5, and the file in ``values-v21`` should point to a white and transparent PNG for Android 5 and above.
+
+.. important:: To make sure that your white and transparent PNG shows up properly, use :doc:`Android Asset Studio's Notification icon generator <android/notification-icon>`.
+
 
 .. _android-set-up-deep-linking:
 

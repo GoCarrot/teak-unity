@@ -4,30 +4,39 @@ jobs:
     macos:
       xcode: "8.3.3"
     shell: /bin/bash --login -eo pipefail
-    environment:
-      UNITY_HOME: /Applications/Unity-5.6.4f1/
     steps:
       - checkout
+      - run:
+          shell: /bin/bash -eo pipefail
+          name: Set Ruby Version 2.3
+          command: echo "ruby-2.3" > .ruby-version
       - run: git fetch --tags
       - restore_cache:
-          key: v0-{{ checksum "setup" }}-{{ checksum "Gemfile.lock" }}
+          key: v1-{{ checksum "setup" }}-{{ checksum "Gemfile.lock" }}-{{ .Environment.HOMEBREW_VERSION }}-{{ .Environment.UNITY_VERSION }}
       - run:
-          name: Fix 'Homebrew must be run under Ruby 2.3!'
-          command: brew update
+          name: Check Homebrew Version
+          command: |
+            echo "Checking for Homebrew version $HOMEBREW_VERSION"
+            [ `brew --version | sed -n 1p | sed 's/[^0-9.]*\([0-9.]*\).*/\1/'` = $HOMEBREW_VERSION ] || brew update
       - run:
           name: Homebrew Depenendcies
-          command: ./setup
+          command: HOMEBREW_NO_AUTO_UPDATE=1 ./setup
       - run:
           name: Ruby Gems
           command: bundle check || bundle install --path vendor/bundle
       - save_cache:
           paths:
-            - ~/Library/Caches/Homebrew/
+            - /usr/local/Homebrew/
+            - ~/Library/Caches/Homebrew
             - vendor/bundle
-          key: v0-{{ checksum "setup" }}-{{ checksum "Gemfile.lock" }}
+          key: v1-{{ checksum "setup" }}-{{ checksum "Gemfile.lock" }}-{{ .Environment.HOMEBREW_VERSION }}-{{ .Environment.UNITY_VERSION }}
       - run:
           name: Build Teak SDK
-          command: bundle exec rake build:android build:ios build:package
+          command: |
+            export UNITY_HOME=/Applications/Unity-$UNITY_VERSION/
+            bundle exec rake
+            mkdir -p build/$UNITY_VERSION
+            mv Teak.unitypackage build/$UNITY_VERSION/Teak.unitypackage
       - run:
           command: |
             mkdir -p /tmp/unity_logs
@@ -39,7 +48,7 @@ jobs:
       - persist_to_workspace:
           root: .
           paths:
-            - Teak.unitypackage
+            - build/*
       - run:
           name: ReadTheDocs.org Unified Docs
           command: curl -X POST -d "branches=master" -d "token=$RTD_TOKEN" https://readthedocs.org/api/v2/webhook/teak/41148/
@@ -66,7 +75,7 @@ jobs:
       - run:
           name: Upload SDK to S3
           command: |
-            aws s3 cp Teak.unitypackage s3://teak-build-artifacts/unity/Teak-$(git describe --tags --always).unitypackage --acl public-read
+            aws s3 cp build/$UNITY_VERSION/Teak.unitypackage s3://teak-build-artifacts/unity/Teak-$(git describe --tags --always).unitypackage --acl public-read
       - run:
           name: Trigger Cleanroom Build
           command: bundle exec rake build:cleanroom
@@ -93,7 +102,7 @@ jobs:
       - run:
           name: Upload SDK to S3
           command: |
-            aws s3 cp Teak.unitypackage s3://teak-build-artifacts/unity/Teak.unitypackage --acl public-read
+            aws s3 cp build/$UNITY_VERSION/Teak.unitypackage s3://teak-build-artifacts/unity/Teak.unitypackage --acl public-read
 workflows:
   version: 2
   un-tagged-build:
@@ -105,12 +114,14 @@ workflows:
   tagged-build:
     jobs:
       - build:
+          context: unity-5
           filters:
             branches:
               ignore: /.*/
             tags:
               only: /.*/
       - deploy_versioned:
+          context: unity-5
           requires:
             - build
           filters:
@@ -128,6 +139,7 @@ workflows:
             tags:
               only: /.*/
       - deploy_latest:
+          context: unity-5
           requires:
             - hold
           filters:

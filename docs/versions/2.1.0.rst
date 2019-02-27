@@ -1,0 +1,8 @@
+2.1.0
+-----
+:Breaking Changes:
+    * None
+:New Features:
+    * Added ``IncrementEvent``
+:Bug Fixes:
+    * None

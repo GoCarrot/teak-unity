@@ -78,7 +78,7 @@ If you use Firebase's ``google-services.json`` and its accompanying Gradle plugi
 
 If you use Teak's configuration panel in Unity, it has a setting for ``Firebase App Id``.
 
-(`How to find this value <https://teak.readthedocs.io/en/latest/>`_)
+(`How to find this value <https://teak.readthedocs.io/en/latest/firebase-app-id.html>`_)
 
 Otherwise, you will need to make the value available to Teak via XML::
 

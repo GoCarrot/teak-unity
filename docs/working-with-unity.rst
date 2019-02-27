@@ -1,5 +1,5 @@
-Working with Notifications, Rewards and Deep Links inside Unity
-===============================================================
+Working with Teak in Unity
+==========================
 .. highlight:: csharp
 
 Requesting Push Notification Permissions
@@ -170,6 +170,8 @@ Parameters
 
 .. note:: This call is processed asynchronously. If you immediately call ``TeakNotification.ScheduleNotification()`` after calling ``TeakNotification.CancelAllScheduledNotifications()`` it is possible for your newly scheduled notification to also be canceled. We recommend waiting until the callback has fired before scheduling any new notifications.
 
+.. _get-notification-state:
+
 Determining if User Has Disabled Push Notifications
 ---------------------------------------------------
 You can use Teak to get the state of push notifications for your app.
@@ -213,6 +215,34 @@ Example::
     // When a user presses a button indicating they want to change their notification settings
     Teak.Instance.OpenSettingsAppToThisAppsSettings()
 
+.. player-properties:
+
+Player Properties
+-----------------
+Teak can store up to 16 numeric, and 16 string properties per player. These properties can then be used for targeting.
+
+You do not need to register the property in the Teak Dashboard prior to sending them from your game, however you will need to register them in the Teak Dashboard before using them in targeting.
+
+Numeric Property
+^^^^^^^^^^^^^^^^
+To set a numeric property, use::
+
+    void SetNumericAttribute(string key, double value)
+
+Example::
+
+    Teak.Instance.SetNumericAttribute("coins", new_coin_balance);
+
+String Property
+^^^^^^^^^^^^^^^
+To set a string property, use::
+
+    void SetStringAttribute(string key, string value)
+
+Example::
+
+    Teak.Instance.SetStringAttribute("last_slot", "amazing_slot_name");
+
 Deep Links
 ----------
 Deep Linking with Teak is based on routes, which act like URLs. These routes allow you to specify variables
@@ -255,3 +285,9 @@ In this link, the value ``io.teak.test.dollar`` would be assigned to the key ``s
 .. The route system that Teak uses is very flexible, let's look at a slightly more complicated example.
 
 .. What if we wanted to make a deep link which opened the game to a specific slot machine.
+
+Preprocessor Defines
+--------------------
+Teak sets some preprocessor defines for your use in ``Teak/Editor/TeakPreProcessDefiner.cs``.
+
+    :TEAK_2_0_OR_NEWER: The Teak SDK version is at least 2.0

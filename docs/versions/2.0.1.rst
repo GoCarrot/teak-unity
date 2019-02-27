@@ -1,0 +1,10 @@
+2.0.1
+-----
+:Breaking Changes:
+    * None
+:New Features:
+    * Preprocessor define for Teak SDK version: ``TEAK_2_0_OR_NEWER``
+:Bug Fixes:
+    * Compiler warning under .NET 4.x fixed (``System.Xml.XmlReaderSettings.ProhibitDtd``)
+    * Fixed UnityPurchasing compile error on non-Facebook WebGL target builds
+    * Android ADMPushProvider fix

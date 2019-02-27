@@ -34,7 +34,7 @@ end
 KMS_KEY = `aws kms decrypt --ciphertext-blob fileb://kms/store_encryption_key.key --output text --query Plaintext | base64 --decode`.freeze
 CIRCLE_TOKEN = ENV.fetch('CIRCLE_TOKEN') { `openssl enc -md MD5 -d -aes-256-cbc -in kms/encrypted_circle_ci_key.data -k #{KMS_KEY}` }
 
-UNITY_HOME = ENV.fetch('UNITY_HOME', '/Applications/Unity-2017.1.0f3')
+UNITY_HOME = ENV.fetch('UNITY_HOME', Dir.glob('/Applications/Unity*').first)
 TEAK_SDK_VERSION = `git describe --tags`.strip
 NATIVE_CONFIG = YAML.load_file('native.config.yml')
 
@@ -76,6 +76,8 @@ def unity(*args, quit: true, nographics: true)
 ensure
   add_unity_log_to_artifacts if ci?
 end
+
+task default: ['build:android', 'build:ios', 'build:package']
 
 task :format do
   sh 'astyle --project --recursive Assets/*.cs'
