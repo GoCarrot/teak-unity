@@ -247,7 +247,7 @@ Deep Links
 ----------
 Deep Linking with Teak is based on routes, which act like URLs. These routes allow you to specify variables
 
-You can add routes during the ``Awake()`` function of any ``MonoBehaviour`` using::
+You can add routes using::
 
     void RegisterRoute(string route, string name, string description, Action<Dictionary<string, object>> action)
 
@@ -270,6 +270,8 @@ Parameters
 
     :action: The method to execute when the app is opened via a deep link to this route
 
+.. important:: You need to register your deep link routes before you call ``IdentifyUser``.
+
 How Routes Work
 ^^^^^^^^^^^^^^^
 Routes work like URLs where parts of the path can be a variable. In the example above, the route is ``/store/:sku``. Variables in the path are designated with ``:``. So, in the route ``/store/:sku`` there is a variable named ``sku``.
@@ -285,6 +287,17 @@ In this link, the value ``io.teak.test.dollar`` would be assigned to the key ``s
 .. The route system that Teak uses is very flexible, let's look at a slightly more complicated example.
 
 .. What if we wanted to make a deep link which opened the game to a specific slot machine.
+
+When Are Deep Links Executed
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Deep links are passed to an application as part of the launch. The Teak SDK holds onto the deep link information and waits until your app has finished launching, and initializing.
+
+Deep links will get processed the sooner of:
+
+* Your app calls ``IdentifyUser``
+* Your app calls ``ProcessDeepLinks``
+
+``ProcessDeepLinks`` is provided so that you can signify that deep links should be processed earlier than your call to ``IdentifyUser`` or so that you can still process deep links in the case of a user opting out of tracking.
 
 Preprocessor Defines
 --------------------
