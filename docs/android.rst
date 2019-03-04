@@ -16,7 +16,11 @@ The following dependencies are required by Teak
 * ``com.android.support:support-core-utils:26.1+``
 * ``com.android.support:support-compat:26.1+``
 
-.. note:: If you use the `Play Services Resolver plugin for Unity <https://github.com/googlesamples/unity-jar-resolver>`_, these dependencies should be taken care of automatically.
+The following dependencies are optional
+
+* ``com.android.installreferrer:installreferrer:1+``
+
+.. note:: If you use the `Play Services Resolver plugin for Unity <https://github.com/googlesamples/unity-jar-resolver>`_, all dependencies should be taken care of automatically.
 
 Tell Teak to Auto-Initialize
 ----------------------------
