@@ -104,6 +104,29 @@ public partial class Teak : MonoBehaviour {
     }
 
     /// <summary>
+    /// Get Teak's configuration data about the current app.
+    /// </summary>
+    /// <returns>A dictionary containing app info, or null if it's not ready</returns>
+    public Dictionary<string, object> AppConfiguration {
+        get {
+            if (mAppConfiguration == null) {
+#if UNITY_EDITOR || UNITY_WEBGL
+                string configuration = "{}";
+#elif UNITY_ANDROID
+                AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
+                string configuration = teak.CallStatic<string>("getAppConfiguration");
+#elif UNITY_IPHONE
+                string configuration = Marshal.PtrToStringAnsi(TeakGetAppConfiguration());
+#endif
+                if (!string.IsNullOrEmpty(configuration)) {
+                    mAppConfiguration = Json.Deserialize(configuration) as Dictionary<string,object>;
+                }
+            }
+            return mAppConfiguration;
+        }
+    }
+
+    /// <summary>
     /// Value provided to IdentifyUser to opt out of collecting an IDFA for this specific user.
     /// </summary>
     /// <remarks>
@@ -306,22 +329,6 @@ public partial class Teak : MonoBehaviour {
     }
 
     /// <summary>
-    /// Get Teak's configuration data about the current app.
-    /// </summary>
-    /// <returns>A dictionary containing app info, or null if it's not ready</returns>
-    public Dictionary<string, object> GetAppConfiguration() {
-#if UNITY_EDITOR || UNITY_WEBGL
-        return new Dictionary<string, object>();
-#elif UNITY_ANDROID
-        AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
-        return Json.Deserialize(teak.CallStatic<string>("getAppConfiguration")) as Dictionary<string,object>;
-#elif UNITY_IPHONE
-        string configuration = Marshal.PtrToStringAnsi(TeakGetAppConfiguration());
-        return Json.Deserialize(configuration) as Dictionary<string,object>;
-#endif
-    }
-
-    /// <summary>
     /// Register for Provisional Push Notifications.
     /// </summary>
     /// <remarks>
@@ -357,7 +364,8 @@ public partial class Teak : MonoBehaviour {
 
     /// @cond hide_from_doxygen
     private static Teak mInstance;
-    Dictionary<string, Action<Dictionary<string, object>>> mDeepLinkRoutes = new Dictionary<string, Action<Dictionary<string, object>>>();
+    private Dictionary<string, Action<Dictionary<string, object>>> mDeepLinkRoutes = new Dictionary<string, Action<Dictionary<string, object>>>();
+    private Dictionary<string, object> mAppConfiguration = null;
     /// @endcond
 
     /// @cond hide_from_doxygen
@@ -519,8 +527,10 @@ public partial class Teak : MonoBehaviour {
         apiKey = (string.IsNullOrEmpty(Teak.APIKey) ? TeakSettings.APIKey : Teak.APIKey);
         TeakInitWebGL(appId, apiKey);
 #else
-        appId = GetAppConfiguration()["appId"] as string;
-        apiKey = GetAppConfiguration()["apiKey"] as string;
+        if (this.AppConfiguration != null) {
+            appId = this.AppConfiguration["appId"] as string;
+            apiKey = this.AppConfiguration["apiKey"] as string;
+        }
 #endif
         if (appId != null) Teak.AppId = appId;
         if (apiKey != null) Teak.APIKey = apiKey;
