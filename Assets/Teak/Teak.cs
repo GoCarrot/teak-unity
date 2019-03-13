@@ -209,7 +209,8 @@ public partial class Teak : MonoBehaviour {
         Debug.Log("[Teak] IncrementEvent(): " + actionId + " - " + objectTypeId + " - " + objectInstanceId + " - " + count);
 #elif UNITY_ANDROID
         AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
-        teak.CallStatic("incrementEvent", actionId, objectTypeId, objectInstanceId, count);
+        long longCountForJava = (long) count;
+        teak.CallStatic("incrementEvent", actionId, objectTypeId, objectInstanceId, longCountForJava);
 #elif UNITY_IPHONE || UNITY_WEBGL
         TeakIncrementEvent(actionId, objectTypeId, objectInstanceId, count);
 #endif
