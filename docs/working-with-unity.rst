@@ -158,7 +158,7 @@ To cancel a previously scheduled notification, use::
         System.Action<TeakNotification.Reply> callback)
 
 Parameters
-    :scheduleId: The id received from ``ScheduleNotification()``
+    :scheduleId: Passing the id received from ``ScheduleNotification()`` will cancel that specific notification; passing the ``creativeId`` used to schedule the notification will cancel **all** scheduled notifications with that creative id for the user
 
     :callback: The callback to be called after the notification is canceled
 
