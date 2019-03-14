@@ -130,6 +130,8 @@ Parameters
 
     :callback: The callback to be called after the notification is scheduled
 
+.. important:: The maximum delay for a Local Notification is 30 days.
+
 Scheduling a Long-Distance Notification
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 To schedule a notification from your game, delivered to a different user of your game use::
@@ -145,6 +147,8 @@ Parameters
     :userIds: An array of user ids to which the notification should be delivered
 
     :callback: The callback to be called after the notifications are scheduled
+
+.. important:: The maximum delay for a Long-Distance Notification is 30 days.
 
 Canceling a Notification
 ^^^^^^^^^^^^^^^^^^^^^^^^
