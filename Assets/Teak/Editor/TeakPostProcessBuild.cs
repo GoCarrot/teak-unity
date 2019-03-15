@@ -91,7 +91,7 @@ public class TeakPostProcessBuild {
         plist.root.SetString("aps-environment", UnityEngine.Debug.isDebugBuild ? "development" : "production");
 
         // Add associated domains
-        AddElementToArrayIfMissing(plist, "com.apple.developer.associated-domains", "applinks:test.jckpt.me");
+        AddElementToArrayIfMissing(plist, "com.apple.developer.associated-domains", "applinks:" + TeakSettings.ShortlinkDomain);
 
         return plist.WriteToString();
     }
