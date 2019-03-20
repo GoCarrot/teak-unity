@@ -247,6 +247,41 @@ Example::
 
     Teak.Instance.SetStringAttribute("last_slot", "amazing_slot_name");
 
+Analytics Events
+----------------
+Teak can be used to track analytics events which can then be used for targeting. These events are automatically batched by the Teak SDK, you do not need to perform your own batching.
+
+Event Format
+^^^^^^^^^^^^
+Teak events are a tuple of values, 'action', 'object type' and 'object instance'. For example: ['LevelUp', 'Fishing', '13'].
+
+Object instance, and object type are optional, but if you provide an object instance, you must also provide an object type, for example ['FishCaught', null, '13'] is not allowed, but ['FishCaught', 'Salmon'] is allowed.
+
+Tracking an Event
+^^^^^^^^^^^^^^^^^
+To track that an event occurred, use::
+
+    void TrackEvent(string actionId, string objectTypeId, string objectInstanceId)
+
+Example::
+
+    Teak.Instance.TrackEvent("LevelUp", "Fishing", "13");
+
+Incrementing Events
+^^^^^^^^^^^^^^^^^^^
+Incremented events are used for analytics which grow over time. You cannot provide negative values.
+
+To increment an event, use::
+
+    void IncrementEvent(string actionId, string objectTypeId, string objectInstanceId, ulong count)
+
+Examples::
+
+    Teak.Instance.IncrementEvent("coin_sink", "slot", "Happy Land Slots", 25000);
+    Teak.Instance.IncrementEvent("spin", "slot", "Happy Land Slots", 1);
+    // <after the spin happens>
+    Teak.Instance.IncrementEvent("coin_source", "slot", "Happy Land Slots", 1000000);
+
 Deep Links
 ----------
 Deep Linking with Teak is based on routes, which act like URLs. These routes allow you to specify variables
