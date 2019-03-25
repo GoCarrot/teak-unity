@@ -130,6 +130,8 @@ Parameters
 
     :callback: The callback to be called after the notification is scheduled
 
+.. important:: The maximum delay for a Local Notification is 30 days.
+
 Scheduling a Long-Distance Notification
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 To schedule a notification from your game, delivered to a different user of your game use::
@@ -146,6 +148,8 @@ Parameters
 
     :callback: The callback to be called after the notifications are scheduled
 
+.. important:: The maximum delay for a Long-Distance Notification is 30 days.
+
 Canceling a Notification
 ^^^^^^^^^^^^^^^^^^^^^^^^
 To cancel a previously scheduled notification, use::
@@ -154,7 +158,7 @@ To cancel a previously scheduled notification, use::
         System.Action<TeakNotification.Reply> callback)
 
 Parameters
-    :scheduleId: The id received from ``ScheduleNotification()``
+    :scheduleId: Passing the id received from ``ScheduleNotification()`` will cancel that specific notification; passing the ``creativeId`` used to schedule the notification will cancel **all** scheduled notifications with that creative id for the user
 
     :callback: The callback to be called after the notification is canceled
 
@@ -243,11 +247,46 @@ Example::
 
     Teak.Instance.SetStringAttribute("last_slot", "amazing_slot_name");
 
+Analytics Events
+----------------
+Teak can be used to track analytics events which can then be used for targeting. These events are automatically batched by the Teak SDK, you do not need to perform your own batching.
+
+Event Format
+^^^^^^^^^^^^
+Teak events are a tuple of values, 'action', 'object type' and 'object instance'. For example: ['LevelUp', 'Fishing', '13'].
+
+Object instance, and object type are optional, but if you provide an object instance, you must also provide an object type, for example ['FishCaught', null, '13'] is not allowed, but ['FishCaught', 'Salmon'] is allowed.
+
+Tracking an Event
+^^^^^^^^^^^^^^^^^
+To track that an event occurred, use::
+
+    void TrackEvent(string actionId, string objectTypeId, string objectInstanceId)
+
+Example::
+
+    Teak.Instance.TrackEvent("LevelUp", "Fishing", "13");
+
+Incrementing Events
+^^^^^^^^^^^^^^^^^^^
+Incremented events are used for analytics which grow over time. You cannot provide negative values.
+
+To increment an event, use::
+
+    void IncrementEvent(string actionId, string objectTypeId, string objectInstanceId, ulong count)
+
+Examples::
+
+    Teak.Instance.IncrementEvent("coin_sink", "slot", "Happy Land Slots", 25000);
+    Teak.Instance.IncrementEvent("spin", "slot", "Happy Land Slots", 1);
+    // <after the spin happens>
+    Teak.Instance.IncrementEvent("coin_source", "slot", "Happy Land Slots", 1000000);
+
 Deep Links
 ----------
 Deep Linking with Teak is based on routes, which act like URLs. These routes allow you to specify variables
 
-You can add routes during the ``Awake()`` function of any ``MonoBehaviour`` using::
+You can add routes using::
 
     void RegisterRoute(string route, string name, string description, Action<Dictionary<string, object>> action)
 
@@ -270,6 +309,8 @@ Parameters
 
     :action: The method to execute when the app is opened via a deep link to this route
 
+.. important:: You need to register your deep link routes before you call ``IdentifyUser``.
+
 How Routes Work
 ^^^^^^^^^^^^^^^
 Routes work like URLs where parts of the path can be a variable. In the example above, the route is ``/store/:sku``. Variables in the path are designated with ``:``. So, in the route ``/store/:sku`` there is a variable named ``sku``.
@@ -285,6 +326,17 @@ In this link, the value ``io.teak.test.dollar`` would be assigned to the key ``s
 .. The route system that Teak uses is very flexible, let's look at a slightly more complicated example.
 
 .. What if we wanted to make a deep link which opened the game to a specific slot machine.
+
+When Are Deep Links Executed
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Deep links are passed to an application as part of the launch. The Teak SDK holds onto the deep link information and waits until your app has finished launching, and initializing.
+
+Deep links will get processed the sooner of:
+
+* Your app calls ``IdentifyUser``
+* Your app calls ``ProcessDeepLinks``
+
+``ProcessDeepLinks`` is provided so that you can signify that deep links should be processed earlier than your call to ``IdentifyUser`` or so that you can still process deep links in the case of a user opting out of tracking.
 
 Preprocessor Defines
 --------------------

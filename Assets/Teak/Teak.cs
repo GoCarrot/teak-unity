@@ -46,11 +46,13 @@ public partial class Teak : MonoBehaviour {
         }
     }
 
+    /// <summary>Teak App Id.</summary>
     public static string AppId {
         get;
         set;
     }
 
+    /// <summary>Teak API Key.</summary>
     public static string APIKey {
         get;
         set;
@@ -98,6 +100,29 @@ public partial class Teak : MonoBehaviour {
 #elif UNITY_IPHONE
             return (NotificationState) TeakGetNotificationState();
 #endif
+        }
+    }
+
+    /// <summary>
+    /// Get Teak's configuration data about the current app.
+    /// </summary>
+    /// <returns>A dictionary containing app info, or null if it's not ready</returns>
+    public Dictionary<string, object> AppConfiguration {
+        get {
+            if (mAppConfiguration == null) {
+#if UNITY_EDITOR || UNITY_WEBGL
+                string configuration = "{}";
+#elif UNITY_ANDROID
+                AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
+                string configuration = teak.CallStatic<string>("getAppConfiguration");
+#elif UNITY_IPHONE
+                string configuration = Marshal.PtrToStringAnsi(TeakGetAppConfiguration());
+#endif
+                if (!string.IsNullOrEmpty(configuration)) {
+                    mAppConfiguration = Json.Deserialize(configuration) as Dictionary<string,object>;
+                }
+            }
+            return mAppConfiguration;
         }
     }
 
@@ -179,12 +204,13 @@ public partial class Teak : MonoBehaviour {
     /// <param name="objectTypeId">The type of object that is being posted, e.g. 'quest'.</param>
     /// <param name="objectInstanceId">The specific instance of the object, e.g. 'gather-quest-1'</param>
     /// <param name="count">The amount by which to increment</param>
-    public void IncrementEvent(string actionId, string objectTypeId, string objectInstanceId, uint count) {
+    public void IncrementEvent(string actionId, string objectTypeId, string objectInstanceId, ulong count) {
 #if UNITY_EDITOR
-        Debug.Log("[Teak] IncrementEvent(): " + actionId + " - " + objectTypeId + " - " + objectInstanceId);
+        Debug.Log("[Teak] IncrementEvent(): " + actionId + " - " + objectTypeId + " - " + objectInstanceId + " - " + count);
 #elif UNITY_ANDROID
         AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
-        teak.CallStatic("incrementEvent", actionId, objectTypeId, objectInstanceId, count);
+        long longCountForJava = (long) count;
+        teak.CallStatic("incrementEvent", actionId, objectTypeId, objectInstanceId, longCountForJava);
 #elif UNITY_IPHONE || UNITY_WEBGL
         TeakIncrementEvent(actionId, objectTypeId, objectInstanceId, count);
 #endif
@@ -304,22 +330,6 @@ public partial class Teak : MonoBehaviour {
     }
 
     /// <summary>
-    /// Get Teak's configuration data about the current app.
-    /// </summary>
-    /// <returns>A dictionary containing app info, or null if it's not ready</returns>
-    public Dictionary<string, object> GetAppConfiguration() {
-#if UNITY_EDITOR || UNITY_WEBGL
-        return new Dictionary<string, object>();
-#elif UNITY_ANDROID
-        AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
-        return Json.Deserialize(teak.CallStatic<string>("getAppConfiguration")) as Dictionary<string,object>;
-#elif UNITY_IPHONE
-        string configuration = Marshal.PtrToStringAnsi(TeakGetAppConfiguration());
-        return Json.Deserialize(configuration) as Dictionary<string,object>;
-#endif
-    }
-
-    /// <summary>
     /// Register for Provisional Push Notifications.
     /// </summary>
     /// <remarks>
@@ -334,6 +344,14 @@ public partial class Teak : MonoBehaviour {
 #endif
     }
 
+    /// <summary>
+    /// Indicate that your app is ready for deep links.
+    /// </summary>
+    /// <remarks>
+    /// Deep links will not be processed sooner than the earliest of:
+    /// - <see cref="IdentifyUser"/> is called
+    /// - This method is called
+    /// </remarks>
     public void ProcessDeepLinks() {
 #if UNITY_EDITOR || UNITY_WEBGL
         // Empty
@@ -347,7 +365,8 @@ public partial class Teak : MonoBehaviour {
 
     /// @cond hide_from_doxygen
     private static Teak mInstance;
-    Dictionary<string, Action<Dictionary<string, object>>> mDeepLinkRoutes = new Dictionary<string, Action<Dictionary<string, object>>>();
+    private Dictionary<string, Action<Dictionary<string, object>>> mDeepLinkRoutes = new Dictionary<string, Action<Dictionary<string, object>>>();
+    private Dictionary<string, object> mAppConfiguration = null;
     /// @endcond
 
     /// @cond hide_from_doxygen
@@ -395,7 +414,7 @@ public partial class Teak : MonoBehaviour {
     private static extern void TeakTrackEvent(string actionId, string objectTypeId, string objectInstanceId);
 
     [DllImport ("__Internal")]
-    private static extern void TeakIncrementEvent(string actionId, string objectTypeId, string objectInstanceId, uint count);
+    private static extern void TeakIncrementEvent(string actionId, string objectTypeId, string objectInstanceId, ulong count);
 
     [DllImport ("__Internal")]
     private static extern void TeakUnityRegisterRoute(string route, string name, string description);
@@ -509,8 +528,10 @@ public partial class Teak : MonoBehaviour {
         apiKey = (string.IsNullOrEmpty(Teak.APIKey) ? TeakSettings.APIKey : Teak.APIKey);
         TeakInitWebGL(appId, apiKey);
 #else
-        appId = GetAppConfiguration()["appId"] as string;
-        apiKey = GetAppConfiguration()["apiKey"] as string;
+        if (this.AppConfiguration != null) {
+            appId = this.AppConfiguration["appId"] as string;
+            apiKey = this.AppConfiguration["apiKey"] as string;
+        }
 #endif
         if (appId != null) Teak.AppId = appId;
         if (apiKey != null) Teak.APIKey = apiKey;

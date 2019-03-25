@@ -91,7 +91,7 @@ public class TeakPostProcessBuild {
         plist.root.SetString("aps-environment", UnityEngine.Debug.isDebugBuild ? "development" : "production");
 
         // Add associated domains
-        AddElementToArrayIfMissing(plist, "com.apple.developer.associated-domains", "applinks:test.jckpt.me");
+        AddElementToArrayIfMissing(plist, "com.apple.developer.associated-domains", "applinks:" + TeakSettings.ShortlinkDomain);
 
         return plist.WriteToString();
     }
@@ -170,6 +170,7 @@ public class TeakPostProcessBuild {
         string __FILE__ = new StackTrace(new StackFrame(true)).GetFrame(0).GetFileName();
         string teakEditorIosPath = Path.GetDirectoryName(__FILE__) + "/iOS";
         string extensionSrcPath = teakEditorIosPath + "/" + name;
+        string relativeTeakPath = GetRelativeAssetPath(Path.GetDirectoryName(Path.GetDirectoryName(__FILE__)));
 
         /////
         // Create app extension target
@@ -199,7 +200,7 @@ public class TeakPostProcessBuild {
         /////
         // Add libTeak.a
         project.AddFileToBuild(extensionTarget, project.AddFile("libTeak.a", name + "/libTeak.a"));
-        project.AddBuildProperty(extensionTarget, "LIBRARY_SEARCH_PATHS", "$(SRCROOT)/Libraries/Teak/Plugins/iOS");
+        project.AddBuildProperty(extensionTarget, "LIBRARY_SEARCH_PATHS", "$(SRCROOT)/Libraries/" + relativeTeakPath + "/Plugins/iOS");
 
         /////
         // Build properties
@@ -210,5 +211,15 @@ public class TeakPostProcessBuild {
         project.AddBuildProperty(extensionTarget, "ARCHS", "arm64");
 
         return extensionTarget;
+    }
+
+    private static string GetRelativeAssetPath(string path)
+    {
+        Uri pathUri = new Uri(path);
+        Uri projectUri = new Uri(Application.dataPath);
+        string relativePath = projectUri.MakeRelativeUri(pathUri).ToString();
+        string assets = "Assets";
+        int index = relativePath.IndexOf(assets, StringComparison.Ordinal);
+        return (index < 0) ? relativePath : relativePath.Remove(index, assets.Length + 1);
     }
 }

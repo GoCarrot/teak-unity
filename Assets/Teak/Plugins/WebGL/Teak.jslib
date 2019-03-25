@@ -61,6 +61,16 @@ mergeInto(LibraryManager.library, {
 
     window.teak.trackEvent(actionId, objectTypeId, objectInstanceId);
   },
+  TeakIncrementEvent: function(ptr_actionId, ptr_objectTypeId, ptr_objectInstanceId, count) {
+    var actionId = Pointer_stringify(ptr_actionId).trim();
+    var objectTypeId = Pointer_stringify(ptr_objectTypeId).trim();
+    var objectInstanceId = Pointer_stringify(ptr_objectInstanceId).trim();
+
+    objectTypeId = objectTypeId.length === 0 ? undefined : objectTypeId;
+    objectInstanceId = objectInstanceId.length === 0 ? undefined : objectInstanceId;
+
+    window.teak.incrementEvent(actionId, objectTypeId, objectInstanceId, count);
+  },
   TeakDeepLinkTableInternal: {},
   TeakUnityRegisterRoute__deps: ['TeakDeepLinkTableInternal'],
   TeakUnityRegisterRoute: function(ptr_route, ptr_name, ptr_description) {
