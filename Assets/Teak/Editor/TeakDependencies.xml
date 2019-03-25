@@ -26,7 +26,7 @@
 
 
     <!-- Firebase -->
-    <androidPackage spec="com.google.firebase:firebase-messaging:17+">
+    <androidPackage spec="com.google.firebase:firebase-messaging:17.3.+">
       <androidSdkPackageIds>
         <androidSdkPackageId>extra-google-m2repository</androidSdkPackageId>
       </androidSdkPackageIds>
