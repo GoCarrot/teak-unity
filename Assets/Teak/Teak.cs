@@ -204,7 +204,7 @@ public partial class Teak : MonoBehaviour {
     /// <param name="objectTypeId">The type of object that is being posted, e.g. 'quest'.</param>
     /// <param name="objectInstanceId">The specific instance of the object, e.g. 'gather-quest-1'</param>
     /// <param name="count">The amount by which to increment</param>
-    public void IncrementEvent(string actionId, string objectTypeId, string objectInstanceId, ulong count) {
+    public void IncrementEvent(string actionId, string objectTypeId, string objectInstanceId, long count) {
 #if UNITY_EDITOR
         Debug.Log("[Teak] IncrementEvent(): " + actionId + " - " + objectTypeId + " - " + objectInstanceId + " - " + count);
 #elif UNITY_ANDROID
@@ -414,7 +414,7 @@ public partial class Teak : MonoBehaviour {
     private static extern void TeakTrackEvent(string actionId, string objectTypeId, string objectInstanceId);
 
     [DllImport ("__Internal")]
-    private static extern void TeakIncrementEvent(string actionId, string objectTypeId, string objectInstanceId, ulong count);
+    private static extern void TeakIncrementEvent(string actionId, string objectTypeId, string objectInstanceId, long count);
 
     [DllImport ("__Internal")]
     private static extern void TeakUnityRegisterRoute(string route, string name, string description);
