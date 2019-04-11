@@ -26,6 +26,7 @@ GEM
       ruby-progressbar (~> 1.7)
       unicode-display_width (~> 1.4.0)
     ruby-progressbar (1.10.0)
+    terminal-notifier (2.0.0)
     unicode-display_width (1.4.1)
 
 PLATFORMS
@@ -36,6 +37,7 @@ DEPENDENCIES
   httparty
   rake
   rubocop
+  terminal-notifier
 
 BUNDLED WITH
    1.16.6

@@ -6,6 +6,7 @@ require 'shellwords'
 require 'tmpdir'
 require 'yaml'
 require 'awesome_print'
+require 'terminal-notifier'
 CLEAN.include '**/.DS_Store'
 
 #
@@ -44,10 +45,17 @@ PROJECT_PATH = Rake.application.original_dir
 # Play a sound after finished
 #
 at_exit do
-  sh 'afplay /System/Library/Sounds/Submarine.aiff' unless ci?
   if ci?
     add_unity_log_to_artifacts
     Rake::Task['unity:returnlicense'].invoke
+  else
+    success = $ERROR_INFO.nil?
+    TerminalNotifier.notify(
+      Rake.application.top_level_tasks.join(', '),
+      title: 'Teak Unity',
+      subtitle: success ? 'Succeeded' : 'Failed',
+      sound: success ? 'Submarine' : 'Funk'
+    )
   end
 end
 
