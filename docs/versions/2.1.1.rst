@@ -5,4 +5,4 @@
 :New Features:
     * None
 :Bug Fixes:
-    * None
+    * Fix import for ``TeakProcessDeepLinks`` so it's iOS only
