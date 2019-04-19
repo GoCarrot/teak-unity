@@ -1,0 +1,8 @@
+2.1.1
+-----
+:Breaking Changes:
+    * None
+:New Features:
+    * None
+:Bug Fixes:
+    * Properly defines ``TEAK_2_1_OR_NEWER``
