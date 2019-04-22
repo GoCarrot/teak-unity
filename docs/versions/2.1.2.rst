@@ -5,4 +5,4 @@
 :New Features:
     * None
 :Bug Fixes:
-    * Fix import for ``TeakProcessDeepLinks`` so it's iOS only
+    * Properly defines ``TEAK_2_1_OR_NEWER``

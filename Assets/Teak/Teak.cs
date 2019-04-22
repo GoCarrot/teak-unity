@@ -427,9 +427,6 @@ public partial class Teak : MonoBehaviour {
 
     [DllImport ("__Internal")]
     private static extern void TeakSetStringAttribute(string key, string value);
-
-    [DllImport ("__Internal")]
-    private static extern void TeakProcessDeepLinks();
 #endif
 
 #if UNITY_IPHONE
@@ -441,6 +438,9 @@ public partial class Teak : MonoBehaviour {
 
     [DllImport ("__Internal")]
     private static extern bool TeakRequestProvisionalPushAuthorization();
+
+    [DllImport ("__Internal")]
+    private static extern void TeakProcessDeepLinks();
 #endif
 
 #if UNITY_WEBGL

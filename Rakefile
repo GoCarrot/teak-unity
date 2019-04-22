@@ -106,15 +106,15 @@ namespace :build do
   task :cleanroom do
     json = HTTParty.post("https://circleci.com/api/v1.1/project/github/GoCarrot/teak-unity-cleanroom/build?circle-token=#{CIRCLE_TOKEN}",
                          body: {
-                           build_parameters: {
-                             FL_TEAK_SDK_VERSION: `git describe --tags --always`.strip
-                           }
+                           branch: 'master'
                          }.to_json,
                          headers: {
                            'Content-Type' => 'application/json',
                            'Accept' => 'application/json'
                          }).body
-    ap(JSON.parse(json))
+    response = JSON.parse(json)
+    ap(response)
+    throw response['message'] unless response['status'] == 200
   end
 
   task :android do
