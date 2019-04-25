@@ -35,6 +35,7 @@ class TeakPreProcessDefiner :
         string[] existingDefines = PlayerSettings.GetScriptingDefineSymbolsForGroup(targetGroup).Split(';');
 
         HashSet<string> updatedDefines = new HashSet<string>(existingDefines);
+        updatedDefines.RemoveWhere(define => define.StartsWith("TEAK_") && define.EndsWith("_OR_NEWER"));
         updatedDefines.UnionWith(TeakDefines);
 
         string[] defines = new string[updatedDefines.Count];
