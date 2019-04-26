@@ -23,8 +23,8 @@ import os, subprocess, re, sys, errno
 from functools import cmp_to_key
 
 read_the_docs_build = os.environ.get('READTHEDOCS', None) == 'True'
-if read_the_docs_build:
-    subprocess.call('cd .. ; doxygen', shell=True)
+# if read_the_docs_build:
+#     subprocess.call('cd .. ; doxygen', shell=True)
 
 # -- General configuration ------------------------------------------------
 
@@ -37,13 +37,7 @@ if read_the_docs_build:
 # ones.
 
 # sys.path.append(os.path.abspath('./ext'))
-extensions = [ "breathe" ] #, "teak-versions" ], "teak-sdk" ]
-
-breathe_projects = {
-    "teak":"_doxygen/xml/",
-}
-
-breathe_default_project = "teak"
+extensions = []# "breathe" ] , "teak-versions" ], "teak-sdk" ]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
