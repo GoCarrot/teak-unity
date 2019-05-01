@@ -70,12 +70,14 @@ public class TeakPostProcessBuild {
 
         /////
         // Add Teak app extensions
+        string[] teakExtensionCommonFrameworks = new string[] {"AdSupport", "AVFoundation", "CoreGraphics", "ImageIO", "MobileCoreServices", "StoreKit", "SystemConfiguration", "UIKit", "UserNotifications"};
+
         AddTeakExtensionToProjectTarget("TeakNotificationService",
-                                        new string[] {"MobileCoreServices", "UserNotifications", "UIKit", "SystemConfiguration"},
+                                        teakExtensionCommonFrameworks,
                                         project, unityTarget);
 
         AddTeakExtensionToProjectTarget("TeakNotificationContent",
-                                        new string[] {"UserNotifications", "UserNotificationsUI", "AVFoundation", "UIKit", "ImageIO", "CoreGraphics"},
+                                        new string[] {"UserNotificationsUI"}.Concat(teakExtensionCommonFrameworks).ToArray(),
                                         project, unityTarget);
 
         /////
