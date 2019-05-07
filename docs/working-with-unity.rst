@@ -343,3 +343,7 @@ Preprocessor Defines
 Teak sets some preprocessor defines for your use in ``Teak/Editor/TeakPreProcessDefiner.cs``.
 
     :TEAK_2_0_OR_NEWER: The Teak SDK version is at least 2.0
+
+    :TEAK_2_1_OR_NEWER: The Teak SDK version is at least 2.1
+
+    :TEAK_2_2_OR_NEWER: The Teak SDK version is at least 2.2

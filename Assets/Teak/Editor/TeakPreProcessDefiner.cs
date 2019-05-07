@@ -17,7 +17,8 @@ class TeakPreProcessDefiner :
     public int callbackOrder { get { return 0; } }
     public static readonly string[] TeakDefines = new string[] {
         "TEAK_2_0_OR_NEWER",
-        "TEAK_2_1_OR_NEWER"
+        "TEAK_2_1_OR_NEWER",
+        "TEAK_2_2_OR_NEWER"
     };
 
 #if UNITY_2018_1_OR_NEWER
