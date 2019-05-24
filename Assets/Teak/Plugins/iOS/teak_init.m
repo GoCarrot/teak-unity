@@ -19,6 +19,7 @@ extern void Teak_Plant(Class appDelegateClass, NSString* appId, NSString* appSec
 // From Teak.m
 extern NSString* const TeakNotificationAppLaunch;
 extern NSString* const TeakOnReward;
+extern NSString* const TeakForegroundNotification;
 
 extern NSDictionary* TeakWrapperSDK;
 
@@ -89,7 +90,7 @@ void* TeakNotificationCancelAll_Retained()
 #endif
 }
 
-void checkTeakNotifLaunch(NSDictionary* userInfo)
+void checkTeakNotifLaunch(NSDictionary* userInfo, const char* eventName)
 {
    NSError* error = nil;
 
@@ -99,10 +100,10 @@ void checkTeakNotifLaunch(NSDictionary* userInfo)
 
    if (error != nil) {
       NSLog(@"[Teak:Unity] Error converting to JSON: %@", error);
-      UnitySendMessage("TeakGameObject", "NotificationLaunch", "{}");
+      UnitySendMessage("TeakGameObject", eventName, "{}");
    } else {
       NSString* jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
-      UnitySendMessage("TeakGameObject", "NotificationLaunch", [jsonString UTF8String]);
+      UnitySendMessage("TeakGameObject", eventName, [jsonString UTF8String]);
    }
 }
 
@@ -152,7 +153,7 @@ static void teak_init()
                                                      object:nil
                                                       queue:nil
                                                  usingBlock:^(NSNotification* notification) {
-                                                    checkTeakNotifLaunch(notification.userInfo);
+                                                    checkTeakNotifLaunch(notification.userInfo, "NotificationLaunch");
                                                  }];
 
    [[NSNotificationCenter defaultCenter] addObserverForName:TeakOnReward
@@ -160,5 +161,12 @@ static void teak_init()
                                                       queue:nil
                                                  usingBlock:^(NSNotification* notification) {
                                                     teakOnReward(notification.userInfo);
+                                                 }];
+
+   [[NSNotificationCenter defaultCenter] addObserverForName:TeakForegroundNotification
+                                                     object:nil
+                                                      queue:nil
+                                                 usingBlock:^(NSNotification* notification) {
+                                                    checkTeakNotifLaunch(notification.userInfo, "ForegroundNotification");
                                                  }];
 }

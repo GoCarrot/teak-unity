@@ -227,6 +227,11 @@ public partial class Teak : MonoBehaviour {
     public event System.Action<TeakReward> OnReward;
 
     /// <summary>
+    /// An event which gets fired when a push notification is received while the app is in the foreground.
+    /// </summary>
+    public event System.Action<TeakNotification> OnForegroundNotification;
+
+    /// <summary>
     /// Method used to register a deep link route.
     /// </summary>
     /// <param name="route">The route for this deep link.</param>
@@ -494,6 +499,22 @@ public partial class Teak : MonoBehaviour {
             }
         } else {
             Debug.LogError("[Teak] Unable to find Action for route: " + route);
+        }
+    }
+
+    void ForegroundNotification(string jsonString) {
+        Debug.Log("[Teak] FOREGROUND NOTIFICATION: " + jsonString);
+        Dictionary<string, object> json = Json.Deserialize(jsonString) as Dictionary<string, object>;
+        json.Remove("teakReward");
+        json.Remove("teakDeepLink");
+
+        if (OnForegroundNotification != null) {
+            OnForegroundNotification(new TeakNotification {
+                Incentivized = (json["incentivized"] is bool) ? (bool) json["incentivized"] : false,
+                ScheduleId = json["teakScheduleName"] as string,
+                CreativeId = json["teakCreativeName"] as string,
+                RewardId = json.ContainsKey("teakRewardId") ? json["teakRewardId"] as string : null
+            });
         }
     }
 
