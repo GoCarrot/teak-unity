@@ -232,6 +232,11 @@ public partial class Teak : MonoBehaviour {
     public event System.Action<TeakNotification> OnForegroundNotification;
 
     /// <summary>
+    /// An event which is dispatched for each log event from the Teak SDK
+    /// </summary>
+    public event System.Action<string, string, Dictionary<string, object>> OnLogEvent;
+
+    /// <summary>
     /// Method used to register a deep link route.
     /// </summary>
     /// <param name="route">The route for this deep link.</param>
@@ -499,6 +504,17 @@ public partial class Teak : MonoBehaviour {
             }
         } else {
             Debug.LogError("[Teak] Unable to find Action for route: " + route);
+        }
+    }
+
+    void LogEvent(string jsonString) {
+        if (OnLogEvent != null) {
+            Dictionary<string, object> json = Json.Deserialize(jsonString) as Dictionary<string, object>;
+            string logEvent = json["event"] as string;
+            string logLevel = json["level"] as string;
+            Dictionary<string, object> logData = json["data"] as Dictionary<string, object>;
+
+            OnLogEvent(logEvent, logLevel, logData);
         }
     }
 

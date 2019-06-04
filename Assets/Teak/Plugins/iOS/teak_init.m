@@ -28,6 +28,12 @@ extern void TeakRegisterRoute(const char* route, const char* name, const char* d
 
 extern void TeakRequestProvisionalPushAuthorization();
 
+typedef void (^TeakLogListener)(NSString* _Nonnull event,
+                                NSString* _Nonnull level,
+                                NSDictionary* _Nullable eventData);
+
+extern void TeakSetLogListener(TeakLogListener listener);
+
 // TeakNotification
 extern NSObject* TeakNotificationSchedule(const char* creativeId, const char* message, uint64_t delay);
 extern NSObject* TeakNotificationScheduleLongDistance(const char* creativeId, int64_t delay, const char* inUserIds[], int inUserIdCount);
@@ -148,6 +154,21 @@ static void teak_init()
    NSString* appId = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"TeakAppId"];
    NSString* apiKey = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"TeakApiKey"];
    Teak_Plant(NSClassFromString(@"UnityAppController"), appId, apiKey);
+
+   TeakSetLogListener(^(NSString* _Nonnull event,
+                        NSString* _Nonnull level,
+                        NSDictionary* _Nullable eventData) {
+      NSError* error = nil;
+      NSData* jsonData = [NSJSONSerialization dataWithJSONObject:@{@"event" : event, @"level" : level, @"data" : eventData}
+                                                         options:0
+                                                           error:&error];
+      if (error != nil) {
+         NSLog(@"[Teak:Unity] Error converting to JSON: %@", error);
+      } else {
+         NSString* jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+         UnitySendMessage("TeakGameObject", "LogEvent", [jsonString UTF8String]);
+      }
+   });
 
    [[NSNotificationCenter defaultCenter] addObserverForName:TeakNotificationAppLaunch
                                                      object:nil
