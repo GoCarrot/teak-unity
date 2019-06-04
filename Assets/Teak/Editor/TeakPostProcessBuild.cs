@@ -215,8 +215,7 @@ public class TeakPostProcessBuild {
         return extensionTarget;
     }
 
-    private static string GetRelativeAssetPath(string path)
-    {
+    private static string GetRelativeAssetPath(string path) {
         Uri pathUri = new Uri(path);
         Uri projectUri = new Uri(Application.dataPath);
         string relativePath = projectUri.MakeRelativeUri(pathUri).ToString();
