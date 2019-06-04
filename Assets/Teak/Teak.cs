@@ -503,7 +503,6 @@ public partial class Teak : MonoBehaviour {
     }
 
     void ForegroundNotification(string jsonString) {
-        Debug.Log("[Teak] FOREGROUND NOTIFICATION: " + jsonString);
         Dictionary<string, object> json = Json.Deserialize(jsonString) as Dictionary<string, object>;
         json.Remove("teakReward");
         json.Remove("teakDeepLink");
