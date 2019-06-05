@@ -159,7 +159,7 @@ static void teak_init()
                         NSString* _Nonnull level,
                         NSDictionary* _Nullable eventData) {
       NSError* error = nil;
-      NSData* jsonData = [NSJSONSerialization dataWithJSONObject:@{@"event" : event, @"level" : level, @"data" : eventData}
+      NSData* jsonData = [NSJSONSerialization dataWithJSONObject:eventData
                                                          options:0
                                                            error:&error];
       if (error != nil) {

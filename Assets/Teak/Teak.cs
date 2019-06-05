@@ -234,7 +234,7 @@ public partial class Teak : MonoBehaviour {
     /// <summary>
     /// An event which is dispatched for each log event from the Teak SDK
     /// </summary>
-    public event System.Action<string, string, Dictionary<string, object>> OnLogEvent;
+    public event System.Action<Dictionary<string, object>> OnLogEvent;
 
     /// <summary>
     /// Method used to register a deep link route.
@@ -510,11 +510,7 @@ public partial class Teak : MonoBehaviour {
     void LogEvent(string jsonString) {
         if (OnLogEvent != null) {
             Dictionary<string, object> json = Json.Deserialize(jsonString) as Dictionary<string, object>;
-            string logEvent = json["event"] as string;
-            string logLevel = json["level"] as string;
-            Dictionary<string, object> logData = json["data"] as Dictionary<string, object>;
-
-            OnLogEvent(logEvent, logLevel, logData);
+            OnLogEvent(json);
         }
     }
 
