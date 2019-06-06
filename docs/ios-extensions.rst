@@ -183,7 +183,7 @@ Open ``TeakNotificationContent/Info.plist`` *with a text editor* and replace the
     </dict>
     </plist>
 
-.. note:: You can also download the latest copy of this PList here https://s3.amazonaws.com/teak-build-artifacts/ios/Info.plist
+.. note:: You can also download the latest copy of this PList here https://sdks.teakcdn.com/ios/Info.plist
 
 Testing
 -------
@@ -214,5 +214,5 @@ Make sure that ``TeakNotificationService`` is being built properly.
 
     This zip file contains the script, and all needed code and dependencies:
 
-    https://s3.amazonaws.com/teak-build-artifacts/ios/TeakExtensions.zip
+    https://sdks.teakcdn.com/ios/TeakExtensions.zip
 

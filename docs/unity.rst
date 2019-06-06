@@ -4,7 +4,7 @@ Unity
 Add Teak.unitypackage
 ---------------------
 
-Download the latest *Teak.unitypackage* from https://s3.amazonaws.com/teak-build-artifacts/unity/Teak.unitypackage
+Download the latest *Teak.unitypackage* from https://sdks.teakcdn.com/unity/Teak.unitypackage
 
 Import it into your project in Unity by going to the menu
 
