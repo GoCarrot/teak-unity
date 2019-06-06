@@ -7,3 +7,4 @@
     * ``OnLogEvent`` is an event which is fired when the Teak SDK makes a log call
 :Bug Fixes:
     * Added some iOS Frameworks that seemed to be required for some build configurations but not others.
+    * Changes to automatic adding of iOS Entitlements. This could change the name of the entitlements file that is used by the built project.
