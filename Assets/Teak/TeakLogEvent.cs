@@ -31,12 +31,12 @@ public class TeakLogEvent {
         string formatString = "{{ RunId = '{0}', EventId = '{1}', TimeStamp = '{2}', EventType = '{3}', LogLevel = '{4}'{5} }}";
         string eventDataString = "";
         return string.Format(formatString,
-            this.RunId,
-            this.EventId,
-            this.TimeStamp,
-            this.EventType,
-            this.LogLevel,
-            eventDataString
-        );
+                             this.RunId,
+                             this.EventId,
+                             this.TimeStamp,
+                             this.EventType,
+                             this.LogLevel,
+                             eventDataString
+                            );
     }
 }
