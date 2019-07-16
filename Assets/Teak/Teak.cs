@@ -161,8 +161,21 @@ public partial class Teak : MonoBehaviour {
     /// This should be the same way you identify the user in your backend.
     /// </remarks>
     /// <param name="userIdentifier">An identifier which is unique for the current user.</param>
+    /// <param name="email">The email address for the current user.</param>
+    public void IdentifyUser(string userIdentifier, String email) {
+        this.IdentifyUser(userIdentifier, null, email);
+    }
+
+    /// <summary>
+    /// Tell Teak how it should identify the current user.
+    /// </summary>
+    /// <remarks>
+    /// This should be the same way you identify the user in your backend.
+    /// </remarks>
+    /// <param name="userIdentifier">An identifier which is unique for the current user.</param>
     /// <param name="optOut">A list containing zero or more of: OptOutIdfa, OptOutPushKey, OptOutFacebook</param>
-    public void IdentifyUser(string userIdentifier, List<string> optOut = null) {
+    /// <param name="email">The email address for the current user.</param>
+    public void IdentifyUser(string userIdentifier, List<string> optOut = null, String email = null) {
         if (optOut == null) optOut = new List<string>();
 
         this.UserId = userIdentifier;
@@ -171,9 +184,9 @@ public partial class Teak : MonoBehaviour {
         Debug.Log("[Teak] IdentifyUser(): " + userIdentifier);
 #elif UNITY_ANDROID
         AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
-        teak.CallStatic("identifyUser", userIdentifier, optOut.ToArray());
+        teak.CallStatic("identifyUser", userIdentifier, optOut.ToArray(), email);
 #elif UNITY_IPHONE || UNITY_WEBGL
-        TeakIdentifyUser(userIdentifier, Json.Serialize(optOut));
+        TeakIdentifyUser(userIdentifier, Json.Serialize(optOut), email);
 #   if UNITY_WEBGL
         TeakUnityReadyForDeepLinks();
 #   endif
@@ -418,7 +431,7 @@ public partial class Teak : MonoBehaviour {
 
 #elif UNITY_IPHONE || UNITY_WEBGL
     [DllImport ("__Internal")]
-    private static extern void TeakIdentifyUser(string userId, string optOut);
+    private static extern void TeakIdentifyUser(string userId, string optOut, string email);
 
     [DllImport ("__Internal")]
     private static extern void TeakTrackEvent(string actionId, string objectTypeId, string objectInstanceId);
