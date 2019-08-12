@@ -50,5 +50,13 @@
         <androidSdkPackageId>extra-android-m2repository</androidSdkPackageId>
       </androidSdkPackageIds>
     </androidPackage>
+
+    <!-- AndroidX -->
+    <!-- NOTE: You must be using at least version 1.2.119 of the Google Play Services Resolver to use AndroidX -->
+    <!-- <androidPackage spec="androidx.core:core:1.0.+">
+      <androidSdkPackageIds>
+        <androidSdkPackageId>extra-android-m2repository</androidSdkPackageId>
+      </androidSdkPackageIds>
+    </androidPackage>-->
   </androidPackages>
 </dependencies>
