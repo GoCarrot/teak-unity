@@ -1,6 +1,6 @@
 Migration to API 28
 ===================
-Starting November 1st, 2019 Google is requiring that you target API 28 for app updates on the Google Play Store.
+Starting November 1st, 2019 Google will require that you target API 28 for app updates on the Google Play Store.
 
 :Since: 3.0.0
 
