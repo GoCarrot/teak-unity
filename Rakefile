@@ -55,7 +55,7 @@ at_exit do
       title: 'Teak Unity',
       subtitle: success ? 'Succeeded' : 'Failed',
       sound: success ? 'Submarine' : 'Funk'
-    )
+    ) if !success || ENV.fetch('NOTIFY', true).to_s == 'true'
   end
 end
 
