@@ -250,6 +250,11 @@ public partial class Teak : MonoBehaviour {
     public event System.Action<Dictionary<string, object>> OnLogEvent;
 
     /// <summary>
+    /// An event which is dispatched when additional data is available for the current user.
+    /// </summary>
+    public event System.Action<Dictionary<string, object>> OnAdditionalData;
+
+    /// <summary>
     /// Method used to register a deep link route.
     /// </summary>
     /// <param name="route">The route for this deep link.</param>
@@ -539,6 +544,13 @@ public partial class Teak : MonoBehaviour {
                 CreativeId = json["teakCreativeName"] as string,
                 RewardId = json.ContainsKey("teakRewardId") ? json["teakRewardId"] as string : null
             });
+        }
+    }
+
+    void AdditionalData(string jsonString) {
+        Dictionary<string, object> json = Json.Deserialize(jsonString) as Dictionary<string, object>;
+        if (OnAdditionalData != null) {
+            OnAdditionalData(json);
         }
     }
 
