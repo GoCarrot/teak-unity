@@ -22,6 +22,8 @@ The following dependencies are optional
 
 .. note:: If you use the `Play Services Resolver plugin for Unity <https://github.com/googlesamples/unity-jar-resolver>`_, all dependencies should be taken care of automatically.
 
+    **Please use Play Services Resolver version >= 1.2.95.** Issues have been reported using version 1.2.72, and issues with other versions may also exist.
+
 Tell Teak to Auto-Initialize
 ----------------------------
 .. highlight:: xml
@@ -208,7 +210,7 @@ Setting Up Deep Linking
 
 Add the following to the ``<activity>`` section of your ``Assets/Plugins/Android/AndroidManifest.xml``::
 
-    <intent-filter>
+    <intent-filter android:autoVerify="true">
         <action android:name="android.intent.action.VIEW" />
         <category android:name="android.intent.category.DEFAULT" />
         <category android:name="android.intent.category.BROWSABLE" />

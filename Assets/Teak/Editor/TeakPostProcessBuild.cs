@@ -42,58 +42,28 @@ public class TeakPostProcessBuild {
         File.WriteAllText(plistPath, AddTeakEntriesToPlist(File.ReadAllText(plistPath)));
 
         /////
-        // Make sure push-notifications are enabled
-        project.AddCapability(unityTarget, PBXCapabilityType.PushNotifications);
-
-        // Unity 2018 TODO:
-        //      project.GetBuildPropertyForAnyConfig(unityTarget, "CODE_SIGN_ENTITLEMENTS")
-        // Try and get the name of the entitlements file, if it exists.
-
-        /////
-        // Add/modify entitlements
-        string entitlementsFileName = "Unity-iPhone.entitlements";
-        string entitlementsPath = pathToBuiltProject + "/Unity-iPhone/" + entitlementsFileName;
-
-        // If the entitlements file doesn't exist, create a blank one
-        if (!File.Exists(entitlementsPath)) {
-            PlistDocument plist = new PlistDocument();
-            plist.Create();
-            File.WriteAllText(entitlementsPath, plist.WriteToString());
-
-            // Add to Xcode Project
-            project.AddFile(entitlementsPath, entitlementsFileName);
-            project.AddBuildProperty(unityTarget, "CODE_SIGN_ENTITLEMENTS", entitlementsPath);
-        }
-
-        // Add entitlements
-        File.WriteAllText(entitlementsPath, AddTeakEntitlements(File.ReadAllText(entitlementsPath)));
-
-        /////
         // Add Teak app extensions
+        string[] teakExtensionCommonFrameworks = new string[] {"AdSupport", "AVFoundation", "CoreGraphics", "ImageIO", "MobileCoreServices", "StoreKit", "SystemConfiguration", "UIKit", "UserNotifications"};
+
         AddTeakExtensionToProjectTarget("TeakNotificationService",
-                                        new string[] {"MobileCoreServices", "UserNotifications", "UIKit", "SystemConfiguration"},
+                                        teakExtensionCommonFrameworks,
                                         project, unityTarget);
 
         AddTeakExtensionToProjectTarget("TeakNotificationContent",
-                                        new string[] {"UserNotifications", "UserNotificationsUI", "AVFoundation", "UIKit", "ImageIO", "CoreGraphics"},
+                                        new string[] {"UserNotificationsUI"}.Concat(teakExtensionCommonFrameworks).ToArray(),
                                         project, unityTarget);
 
         /////
         // Write out modified project
         project.WriteToFile(projectPath);
-    }
 
-    private static string AddTeakEntitlements(string inputPlist) {
-        PlistDocument plist = new PlistDocument();
-        plist.ReadFromString(inputPlist);
-
-        // Add aps-environment
-        plist.root.SetString("aps-environment", UnityEngine.Debug.isDebugBuild ? "development" : "production");
-
-        // Add associated domains
-        AddElementToArrayIfMissing(plist, "com.apple.developer.associated-domains", "applinks:" + TeakSettings.ShortlinkDomain);
-
-        return plist.WriteToString();
+        /////
+        // Add/modify entitlements
+        string entitlementsPath = pathToBuiltProject + "/" + PBXProject.GetUnityTargetName() + ".entitlements";
+        ProjectCapabilityManager capabilityManager = new ProjectCapabilityManager(projectPath, entitlementsPath, PBXProject.GetUnityTargetName());
+        capabilityManager.AddPushNotifications(UnityEngine.Debug.isDebugBuild);
+        capabilityManager.AddAssociatedDomains(new string[] {"applinks:" + TeakSettings.ShortlinkDomain});
+        capabilityManager.WriteToFile();
     }
 
     private static string AddTeakEntriesToPlist(string inputPlist) {
@@ -213,8 +183,7 @@ public class TeakPostProcessBuild {
         return extensionTarget;
     }
 
-    private static string GetRelativeAssetPath(string path)
-    {
+    private static string GetRelativeAssetPath(string path) {
         Uri pathUri = new Uri(path);
         Uri projectUri = new Uri(Application.dataPath);
         string relativePath = projectUri.MakeRelativeUri(pathUri).ToString();

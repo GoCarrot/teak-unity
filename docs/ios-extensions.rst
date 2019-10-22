@@ -29,7 +29,7 @@ This will create a group in your Xcode project that looks like this:
 Dependencies
 ^^^^^^^^^^^^
 
-Add ``UserNotifications.framework``, ``MobileCoreServices.framework``, ``UIKit.framework``, ``SystemConfiguration.framework`` and ``libTeak.a`` to the `Link Binary with Libraries` Build Phase of the extension:
+Add ``AdSupport.framework``, ``AVFoundation.framework``, ``CoreGraphics.framework``, ``ImageIO.framework``, ``MobileCoreServices.framework``, ``StoreKit.framework``, ``SystemConfiguration.framework``, ``UIKit.framework``, ``UserNotifications.framework``, and ``libTeak.a`` to the `Link Binary with Libraries` Build Phase of the extension:
 
 .. image:: images/service-extension-link.png
 
@@ -82,7 +82,7 @@ You should now have a group in your Xcode project that looks like this:
 Dependencies
 ^^^^^^^^^^^^
 
-Add ``UserNotifications.framework``, ``UserNotificationsUI.framework``, ``AVFoundation.framework``, ``UIKit.framework``, ``ImageIO.framework``, ``CoreGraphics.framework`` and ``libTeak.a`` to the `Link Binary with Libraries` Build Phase of the extension:
+Add ``AdSupport.framework``, ``AVFoundation.framework``, ``CoreGraphics.framework``, ``ImageIO.framework``, ``MobileCoreServices.framework``, ``StoreKit.framework``, ``SystemConfiguration.framework``, ``UIKit.framework``, ``UserNotifications.framework``, ``UserNotificationsUI.framework``, and ``libTeak.a`` to the `Link Binary with Libraries` Build Phase of the extension:
 
 .. image:: images/content-extension-link.png
 
@@ -183,7 +183,7 @@ Open ``TeakNotificationContent/Info.plist`` *with a text editor* and replace the
     </dict>
     </plist>
 
-.. note:: You can also download the latest copy of this PList here https://s3.amazonaws.com/teak-build-artifacts/ios/Info.plist
+.. note:: You can also download the latest copy of this PList here https://sdks.teakcdn.com/ios/Info.plist
 
 Testing
 -------
@@ -214,5 +214,5 @@ Make sure that ``TeakNotificationService`` is being built properly.
 
     This zip file contains the script, and all needed code and dependencies:
 
-    https://s3.amazonaws.com/teak-build-artifacts/ios/TeakExtensions.zip
+    https://sdks.teakcdn.com/ios/TeakExtensions.zip
 

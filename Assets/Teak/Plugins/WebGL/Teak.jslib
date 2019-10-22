@@ -9,7 +9,7 @@ mergeInto(LibraryManager.library, {
     window.teak.setIsUnity();
 
     var doTeakInit = function() {
-      (function(){var n=document.createElement("script");n.type="text/javascript";n.async=true;n.src="//d2h7sc2qwu171k.cloudfront.net/teak.min.js";var r=document.getElementsByTagName("script")[0];r.parentNode.insertBefore(n,r)})()
+      (function(){var n=document.createElement("script");n.type="text/javascript";n.async=true;n.src="//sdks.teakcdn.com/teak.min.js";var r=document.getElementsByTagName("script")[0];r.parentNode.insertBefore(n,r)})()
     };
 
     // Load jQuery, if it's not already loaded

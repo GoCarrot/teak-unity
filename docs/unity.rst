@@ -4,7 +4,7 @@ Unity
 Add Teak.unitypackage
 ---------------------
 
-Download the latest *Teak.unitypackage* from https://s3.amazonaws.com/teak-build-artifacts/unity/Teak.unitypackage
+Download the latest *Teak.unitypackage* from https://sdks.teakcdn.com/unity/Teak.unitypackage
 
 Import it into your project in Unity by going to the menu
 
@@ -86,3 +86,16 @@ You Should See
 
     [Teak] IdentifyUser(): a unique user identifier
 
+Purchase Tracking for UnityPurchasing
+-------------------------------------
+If you are using UnityPurchasing for your game, you need to take one extra step in order for Teak to track Android purchases.
+
+When you initialize UnityPurchasing, with a call like::
+
+    UnityPurchasing.Initialize(listener, builder);
+
+Simply replace that call with this::
+
+    UnityPurchasing.Initialize(new TeakStoreListener(listener), builder);
+
+.. note:: If you are using Prime31, or OpenIAB, this is not required. If you are using another solution please contact us.

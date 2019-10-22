@@ -161,8 +161,21 @@ public partial class Teak : MonoBehaviour {
     /// This should be the same way you identify the user in your backend.
     /// </remarks>
     /// <param name="userIdentifier">An identifier which is unique for the current user.</param>
+    /// <param name="email">The email address for the current user.</param>
+    public void IdentifyUser(string userIdentifier, String email) {
+        this.IdentifyUser(userIdentifier, null, email);
+    }
+
+    /// <summary>
+    /// Tell Teak how it should identify the current user.
+    /// </summary>
+    /// <remarks>
+    /// This should be the same way you identify the user in your backend.
+    /// </remarks>
+    /// <param name="userIdentifier">An identifier which is unique for the current user.</param>
     /// <param name="optOut">A list containing zero or more of: OptOutIdfa, OptOutPushKey, OptOutFacebook</param>
-    public void IdentifyUser(string userIdentifier, List<string> optOut = null) {
+    /// <param name="email">The email address for the current user.</param>
+    public void IdentifyUser(string userIdentifier, List<string> optOut = null, String email = null) {
         if (optOut == null) optOut = new List<string>();
 
         this.UserId = userIdentifier;
@@ -171,9 +184,9 @@ public partial class Teak : MonoBehaviour {
         Debug.Log("[Teak] IdentifyUser(): " + userIdentifier);
 #elif UNITY_ANDROID
         AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
-        teak.CallStatic("identifyUser", userIdentifier, optOut.ToArray());
+        teak.CallStatic("identifyUser", userIdentifier, optOut.ToArray(), email);
 #elif UNITY_IPHONE || UNITY_WEBGL
-        TeakIdentifyUser(userIdentifier, Json.Serialize(optOut));
+        TeakIdentifyUser(userIdentifier, Json.Serialize(optOut), email);
 #   if UNITY_WEBGL
         TeakUnityReadyForDeepLinks();
 #   endif
@@ -225,6 +238,21 @@ public partial class Teak : MonoBehaviour {
     /// An event which gets fired when a Teak Reward has been processed (successfully or unsuccessfully).
     /// </summary>
     public event System.Action<TeakReward> OnReward;
+
+    /// <summary>
+    /// An event which gets fired when a push notification is received while the app is in the foreground.
+    /// </summary>
+    public event System.Action<TeakNotification> OnForegroundNotification;
+
+    /// <summary>
+    /// An event which is dispatched for each log event from the Teak SDK
+    /// </summary>
+    public event System.Action<Dictionary<string, object>> OnLogEvent;
+
+    /// <summary>
+    /// An event which is dispatched when additional data is available for the current user.
+    /// </summary>
+    public event System.Action<Dictionary<string, object>> OnAdditionalData;
 
     /// <summary>
     /// Method used to register a deep link route.
@@ -408,7 +436,7 @@ public partial class Teak : MonoBehaviour {
 
 #elif UNITY_IPHONE || UNITY_WEBGL
     [DllImport ("__Internal")]
-    private static extern void TeakIdentifyUser(string userId, string optOut);
+    private static extern void TeakIdentifyUser(string userId, string optOut, string email);
 
     [DllImport ("__Internal")]
     private static extern void TeakTrackEvent(string actionId, string objectTypeId, string objectInstanceId);
@@ -494,6 +522,35 @@ public partial class Teak : MonoBehaviour {
             }
         } else {
             Debug.LogError("[Teak] Unable to find Action for route: " + route);
+        }
+    }
+
+    void LogEvent(string jsonString) {
+        if (OnLogEvent != null) {
+            Dictionary<string, object> json = Json.Deserialize(jsonString) as Dictionary<string, object>;
+            OnLogEvent(json);
+        }
+    }
+
+    void ForegroundNotification(string jsonString) {
+        Dictionary<string, object> json = Json.Deserialize(jsonString) as Dictionary<string, object>;
+        json.Remove("teakReward");
+        json.Remove("teakDeepLink");
+
+        if (OnForegroundNotification != null) {
+            OnForegroundNotification(new TeakNotification {
+                Incentivized = (json["incentivized"] is bool) ? (bool) json["incentivized"] : false,
+                ScheduleId = json["teakScheduleName"] as string,
+                CreativeId = json["teakCreativeName"] as string,
+                RewardId = json.ContainsKey("teakRewardId") ? json["teakRewardId"] as string : null
+            });
+        }
+    }
+
+    void AdditionalData(string jsonString) {
+        Dictionary<string, object> json = Json.Deserialize(jsonString) as Dictionary<string, object>;
+        if (OnAdditionalData != null) {
+            OnAdditionalData(json);
         }
     }
 

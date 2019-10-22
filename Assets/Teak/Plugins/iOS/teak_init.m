@@ -1,4 +1,4 @@
-/* Teak -- Copyright (C) 2016 GoCarrot Inc.
+/* Teak -- Copyright (C) 2016-2019 Teak.io, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,8 @@ extern void Teak_Plant(Class appDelegateClass, NSString* appId, NSString* appSec
 // From Teak.m
 extern NSString* const TeakNotificationAppLaunch;
 extern NSString* const TeakOnReward;
+extern NSString* const TeakForegroundNotification;
+extern NSString* const TeakAdditionalData;
 
 extern NSDictionary* TeakWrapperSDK;
 
@@ -26,6 +28,12 @@ typedef void (^TeakLinkBlock)(NSDictionary* _Nonnull parameters);
 extern void TeakRegisterRoute(const char* route, const char* name, const char* description, TeakLinkBlock block);
 
 extern void TeakRequestProvisionalPushAuthorization();
+
+typedef void (^TeakLogListener)(NSString* _Nonnull event,
+                                NSString* _Nonnull level,
+                                NSDictionary* _Nullable eventData);
+
+extern void TeakSetLogListener(TeakLogListener listener);
 
 // TeakNotification
 extern NSObject* TeakNotificationSchedule(const char* creativeId, const char* message, uint64_t delay);
@@ -89,7 +97,7 @@ void* TeakNotificationCancelAll_Retained()
 #endif
 }
 
-void checkTeakNotifLaunch(NSDictionary* userInfo)
+void teakOnJsonEvent(NSDictionary* userInfo, const char* eventName, bool sendEmptyOnError)
 {
    NSError* error = nil;
 
@@ -99,25 +107,12 @@ void checkTeakNotifLaunch(NSDictionary* userInfo)
 
    if (error != nil) {
       NSLog(@"[Teak:Unity] Error converting to JSON: %@", error);
-      UnitySendMessage("TeakGameObject", "NotificationLaunch", "{}");
+      if (sendEmptyOnError) {
+        UnitySendMessage("TeakGameObject", eventName, "{}");
+      }
    } else {
       NSString* jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
-      UnitySendMessage("TeakGameObject", "NotificationLaunch", [jsonString UTF8String]);
-   }
-}
-
-void teakOnReward(NSDictionary* userInfo)
-{
-   NSError* error = nil;
-   NSData* jsonData = [NSJSONSerialization dataWithJSONObject:userInfo
-                                                      options:0
-                                                        error:&error];
-
-   if (error != nil) {
-      NSLog(@"[Teak:Unity] Error converting to JSON: %@", error);
-   } else {
-      NSString* jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
-      UnitySendMessage("TeakGameObject", "RewardClaimAttempt", [jsonString UTF8String]);
+      UnitySendMessage("TeakGameObject", eventName, [jsonString UTF8String]);
    }
 }
 
@@ -148,17 +143,46 @@ static void teak_init()
    NSString* apiKey = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"TeakApiKey"];
    Teak_Plant(NSClassFromString(@"UnityAppController"), appId, apiKey);
 
+   TeakSetLogListener(^(NSString* _Nonnull event,
+                        NSString* _Nonnull level,
+                        NSDictionary* _Nullable eventData) {
+      NSError* error = nil;
+      NSData* jsonData = [NSJSONSerialization dataWithJSONObject:eventData
+                                                         options:0
+                                                           error:&error];
+      if (error != nil) {
+         NSLog(@"[Teak:Unity] Error converting to JSON: %@", error);
+      } else {
+         NSString* jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+         UnitySendMessage("TeakGameObject", "LogEvent", [jsonString UTF8String]);
+      }
+   });
+
    [[NSNotificationCenter defaultCenter] addObserverForName:TeakNotificationAppLaunch
                                                      object:nil
                                                       queue:nil
                                                  usingBlock:^(NSNotification* notification) {
-                                                    checkTeakNotifLaunch(notification.userInfo);
+                                                    teakOnJsonEvent(notification.userInfo, "NotificationLaunch", true);
                                                  }];
 
    [[NSNotificationCenter defaultCenter] addObserverForName:TeakOnReward
                                                      object:nil
                                                       queue:nil
                                                  usingBlock:^(NSNotification* notification) {
-                                                    teakOnReward(notification.userInfo);
+                                                    teakOnJsonEvent(notification.userInfo, "RewardClaimAttempt", false);
+                                                 }];
+
+   [[NSNotificationCenter defaultCenter] addObserverForName:TeakForegroundNotification
+                                                     object:nil
+                                                      queue:nil
+                                                 usingBlock:^(NSNotification* notification) {
+                                                    teakOnJsonEvent(notification.userInfo, "ForegroundNotification", true);
+                                                 }];
+
+   [[NSNotificationCenter defaultCenter] addObserverForName:TeakAdditionalData
+                                                     object:nil
+                                                      queue:nil
+                                                 usingBlock:^(NSNotification* notification) {
+                                                    teakOnJsonEvent(notification.userInfo, "AdditionalData", false);
                                                  }];
 }

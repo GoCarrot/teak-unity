@@ -40,15 +40,23 @@
     </androidPackage>
 
     <!-- Android Support -->
-    <androidPackage spec="com.android.support:support-core-utils:26.1+">
+    <androidPackage spec="com.android.support:support-core-utils:28+">
       <androidSdkPackageIds>
         <androidSdkPackageId>extra-android-m2repository</androidSdkPackageId>
       </androidSdkPackageIds>
     </androidPackage>
-    <androidPackage spec="com.android.support:support-compat:26.1+">
+    <androidPackage spec="com.android.support:support-compat:28+">
       <androidSdkPackageIds>
         <androidSdkPackageId>extra-android-m2repository</androidSdkPackageId>
       </androidSdkPackageIds>
     </androidPackage>
+
+    <!-- AndroidX -->
+    <!-- NOTE: You must be using at least version 1.2.119 of the Google Play Services Resolver to use AndroidX -->
+    <!-- <androidPackage spec="androidx.core:core:1.0.+">
+      <androidSdkPackageIds>
+        <androidSdkPackageId>extra-android-m2repository</androidSdkPackageId>
+      </androidSdkPackageIds>
+    </androidPackage>-->
   </androidPackages>
 </dependencies>

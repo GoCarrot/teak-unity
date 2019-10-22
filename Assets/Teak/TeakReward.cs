@@ -87,4 +87,16 @@ public class TeakReward {
             break;
         }
     }
+
+    public override string ToString() {
+        string formatString = "{{ Status = '{0}', ScheduleId = '{1}', CreativeId = '{2}', Incentivized = '{3}', RewardId = '{4}'{5} }}";
+        return string.Format(formatString,
+                             this.Status,
+                             this.ScheduleId,
+                             this.CreativeId,
+                             this.Incentivized,
+                             this.RewardId,
+                             this.Status == RewardStatus.GrantReward ? string.Format(", Reward = '{0}'", Json.Serialize(this.Reward)) : ""
+                            );
+    }
 }
