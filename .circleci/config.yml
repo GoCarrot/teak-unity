@@ -2,14 +2,14 @@ version: 2
 jobs:
   build:
     macos:
-      xcode: "8.3.3"
+      xcode: "10.1.0"
     shell: /bin/bash --login -eo pipefail
     steps:
       - checkout
       - run:
           shell: /bin/bash -eo pipefail
-          name: Set Ruby Version 2.3
-          command: echo "ruby-2.3" > .ruby-version
+          name: Set Ruby Version 2.5
+          command: echo "ruby-2.5" > .ruby-version
       - run: git fetch --tags
       - restore_cache:
           key: v1-{{ checksum "setup" }}-{{ checksum "Gemfile.lock" }}-{{ .Environment.HOMEBREW_VERSION }}-{{ .Environment.UNITY_VERSION }}
