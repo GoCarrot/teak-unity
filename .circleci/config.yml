@@ -6,10 +6,6 @@ jobs:
     shell: /bin/bash --login -eo pipefail
     steps:
       - checkout
-      - run:
-          shell: /bin/bash -eo pipefail
-          name: Set Ruby Version 2.5
-          command: echo "ruby-2.5" > .ruby-version
       - run: git fetch --tags
       - restore_cache:
           key: v1-{{ checksum "setup" }}-{{ checksum "Gemfile.lock" }}-{{ .Environment.HOMEBREW_VERSION }}-{{ .Environment.UNITY_VERSION }}
@@ -22,6 +18,15 @@ jobs:
           name: Homebrew Depenendcies
           command: HOMEBREW_NO_AUTO_UPDATE=1 ./setup
       - run:
+          shell: /bin/bash -eo pipefail
+          name: Setup RVM
+          command: |
+            unset GEM_HOME
+            source /Users/distiller/.rvm/scripts/rvm
+            rvm autolibs enable
+            rvm list | grep 2.5 || rvm install ruby-2.5
+            rvm use ruby-2.5
+      - run:
           name: Ruby Gems
           command: bundle check || bundle install --path vendor/bundle
       - save_cache:
@@ -29,6 +34,7 @@ jobs:
             - /usr/local/Homebrew/
             - ~/Library/Caches/Homebrew
             - vendor/bundle
+            - ~/.rvm
           key: v1-{{ checksum "setup" }}-{{ checksum "Gemfile.lock" }}-{{ .Environment.HOMEBREW_VERSION }}-{{ .Environment.UNITY_VERSION }}
       - run:
           name: Build Teak SDK
