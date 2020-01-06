@@ -2,6 +2,8 @@
 set -euo pipefail
 IFS=$'\n\t'
 
+brew unlink python@2 # Use Python 3
+
 brew install awscli
 
 brew tap wooga/unityversions
