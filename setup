@@ -2,6 +2,8 @@
 set -euo pipefail
 IFS=$'\n\t'
 
+brew unlink python@2 # Use Python 3
+
 brew install awscli
 
 brew tap wooga/unityversions
@@ -16,3 +18,5 @@ fi
 if [ ! -f /Applications/Unity-$unityversion/PlaybackEngines/AndroidPlayer/ivy.xml ]; then
   brew cask install unity-android-support-for-editor@$unityversion
 fi
+
+if [ "$(which rvm)" == "" ]; then curl -sSL https://get.rvm.io | bash -s -- --autolibs=read-fail; fi

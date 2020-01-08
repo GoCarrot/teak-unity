@@ -23,6 +23,7 @@ extern NSString* const TeakForegroundNotification;
 extern NSString* const TeakAdditionalData;
 
 extern NSDictionary* TeakWrapperSDK;
+extern NSDictionary* TeakXcodeVersion;
 
 typedef void (^TeakLinkBlock)(NSDictionary* _Nonnull parameters);
 extern void TeakRegisterRoute(const char* route, const char* name, const char* description, TeakLinkBlock block);
@@ -138,6 +139,7 @@ __attribute__((constructor))
 static void teak_init()
 {
    TeakWrapperSDK = @{@"unity" : TeakUnitySDKVersion};
+   TeakXcodeVersion = @{@"product" : [NSNumber numberWithInt:__apple_build_version__]};
 
    NSString* appId = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"TeakAppId"];
    NSString* apiKey = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"TeakApiKey"];

@@ -1,0 +1,8 @@
+3.1.0
+-----
+:Breaking Changes:
+    * None
+:New Features:
+    * Added ``DeepLink`` to ``TeakNotification``
+:Bug Fixes:
+    * None
