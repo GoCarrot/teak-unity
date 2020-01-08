@@ -28,7 +28,9 @@ jobs:
             rvm use ruby-2.5
       - run:
           name: Ruby Gems
-          command: bundle check || bundle install --path vendor/bundle
+          command: |
+            gem update bunlder
+            bundle check || bundle install --path vendor/bundle
       - save_cache:
           paths:
             - /usr/local/Homebrew/
