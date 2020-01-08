@@ -491,14 +491,14 @@ public partial class Teak : MonoBehaviour {
     void NotificationLaunch(string jsonString) {
         Dictionary<string, object> json = Json.Deserialize(jsonString) as Dictionary<string, object>;
         json.Remove("teakReward");
-        json.Remove("teakDeepLink");
 
         if (OnLaunchedFromNotification != null) {
             OnLaunchedFromNotification(new TeakNotification {
                 Incentivized = (json["incentivized"] is bool) ? (bool) json["incentivized"] : false,
                 ScheduleId = json["teakScheduleName"] as string,
                 CreativeId = json["teakCreativeName"] as string,
-                RewardId = json.ContainsKey("teakRewardId") ? json["teakRewardId"] as string : null
+                RewardId = json.ContainsKey("teakRewardId") ? json["teakRewardId"] as string : null,
+                DeepLink = json.ContainsKey("teakDeepLink") ? json["teakDeepLink"] as string : null
             });
         }
     }
@@ -535,14 +535,14 @@ public partial class Teak : MonoBehaviour {
     void ForegroundNotification(string jsonString) {
         Dictionary<string, object> json = Json.Deserialize(jsonString) as Dictionary<string, object>;
         json.Remove("teakReward");
-        json.Remove("teakDeepLink");
 
         if (OnForegroundNotification != null) {
             OnForegroundNotification(new TeakNotification {
                 Incentivized = (json["incentivized"] is bool) ? (bool) json["incentivized"] : false,
                 ScheduleId = json["teakScheduleName"] as string,
                 CreativeId = json["teakCreativeName"] as string,
-                RewardId = json.ContainsKey("teakRewardId") ? json["teakRewardId"] as string : null
+                RewardId = json.ContainsKey("teakRewardId") ? json["teakRewardId"] as string : null,
+                DeepLink = json.ContainsKey("teakDeepLink") ? json["teakDeepLink"] as string : null
             });
         }
     }

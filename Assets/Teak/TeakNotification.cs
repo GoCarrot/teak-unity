@@ -25,6 +25,7 @@ public partial class TeakNotification {
     public string ScheduleId { get; set; }
     public string CreativeId { get; set; }
     public string RewardId { get; set; }
+    public string DeepLink { get; set; }
 
     public partial class Reply {
         public enum ReplyStatus {
