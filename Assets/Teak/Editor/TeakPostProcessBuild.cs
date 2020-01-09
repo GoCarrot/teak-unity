@@ -59,8 +59,8 @@ public class TeakPostProcessBuild {
 
         /////
         // Add/modify entitlements
-        string entitlementsPath = pathToBuiltProject + "/" + PBXProject.GetUnityTargetName() + ".entitlements";
-        ProjectCapabilityManager capabilityManager = new ProjectCapabilityManager(projectPath, entitlementsPath, PBXProject.GetUnityTargetName());
+        string entitlementsFileName = PBXProject.GetUnityTargetName() + ".entitlements";
+        ProjectCapabilityManager capabilityManager = new ProjectCapabilityManager(projectPath, entitlementsFileName, PBXProject.GetUnityTargetName());
         capabilityManager.AddPushNotifications(UnityEngine.Debug.isDebugBuild);
         capabilityManager.AddAssociatedDomains(new string[] {"applinks:" + TeakSettings.ShortlinkDomain});
         capabilityManager.WriteToFile();
