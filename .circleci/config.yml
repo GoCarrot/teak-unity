@@ -70,7 +70,9 @@ jobs:
           key: v0-{{ checksum "Gemfile.lock" }}
       - run:
           name: Ruby Gems
-          command: bundle check || bundle install --path vendor/bundle
+          command: |
+            gem update bunlder
+            bundle check || bundle install --path vendor/bundle
       - run:
           name: Install AWS CLI
           command: sudo apt-get -y -qq install awscli
