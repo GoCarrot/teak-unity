@@ -122,7 +122,7 @@ namespace :build do
       Dir.chdir(dir) do
         # Download or copy Teak SDK AAR
         if build_local?
-          cp "#{PROJECT_PATH}/../teak-android/build/outputs/aar/teak-release.aar", 'teak.aar'
+          cp "#{PROJECT_PATH}/../teak-android/build/outputs/aar/teak-debug.aar", 'teak.aar'
         else
           sh "curl -o teak.aar https://sdks.teakcdn.com/android/teak-#{NATIVE_CONFIG['version']['android']}.aar"
         end

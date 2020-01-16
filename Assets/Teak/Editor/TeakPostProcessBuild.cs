@@ -74,6 +74,16 @@ public class TeakPostProcessBuild {
         plist.root.SetString("TeakAppId", TeakSettings.AppId);
         plist.root.SetString("TeakApiKey", TeakSettings.APIKey);
 
+        // Teak URL Scheme
+        AddURLSchemeToPlist(plist, "teak" + TeakSettings.AppId);
+
+        // Add remote notifications background mode
+        AddElementToArrayIfMissing(plist, "UIBackgroundModes", "remote-notification");
+
+        return plist.WriteToString();
+    }
+
+    public static void AddURLSchemeToPlist(PlistDocument plist, string urlSchemeToAdd) {
         // Get/create array of URL types
         PlistElementArray urlTypesArray = null;
         if (!plist.root.values.ContainsKey("CFBundleURLTypes")) {
@@ -109,16 +119,10 @@ public class TeakPostProcessBuild {
             }
         }
 
-        // Add Teak URL scheme
-        string teakUrlScheme = "teak" + TeakSettings.AppId;
-        if (!urlSchemesArray.ContainsElement(teakUrlScheme)) {
-            urlSchemesArray.Add(teakUrlScheme);
+        // Add URL scheme
+        if (!urlSchemesArray.ContainsElement(urlSchemeToAdd)) {
+            urlSchemesArray.Add(urlSchemeToAdd);
         }
-
-        // Add remote notifications background mode
-        AddElementToArrayIfMissing(plist, "UIBackgroundModes", "remote-notification");
-
-        return plist.WriteToString();
     }
 
     private static PlistElementArray AddElementToArrayIfMissing(PlistDocument plist, string key, object element) {
