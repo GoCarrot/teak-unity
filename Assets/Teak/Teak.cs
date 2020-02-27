@@ -58,6 +58,13 @@ public partial class Teak : MonoBehaviour {
         set;
     }
 
+    /// <summary>UNIX Timestamp.</summary>
+    public static long Timestamp {
+        get {
+            return (long)(DateTime.Now.ToUniversalTime() - new DateTime(1970, 1, 1)).TotalSeconds;
+        }
+    }
+
     /// <summary>The user identifier for the current user.</summary>
     public string UserId {
         get;
@@ -119,7 +126,7 @@ public partial class Teak : MonoBehaviour {
                 string configuration = Marshal.PtrToStringAnsi(TeakGetAppConfiguration());
 #endif
                 if (!string.IsNullOrEmpty(configuration)) {
-                    mAppConfiguration = Json.Deserialize(configuration) as Dictionary<string,object>;
+                    mAppConfiguration = Json.TryDeserialize(configuration) as Dictionary<string,object>;
                 }
             }
             return mAppConfiguration;
@@ -350,10 +357,10 @@ public partial class Teak : MonoBehaviour {
         return new Dictionary<string, object>();
 #elif UNITY_ANDROID
         AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
-        return Json.Deserialize(teak.CallStatic<string>("getDeviceConfiguration")) as Dictionary<string,object>;
+        return Json.TryDeserialize(teak.CallStatic<string>("getDeviceConfiguration")) as Dictionary<string,object>;
 #elif UNITY_IPHONE
         string configuration = Marshal.PtrToStringAnsi(TeakGetDeviceConfiguration());
-        return Json.Deserialize(configuration) as Dictionary<string,object>;
+        return Json.TryDeserialize(configuration) as Dictionary<string,object>;
 #endif
     }
 
@@ -420,8 +427,10 @@ public partial class Teak : MonoBehaviour {
         try {
             MethodInfo serialize = purchase.GetType().GetMethod("Serialize");
             AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
-            Dictionary<string, object> json = Json.Deserialize(serialize.Invoke(purchase, null) as string) as Dictionary<string, object>;
-            teak.CallStatic("pluginPurchaseSucceeded", Json.Serialize(json["originalJson"]), "openiab");
+            Dictionary<string, object> json = Json.TryDeserialize(serialize.Invoke(purchase, null) as string) as Dictionary<string, object>;
+            if (json != null) {
+                teak.CallStatic("pluginPurchaseSucceeded", Json.Serialize(json["originalJson"]), "openiab");
+            }
         } finally {
         }
     }
@@ -489,7 +498,11 @@ public partial class Teak : MonoBehaviour {
     #region UnitySendMessage
     /// @cond hide_from_doxygen
     void NotificationLaunch(string jsonString) {
-        Dictionary<string, object> json = Json.Deserialize(jsonString) as Dictionary<string, object>;
+        Dictionary<string, object> json = Json.TryDeserialize(jsonString) as Dictionary<string, object>;
+        if (json == null) {
+            return;
+        }
+
         json.Remove("teakReward");
         json.Remove("teakDeepLink");
 
@@ -504,7 +517,10 @@ public partial class Teak : MonoBehaviour {
     }
 
     void RewardClaimAttempt(string jsonString) {
-        Dictionary<string, object> json = Json.Deserialize(jsonString) as Dictionary<string, object>;
+        Dictionary<string, object> json = Json.TryDeserialize(jsonString) as Dictionary<string, object>;
+        if (json == null) {
+            return;
+        }
 
         if (OnReward != null) {
             OnReward(new TeakReward(json));
@@ -512,7 +528,11 @@ public partial class Teak : MonoBehaviour {
     }
 
     void DeepLink(string jsonString) {
-        Dictionary<string, object> json = Json.Deserialize(jsonString) as Dictionary<string, object>;
+        Dictionary<string, object> json = Json.TryDeserialize(jsonString) as Dictionary<string, object>;
+        if (json == null) {
+            return;
+        }
+
         string route = json["route"] as string;
         if (mDeepLinkRoutes.ContainsKey(route)) {
             try {
@@ -525,15 +545,40 @@ public partial class Teak : MonoBehaviour {
         }
     }
 
-    void LogEvent(string jsonString) {
+    public void LogEvent(string jsonString) {
         if (OnLogEvent != null) {
-            Dictionary<string, object> json = Json.Deserialize(jsonString) as Dictionary<string, object>;
+            Dictionary<string, object> json = null;
+
+            try {
+                json = Json.Deserialize(jsonString) as Dictionary<string, object>;
+            } catch(Exception ex) {
+                json = new Dictionary<string, object>();
+                json["event_type"] = "error.loghandler";
+                json["log_level"] = "ERROR";
+                json["timestamp"] = Teak.Timestamp;
+                json["run_id"] = 0L;
+                json["event_id"] = 0L;
+
+                Dictionary<string, object> eventData = new Dictionary<string, object>();
+                eventData["error_type"] = ex is OverflowException ? "OverflowException" : "unknown";
+                eventData["exception"] = ex.ToString();
+                json["event_data"] = eventData;
+            }
+
+            if (json == null) {
+                return;
+            }
+
             OnLogEvent(json);
         }
     }
 
     void ForegroundNotification(string jsonString) {
-        Dictionary<string, object> json = Json.Deserialize(jsonString) as Dictionary<string, object>;
+        Dictionary<string, object> json = Json.TryDeserialize(jsonString) as Dictionary<string, object>;
+        if (json == null) {
+            return;
+        }
+
         json.Remove("teakReward");
         json.Remove("teakDeepLink");
 
@@ -548,7 +593,11 @@ public partial class Teak : MonoBehaviour {
     }
 
     void AdditionalData(string jsonString) {
-        Dictionary<string, object> json = Json.Deserialize(jsonString) as Dictionary<string, object>;
+        Dictionary<string, object> json = Json.TryDeserialize(jsonString) as Dictionary<string, object>;
+        if (json == null) {
+            return;
+        }
+
         if (OnAdditionalData != null) {
             OnAdditionalData(json);
         }
@@ -557,7 +606,11 @@ public partial class Teak : MonoBehaviour {
 #if UNITY_WEBGL
     void NotificationCallback(string jsonString) {
         try {
-            Dictionary<string, object> json = Json.Deserialize(jsonString) as Dictionary<string, object>;
+            Dictionary<string, object> json = Json.TryDeserialize(jsonString) as Dictionary<string, object>;
+            if (json == null) {
+                return;
+            }
+
             string callbackId = json["callbackId"] as string;
             string status = json["status"] as string;
             string creativeId = json.ContainsKey("creativeId") ? json["creativeId"] as string : null;
