@@ -560,8 +560,16 @@ public partial class Teak : MonoBehaviour {
                 json["event_id"] = 0L;
 
                 Dictionary<string, object> eventData = new Dictionary<string, object>();
-                eventData["error_type"] = ex is OverflowException ? "OverflowException" : "unknown";
                 eventData["exception"] = ex.ToString();
+
+                if (ex is OverflowException) {
+                    eventData["error_type"] = "overflow";
+                    eventData["error_description"] = "I encountered an OverflowException attempting to parse the log message. This most likely means that I am on Android < 6 running .NET 4.0 and the log message contained an emoji or other special character.";
+                } else {
+                    eventData["error_type"] = "unknown";
+                    eventData["error_description"] = "I encountered an unknown error attempting to parse the log message. Please contact team@teak.io with the details of the exception in the 'exception' key so that my humans can help me handle this better in the future!";
+                }
+
                 json["event_data"] = eventData;
             }
 
