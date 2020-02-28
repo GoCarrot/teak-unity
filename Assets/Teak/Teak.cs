@@ -551,7 +551,7 @@ public partial class Teak : MonoBehaviour {
 
             try {
                 json = Json.Deserialize(jsonString) as Dictionary<string, object>;
-            } catch(Exception ex) {
+            } catch (Exception ex) {
                 Dictionary<string, object> eventData = CreateLogEventDataFromException(ex);
                 // This can occur due to a bug in how .NET 4.0+ handles strings with UTF-16 characters from
                 // supplementary planes (e.g. emoji) when the string comes in through the JNI on Android
@@ -598,7 +598,7 @@ public partial class Teak : MonoBehaviour {
         json["run_id"] = 0L;
         json["event_id"] = 0L;
 
-        if(eventData != null) {
+        if (eventData != null) {
             json["event_data"] = eventData;
         }
 
