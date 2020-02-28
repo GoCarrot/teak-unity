@@ -562,10 +562,28 @@ public partial class Teak : MonoBehaviour {
                 Dictionary<string, object> eventData = new Dictionary<string, object>();
                 eventData["exception"] = ex.ToString();
 
+                // This can occur due to a bug in how .NET 4.0+ handles strings with UTF-16 characters from
+                // supplementary planes (e.g. emoji) when the string comes in through the JNI on Android
+                // 5.1.1 or earlier. Because Amazon Kindle devices are based on a fork of Android 5.1 this
+                // also impacts all Kindle devices.
+                //
+                // The most likely log message to contain emoji is the notification.received event, which
+                // includes the full contents of the notification message.
+                //
+                // We do not provide the string that caused parsing to fail in this event because in our testing
+                // the string is "tainted" -- any operations executed using it fail. For example, it cannot be
+                // printed with Debug.Log. Because the error only impacts the C# layer, Teak can identfy the
+                // string which triggered the error given the current game assigned player id and the timestamp
+                // from this error message, if remote logging is enabled by Teak for that player.
                 if (ex is OverflowException) {
                     eventData["error_type"] = "overflow";
                     eventData["error_description"] = "I encountered an OverflowException attempting to parse the log message. This most likely means that I am on Android < 6 running .NET 4.0 and the log message contained an emoji or other special character.";
                 } else {
+                    // We've only ever seen OverflowException occur when trying to parse log messages, but now
+                    // that we know errors _can_ happen, we should assume they _will_ happen. If you see this
+                    // message, then it means you've encountered a log parsing error that we had not heard of
+                    // at the time your version of the SDK was released. Please let us know what error you
+                    // saw, so that we can properly handle it in future SDK versions!
                     eventData["error_type"] = "unknown";
                     eventData["error_description"] = "I encountered an unknown error attempting to parse the log message. Please contact team@teak.io with the details of the exception in the 'exception' key so that my humans can help me handle this better in the future!";
                 }
