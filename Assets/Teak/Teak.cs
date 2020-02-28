@@ -552,16 +552,7 @@ public partial class Teak : MonoBehaviour {
             try {
                 json = Json.Deserialize(jsonString) as Dictionary<string, object>;
             } catch(Exception ex) {
-                json = new Dictionary<string, object>();
-                json["event_type"] = "error.loghandler";
-                json["log_level"] = "ERROR";
-                json["timestamp"] = Teak.Timestamp;
-                json["run_id"] = 0L;
-                json["event_id"] = 0L;
-
-                Dictionary<string, object> eventData = new Dictionary<string, object>();
-                eventData["exception"] = ex.ToString();
-
+                Dictionary<string, object> eventData = CreateLogEventDataFromException(ex);
                 // This can occur due to a bug in how .NET 4.0+ handles strings with UTF-16 characters from
                 // supplementary planes (e.g. emoji) when the string comes in through the JNI on Android
                 // 5.1.1 or earlier. Because Amazon Kindle devices are based on a fork of Android 5.1 this
@@ -588,7 +579,7 @@ public partial class Teak : MonoBehaviour {
                     eventData["error_description"] = "I encountered an unknown error attempting to parse the log message. Please contact team@teak.io with the details of the exception in the 'exception' key so that my humans can help me handle this better in the future!";
                 }
 
-                json["event_data"] = eventData;
+                json = CreateInternalErrorLogEvent("error.loghandler", eventData);
             }
 
             if (json == null) {
@@ -597,6 +588,27 @@ public partial class Teak : MonoBehaviour {
 
             OnLogEvent(json);
         }
+    }
+
+    Dictionary<string, object> CreateInternalErrorLogEvent(string eventType, Dictionary<string, object> eventData) {
+        Dictionary<string, object> json = new Dictionary<string, object>();
+        json["event_type"] = eventType;
+        json["log_level"] = "ERROR";
+        json["timestamp"] = Teak.Timestamp;
+        json["run_id"] = 0L;
+        json["event_id"] = 0L;
+
+        if(eventData != null) {
+            json["event_data"] = eventData;
+        }
+
+        return json;
+    }
+
+    Dictionary<string, object> CreateLogEventDataFromException(Exception exception) {
+        Dictionary<string, object> eventData = new Dictionary<string, object>();
+        eventData["exception"] = exception.ToString();
+        return eventData;
     }
 
     void ForegroundNotification(string jsonString) {
