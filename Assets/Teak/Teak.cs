@@ -58,6 +58,13 @@ public partial class Teak : MonoBehaviour {
         set;
     }
 
+    /// <summary>UNIX Timestamp.</summary>
+    public static long Timestamp {
+        get {
+            return (long)(DateTime.Now.ToUniversalTime() - new DateTime(1970, 1, 1)).TotalSeconds;
+        }
+    }
+
     /// <summary>The user identifier for the current user.</summary>
     public string UserId {
         get;
@@ -119,7 +126,7 @@ public partial class Teak : MonoBehaviour {
                 string configuration = Marshal.PtrToStringAnsi(TeakGetAppConfiguration());
 #endif
                 if (!string.IsNullOrEmpty(configuration)) {
-                    mAppConfiguration = Json.Deserialize(configuration) as Dictionary<string,object>;
+                    mAppConfiguration = Json.TryDeserialize(configuration) as Dictionary<string,object>;
                 }
             }
             return mAppConfiguration;
@@ -350,10 +357,10 @@ public partial class Teak : MonoBehaviour {
         return new Dictionary<string, object>();
 #elif UNITY_ANDROID
         AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
-        return Json.Deserialize(teak.CallStatic<string>("getDeviceConfiguration")) as Dictionary<string,object>;
+        return Json.TryDeserialize(teak.CallStatic<string>("getDeviceConfiguration")) as Dictionary<string,object>;
 #elif UNITY_IPHONE
         string configuration = Marshal.PtrToStringAnsi(TeakGetDeviceConfiguration());
-        return Json.Deserialize(configuration) as Dictionary<string,object>;
+        return Json.TryDeserialize(configuration) as Dictionary<string,object>;
 #endif
     }
 
@@ -420,8 +427,10 @@ public partial class Teak : MonoBehaviour {
         try {
             MethodInfo serialize = purchase.GetType().GetMethod("Serialize");
             AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
-            Dictionary<string, object> json = Json.Deserialize(serialize.Invoke(purchase, null) as string) as Dictionary<string, object>;
-            teak.CallStatic("pluginPurchaseSucceeded", Json.Serialize(json["originalJson"]), "openiab");
+            Dictionary<string, object> json = Json.TryDeserialize(serialize.Invoke(purchase, null) as string) as Dictionary<string, object>;
+            if (json != null) {
+                teak.CallStatic("pluginPurchaseSucceeded", Json.Serialize(json["originalJson"]), "openiab");
+            }
         } finally {
         }
     }
@@ -489,7 +498,11 @@ public partial class Teak : MonoBehaviour {
     #region UnitySendMessage
     /// @cond hide_from_doxygen
     void NotificationLaunch(string jsonString) {
-        Dictionary<string, object> json = Json.Deserialize(jsonString) as Dictionary<string, object>;
+        Dictionary<string, object> json = Json.TryDeserialize(jsonString) as Dictionary<string, object>;
+        if (json == null) {
+            return;
+        }
+
         json.Remove("teakReward");
 
         if (OnLaunchedFromNotification != null) {
@@ -504,7 +517,10 @@ public partial class Teak : MonoBehaviour {
     }
 
     void RewardClaimAttempt(string jsonString) {
-        Dictionary<string, object> json = Json.Deserialize(jsonString) as Dictionary<string, object>;
+        Dictionary<string, object> json = Json.TryDeserialize(jsonString) as Dictionary<string, object>;
+        if (json == null) {
+            return;
+        }
 
         if (OnReward != null) {
             OnReward(new TeakReward(json));
@@ -512,7 +528,11 @@ public partial class Teak : MonoBehaviour {
     }
 
     void DeepLink(string jsonString) {
-        Dictionary<string, object> json = Json.Deserialize(jsonString) as Dictionary<string, object>;
+        Dictionary<string, object> json = Json.TryDeserialize(jsonString) as Dictionary<string, object>;
+        if (json == null) {
+            return;
+        }
+
         string route = json["route"] as string;
         if (mDeepLinkRoutes.ContainsKey(route)) {
             try {
@@ -525,15 +545,78 @@ public partial class Teak : MonoBehaviour {
         }
     }
 
-    void LogEvent(string jsonString) {
+    public void LogEvent(string jsonString) {
         if (OnLogEvent != null) {
-            Dictionary<string, object> json = Json.Deserialize(jsonString) as Dictionary<string, object>;
+            Dictionary<string, object> json = null;
+
+            try {
+                json = Json.Deserialize(jsonString) as Dictionary<string, object>;
+            } catch (Exception ex) {
+                Dictionary<string, object> eventData = CreateLogEventDataFromException(ex);
+                // This can occur due to a bug in how .NET 4.0+ handles strings with UTF-16 characters from
+                // supplementary planes (e.g. emoji) when the string comes in through the JNI on Android
+                // 5.1.1 or earlier. Because Amazon Kindle devices are based on a fork of Android 5.1 this
+                // also impacts all Kindle devices.
+                //
+                // The most likely log message to contain emoji is the notification.received event, which
+                // includes the full contents of the notification message.
+                //
+                // We do not provide the string that caused parsing to fail in this event because in our testing
+                // the string is "tainted" -- any operations executed using it fail. For example, it cannot be
+                // printed with Debug.Log. Because the error only impacts the C# layer, Teak can identfy the
+                // string which triggered the error given the current game assigned player id and the timestamp
+                // from this error message, if remote logging is enabled by Teak for that player.
+                if (ex is OverflowException) {
+                    eventData["error_type"] = "overflow";
+                    eventData["error_description"] = "I encountered an OverflowException attempting to parse the log message. This most likely means that I am on Android < 6 running .NET 4.0 and the log message contained an emoji or other special character.";
+                } else {
+                    // We've only ever seen OverflowException occur when trying to parse log messages, but now
+                    // that we know errors _can_ happen, we should assume they _will_ happen. If you see this
+                    // message, then it means you've encountered a log parsing error that we had not heard of
+                    // at the time your version of the SDK was released. Please let us know what error you
+                    // saw, so that we can properly handle it in future SDK versions!
+                    eventData["error_type"] = "unknown";
+                    eventData["error_description"] = "I encountered an unknown error attempting to parse the log message. Please contact team@teak.io with the details of the exception in the 'exception' key so that my humans can help me handle this better in the future!";
+                }
+
+                json = CreateInternalErrorLogEvent("error.loghandler", eventData);
+            }
+
+            if (json == null) {
+                return;
+            }
+
             OnLogEvent(json);
         }
     }
 
+    Dictionary<string, object> CreateInternalErrorLogEvent(string eventType, Dictionary<string, object> eventData) {
+        Dictionary<string, object> json = new Dictionary<string, object>();
+        json["event_type"] = eventType;
+        json["log_level"] = "ERROR";
+        json["timestamp"] = Teak.Timestamp;
+        json["run_id"] = 0L;
+        json["event_id"] = 0L;
+
+        if (eventData != null) {
+            json["event_data"] = eventData;
+        }
+
+        return json;
+    }
+
+    Dictionary<string, object> CreateLogEventDataFromException(Exception exception) {
+        Dictionary<string, object> eventData = new Dictionary<string, object>();
+        eventData["exception"] = exception.ToString();
+        return eventData;
+    }
+
     void ForegroundNotification(string jsonString) {
-        Dictionary<string, object> json = Json.Deserialize(jsonString) as Dictionary<string, object>;
+        Dictionary<string, object> json = Json.TryDeserialize(jsonString) as Dictionary<string, object>;
+        if (json == null) {
+            return;
+        }
+
         json.Remove("teakReward");
 
         if (OnForegroundNotification != null) {
@@ -548,7 +631,11 @@ public partial class Teak : MonoBehaviour {
     }
 
     void AdditionalData(string jsonString) {
-        Dictionary<string, object> json = Json.Deserialize(jsonString) as Dictionary<string, object>;
+        Dictionary<string, object> json = Json.TryDeserialize(jsonString) as Dictionary<string, object>;
+        if (json == null) {
+            return;
+        }
+
         if (OnAdditionalData != null) {
             OnAdditionalData(json);
         }
@@ -557,7 +644,11 @@ public partial class Teak : MonoBehaviour {
 #if UNITY_WEBGL
     void NotificationCallback(string jsonString) {
         try {
-            Dictionary<string, object> json = Json.Deserialize(jsonString) as Dictionary<string, object>;
+            Dictionary<string, object> json = Json.TryDeserialize(jsonString) as Dictionary<string, object>;
+            if (json == null) {
+                return;
+            }
+
             string callbackId = json["callbackId"] as string;
             string status = json["status"] as string;
             string creativeId = json.ContainsKey("creativeId") ? json["creativeId"] as string : null;

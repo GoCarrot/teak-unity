@@ -40,6 +40,7 @@ TEAK_SDK_VERSION = `git describe --tags`.strip
 NATIVE_CONFIG = YAML.load_file('native.config.yml')
 
 PROJECT_PATH = Rake.application.original_dir
+BUILD_TYPE = ENV.fetch('BUILD_TYPE', 'Release')
 
 #
 # Play a sound after finished
@@ -152,7 +153,7 @@ namespace :build do
   task :ios do
     # Download or copy Teak SDK
     if build_local?
-      cp "#{PROJECT_PATH}/../teak-ios/build/Release-iphoneos/libTeak.a", File.join(PROJECT_PATH, 'Assets', 'Teak', 'Plugins', 'iOS', 'libTeak.a')
+      cp "#{PROJECT_PATH}/../teak-ios/build/#{BUILD_TYPE}-iphoneos/libTeak.a", File.join(PROJECT_PATH, 'Assets', 'Teak', 'Plugins', 'iOS', 'libTeak.a')
     else
       Dir.mktmpdir do |dir|
         Dir.chdir(dir) do
@@ -167,7 +168,7 @@ namespace :build do
     Dir.mktmpdir do |dir|
       Dir.chdir(dir) do
         if build_local?
-          cp "#{PROJECT_PATH}/../teak-ios/build/Release-iphoneos/TeakResources.bundle.zip", 'TeakResources.bundle.zip'
+          cp "#{PROJECT_PATH}/../teak-ios/build/#{BUILD_TYPE}-iphoneos/TeakResources.bundle.zip", 'TeakResources.bundle.zip'
         else
           sh "curl -o TeakResources.bundle.zip https://sdks.teakcdn.com/ios/TeakResources-#{NATIVE_CONFIG['version']['ios']}.bundle.zip"
         end
