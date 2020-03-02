@@ -57,7 +57,7 @@ public partial class TeakNotification {
             while (!future.Call<bool>("isDone")) yield return null;
 
             try {
-                Dictionary<string, object> json = Json.Deserialize(future.Call<string>("get")) as Dictionary<string, object>;
+                Dictionary<string, object> json = Json.TryDeserialize(future.Call<string>("get")) as Dictionary<string, object>;
                 data = json["data"] as string;
                 status = json["status"] as string;
             } catch {
@@ -97,7 +97,7 @@ public partial class TeakNotification {
             while (!future.Call<bool>("isDone")) yield return null;
 
             try {
-                Dictionary<string, object> json = Json.Deserialize(future.Call<string>("get")) as Dictionary<string, object>;
+                Dictionary<string, object> json = Json.TryDeserialize(future.Call<string>("get")) as Dictionary<string, object>;
                 data = json["data"] as string;
                 status = json["status"] as string;
             } catch {
@@ -137,7 +137,7 @@ public partial class TeakNotification {
         if (future != null) {
             while (!future.Call<bool>("isDone")) yield return null;
             try {
-                Dictionary<string, object> json = Json.Deserialize(future.Call<string>("get")) as Dictionary<string, object>;
+                Dictionary<string, object> json = Json.TryDeserialize(future.Call<string>("get")) as Dictionary<string, object>;
                 data = json["data"] as string;
                 status = json["status"] as string;
             } catch {
@@ -177,7 +177,7 @@ public partial class TeakNotification {
         if (future != null) {
             while (!future.Call<bool>("isDone")) yield return null;
             try {
-                Dictionary<string, object> json = Json.Deserialize(future.Call<string>("get")) as Dictionary<string, object>;
+                Dictionary<string, object> json = Json.TryDeserialize(future.Call<string>("get")) as Dictionary<string, object>;
                 data = Json.Serialize(json["data"]);
                 status = json["status"] as string;
             } catch {
@@ -271,7 +271,7 @@ public partial class TeakNotification {
             }
 
             if (this.Status == ReplyStatus.Ok) {
-                List<object> replyList = Json.Deserialize(data) as List<object>;
+                List<object> replyList = Json.TryDeserialize(data) as List<object>;
                 if (replyList != null) {
                     // Data contains array of pairs
                     this.Notifications = new List<Notification>();

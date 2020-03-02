@@ -34,10 +34,10 @@ public class TeakStoreListener : IStoreListener {
     public PurchaseProcessingResult ProcessPurchase(PurchaseEventArgs e) {
 #if !UNITY_EDITOR && UNITY_ANDROID && !TEAK_NOT_AVAILABLE
         try {
-            Dictionary<string, object> receipt = Json.Deserialize(e.purchasedProduct.receipt) as Dictionary<string,object>;
+            Dictionary<string, object> receipt = Json.TryDeserialize(e.purchasedProduct.receipt) as Dictionary<string,object>;
             if ("GooglePlay".Equals(receipt["Store"])) {
-                Dictionary<string, object> receiptPayload = Json.Deserialize(receipt["Payload"] as string) as Dictionary<string,object>;
-                Dictionary<string, object> receiptPayloadJson = Json.Deserialize(receiptPayload["json"] as string) as Dictionary<string,object>;
+                Dictionary<string, object> receiptPayload = Json.TryDeserialize(receipt["Payload"] as string) as Dictionary<string,object>;
+                Dictionary<string, object> receiptPayloadJson = Json.TryDeserialize(receiptPayload["json"] as string) as Dictionary<string,object>;
                 string receiptPayloadJsonString = Json.Serialize(receiptPayloadJson);
 
                 AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
