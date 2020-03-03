@@ -285,7 +285,7 @@ public partial class TeakNotification {
                     foreach (object e in replyList) {
                         Dictionary<string, object> entry = e as Dictionary<string, object>;
                         if (entry != null) {
-                            this.Notifications.Add(new Notification { ScheduleId = entry["schedule_id"] as string, CreativeId = entry["creative_id"] as string });
+                            this.Notifications.Add(new Notification { ScheduleId = entry["schedule_id"].ToString(), CreativeId = entry["creative_id"] as string });
                         } else {
                             this.Notifications.Add(new Notification { ScheduleId = e as string, CreativeId = creativeId });
                         }
