@@ -38,6 +38,13 @@ public partial class TeakNotification {
         public struct Notification {
             public string ScheduleId;
             public string CreativeId;
+
+            public override string ToString() {
+                string formatString = "{{ ScheduleId = '{0}', CreativeId = '{1}' }}";
+                return string.Format(formatString,
+                    this.ScheduleId,
+                    this.CreativeId);
+            }
         }
 
         public ReplyStatus Status { get; set; }
