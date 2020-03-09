@@ -12,15 +12,32 @@ When you use a custom App Delegate, your App Delegate will be the first to recei
 
 The flow of events is now: iOS -> Your App Delegate -> Teak -> Unity
 
+Notable Methods
+---------------
+If things aren't working as expected, be sure that you are calling ``super`` from these methods (if your App Delegate implements them).
+
+Deep Links Aren't Working
+^^^^^^^^^^^^^^^^^^^^^^^^^
+* ``application:openURL:sourceApplication:annotation:``
+* ``application:openURL:options:``
+* ``application:continueUserActivity:restorationHandler:``
+
+Push Notifications Aren't Working
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+* ``application:didReceiveRemoteNotification:``
+* ``application:didFailToRegisterForRemoteNotificationsWithError:``
+* ``application:didRegisterForRemoteNotificationsWithDeviceToken:``
+* ``application:didRegisterUserNotificationSettings:``
+
+.. important:: You should always call ``super`` from any method your App Delegate implements.
+
 Versions of Unity
 -----------------
-Depending on the version of Unity, the Unity App Delegate may not implement all of the event handlers. Teak accounts for this by making sure that a selector is implemented before calling it.
+If you remove Teak from this build, you may need to remove the call to super from some delegate methods as your version of Unity may not support them.
 
 For example, Unity 2018.2.18f1 does not implement ``application:openURL:options:``, and if you try and call that function on the Unity App Delegate the app will crash with an unrecognized selector exception.
 
-What this means is that, while Teak will take care of this for you, if you make a build without Teak, when you call ``super`` the call will now go to Unity instead of Teak and cause the case described above.
-
-Teak suggest handling this case with the following::
+Teak suggests handling this case with the following::
 
     - (BOOL)application:(UIApplication*)application
                 openURL:(NSURL*)url
@@ -88,11 +105,3 @@ For reference, this is the implementation Teak uses in our test framework::
     }
 
 It's fairly specific to our needs, but should be easily adaptible to your needs.
-
-Notable Methods
----------------
-While you should always provide ``super`` the opportunity to respond to events, if you find that things are not working as you expect, here are some methods to look at.
-
-* ``application:openURL:sourceApplication:annotation:``
-* ``application:openURL:options:``
-* ``application:continueUserActivity:restorationHandler:``
