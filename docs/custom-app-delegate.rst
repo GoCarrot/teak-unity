@@ -1,0 +1,98 @@
+Using a Custom App Delegate on iOS
+==================================
+.. highlight:: objc
+
+If your game uses a custom App Delegate, there are some things you should be aware of.
+
+Teak hooks several methods of the Unity App Delegate when the application launches. This means that Teak intercepts the call, does what it needs to do, and then sends along the event to the Unity App Delegate.
+
+The flow of events is: iOS -> Teak -> Unity
+
+When you use a custom App Delegate, your App Delegate will be the first to receive the call, instead of Teak. In order for Teak to function properly, you will need to call ``super``.
+
+The flow of events is now: iOS -> Your App Delegate -> Teak -> Unity
+
+Versions of Unity
+-----------------
+Depending on the version of Unity, the Unity App Delegate may not implement all of the event handlers. Teak accounts for this by making sure that a selector is implemented before calling it.
+
+For example, Unity 2018.2.18f1 does not implement ``application:openURL:options:``, and if you try and call that function on the Unity App Delegate the app will crash with an unrecognized selector exception.
+
+What this means is that, while Teak will take care of this for you, if you make a build without Teak, when you call ``super`` the call will now go to Unity instead of Teak and cause the case described above.
+
+Teak suggest handling this case with the following::
+
+    - (BOOL)application:(UIApplication*)application
+                openURL:(NSURL*)url
+      sourceApplication:(NSString*)sourceApplication
+             annotation:(id)annotation {
+
+        [super application:application
+                   openURL:url
+         sourceApplication:sourceApplication
+                annotation:annotation];
+
+        return [self handleOpenURL:url fromSelector:_cmd];
+    }
+
+    - (BOOL)application:(UIApplication*)application
+                openURL:(NSURL*)url
+                options:(NSDictionary<NSString*, id>*)options {
+
+        if (class_respondsToSelector(UnityAppController.class, _cmd)) {
+            [super application:application openURL:url options:options];
+            return [self handleOpenURL:url fromSelector:_cmd];
+        }
+
+        return [self application:application
+                         openURL:url
+               sourceApplication:options[UIApplicationOpenURLOptionsSourceApplicationKey]
+                      annotation:options[UIApplicationOpenURLOptionsAnnotationKey]];
+    }
+
+In this way, both "deep linking" selectors will be handled by the custom delegate via a singular method that we implement, ``handleOpenURL:fromSelector:``.
+
+Now whichever selector calls, will be handled. In the case that the UnityAppControler class does not implement the ``application:openURL:options:`` selector, it will instead re-direct the call to ``application:openURL:sourceApplication:annotation:`` and allow processing.
+
+For reference, this is the implementation Teak uses in our test framework::
+
+    - (BOOL)handleOpenURL:(NSURL*)url fromSelector:(SEL)sel {
+        if (![url.scheme isEqualToString:@"nonteak"]) {
+            return NO;
+        }
+
+        NSDictionary* jsonDict = @{
+            @"run_id" : @0,
+            @"event_id" : @0,
+            @"timestamp" : @0,
+            @"event_type" : @"test.delegate",
+            @"log_level" : @"INFO",
+            @"event_data" : @{
+                @"url" : url.absoluteString,
+                @"method" : NSStringFromSelector(sel)
+            }
+        };
+
+        NSError* error = nil;
+        NSData* jsonData = [NSJSONSerialization dataWithJSONObject:jsonDict
+                                                           options:0
+                                                             error:&error];
+
+        if (error == nil) {
+            NSString* jsonString = [[NSString alloc] initWithData:jsonData
+                                                         encoding:NSUTF8StringEncoding];
+            UnitySendMessage("TeakGameObject", "LogEvent", [jsonString UTF8String]);
+        }
+
+        return YES;
+    }
+
+It's fairly specific to our needs, but should be easily adaptible to your needs.
+
+Notable Methods
+---------------
+While you should always provide ``super`` the opportunity to respond to events, if you find that things are not working as you expect, here are some methods to look at.
+
+* ``application:openURL:sourceApplication:annotation:``
+* ``application:openURL:options:``
+* ``application:continueUserActivity:restorationHandler:``

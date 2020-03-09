@@ -26,6 +26,7 @@ Getting started with Teak on Unity
     amazon
     ios
     ios-extensions
+    custom-app-delegate
     working-with-unity
     badging
     it-broke
