@@ -24,6 +24,10 @@ The following dependencies are optional
 
     **Please use Play Services Resolver version >= 1.2.95.** Issues have been reported using version 1.2.72, and issues with other versions may also exist.
 
+.. important:: ``firebase-messaging`` must be **20.1.0** or lower, and ``firebase-iid`` must be **20.0.2** or lower.
+
+    Other versions will be supported in the future.
+
 Tell Teak to Auto-Initialize
 ----------------------------
 .. highlight:: xml
