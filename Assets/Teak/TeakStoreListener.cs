@@ -43,7 +43,7 @@ public class TeakStoreListener : IStoreListener {
                 AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
                 teak.CallStatic("pluginPurchaseSucceeded", receiptPayloadJsonString, "unityiap");
             }
-        } finally {
+        } catch(Exception) {
         }
 #endif // UNITY_ANDROID && !TEAK_NOT_AVAILABLE
         return this.AttachedStoreListener.ProcessPurchase(e);

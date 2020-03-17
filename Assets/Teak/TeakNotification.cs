@@ -38,6 +38,13 @@ public partial class TeakNotification {
         public struct Notification {
             public string ScheduleId;
             public string CreativeId;
+
+            public override string ToString() {
+                string formatString = "{{ ScheduleId = '{0}', CreativeId = '{1}' }}";
+                return string.Format(formatString,
+                    this.ScheduleId,
+                    this.CreativeId);
+            }
         }
 
         public ReplyStatus Status { get; set; }
@@ -278,7 +285,7 @@ public partial class TeakNotification {
                     foreach (object e in replyList) {
                         Dictionary<string, object> entry = e as Dictionary<string, object>;
                         if (entry != null) {
-                            this.Notifications.Add(new Notification { ScheduleId = entry["schedule_id"] as string, CreativeId = entry["creative_id"] as string });
+                            this.Notifications.Add(new Notification { ScheduleId = entry["schedule_id"].ToString(), CreativeId = entry["creative_id"] as string });
                         } else {
                             this.Notifications.Add(new Notification { ScheduleId = e as string, CreativeId = creativeId });
                         }

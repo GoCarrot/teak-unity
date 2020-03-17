@@ -99,7 +99,7 @@ namespace MiniJSON.Teak {
             // wrap the original method in a try block
             try {
                 return Deserialize(json);
-            } catch(Exception ignored) {
+            } catch(Exception) {
             }
 
             // return null if an exception was thrown
