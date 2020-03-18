@@ -53,6 +53,10 @@ public partial class TeakNotification {
 
     // Returns an id that can be used to cancel a scheduled notification
     public static IEnumerator ScheduleNotification(string creativeId, string defaultMessage, long delayInSeconds, System.Action<Reply> callback) {
+        if (Teak.Instance.Trace) {
+            Debug.Log("[TeakNotification] ScheduleNotification(" + creativeId + ", " + defaultMessage + ", " + delayInSeconds + ")");
+        }
+
 #if UNITY_EDITOR
         yield return null;
 #elif UNITY_ANDROID
@@ -93,6 +97,10 @@ public partial class TeakNotification {
     }
 
     public static IEnumerator ScheduleNotification(string creativeId, long delayInSeconds, string[] userIds, System.Action<Reply> callback) {
+        if (Teak.Instance.Trace) {
+            Debug.Log("[TeakNotification] ScheduleNotification(" + creativeId + ", " + delayInSeconds + ", " + userIds + ")");
+        }
+
 #if UNITY_EDITOR
         yield return null;
 #elif UNITY_ANDROID
@@ -134,6 +142,10 @@ public partial class TeakNotification {
 
     // Cancel an existing notification
     public static IEnumerator CancelScheduledNotification(string scheduleId, System.Action<Reply> callback) {
+        if (Teak.Instance.Trace) {
+            Debug.Log("[TeakNotification] CancelScheduledNotification(" + scheduleId + ")");
+        }
+
 #if UNITY_EDITOR
         yield return null;
 #elif UNITY_ANDROID
@@ -174,6 +186,10 @@ public partial class TeakNotification {
 
     // Cancel all scheduled notifications
     public static IEnumerator CancelAllScheduledNotifications(System.Action<Reply> callback) {
+        if (Teak.Instance.Trace) {
+            Debug.Log("[TeakNotification] CancelAllScheduledNotifications()");
+        }
+
 #if UNITY_EDITOR
         yield return null;
 #elif UNITY_ANDROID

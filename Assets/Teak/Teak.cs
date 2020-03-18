@@ -134,6 +134,16 @@ public partial class Teak : MonoBehaviour {
     }
 
     /// <summary>
+    /// Teak will log all Unity method calls to the Unity log if true.
+    ///
+    /// This defaults to the setting for the native SDK, but can be assigned at runtime as well.
+    /// </summary>
+    public bool Trace {
+        get;
+        set;
+    }
+
+    /// <summary>
     /// Value provided to IdentifyUser to opt out of collecting an IDFA for this specific user.
     /// </summary>
     /// <remarks>
@@ -187,9 +197,11 @@ public partial class Teak : MonoBehaviour {
 
         this.UserId = userIdentifier;
 
-#if UNITY_EDITOR
-        Debug.Log("[Teak] IdentifyUser(): " + userIdentifier);
-#elif UNITY_ANDROID
+        if (this.Trace) {
+            Debug.Log("[Teak] IdentifyUser(): " + userIdentifier);
+        }
+
+#if UNITY_ANDROID
         AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
         teak.CallStatic("identifyUser", userIdentifier, optOut.ToArray(), email);
 #elif UNITY_IPHONE || UNITY_WEBGL
@@ -207,9 +219,11 @@ public partial class Teak : MonoBehaviour {
     /// <param name="objectTypeId">The type of object that is being posted, e.g. 'quest'.</param>
     /// <param name="objectInstanceId">The specific instance of the object, e.g. 'gather-quest-1'</param>
     public void TrackEvent(string actionId, string objectTypeId, string objectInstanceId) {
-#if UNITY_EDITOR
-        Debug.Log("[Teak] TrackEvent(): " + actionId + " - " + objectTypeId + " - " + objectInstanceId);
-#elif UNITY_ANDROID
+        if (this.Trace) {
+            Debug.Log("[Teak] TrackEvent(): " + actionId + " - " + objectTypeId + " - " + objectInstanceId);
+        }
+
+#if UNITY_ANDROID
         AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
         teak.CallStatic("trackEvent", actionId, objectTypeId, objectInstanceId);
 #elif UNITY_IPHONE || UNITY_WEBGL
@@ -225,9 +239,11 @@ public partial class Teak : MonoBehaviour {
     /// <param name="objectInstanceId">The specific instance of the object, e.g. 'gather-quest-1'</param>
     /// <param name="count">The amount by which to increment</param>
     public void IncrementEvent(string actionId, string objectTypeId, string objectInstanceId, long count) {
-#if UNITY_EDITOR
-        Debug.Log("[Teak] IncrementEvent(): " + actionId + " - " + objectTypeId + " - " + objectInstanceId + " - " + count);
-#elif UNITY_ANDROID
+        if (this.Trace) {
+            Debug.Log("[Teak] IncrementEvent(): " + actionId + " - " + objectTypeId + " - " + objectInstanceId + " - " + count);
+        }
+
+#if UNITY_ANDROID
         AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
         long longCountForJava = (long) count;
         teak.CallStatic("incrementEvent", actionId, objectTypeId, objectInstanceId, longCountForJava);
@@ -270,9 +286,12 @@ public partial class Teak : MonoBehaviour {
     /// <param name="action">A function, or lambda to execute when this deep link is invoked via a notification or web link.</param>
     public void RegisterRoute(string route, string name, string description, Action<Dictionary<string, object>> action) {
         mDeepLinkRoutes[route] = action;
-#if UNITY_EDITOR
-        Debug.Log("[Teak] RegisterRoute(): " + route + " - " + name + " - " + description);
-#elif UNITY_ANDROID
+
+        if (this.Trace) {
+            Debug.Log("[Teak] RegisterRoute(): " + route + " - " + name + " - " + description);
+        }
+
+#if UNITY_ANDROID
         AndroidJavaClass teakUnity = new AndroidJavaClass("io.teak.sdk.wrapper.unity.TeakUnity");
         teakUnity.CallStatic("registerRoute", route, name, description);
 #elif UNITY_IPHONE || UNITY_WEBGL
@@ -286,8 +305,11 @@ public partial class Teak : MonoBehaviour {
     /// <param name="count">The number to display on the icon of the app on the home screen, or 0 to clear.</param>
     /// <returns>True if Teak was able to set the badge count, false otherwise.</returns>
     public bool SetBadgeCount(int count) {
+        if (this.Trace) {
+            Debug.Log("[Teak] SetBadgeCount(" + count + ")");
+        }
+
 #if UNITY_EDITOR
-        Debug.Log("[Teak] SetBadgeCount(" + count + ")");
         return true;
 #elif UNITY_ANDROID
         AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
@@ -303,8 +325,11 @@ public partial class Teak : MonoBehaviour {
     /// </summary>
     /// <returns>false if Teak was unable to open the settings for your app, true otherwise.</returns>
     public bool OpenSettingsAppToThisAppsSettings() {
+        if (this.Trace) {
+            Debug.Log("[Teak] OpenSettingsAppToThisAppsSettings()");
+        }
+
 #if UNITY_EDITOR
-        Debug.Log("[Teak] OpenSettingsAppToThisAppsSettings()");
         return false;
 #elif UNITY_WEBGL
         return false;
@@ -322,9 +347,11 @@ public partial class Teak : MonoBehaviour {
     /// <param name="key">The name of the numeric attribute.</param>
     /// <param name="value">The value for the numeric attribute.</param>
     public void SetNumericAttribute(string key, double value) {
-#if UNITY_EDITOR
-        Debug.Log("[Teak] SetNumericAttribute(" + key + ", " + value + ")");
-#elif UNITY_ANDROID
+        if (this.Trace) {
+            Debug.Log("[Teak] SetNumericAttribute(" + key + ", " + value + ")");
+        }
+
+#if UNITY_ANDROID
         AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
         teak.CallStatic("setNumericAttribute", key, value);
 #elif UNITY_IPHONE || UNITY_WEBGL
@@ -338,9 +365,10 @@ public partial class Teak : MonoBehaviour {
     /// <param name="key">The name of the string attribute.</param>
     /// <param name="value">The value for the string attribute.</param>
     public void SetStringAttribute(string key, string value) {
-#if UNITY_EDITOR
-        Debug.Log("[Teak] SetStringAttribute(" + key + ", " + value + ")");
-#elif UNITY_ANDROID
+        if (this.Trace) {
+            Debug.Log("[Teak] SetStringAttribute(" + key + ", " + value + ")");
+        }
+#if UNITY_ANDROID
         AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
         teak.CallStatic("setStringAttribute", key, value);
 #elif UNITY_IPHONE || UNITY_WEBGL
@@ -686,7 +714,10 @@ public partial class Teak : MonoBehaviour {
     }
 
     void Start() {
-#if UNITY_ANDROID
+#if UNITY_EDITOR
+        // Editor mode default to trace on
+        this.Trace = true;
+#elif UNITY_ANDROID
         // Try and find an active store plugin
         Type onePF = Type.GetType("OpenIABEventManager, Assembly-CSharp-firstpass");
         if (onePF == null) onePF = Type.GetType("OpenIABEventManager, Assembly-CSharp");
@@ -735,6 +766,11 @@ public partial class Teak : MonoBehaviour {
 #endif
         }
 #endif
+
+        // Trace log default from app config
+        if (this.AppConfiguration != null && this.AppConfiguration["traceLog"] != null) {
+            this.Trace = (bool) this.AppConfiguration["traceLog"];
+        }
     }
 
     void OnApplicationQuit() {
