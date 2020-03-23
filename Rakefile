@@ -1,12 +1,14 @@
 # frozen_string_literal: true
 
 require 'rake/clean'
+require 'aws-sdk-s3'
 require 'httparty'
 require 'shellwords'
 require 'tmpdir'
 require 'yaml'
 require 'awesome_print'
 require 'terminal-notifier'
+require 'optparse'
 CLEAN.include '**/.DS_Store'
 
 #
@@ -101,6 +103,50 @@ namespace :unity do
     end
     puts 'Released Unity license...'
   end
+end
+
+task :version do
+  options = {}
+  OptionParser.new do |opts|
+    opts.banner = "Usage: rake version [options]"
+    opts.on("-a", "--android ARG", String) { |android| options[:android] = android }
+    opts.on("-i", "--ios ARG", String) { |ios| options[:ios] = ios }
+    opts.on("-u", "--unity ARG", String) { |unity| options[:unity] = unity }
+    opts.on("-s", "--skip-validate") { options[:force] = true }
+  end.parse!
+
+  # Remove 'version' from the ARGV
+  ARGV.delete 'version'
+
+  # Assign versions if they weren't specified on a per-platform basis
+  if ARGV.length > 0
+    options[:android] ||= ARGV[0]
+    options[:ios] ||= ARGV[0]
+    options[:unity] ||= ARGV[0]
+  else
+    options[:android] ||= NATIVE_CONFIG['version']['android']
+    options[:ios] ||= NATIVE_CONFIG['version']['ios']
+    options[:unity] ||= File.read('VERSION').strip
+  end
+
+  s3 = Aws::S3::Resource.new(
+    region: 'us-east-1'
+  )
+  bucket = s3.bucket('teak-build-artifacts')
+
+  unless options[:force]
+    fail "Teak Unity version #{options[:unity]} does not exist" unless bucket.object("unity/Teak-#{options[:unity]}.unitypackage").exists?
+    fail "Teak iOS version #{options[:ios]} does not exist" unless bucket.object("ios/Teak-#{options[:ios]}.framework.zip").exists?
+    fail "Teak Android version #{options[:android]} does not exist" unless bucket.object("android/teak-#{options[:ios]}.aar").exists?
+  end
+
+  NATIVE_CONFIG['version']['android'] = options[:android]
+  NATIVE_CONFIG['version']['ios'] = options[:ios]
+  File.write('native.config.yml', NATIVE_CONFIG.to_yaml)
+
+  File.write('VERSION', "#{options[:unity]}\n")
+
+  exit # This prevents the error message from being printed
 end
 
 namespace :build do
