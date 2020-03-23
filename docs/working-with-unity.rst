@@ -351,3 +351,7 @@ Teak sets some preprocessor defines for your use in ``Teak/Editor/TeakPreProcess
     :TEAK_2_3_OR_NEWER: The Teak SDK version is at least 2.3
 
     :TEAK_3_0_OR_NEWER: The Teak SDK version is at least 3.0
+
+    :TEAK_3_1_OR_NEWER: The Teak SDK version is at least 3.1
+
+    :TEAK_3_2_OR_NEWER: The Teak SDK version is at least 3.2
