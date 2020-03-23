@@ -213,6 +213,22 @@ public partial class Teak : MonoBehaviour {
     }
 
     /// <summary>
+    /// Logout the current user.
+    /// </summary>
+    public void Logout() {
+        if (this.Trace) {
+            Debug.Log("[Teak] Logout()");
+        }
+
+#if UNITY_ANDROID
+        AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
+        teak.CallStatic("logout");
+#elif UNITY_IPHONE
+        TeakLogout();
+#endif
+    }
+
+    /// <summary>
     /// Track an arbitrary event in Teak.
     /// </summary>
     /// <param name="actionId">The identifier for the action, e.g. 'complete'.</param>
@@ -506,6 +522,9 @@ public partial class Teak : MonoBehaviour {
 
     [DllImport ("__Internal")]
     private static extern void TeakProcessDeepLinks();
+
+    [DllImport ("__Internal")]
+    private static extern void TeakLogout();
 #endif
 
 #if UNITY_WEBGL
