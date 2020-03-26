@@ -135,7 +135,7 @@ task :version do
   bucket = s3.bucket('teak-build-artifacts')
 
   unless options[:force]
-    fail "Teak Unity version #{options[:unity]} does not exist" unless bucket.object("unity/Teak-#{options[:unity]}.unitypackage").exists?
+    # fail "Teak Unity version #{options[:unity]} does not exist" unless bucket.object("unity/Teak-#{options[:unity]}.unitypackage").exists?
     fail "Teak iOS version #{options[:ios]} does not exist" unless bucket.object("ios/Teak-#{options[:ios]}.framework.zip").exists?
     fail "Teak Android version #{options[:android]} does not exist" unless bucket.object("android/teak-#{options[:ios]}.aar").exists?
   end
