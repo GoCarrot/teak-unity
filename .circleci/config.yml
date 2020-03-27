@@ -24,7 +24,7 @@ jobs:
       - run:
           name: Ruby Gems
           command: |
-            gem update bundler
+            # gem update bundler # This isn't needed right now, it'll cause an error and 2.0.2 is ok for a version
             bundle check || bundle install --path vendor/bundle
       - save_cache:
           paths:
