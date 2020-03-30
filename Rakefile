@@ -8,7 +8,6 @@ require 'tmpdir'
 require 'yaml'
 require 'awesome_print'
 require 'terminal-notifier'
-require 'optparse'
 CLEAN.include '**/.DS_Store'
 
 #
@@ -105,48 +104,40 @@ namespace :unity do
   end
 end
 
-task :version do
-  options = {}
-  OptionParser.new do |opts|
-    opts.banner = "Usage: rake version [options]"
-    opts.on("-a", "--android ARG", String) { |android| options[:android] = android }
-    opts.on("-i", "--ios ARG", String) { |ios| options[:ios] = ios }
-    opts.on("-u", "--unity ARG", String) { |unity| options[:unity] = unity }
-    opts.on("-s", "--skip-validate") { options[:force] = true }
-  end.parse!
+task :version, [:v] do |_, args|
+  Rake::Task['version:ios'].invoke(args.v)
+  Rake::Task['version:android'].invoke(args.v)
+  Rake::Task['version:unity'].invoke(args.v)
+end
 
-  # Remove 'version' from the ARGV
-  ARGV.delete 'version'
+namespace :version do
+  task :ios, [:v] do |_, args|
+    s3 = Aws::S3::Resource.new(
+      region: 'us-east-1'
+    )
+    bucket = s3.bucket('teak-build-artifacts')
 
-  # Assign versions if they weren't specified on a per-platform basis
-  if ARGV.length > 0
-    options[:android] ||= ARGV[0]
-    options[:ios] ||= ARGV[0]
-    options[:unity] ||= ARGV[0]
-  else
-    options[:android] ||= NATIVE_CONFIG['version']['android']
-    options[:ios] ||= NATIVE_CONFIG['version']['ios']
-    options[:unity] ||= File.read('VERSION').strip
+    fail "Teak iOS version #{args.v} does not exist" unless bucket.object("ios/Teak-#{args.v}.framework.zip").exists?
+
+    NATIVE_CONFIG['version']['ios'] = args.v
+    File.write('native.config.yml', NATIVE_CONFIG.to_yaml)
   end
 
-  s3 = Aws::S3::Resource.new(
-    region: 'us-east-1'
-  )
-  bucket = s3.bucket('teak-build-artifacts')
+  task :android, [:v] do |_, args|
+    s3 = Aws::S3::Resource.new(
+      region: 'us-east-1'
+    )
+    bucket = s3.bucket('teak-build-artifacts')
 
-  unless options[:force]
-    # fail "Teak Unity version #{options[:unity]} does not exist" unless bucket.object("unity/Teak-#{options[:unity]}.unitypackage").exists?
-    fail "Teak iOS version #{options[:ios]} does not exist" unless bucket.object("ios/Teak-#{options[:ios]}.framework.zip").exists?
-    fail "Teak Android version #{options[:android]} does not exist" unless bucket.object("android/teak-#{options[:ios]}.aar").exists?
+    fail "Teak Android version #{args.v} does not exist" unless bucket.object("android/teak-#{args.v}.aar").exists?
+
+    NATIVE_CONFIG['version']['android'] = args.v
+    File.write('native.config.yml', NATIVE_CONFIG.to_yaml)
   end
 
-  NATIVE_CONFIG['version']['android'] = options[:android]
-  NATIVE_CONFIG['version']['ios'] = options[:ios]
-  File.write('native.config.yml', NATIVE_CONFIG.to_yaml)
-
-  File.write('VERSION', "#{options[:unity]}\n")
-
-  exit # This prevents the error message from being printed
+  task :unity, [:v] do |_, args|
+    File.write('VERSION', "#{args.v}\n")
+  end
 end
 
 namespace :build do
