@@ -28,6 +28,17 @@ public partial class TeakNotification {
     public string RewardId { get; set; }
     public string DeepLink { get; set; }
 
+    public override string ToString() {
+        string formatString = "{{ Incentivized = '{0}', ScheduleId = '{1}', CreativeId = '{2}', ChannelName = '{3}', RewardId = '{4}', DeepLink = '{5}' }}";
+        return string.Format(formatString,
+            this.Incentivized,
+            this.ScheduleId,
+            this.CreativeId,
+            this.ChannelName,
+            this.RewardId,
+            this.DeepLink);
+    }
+
     public partial class Reply {
         public enum ReplyStatus {
             Ok,
