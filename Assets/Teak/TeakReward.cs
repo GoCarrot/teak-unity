@@ -26,6 +26,7 @@ public class TeakReward {
     public Dictionary<string, object> Reward { get; set; }
     public string ScheduleId { get; set; }
     public string CreativeId { get; set; }
+    public string ChannelName { get; set; }
     public bool Incentivized { get; set; }
     public string RewardId { get; set; }
 
@@ -37,6 +38,7 @@ public class TeakReward {
         // Optional
         if (json.ContainsKey("teakScheduleName")) this.ScheduleId = json["teakScheduleName"] as string;
         if (json.ContainsKey("teakCreativeName")) this.CreativeId = json["teakCreativeName"] as string;
+        if (json.ContainsKey("teakChannelName")) this.ChannelName = json["teakChannelName"] as string;
 
         switch (json["status"] as string) {
             case "grant_reward": {
@@ -89,11 +91,12 @@ public class TeakReward {
     }
 
     public override string ToString() {
-        string formatString = "{{ Status = '{0}', ScheduleId = '{1}', CreativeId = '{2}', Incentivized = '{3}', RewardId = '{4}'{5} }}";
+        string formatString = "{{ Status = '{0}', ScheduleId = '{1}', CreativeId = '{2}', ChannelName = '{3}', Incentivized = '{4}', RewardId = '{5}'{6} }}";
         return string.Format(formatString,
                              this.Status,
                              this.ScheduleId,
                              this.CreativeId,
+                             this.ChannelName,
                              this.Incentivized,
                              this.RewardId,
                              this.Status == RewardStatus.GrantReward ? string.Format(", Reward = '{0}'", Json.Serialize(this.Reward)) : ""
