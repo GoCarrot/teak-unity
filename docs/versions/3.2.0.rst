@@ -3,6 +3,10 @@
 :Breaking Changes:
     * None
 :New Features:
-    * None
+    * ``ChannelName`` added to ``TeakNotification`` and ``TeakReward``, one of:
+        :ios_push: iOS
+        :android_push: Android and Amazon
+        :fb_a2u: Facebook
+        :email: Email
 :Bug Fixes:
     * None
