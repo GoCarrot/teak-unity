@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'rake/clean'
+require 'aws-sdk-s3'
 require 'httparty'
 require 'shellwords'
 require 'tmpdir'
@@ -40,6 +41,7 @@ TEAK_SDK_VERSION = `git describe --tags`.strip
 NATIVE_CONFIG = YAML.load_file('native.config.yml')
 
 PROJECT_PATH = Rake.application.original_dir
+BUILD_TYPE = ENV.fetch('BUILD_TYPE', 'Release')
 
 #
 # Play a sound after finished
@@ -102,6 +104,42 @@ namespace :unity do
   end
 end
 
+task :version, [:v] do |_, args|
+  Rake::Task['version:ios'].invoke(args.v)
+  Rake::Task['version:android'].invoke(args.v)
+  Rake::Task['version:unity'].invoke(args.v)
+end
+
+namespace :version do
+  task :ios, [:v] do |_, args|
+    s3 = Aws::S3::Resource.new(
+      region: 'us-east-1'
+    )
+    bucket = s3.bucket('teak-build-artifacts')
+
+    fail "Teak iOS version #{args.v} does not exist" unless bucket.object("ios/Teak-#{args.v}.framework.zip").exists?
+
+    NATIVE_CONFIG['version']['ios'] = args.v
+    File.write('native.config.yml', NATIVE_CONFIG.to_yaml)
+  end
+
+  task :android, [:v] do |_, args|
+    s3 = Aws::S3::Resource.new(
+      region: 'us-east-1'
+    )
+    bucket = s3.bucket('teak-build-artifacts')
+
+    fail "Teak Android version #{args.v} does not exist" unless bucket.object("android/teak-#{args.v}.aar").exists?
+
+    NATIVE_CONFIG['version']['android'] = args.v
+    File.write('native.config.yml', NATIVE_CONFIG.to_yaml)
+  end
+
+  task :unity, [:v] do |_, args|
+    File.write('VERSION', "#{args.v}\n")
+  end
+end
+
 namespace :build do
   task :cleanroom do
     json = HTTParty.post("https://circleci.com/api/v1.1/project/github/GoCarrot/teak-unity-cleanroom/build?circle-token=#{CIRCLE_TOKEN}",
@@ -152,7 +190,7 @@ namespace :build do
   task :ios do
     # Download or copy Teak SDK
     if build_local?
-      cp "#{PROJECT_PATH}/../teak-ios/build/Release-iphoneos/libTeak.a", File.join(PROJECT_PATH, 'Assets', 'Teak', 'Plugins', 'iOS', 'libTeak.a')
+      cp "#{PROJECT_PATH}/../teak-ios/build/#{BUILD_TYPE}-iphoneos/libTeak.a", File.join(PROJECT_PATH, 'Assets', 'Teak', 'Plugins', 'iOS', 'libTeak.a')
     else
       Dir.mktmpdir do |dir|
         Dir.chdir(dir) do
@@ -167,7 +205,7 @@ namespace :build do
     Dir.mktmpdir do |dir|
       Dir.chdir(dir) do
         if build_local?
-          cp "#{PROJECT_PATH}/../teak-ios/build/Release-iphoneos/TeakResources.bundle.zip", 'TeakResources.bundle.zip'
+          cp "#{PROJECT_PATH}/../teak-ios/build/#{BUILD_TYPE}-iphoneos/TeakResources.bundle.zip", 'TeakResources.bundle.zip'
         else
           sh "curl -o TeakResources.bundle.zip https://sdks.teakcdn.com/ios/TeakResources-#{NATIVE_CONFIG['version']['ios']}.bundle.zip"
         end

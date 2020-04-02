@@ -2,6 +2,7 @@
 
 source 'https://rubygems.org'
 gem 'awesome_print'
+gem 'aws-sdk-s3'
 gem 'httparty'
 gem 'rake'
 gem 'rubocop'

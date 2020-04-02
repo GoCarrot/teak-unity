@@ -30,7 +30,8 @@ public class TeakPostProcessScene {
                                  new XElement("string", TeakSettings.AppId, new XAttribute("name", "io_teak_app_id")),
                                  new XElement("string", TeakSettings.APIKey, new XAttribute("name", "io_teak_api_key")),
                                  String.IsNullOrEmpty(TeakSettings.GCMSenderId) ? null : new XElement("string", TeakSettings.GCMSenderId, new XAttribute("name", "io_teak_gcm_sender_id")),
-                                 String.IsNullOrEmpty(TeakSettings.FirebaseAppId) ? null : new XElement("string", TeakSettings.FirebaseAppId, new XAttribute("name", "io_teak_firebase_app_id"))
+                                 String.IsNullOrEmpty(TeakSettings.FirebaseAppId) ? null : new XElement("string", TeakSettings.FirebaseAppId, new XAttribute("name", "io_teak_firebase_app_id")),
+                                 String.IsNullOrEmpty(TeakSettings.FirebaseApiKey) ? null : new XElement("string", TeakSettings.FirebaseApiKey, new XAttribute("name", "io_teak_firebase_api_key"))
                                 )
                 );
                 doc.Save(Path.Combine(Application.dataPath, "Plugins/Android/res/values/teak.xml"));

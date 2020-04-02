@@ -28,6 +28,7 @@ Getting started with Teak on Unity
     ios-extensions
     custom-app-delegate
     working-with-unity
+    debugging
     badging
     it-broke
     limiting-data-collection

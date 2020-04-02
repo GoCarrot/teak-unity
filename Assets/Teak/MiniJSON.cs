@@ -88,6 +88,24 @@ namespace MiniJSON.Teak {
             return Parser.Parse(json);
         }
 
+        /// <summary>
+        /// Parses the string json into a value. Will return null instead of throwing.
+        ///
+        /// ADDED BY TEAK
+        /// </summary>
+        /// <param name="json">A JSON string.</param>
+        /// <returns>An List&lt;object&gt;, a Dictionary&lt;string, object&gt;, a double, an integer,a string, null, true, or false</returns>
+        public static object TryDeserialize(string json) {
+            // wrap the original method in a try block
+            try {
+                return Deserialize(json);
+            } catch(Exception) {
+            }
+
+            // return null if an exception was thrown
+            return null;
+        }
+
         sealed class Parser : IDisposable {
             const string WHITE_SPACE = " \t\n\r";
             const string WORD_BREAK = " \t\n\r{}[],:\"";

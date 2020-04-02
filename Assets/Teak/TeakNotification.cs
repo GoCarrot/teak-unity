@@ -24,8 +24,20 @@ public partial class TeakNotification {
     public bool Incentivized { get; set; }
     public string ScheduleId { get; set; }
     public string CreativeId { get; set; }
+    public string ChannelName { get; set; }
     public string RewardId { get; set; }
     public string DeepLink { get; set; }
+
+    public override string ToString() {
+        string formatString = "{{ Incentivized = '{0}', ScheduleId = '{1}', CreativeId = '{2}', ChannelName = '{3}', RewardId = '{4}', DeepLink = '{5}' }}";
+        return string.Format(formatString,
+            this.Incentivized,
+            this.ScheduleId,
+            this.CreativeId,
+            this.ChannelName,
+            this.RewardId,
+            this.DeepLink);
+    }
 
     public partial class Reply {
         public enum ReplyStatus {
@@ -38,6 +50,13 @@ public partial class TeakNotification {
         public struct Notification {
             public string ScheduleId;
             public string CreativeId;
+
+            public override string ToString() {
+                string formatString = "{{ ScheduleId = '{0}', CreativeId = '{1}' }}";
+                return string.Format(formatString,
+                    this.ScheduleId,
+                    this.CreativeId);
+            }
         }
 
         public ReplyStatus Status { get; set; }
@@ -46,6 +65,10 @@ public partial class TeakNotification {
 
     // Returns an id that can be used to cancel a scheduled notification
     public static IEnumerator ScheduleNotification(string creativeId, string defaultMessage, long delayInSeconds, System.Action<Reply> callback) {
+        if (Teak.Instance.Trace) {
+            Debug.Log("[TeakNotification] ScheduleNotification(" + creativeId + ", " + defaultMessage + ", " + delayInSeconds + ")");
+        }
+
 #if UNITY_EDITOR
         yield return null;
 #elif UNITY_ANDROID
@@ -57,7 +80,7 @@ public partial class TeakNotification {
             while (!future.Call<bool>("isDone")) yield return null;
 
             try {
-                Dictionary<string, object> json = Json.Deserialize(future.Call<string>("get")) as Dictionary<string, object>;
+                Dictionary<string, object> json = Json.TryDeserialize(future.Call<string>("get")) as Dictionary<string, object>;
                 data = json["data"] as string;
                 status = json["status"] as string;
             } catch {
@@ -86,6 +109,10 @@ public partial class TeakNotification {
     }
 
     public static IEnumerator ScheduleNotification(string creativeId, long delayInSeconds, string[] userIds, System.Action<Reply> callback) {
+        if (Teak.Instance.Trace) {
+            Debug.Log("[TeakNotification] ScheduleNotification(" + creativeId + ", " + delayInSeconds + ", " + userIds + ")");
+        }
+
 #if UNITY_EDITOR
         yield return null;
 #elif UNITY_ANDROID
@@ -97,7 +124,7 @@ public partial class TeakNotification {
             while (!future.Call<bool>("isDone")) yield return null;
 
             try {
-                Dictionary<string, object> json = Json.Deserialize(future.Call<string>("get")) as Dictionary<string, object>;
+                Dictionary<string, object> json = Json.TryDeserialize(future.Call<string>("get")) as Dictionary<string, object>;
                 data = json["data"] as string;
                 status = json["status"] as string;
             } catch {
@@ -127,6 +154,10 @@ public partial class TeakNotification {
 
     // Cancel an existing notification
     public static IEnumerator CancelScheduledNotification(string scheduleId, System.Action<Reply> callback) {
+        if (Teak.Instance.Trace) {
+            Debug.Log("[TeakNotification] CancelScheduledNotification(" + scheduleId + ")");
+        }
+
 #if UNITY_EDITOR
         yield return null;
 #elif UNITY_ANDROID
@@ -137,7 +168,7 @@ public partial class TeakNotification {
         if (future != null) {
             while (!future.Call<bool>("isDone")) yield return null;
             try {
-                Dictionary<string, object> json = Json.Deserialize(future.Call<string>("get")) as Dictionary<string, object>;
+                Dictionary<string, object> json = Json.TryDeserialize(future.Call<string>("get")) as Dictionary<string, object>;
                 data = json["data"] as string;
                 status = json["status"] as string;
             } catch {
@@ -167,6 +198,10 @@ public partial class TeakNotification {
 
     // Cancel all scheduled notifications
     public static IEnumerator CancelAllScheduledNotifications(System.Action<Reply> callback) {
+        if (Teak.Instance.Trace) {
+            Debug.Log("[TeakNotification] CancelAllScheduledNotifications()");
+        }
+
 #if UNITY_EDITOR
         yield return null;
 #elif UNITY_ANDROID
@@ -177,7 +212,7 @@ public partial class TeakNotification {
         if (future != null) {
             while (!future.Call<bool>("isDone")) yield return null;
             try {
-                Dictionary<string, object> json = Json.Deserialize(future.Call<string>("get")) as Dictionary<string, object>;
+                Dictionary<string, object> json = Json.TryDeserialize(future.Call<string>("get")) as Dictionary<string, object>;
                 data = Json.Serialize(json["data"]);
                 status = json["status"] as string;
             } catch {
@@ -271,14 +306,14 @@ public partial class TeakNotification {
             }
 
             if (this.Status == ReplyStatus.Ok) {
-                List<object> replyList = Json.Deserialize(data) as List<object>;
+                List<object> replyList = Json.TryDeserialize(data) as List<object>;
                 if (replyList != null) {
                     // Data contains array of pairs
                     this.Notifications = new List<Notification>();
                     foreach (object e in replyList) {
                         Dictionary<string, object> entry = e as Dictionary<string, object>;
                         if (entry != null) {
-                            this.Notifications.Add(new Notification { ScheduleId = entry["schedule_id"] as string, CreativeId = entry["creative_id"] as string });
+                            this.Notifications.Add(new Notification { ScheduleId = entry["schedule_id"].ToString(), CreativeId = entry["creative_id"] as string });
                         } else {
                             this.Notifications.Add(new Notification { ScheduleId = e as string, CreativeId = creativeId });
                         }

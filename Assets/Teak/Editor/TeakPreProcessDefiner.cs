@@ -21,7 +21,8 @@ class TeakPreProcessDefiner :
         "TEAK_2_2_OR_NEWER",
         "TEAK_2_3_OR_NEWER",
         "TEAK_3_0_OR_NEWER",
-        "TEAK_3_1_OR_NEWER"
+        "TEAK_3_1_OR_NEWER",
+        "TEAK_3_2_OR_NEWER"
     };
 
 #if UNITY_2018_1_OR_NEWER

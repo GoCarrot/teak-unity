@@ -58,6 +58,13 @@ public partial class Teak : MonoBehaviour {
         set;
     }
 
+    /// <summary>UNIX Timestamp.</summary>
+    public static long Timestamp {
+        get {
+            return (long)(DateTime.Now.ToUniversalTime() - new DateTime(1970, 1, 1)).TotalSeconds;
+        }
+    }
+
     /// <summary>The user identifier for the current user.</summary>
     public string UserId {
         get;
@@ -119,11 +126,21 @@ public partial class Teak : MonoBehaviour {
                 string configuration = Marshal.PtrToStringAnsi(TeakGetAppConfiguration());
 #endif
                 if (!string.IsNullOrEmpty(configuration)) {
-                    mAppConfiguration = Json.Deserialize(configuration) as Dictionary<string,object>;
+                    mAppConfiguration = Json.TryDeserialize(configuration) as Dictionary<string,object>;
                 }
             }
             return mAppConfiguration;
         }
+    }
+
+    /// <summary>
+    /// Teak will log all Unity method calls to the Unity log if true.
+    ///
+    /// This defaults to the setting for the native SDK, but can be assigned at runtime as well.
+    /// </summary>
+    public bool Trace {
+        get;
+        set;
     }
 
     /// <summary>
@@ -180,9 +197,11 @@ public partial class Teak : MonoBehaviour {
 
         this.UserId = userIdentifier;
 
-#if UNITY_EDITOR
-        Debug.Log("[Teak] IdentifyUser(): " + userIdentifier);
-#elif UNITY_ANDROID
+        if (this.Trace) {
+            Debug.Log("[Teak] IdentifyUser(): " + userIdentifier);
+        }
+
+#if UNITY_ANDROID
         AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
         teak.CallStatic("identifyUser", userIdentifier, optOut.ToArray(), email);
 #elif UNITY_IPHONE || UNITY_WEBGL
@@ -194,15 +213,33 @@ public partial class Teak : MonoBehaviour {
     }
 
     /// <summary>
+    /// Logout the current user.
+    /// </summary>
+    public void Logout() {
+        if (this.Trace) {
+            Debug.Log("[Teak] Logout()");
+        }
+
+#if UNITY_ANDROID
+        AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
+        teak.CallStatic("logout");
+#elif UNITY_IPHONE
+        TeakLogout();
+#endif
+    }
+
+    /// <summary>
     /// Track an arbitrary event in Teak.
     /// </summary>
     /// <param name="actionId">The identifier for the action, e.g. 'complete'.</param>
     /// <param name="objectTypeId">The type of object that is being posted, e.g. 'quest'.</param>
     /// <param name="objectInstanceId">The specific instance of the object, e.g. 'gather-quest-1'</param>
     public void TrackEvent(string actionId, string objectTypeId, string objectInstanceId) {
-#if UNITY_EDITOR
-        Debug.Log("[Teak] TrackEvent(): " + actionId + " - " + objectTypeId + " - " + objectInstanceId);
-#elif UNITY_ANDROID
+        if (this.Trace) {
+            Debug.Log("[Teak] TrackEvent(): " + actionId + " - " + objectTypeId + " - " + objectInstanceId);
+        }
+
+#if UNITY_ANDROID
         AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
         teak.CallStatic("trackEvent", actionId, objectTypeId, objectInstanceId);
 #elif UNITY_IPHONE || UNITY_WEBGL
@@ -218,9 +255,11 @@ public partial class Teak : MonoBehaviour {
     /// <param name="objectInstanceId">The specific instance of the object, e.g. 'gather-quest-1'</param>
     /// <param name="count">The amount by which to increment</param>
     public void IncrementEvent(string actionId, string objectTypeId, string objectInstanceId, long count) {
-#if UNITY_EDITOR
-        Debug.Log("[Teak] IncrementEvent(): " + actionId + " - " + objectTypeId + " - " + objectInstanceId + " - " + count);
-#elif UNITY_ANDROID
+        if (this.Trace) {
+            Debug.Log("[Teak] IncrementEvent(): " + actionId + " - " + objectTypeId + " - " + objectInstanceId + " - " + count);
+        }
+
+#if UNITY_ANDROID
         AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
         long longCountForJava = (long) count;
         teak.CallStatic("incrementEvent", actionId, objectTypeId, objectInstanceId, longCountForJava);
@@ -255,6 +294,11 @@ public partial class Teak : MonoBehaviour {
     public event System.Action<Dictionary<string, object>> OnAdditionalData;
 
     /// <summary>
+    /// An event which is dispatched when your code, executed via deep link callback, throws an exception.
+    /// </summary>
+    public event System.Action<string, Exception, Dictionary<string, object>> OnCallbackError;
+
+    /// <summary>
     /// Method used to register a deep link route.
     /// </summary>
     /// <param name="route">The route for this deep link.</param>
@@ -263,9 +307,12 @@ public partial class Teak : MonoBehaviour {
     /// <param name="action">A function, or lambda to execute when this deep link is invoked via a notification or web link.</param>
     public void RegisterRoute(string route, string name, string description, Action<Dictionary<string, object>> action) {
         mDeepLinkRoutes[route] = action;
-#if UNITY_EDITOR
-        Debug.Log("[Teak] RegisterRoute(): " + route + " - " + name + " - " + description);
-#elif UNITY_ANDROID
+
+        if (this.Trace) {
+            Debug.Log("[Teak] RegisterRoute(): " + route + " - " + name + " - " + description);
+        }
+
+#if UNITY_ANDROID
         AndroidJavaClass teakUnity = new AndroidJavaClass("io.teak.sdk.wrapper.unity.TeakUnity");
         teakUnity.CallStatic("registerRoute", route, name, description);
 #elif UNITY_IPHONE || UNITY_WEBGL
@@ -279,8 +326,11 @@ public partial class Teak : MonoBehaviour {
     /// <param name="count">The number to display on the icon of the app on the home screen, or 0 to clear.</param>
     /// <returns>True if Teak was able to set the badge count, false otherwise.</returns>
     public bool SetBadgeCount(int count) {
+        if (this.Trace) {
+            Debug.Log("[Teak] SetBadgeCount(" + count + ")");
+        }
+
 #if UNITY_EDITOR
-        Debug.Log("[Teak] SetBadgeCount(" + count + ")");
         return true;
 #elif UNITY_ANDROID
         AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
@@ -296,8 +346,11 @@ public partial class Teak : MonoBehaviour {
     /// </summary>
     /// <returns>false if Teak was unable to open the settings for your app, true otherwise.</returns>
     public bool OpenSettingsAppToThisAppsSettings() {
+        if (this.Trace) {
+            Debug.Log("[Teak] OpenSettingsAppToThisAppsSettings()");
+        }
+
 #if UNITY_EDITOR
-        Debug.Log("[Teak] OpenSettingsAppToThisAppsSettings()");
         return false;
 #elif UNITY_WEBGL
         return false;
@@ -315,9 +368,11 @@ public partial class Teak : MonoBehaviour {
     /// <param name="key">The name of the numeric attribute.</param>
     /// <param name="value">The value for the numeric attribute.</param>
     public void SetNumericAttribute(string key, double value) {
-#if UNITY_EDITOR
-        Debug.Log("[Teak] SetNumericAttribute(" + key + ", " + value + ")");
-#elif UNITY_ANDROID
+        if (this.Trace) {
+            Debug.Log("[Teak] SetNumericAttribute(" + key + ", " + value + ")");
+        }
+
+#if UNITY_ANDROID
         AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
         teak.CallStatic("setNumericAttribute", key, value);
 #elif UNITY_IPHONE || UNITY_WEBGL
@@ -331,9 +386,10 @@ public partial class Teak : MonoBehaviour {
     /// <param name="key">The name of the string attribute.</param>
     /// <param name="value">The value for the string attribute.</param>
     public void SetStringAttribute(string key, string value) {
-#if UNITY_EDITOR
-        Debug.Log("[Teak] SetStringAttribute(" + key + ", " + value + ")");
-#elif UNITY_ANDROID
+        if (this.Trace) {
+            Debug.Log("[Teak] SetStringAttribute(" + key + ", " + value + ")");
+        }
+#if UNITY_ANDROID
         AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
         teak.CallStatic("setStringAttribute", key, value);
 #elif UNITY_IPHONE || UNITY_WEBGL
@@ -350,10 +406,10 @@ public partial class Teak : MonoBehaviour {
         return new Dictionary<string, object>();
 #elif UNITY_ANDROID
         AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
-        return Json.Deserialize(teak.CallStatic<string>("getDeviceConfiguration")) as Dictionary<string,object>;
+        return Json.TryDeserialize(teak.CallStatic<string>("getDeviceConfiguration")) as Dictionary<string,object>;
 #elif UNITY_IPHONE
         string configuration = Marshal.PtrToStringAnsi(TeakGetDeviceConfiguration());
-        return Json.Deserialize(configuration) as Dictionary<string,object>;
+        return Json.TryDeserialize(configuration) as Dictionary<string,object>;
 #endif
     }
 
@@ -404,7 +460,7 @@ public partial class Teak : MonoBehaviour {
             PropertyInfo originalJson = purchase.GetType().GetProperty("originalJson");
             AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
             teak.CallStatic("pluginPurchaseSucceeded", originalJson.GetValue(purchase, null), "prime31");
-        } finally {
+        } catch(Exception) {
         }
     }
 
@@ -412,7 +468,7 @@ public partial class Teak : MonoBehaviour {
         try {
             AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
             teak.CallStatic("pluginPurchaseFailed", errorCode, "prime31");
-        } finally {
+        } catch(Exception) {
         }
     }
 
@@ -420,9 +476,11 @@ public partial class Teak : MonoBehaviour {
         try {
             MethodInfo serialize = purchase.GetType().GetMethod("Serialize");
             AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
-            Dictionary<string, object> json = Json.Deserialize(serialize.Invoke(purchase, null) as string) as Dictionary<string, object>;
-            teak.CallStatic("pluginPurchaseSucceeded", Json.Serialize(json["originalJson"]), "openiab");
-        } finally {
+            Dictionary<string, object> json = Json.TryDeserialize(serialize.Invoke(purchase, null) as string) as Dictionary<string, object>;
+            if (json != null) {
+                teak.CallStatic("pluginPurchaseSucceeded", Json.Serialize(json["originalJson"]), "openiab");
+            }
+        } catch(Exception) {
         }
     }
 
@@ -430,7 +488,7 @@ public partial class Teak : MonoBehaviour {
         try {
             AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
             teak.CallStatic("pluginPurchaseFailed", errorCode, "openiab");
-        } finally {
+        } catch(Exception) {
         }
     }
 
@@ -469,6 +527,9 @@ public partial class Teak : MonoBehaviour {
 
     [DllImport ("__Internal")]
     private static extern void TeakProcessDeepLinks();
+
+    [DllImport ("__Internal")]
+    private static extern void TeakLogout();
 #endif
 
 #if UNITY_WEBGL
@@ -489,7 +550,11 @@ public partial class Teak : MonoBehaviour {
     #region UnitySendMessage
     /// @cond hide_from_doxygen
     void NotificationLaunch(string jsonString) {
-        Dictionary<string, object> json = Json.Deserialize(jsonString) as Dictionary<string, object>;
+        Dictionary<string, object> json = Json.TryDeserialize(jsonString) as Dictionary<string, object>;
+        if (json == null) {
+            return;
+        }
+
         json.Remove("teakReward");
 
         if (OnLaunchedFromNotification != null) {
@@ -497,6 +562,7 @@ public partial class Teak : MonoBehaviour {
                 Incentivized = (json["incentivized"] is bool) ? (bool) json["incentivized"] : false,
                 ScheduleId = json["teakScheduleName"] as string,
                 CreativeId = json["teakCreativeName"] as string,
+                ChannelName = json["teakChannelName"] as string,
                 RewardId = json.ContainsKey("teakRewardId") ? json["teakRewardId"] as string : null,
                 DeepLink = json.ContainsKey("teakDeepLink") ? json["teakDeepLink"] as string : null
             });
@@ -504,7 +570,10 @@ public partial class Teak : MonoBehaviour {
     }
 
     void RewardClaimAttempt(string jsonString) {
-        Dictionary<string, object> json = Json.Deserialize(jsonString) as Dictionary<string, object>;
+        Dictionary<string, object> json = Json.TryDeserialize(jsonString) as Dictionary<string, object>;
+        if (json == null) {
+            return;
+        }
 
         if (OnReward != null) {
             OnReward(new TeakReward(json));
@@ -512,28 +581,102 @@ public partial class Teak : MonoBehaviour {
     }
 
     void DeepLink(string jsonString) {
-        Dictionary<string, object> json = Json.Deserialize(jsonString) as Dictionary<string, object>;
+        Dictionary<string, object> json = Json.TryDeserialize(jsonString) as Dictionary<string, object>;
+        if (json == null) {
+            return;
+        }
+
         string route = json["route"] as string;
+        Dictionary<string, object> parameters = json["parameters"] as Dictionary<string, object>;
         if (mDeepLinkRoutes.ContainsKey(route)) {
             try {
-                mDeepLinkRoutes[route](json["parameters"] as Dictionary<string, object>);
+                mDeepLinkRoutes[route](parameters);
             } catch (Exception e) {
-                Debug.LogError("[Teak] Error executing Action for route: " + route + "\n" + e.ToString());
+                Dictionary<string, object> data = new Dictionary<string, object>();
+                data["route"] = route;
+                data["parameters"] = parameters;
+                OnCallbackError("deep_link", e, data);
             }
         } else {
-            Debug.LogError("[Teak] Unable to find Action for route: " + route);
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data["route"] = route;
+            data["parameters"] = parameters;
+            OnCallbackError("deep_link", new ArgumentException("No action for route: " + route), data);
         }
     }
 
-    void LogEvent(string jsonString) {
+    public void LogEvent(string jsonString) {
         if (OnLogEvent != null) {
-            Dictionary<string, object> json = Json.Deserialize(jsonString) as Dictionary<string, object>;
+            Dictionary<string, object> json = null;
+
+            try {
+                json = Json.Deserialize(jsonString) as Dictionary<string, object>;
+            } catch (Exception ex) {
+                Dictionary<string, object> eventData = CreateLogEventDataFromException(ex);
+                // This can occur due to a bug in how .NET 4.0+ handles strings with UTF-16 characters from
+                // supplementary planes (e.g. emoji) when the string comes in through the JNI on Android
+                // 5.1.1 or earlier. Because Amazon Kindle devices are based on a fork of Android 5.1 this
+                // also impacts all Kindle devices.
+                //
+                // The most likely log message to contain emoji is the notification.received event, which
+                // includes the full contents of the notification message.
+                //
+                // We do not provide the string that caused parsing to fail in this event because in our testing
+                // the string is "tainted" -- any operations executed using it fail. For example, it cannot be
+                // printed with Debug.Log. Because the error only impacts the C# layer, Teak can identfy the
+                // string which triggered the error given the current game assigned player id and the timestamp
+                // from this error message, if remote logging is enabled by Teak for that player.
+                if (ex is OverflowException) {
+                    eventData["error_type"] = "overflow";
+                    eventData["error_description"] = "I encountered an OverflowException attempting to parse the log message. This most likely means that I am on Android < 6 running .NET 4.0 and the log message contained an emoji or other special character.";
+                } else {
+                    // We've only ever seen OverflowException occur when trying to parse log messages, but now
+                    // that we know errors _can_ happen, we should assume they _will_ happen. If you see this
+                    // message, then it means you've encountered a log parsing error that we had not heard of
+                    // at the time your version of the SDK was released. Please let us know what error you
+                    // saw, so that we can properly handle it in future SDK versions!
+                    eventData["error_type"] = "unknown";
+                    eventData["error_description"] = "I encountered an unknown error attempting to parse the log message. Please contact team@teak.io with the details of the exception in the 'exception' key so that my humans can help me handle this better in the future!";
+                }
+
+                json = CreateInternalErrorLogEvent("error.loghandler", eventData);
+            }
+
+            if (json == null) {
+                return;
+            }
+
             OnLogEvent(json);
         }
     }
 
+    Dictionary<string, object> CreateInternalErrorLogEvent(string eventType, Dictionary<string, object> eventData) {
+        Dictionary<string, object> json = new Dictionary<string, object>();
+        json["event_type"] = eventType;
+        json["log_level"] = "ERROR";
+        json["timestamp"] = Teak.Timestamp;
+        json["run_id"] = 0L;
+        json["event_id"] = 0L;
+
+        if (eventData != null) {
+            json["event_data"] = eventData;
+        }
+
+        return json;
+    }
+
+    Dictionary<string, object> CreateLogEventDataFromException(Exception exception) {
+        Dictionary<string, object> eventData = new Dictionary<string, object>();
+        eventData["exception"] = exception.ToString();
+        return eventData;
+    }
+
     void ForegroundNotification(string jsonString) {
-        Dictionary<string, object> json = Json.Deserialize(jsonString) as Dictionary<string, object>;
+        Dictionary<string, object> json = Json.TryDeserialize(jsonString) as Dictionary<string, object>;
+        if (json == null) {
+            return;
+        }
+
         json.Remove("teakReward");
 
         if (OnForegroundNotification != null) {
@@ -541,6 +684,7 @@ public partial class Teak : MonoBehaviour {
                 Incentivized = (json["incentivized"] is bool) ? (bool) json["incentivized"] : false,
                 ScheduleId = json["teakScheduleName"] as string,
                 CreativeId = json["teakCreativeName"] as string,
+                ChannelName = json["teakChannelName"] as string,
                 RewardId = json.ContainsKey("teakRewardId") ? json["teakRewardId"] as string : null,
                 DeepLink = json.ContainsKey("teakDeepLink") ? json["teakDeepLink"] as string : null
             });
@@ -548,7 +692,11 @@ public partial class Teak : MonoBehaviour {
     }
 
     void AdditionalData(string jsonString) {
-        Dictionary<string, object> json = Json.Deserialize(jsonString) as Dictionary<string, object>;
+        Dictionary<string, object> json = Json.TryDeserialize(jsonString) as Dictionary<string, object>;
+        if (json == null) {
+            return;
+        }
+
         if (OnAdditionalData != null) {
             OnAdditionalData(json);
         }
@@ -557,7 +705,11 @@ public partial class Teak : MonoBehaviour {
 #if UNITY_WEBGL
     void NotificationCallback(string jsonString) {
         try {
-            Dictionary<string, object> json = Json.Deserialize(jsonString) as Dictionary<string, object>;
+            Dictionary<string, object> json = Json.TryDeserialize(jsonString) as Dictionary<string, object>;
+            if (json == null) {
+                return;
+            }
+
             string callbackId = json["callbackId"] as string;
             string status = json["status"] as string;
             string creativeId = json.ContainsKey("creativeId") ? json["creativeId"] as string : null;
@@ -568,6 +720,14 @@ public partial class Teak : MonoBehaviour {
         }
     }
 #endif
+    /// @endcond
+    #endregion
+
+    #region Internal Callbacks
+    /// @cond hide_from_doxygen
+    void InternalOnCallbackError(string callback, Exception exception, Dictionary<string, object> data) {
+        Debug.LogError("[Teak] Callback error (" + callback + "): " + exception.ToString());
+    }
     /// @endcond
     #endregion
 
@@ -592,10 +752,16 @@ public partial class Teak : MonoBehaviour {
 #endif
         if (appId != null) Teak.AppId = appId;
         if (apiKey != null) Teak.APIKey = apiKey;
+
+        // Register our internal callback error handler
+        OnCallbackError += InternalOnCallbackError;
     }
 
     void Start() {
-#if UNITY_ANDROID
+#if UNITY_EDITOR
+        // Editor mode default to trace on
+        this.Trace = true;
+#elif UNITY_ANDROID
         // Try and find an active store plugin
         Type onePF = Type.GetType("OpenIABEventManager, Assembly-CSharp-firstpass");
         if (onePF == null) onePF = Type.GetType("OpenIABEventManager, Assembly-CSharp");
@@ -644,6 +810,11 @@ public partial class Teak : MonoBehaviour {
 #endif
         }
 #endif
+
+        // Trace log default from app config
+        if (this.AppConfiguration != null && this.AppConfiguration["traceLog"] != null) {
+            this.Trace = (bool) this.AppConfiguration["traceLog"];
+        }
     }
 
     void OnApplicationQuit() {

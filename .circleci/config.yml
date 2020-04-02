@@ -1,8 +1,12 @@
-version: 2
+version: 2.1
+
+orbs:
+  teak: teak/sdk-utils@0.0.3
+
 jobs:
   build:
     macos:
-      xcode: "10.1.0"
+      xcode: "11.2.1"
     shell: /bin/bash --login -eo pipefail
     steps:
       - checkout
@@ -18,25 +22,15 @@ jobs:
           name: Homebrew Depenendcies
           command: HOMEBREW_NO_AUTO_UPDATE=1 ./setup
       - run:
-          shell: /bin/bash -eo pipefail
-          name: Setup RVM
-          command: |
-            unset GEM_HOME
-            source /Users/distiller/.rvm/scripts/rvm
-            rvm autolibs enable
-            rvm list | grep 2.5 || rvm install ruby-2.5
-            rvm use ruby-2.5
-      - run:
           name: Ruby Gems
           command: |
-            gem update bundler
+            # gem update bundler # This isn't needed right now, it'll cause an error and 2.0.2 is ok for a version
             bundle check || bundle install --path vendor/bundle
       - save_cache:
           paths:
             - /usr/local/Homebrew/
             - ~/Library/Caches/Homebrew
             - vendor/bundle
-            - ~/.rvm
           key: v1-{{ checksum "setup" }}-{{ checksum "Gemfile.lock" }}-{{ .Environment.HOMEBREW_VERSION }}-{{ .Environment.UNITY_VERSION }}
       - run:
           name: Build Teak SDK
@@ -60,6 +54,15 @@ jobs:
       - run:
           name: ReadTheDocs.org Unified Docs
           command: curl -X POST -d "branches=master" -d "token=$RTD_TOKEN" https://readthedocs.org/api/v2/webhook/teak/41148/
+
+  tag_build:
+    docker:
+      - image: circleci/ruby:latest
+    steps:
+      - checkout
+      - teak/tag-promote:
+          fingerprint: "dc:b5:97:f2:a5:40:5e:ba:03:dd:83:fb:78:88:5e:bd"
+
   deploy_versioned:
     docker:
       - image: circleci/ruby:latest
@@ -89,6 +92,7 @@ jobs:
       # - run:
       #     name: Trigger Cleanroom Build
       #     command: bundle exec rake build:cleanroom
+
   deploy_latest:
     docker:
       - image: circleci/ruby:latest
@@ -121,6 +125,13 @@ workflows:
           filters:
             tags:
               ignore: /.*/
+      - tag_build:
+          requires:
+            - build
+          filters:
+            tags:
+              ignore: /.*/
+
   tagged-build:
     jobs:
       - build:
