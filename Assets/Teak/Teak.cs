@@ -294,6 +294,11 @@ public partial class Teak : MonoBehaviour {
     public event System.Action<Dictionary<string, object>> OnAdditionalData;
 
     /// <summary>
+    /// An event which is dispatched when your code, executed via deep link callback, throws an exception.
+    /// </summary>
+    public event System.Action<string, Exception, Dictionary<string, object>> OnCallbackError;
+
+    /// <summary>
     /// Method used to register a deep link route.
     /// </summary>
     /// <param name="route">The route for this deep link.</param>
@@ -582,14 +587,21 @@ public partial class Teak : MonoBehaviour {
         }
 
         string route = json["route"] as string;
+        Dictionary<string, object> parameters = json["parameters"] as Dictionary<string, object>;
         if (mDeepLinkRoutes.ContainsKey(route)) {
             try {
-                mDeepLinkRoutes[route](json["parameters"] as Dictionary<string, object>);
+                mDeepLinkRoutes[route](parameters);
             } catch (Exception e) {
-                Debug.LogError("[Teak] Error executing Action for route: " + route + "\n" + e.ToString());
+                Dictionary<string, object> data = new Dictionary<string, object>();
+                data["route"] = route;
+                data["parameters"] = parameters;
+                OnCallbackError("deep_link", e, data);
             }
         } else {
-            Debug.LogError("[Teak] Unable to find Action for route: " + route);
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data["route"] = route;
+            data["parameters"] = parameters;
+            OnCallbackError("deep_link", new ArgumentException("No action for route: " + route), data);
         }
     }
 
@@ -711,6 +723,14 @@ public partial class Teak : MonoBehaviour {
     /// @endcond
     #endregion
 
+    #region Internal Callbacks
+    /// @cond hide_from_doxygen
+    void InternalOnCallbackError(string callback, Exception exception, Dictionary<string, object> data) {
+        Debug.LogError("[Teak] Callback error (" + callback + "): " + exception.ToString());
+    }
+    /// @endcond
+    #endregion
+
     #region MonoBehaviour
     /// @cond hide_from_doxygen
     void Awake() {
@@ -732,6 +752,9 @@ public partial class Teak : MonoBehaviour {
 #endif
         if (appId != null) Teak.AppId = appId;
         if (apiKey != null) Teak.APIKey = apiKey;
+
+        // Register our internal callback error handler
+        OnCallbackError += InternalOnCallbackError;
     }
 
     void Start() {
