@@ -59,7 +59,7 @@ public partial class Teak : MonoBehaviour {
     }
 
     /// <summary>UNIX Timestamp.</summary>
-    public static long Timestamp {
+    public static long UNIXNow {
         get {
             return (long)(DateTime.Now.ToUniversalTime() - new DateTime(1970, 1, 1)).TotalSeconds;
         }
@@ -659,7 +659,7 @@ public partial class Teak : MonoBehaviour {
         Dictionary<string, object> json = new Dictionary<string, object>();
         json["event_type"] = eventType;
         json["log_level"] = "ERROR";
-        json["timestamp"] = Teak.Timestamp;
+        json["timestamp"] = Teak.UNIXNow;
         json["run_id"] = 0L;
         json["event_id"] = 0L;
 
