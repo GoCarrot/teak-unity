@@ -200,8 +200,8 @@ public partial class Teak : MonoBehaviour {
         if (this.Trace) {
             Debug.Log("[Teak] IdentifyUser(): " + userIdentifier);
         }
-
-#if UNITY_ANDROID
+#if UNITY_EDITOR
+#elif UNITY_ANDROID
         AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
         teak.CallStatic("identifyUser", userIdentifier, optOut.ToArray(), email);
 #elif UNITY_IPHONE || UNITY_WEBGL
@@ -219,8 +219,8 @@ public partial class Teak : MonoBehaviour {
         if (this.Trace) {
             Debug.Log("[Teak] Logout()");
         }
-
-#if UNITY_ANDROID
+#if UNITY_EDITOR
+#elif UNITY_ANDROID
         AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
         teak.CallStatic("logout");
 #elif UNITY_IPHONE
@@ -239,7 +239,8 @@ public partial class Teak : MonoBehaviour {
             Debug.Log("[Teak] TrackEvent(): " + actionId + " - " + objectTypeId + " - " + objectInstanceId);
         }
 
-#if UNITY_ANDROID
+#if UNITY_EDITOR
+#elif UNITY_ANDROID
         AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
         teak.CallStatic("trackEvent", actionId, objectTypeId, objectInstanceId);
 #elif UNITY_IPHONE || UNITY_WEBGL
@@ -259,7 +260,8 @@ public partial class Teak : MonoBehaviour {
             Debug.Log("[Teak] IncrementEvent(): " + actionId + " - " + objectTypeId + " - " + objectInstanceId + " - " + count);
         }
 
-#if UNITY_ANDROID
+#if UNITY_EDITOR
+#elif UNITY_ANDROID
         AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
         long longCountForJava = (long) count;
         teak.CallStatic("incrementEvent", actionId, objectTypeId, objectInstanceId, longCountForJava);
@@ -312,7 +314,8 @@ public partial class Teak : MonoBehaviour {
             Debug.Log("[Teak] RegisterRoute(): " + route + " - " + name + " - " + description);
         }
 
-#if UNITY_ANDROID
+#if UNITY_EDITOR
+#elif UNITY_ANDROID
         AndroidJavaClass teakUnity = new AndroidJavaClass("io.teak.sdk.wrapper.unity.TeakUnity");
         teakUnity.CallStatic("registerRoute", route, name, description);
 #elif UNITY_IPHONE || UNITY_WEBGL
@@ -372,7 +375,8 @@ public partial class Teak : MonoBehaviour {
             Debug.Log("[Teak] SetNumericAttribute(" + key + ", " + value + ")");
         }
 
-#if UNITY_ANDROID
+#if UNITY_EDITOR
+#elif UNITY_ANDROID
         AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
         teak.CallStatic("setNumericAttribute", key, value);
 #elif UNITY_IPHONE || UNITY_WEBGL
@@ -389,7 +393,9 @@ public partial class Teak : MonoBehaviour {
         if (this.Trace) {
             Debug.Log("[Teak] SetStringAttribute(" + key + ", " + value + ")");
         }
-#if UNITY_ANDROID
+
+#if UNITY_EDITOR
+#elif UNITY_ANDROID
         AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
         teak.CallStatic("setStringAttribute", key, value);
 #elif UNITY_IPHONE || UNITY_WEBGL
@@ -438,7 +444,6 @@ public partial class Teak : MonoBehaviour {
     /// </remarks>
     public void ProcessDeepLinks() {
 #if UNITY_EDITOR || UNITY_WEBGL
-        // Empty
 #elif UNITY_ANDROID
         AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
         teak.CallStatic("processDeepLinks");
