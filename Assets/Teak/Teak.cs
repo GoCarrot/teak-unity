@@ -817,8 +817,8 @@ public partial class Teak : MonoBehaviour {
 #endif
 
         // Trace log default from app config
-        if (this.AppConfiguration != null && this.AppConfiguration["traceLog"] != null) {
-            this.Trace = (bool) this.AppConfiguration["traceLog"];
+        if (this.AppConfiguration != null && this.AppConfiguration.TryGetValue("traceLog", out var trace)) {
+            this.Trace = (bool) trace;
         }
     }
 
