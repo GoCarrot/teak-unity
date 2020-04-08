@@ -31,7 +31,8 @@ mergeInto(LibraryManager.library, {
         var notification = {
           incentivized: false,
           teakScheduleName: window.teak.queryParameters.teak_schedule_name,
-          teakCreativeName: window.teak.queryParameters.teak_creative_name
+          teakCreativeName: window.teak.queryParameters.teak_creative_name,
+          teakChannelName: window.teak.queryParameters.teak_channel_name
         };
         if (window.teak.queryParameters.teak_reward_id) {
           notification.incentivized = true;

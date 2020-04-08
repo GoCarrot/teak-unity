@@ -12,5 +12,6 @@
         :callback_type: ``string`` type of callback
         :exception: ``Exception`` the exception thrown
         :data: ``Dictionary<string, object>`` callback specific information
+    * Added ``Logout`` which will log out the current user
 :Bug Fixes:
     * None
