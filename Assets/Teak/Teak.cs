@@ -567,7 +567,7 @@ public partial class Teak : MonoBehaviour {
                 Incentivized = (json["incentivized"] is bool) ? (bool) json["incentivized"] : false,
                 ScheduleId = json["teakScheduleName"] as string,
                 CreativeId = json["teakCreativeName"] as string,
-                ChannelName = json["teakChannelName"] as string,
+                ChannelName = json.ContainsKey("teakChannelName") ? json["teakChannelName"] as string : null,
                 RewardId = json.ContainsKey("teakRewardId") ? json["teakRewardId"] as string : null,
                 DeepLink = json.ContainsKey("teakDeepLink") ? json["teakDeepLink"] as string : null
             });
@@ -689,7 +689,7 @@ public partial class Teak : MonoBehaviour {
                 Incentivized = (json["incentivized"] is bool) ? (bool) json["incentivized"] : false,
                 ScheduleId = json["teakScheduleName"] as string,
                 CreativeId = json["teakCreativeName"] as string,
-                ChannelName = json["teakChannelName"] as string,
+                ChannelName = json.ContainsKey("teakChannelName") ? json["teakChannelName"] as string : null,
                 RewardId = json.ContainsKey("teakRewardId") ? json["teakRewardId"] as string : null,
                 DeepLink = json.ContainsKey("teakDeepLink") ? json["teakDeepLink"] as string : null
             });
