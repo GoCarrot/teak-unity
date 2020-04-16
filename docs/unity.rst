@@ -45,12 +45,16 @@ Tell Teak how to Identify The Current User
 
 Call the ``IdentifyUser`` function and pass it a string which uniquely identifies the current user::
 
-    void IdentifyUser(string userIdentifier, List<string> optOut = null)
+    void IdentifyUser(string userIdentifier, String email = null)
+
+    void IdentifyUser(string userIdentifier, List<string> optOut = null, String email = null)
 
 Parameters
     :userIdentifier: Unique identifier for the user (255 characters or fewer).
 
     :optOut: An optional ``List<string>`` of tracking the specified user wants to opt out of.
+
+    :email: An optional email address to associate with this user.
 
 Example::
 
