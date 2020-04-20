@@ -13,6 +13,13 @@ The following dependencies are required by Teak
 * ``com.google.android.gms:play-services-basement:16+``
 * ``com.google.firebase:firebase-messaging:17+``
 * ``com.firebase:firebase-jobdispatcher:0.8.5``
+
+If you are using AndroidX, Teak requires
+
+* ``androidx.core:core:1.0.+``
+
+If you are *not* using AndroidX, Teak requires
+
 * ``com.android.support:support-core-utils:26.1+``
 * ``com.android.support:support-compat:26.1+``
 
