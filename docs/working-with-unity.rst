@@ -338,6 +338,10 @@ Deep links will get processed the sooner of:
 
 ``ProcessDeepLinks`` is provided so that you can signify that deep links should be processed earlier than your call to ``IdentifyUser`` or so that you can still process deep links in the case of a user opting out of tracking.
 
+Logout
+------
+You can log out the current user using ``Logout``. If the user is logged out, Teak will not process deep links or rewards until a user is logged in, via ``IdentifyUser``.
+
 Preprocessor Defines
 --------------------
 Teak sets some preprocessor defines for your use in ``Teak/Editor/TeakPreProcessDefiner.cs``.

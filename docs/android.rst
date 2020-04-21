@@ -13,6 +13,13 @@ The following dependencies are required by Teak
 * ``com.google.android.gms:play-services-basement:16+``
 * ``com.google.firebase:firebase-messaging:17+``
 * ``com.firebase:firebase-jobdispatcher:0.8.5``
+
+If you are using AndroidX, Teak requires
+
+* ``androidx.core:core:1.0.+``
+
+If you are *not* using AndroidX, Teak requires
+
 * ``com.android.support:support-core-utils:26.1+``
 * ``com.android.support:support-compat:26.1+``
 
@@ -186,6 +193,88 @@ Your Firebase Application Id, API Key and GCM Sender Id can be found in your Fir
 What This Does
 ^^^^^^^^^^^^^^
 This provides Teak with the credentials needed to send information to the Teak Service.
+
+More about Firebase Credentials
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+The Firebase App Id (in ``io_teak_firebase_app_id``) is structured as follows::
+
+    [index]:[app id]:android:[?]
+
+The value of ``io_teak_gcm_sender_id`` must match the second element of the value in ``io_teak_firebase_app_id``. For example, if your ``io_teak_firebase_app_id`` is ``1:12126273415:android:10329156b15bf0c`` then your ``io_teak_gcm_sender_id`` should be ``12126273415``.
+
+If these values do not match, then an ``java.io.IOException`` will be thrown with the value ``FIS_AUTH_ERROR`` will be thrown.
+
+The value of ``io_teak_firebase_api_key`` must be correct for the specified ``io_teak_firebase_app_id`` as well, otherwise an ``java.io.IOException`` will be thrown with the value ``FIS_AUTH_ERROR`` will be thrown.
+
+Android does not provide any additional information at runtime for these issues.
+
+Teak will log this exception with an error similar to this::
+
+    E/Teak: {
+      "client_app_version_name":"1.0",
+      "run_id":"4c449d429c564fa2986d99fe329540eb",
+      "event_id":43,
+      "event_type":"exception",
+      "device_id":"6a8b1cd8-245b-38e6-9319-31523ace3baf",
+      "bundle_id":"io.teak.app.unity.dev",
+      "sdk_version":{
+        "unity":"3.2.0",
+        "android":"3.2.0"
+      },
+      "log_level":"ERROR",
+      "client_app_version":1,
+      "event_data":{
+        "stacktrace":{
+          "frames":[
+            {
+              "in_app":false,
+              "filename":"Thread.java",
+              "lineno":764,
+              "function":"run",
+              "module":"java.lang.Thread"
+            },
+            {
+              "in_app":true,
+              "lineno":6,
+              "function":"run",
+              "module":"com.google.android.gms.common.util.concurrent.zza"
+            },
+            {
+              "in_app":false,
+              "filename":"ThreadPoolExecutor.java",
+              "lineno":641,
+              "function":"run",
+              "module":"java.util.concurrent.ThreadPoolExecutor$Worker"
+            },
+            {
+              "in_app":false,
+              "filename":"ThreadPoolExecutor.java",
+              "lineno":1167,
+              "function":"runWorker",
+              "module":"java.util.concurrent.ThreadPoolExecutor"
+            },
+            {
+              "in_app":true,
+              "lineno":5,
+              "function":"run",
+              "module":"com.google.android.gms.tasks.zzd"
+            },
+            {
+              "in_app":true,
+              "filename":"com.google.firebase:firebase-iid@@20.1.5",
+              "lineno":16,
+              "function":"then",
+              "module":"com.google.firebase.iid.zzu"
+            }
+          ]
+        },
+        "type":"IOException",
+        "value":"FIS_AUTH_ERROR",
+        "module":"java.io"
+      },
+      "app_id":"613659812345256",
+      "timestamp":1586896331
+    }
 
 Set Notification Icons for your Game
 ------------------------------------
