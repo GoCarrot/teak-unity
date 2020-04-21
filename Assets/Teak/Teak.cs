@@ -733,6 +733,10 @@ public partial class Teak : MonoBehaviour {
     void InternalOnCallbackError(string callback, Exception exception, Dictionary<string, object> data) {
         Debug.LogError("[Teak] Callback error (" + callback + "): " + exception.ToString());
     }
+
+    public void ReportCallbackError(string callback, Exception exception, Dictionary<string, object> data) {
+        OnCallbackError(callback, exception, data);
+    }
     /// @endcond
     #endregion
 

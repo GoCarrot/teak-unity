@@ -88,7 +88,8 @@ public partial class TeakNotification {
                 data = null;
             }
         }
-        callback(new Reply(status, data, creativeId));
+
+        SafePerformCallback("schedule_notification.local", callback, data, status, creativeId);
 #elif UNITY_IPHONE
         string data = null;
         string status = null;
@@ -99,7 +100,8 @@ public partial class TeakNotification {
             status = Marshal.PtrToStringAnsi(TeakNotificationGetStatus(notif));
             TeakRelease(notif);
         }
-        callback(new Reply(status, data, creativeId));
+
+        SafePerformCallback("schedule_notification.local", callback, data, status, creativeId);
 #elif UNITY_WEBGL
         string callbackId = DateTime.Now.Ticks.ToString();
         webGlCallbackMap.Add(callbackId, callback);
@@ -132,7 +134,8 @@ public partial class TeakNotification {
                 data = null;
             }
         }
-        callback(new Reply(status, data, creativeId));
+
+        SafePerformCallback("schedule_notification.long_distance", callback, data, status, creativeId);
 #elif UNITY_IPHONE
         string data = null;
         string status = null;
@@ -143,7 +146,8 @@ public partial class TeakNotification {
             status = Marshal.PtrToStringAnsi(TeakNotificationGetStatus(notif));
             TeakRelease(notif);
         }
-        callback(new Reply(status, data, creativeId));
+
+        SafePerformCallback("schedule_notification.long_distance", callback, data, status, creativeId);
 #elif UNITY_WEBGL
         string callbackId = DateTime.Now.Ticks.ToString();
         webGlCallbackMap.Add(callbackId, callback);
@@ -176,7 +180,8 @@ public partial class TeakNotification {
                 data = null;
             }
         }
-        callback(new Reply(status, data, null));
+
+        SafePerformCallback("cancel_notification", callback, data, status, null);
 #elif UNITY_IPHONE
         string data = null;
         string status = null;
@@ -187,7 +192,8 @@ public partial class TeakNotification {
             status = Marshal.PtrToStringAnsi(TeakNotificationGetStatus(notif));
             TeakRelease(notif);
         }
-        callback(new Reply(status, data, null));
+
+        SafePerformCallback("cancel_notification", callback, data, status, null);
 #elif UNITY_WEBGL
         string callbackId = DateTime.Now.Ticks.ToString();
         webGlCallbackMap.Add(callbackId, callback);
@@ -220,7 +226,8 @@ public partial class TeakNotification {
                 data = null;
             }
         }
-        callback(new Reply(status, data, null));
+
+        SafePerformCallback("cancel_all_notifications", callback, data, status, null);
 #elif UNITY_IPHONE
         string data = null;
         string status = null;
@@ -231,7 +238,8 @@ public partial class TeakNotification {
             status = Marshal.PtrToStringAnsi(TeakNotificationGetStatus(notif));
             TeakRelease(notif);
         }
-        callback(new Reply(status, data, null));
+
+        SafePerformCallback("cancel_all_notifications", callback, data, status, null);
 #elif UNITY_WEBGL
         string callbackId = DateTime.Now.Ticks.ToString();
         webGlCallbackMap.Add(callbackId, callback);
@@ -241,6 +249,20 @@ public partial class TeakNotification {
     }
 
     /// @cond hide_from_doxygen
+    private void SafePerformCallback(string method, System.Action<Reply> callback, string data, string status, string creativeId) {
+        try {
+            callback(new Reply(status, data, null));
+        } catch (Exception e) {
+            Dictionary<string, object> extras = new Dictionary<string, object>();
+            extras["data"] = data;
+            extras["status"] = status;
+            if (creativeId != null) {
+                extras["creative_id"] = creativeId;
+            }
+            Teak.Instance.ReportCallbackError(method, e, extras);
+        }
+    }
+
 #if UNITY_IOS
     [DllImport ("__Internal")]
     private static extern IntPtr TeakNotificationSchedule_Retained(string creativeId, string message, long delay);
