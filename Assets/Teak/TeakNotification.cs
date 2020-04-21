@@ -251,7 +251,7 @@ public partial class TeakNotification {
     /// @cond hide_from_doxygen
     private void SafePerformCallback(string method, System.Action<Reply> callback, string data, string status, string creativeId) {
         try {
-            callback(new Reply(status, data, null));
+            callback(new Reply(status, data, creativeId));
         } catch (Exception e) {
             Dictionary<string, object> extras = new Dictionary<string, object>();
             extras["data"] = data;
