@@ -109,7 +109,9 @@ mergeInto(LibraryManager.library, {
             var deepLinkEntry = _TeakDeepLinkTableInternal[key];
             var jsonObject = {
               route: deepLinkEntry.route,
-              parameters: {}
+              parameters: {
+                __incoming_url: window.teak.queryParameters.teak_deep_link
+              }
             };
 
             // Walk through capture groups and collect name/value pairs
