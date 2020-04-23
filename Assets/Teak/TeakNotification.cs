@@ -249,7 +249,7 @@ public partial class TeakNotification {
     }
 
     /// @cond hide_from_doxygen
-    private void SafePerformCallback(string method, System.Action<Reply> callback, string data, string status, string creativeId) {
+    private static void SafePerformCallback(string method, System.Action<Reply> callback, string data, string status, string creativeId) {
         try {
             callback(new Reply(status, data, creativeId));
         } catch (Exception e) {
