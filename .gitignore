@@ -30,6 +30,7 @@ AndroidLibBuild/androidtemp
 
 # Teak resources
 Assets/Teak/Plugins/iOS/TeakResources.bundle
+Assets/Teak/Plugins/Android/res*
 
 Teak.unitypackage
 unity.log
