@@ -227,15 +227,15 @@ def gen_version(v):
     with open('versions/%s.rst' % version, 'r') as f:
         contents = f.read()
 
-    contents += '\nAndroid\n^^^^^^^\n\n'
+    contents += '\nAndroid\n^^^^^^^\n'
     with open('android/versions/%s.rst' % version, 'r') as f:
         data = f.read().splitlines(True)
-        contents += '\n'.join(map(lambda ln: '    %s' % ln, data[2:]))
+        contents += ''.join(map(lambda ln: '    %s' % ln, data[2:]))
 
-    contents += '\niOS\n^^^\n\n'
+    contents += '\niOS\n^^^\n'
     with open('ios/versions/%s.rst' % version, 'r') as f:
         data = f.read().splitlines(True)
-        contents += '\n'.join(map(lambda ln: '    %s' % ln, data[2:]))
+        contents += ''.join(map(lambda ln: '    %s' % ln, data[2:]))
 
     if os.path.isfile('_versions/%s.rst' % version):
         with open('_versions/%s.rst' % version, 'r') as f:
