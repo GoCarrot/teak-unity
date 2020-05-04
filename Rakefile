@@ -9,6 +9,7 @@ require 'yaml'
 require 'awesome_print'
 require 'terminal-notifier'
 require 'mustache'
+require 'pathname'
 CLEAN.include '**/.DS_Store'
 
 #
@@ -244,5 +245,39 @@ namespace :build do
     rescue StandardError
       raise 'Unity build failed'
     end
+  end
+
+  task :upm do
+    UNITY_PACKAGE_SUBMODULE = 'upm-package-teak'
+    # package.json
+    template = File.read(File.join(PROJECT_PATH, 'Templates', 'package.json.template'))
+    File.write(File.join(PROJECT_PATH, UNITY_PACKAGE_SUBMODULE, 'package.json'), Mustache.render(template, TEMPLATE_PARAMETERS))
+
+    # Changelog
+    cd 'docs' do
+      `make html`
+      `pandoc -f rst -t gfm -o ../#{UNITY_PACKAGE_SUBMODULE}/CHANGELOG.md changelog.rst`
+    end
+
+    editor_glob = Dir.glob('Assets/Teak/Editor/**/*')
+
+    runtime_exclude = Dir.glob('Assets/Teak/LICENSE*') + Dir.glob('Assets/Teak/Editor*') + editor_glob
+    runtime_glob = Dir.glob('Assets/Teak/**/*') - runtime_exclude
+
+    def copy_glob_to(glob, dest, hax_path)
+      glob.each do |filename|
+        abs_path = Pathname.new(File.expand_path(filename))
+        package_root = Pathname.new(File.expand_path(hax_path))
+        rel_path = abs_path.relative_path_from(package_root)
+
+        dir = File.join(dest, File.dirname(rel_path))
+        # p "#{filename} -> #{dir}"
+        FileUtils.mkdir_p(dir)
+        FileUtils.cp(filename, dir) if File.file?(filename)
+      end
+    end
+
+    copy_glob_to(editor_glob, File.join(UNITY_PACKAGE_SUBMODULE, 'Editor'), 'Assets/Teak/Editor')
+    copy_glob_to(runtime_glob, File.join(UNITY_PACKAGE_SUBMODULE, 'Runtime'), 'Assets/Teak')
   end
 end

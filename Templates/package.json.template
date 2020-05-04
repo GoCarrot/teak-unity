@@ -1,0 +1,7 @@
+{
+    "name": "io.teak.unity.sdk",
+    "displayName": "Teak SDK",
+    "version": "{{teak_sdk_version}}",
+    "unity": "2018.3",
+    "description": "Teak SDK for Unity."
+}
