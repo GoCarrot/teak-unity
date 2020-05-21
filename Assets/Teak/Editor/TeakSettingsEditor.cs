@@ -19,7 +19,10 @@ public class TeakSettingsEditor : Editor {
     static void EditorRunOnceOnLoad() {
         EditorApplication.update -= EditorRunOnceOnLoad;
 
-        mAndroidFoldout = !String.IsNullOrEmpty(TeakSettings.GCMSenderId) || !String.IsNullOrEmpty(TeakSettings.FirebaseAppId) || !String.IsNullOrEmpty(TeakSettings.FirebaseApiKey);
+        mAndroidFoldout = !String.IsNullOrEmpty(TeakSettings.GCMSenderId) ||
+                          !String.IsNullOrEmpty(TeakSettings.FirebaseAppId) ||
+                          !String.IsNullOrEmpty(TeakSettings.FirebaseApiKey) ||
+                          !String.IsNullOrEmpty(TeakSettings.FirebaseProjectId);
     }
 
     static bool mAndroidFoldout;
@@ -43,6 +46,9 @@ public class TeakSettingsEditor : Editor {
 
             GUIContent firebaseApiKeyContent = new GUIContent("Firebase API Key [?]",  "Your Firebase API Key, found on your Firebase Dashboard.");
             TeakSettings.FirebaseApiKey = EditorGUILayout.TextField(firebaseApiKeyContent, TeakSettings.FirebaseApiKey);
+
+            GUIContent firebaseProjectIdContent = new GUIContent("Firebase API Key [?]",  "Your Firebase Project Id, found on your Firebase Dashboard.");
+            TeakSettings.FirebaseProjectId = EditorGUILayout.TextField(firebaseProjectIdContent, TeakSettings.FirebaseProjectId);
         }
 
         EditorGUILayout.Space();
