@@ -246,9 +246,12 @@ namespace :build do
       raise 'Unity build failed'
     end
   end
+end
 
-  task :upm do
-    UNITY_PACKAGE_SUBMODULE = 'upm-package-teak'
+namespace :upm do
+  UNITY_PACKAGE_SUBMODULE = 'upm-package-teak'
+
+  task :build do
     # package.json
     template = File.read(File.join(PROJECT_PATH, 'Templates', 'package.json.template'))
     File.write(File.join(PROJECT_PATH, UNITY_PACKAGE_SUBMODULE, 'package.json'), Mustache.render(template, TEMPLATE_PARAMETERS))
@@ -279,5 +282,13 @@ namespace :build do
 
     copy_glob_to(editor_glob, File.join(UNITY_PACKAGE_SUBMODULE, 'Editor'), 'Assets/Teak/Editor')
     copy_glob_to(runtime_glob, File.join(UNITY_PACKAGE_SUBMODULE, 'Runtime'), 'Assets/Teak')
+  end
+
+  task :push do
+    cd UNITY_PACKAGE_SUBMODULE do
+      `git add -A`
+      `git commit -m #{TEAK_SDK_VERSION}`
+      `git push`
+    end
   end
 end
