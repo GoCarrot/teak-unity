@@ -41,9 +41,37 @@ public partial class TeakNotification {
 
     public partial class Reply {
         public enum ReplyStatus {
+            /// <summary>
+            /// The call was successful, and the notification has been scheduled for delivery.
+            /// </summary>
             Ok,
+
+            /// <summary>
+            /// The call could not be completed because Teak is unable to send a notification to the device.
+            /// </summary>
+            /// <remarks>
+            /// This can either be that the user has not granted push permissions on iOS, or that the
+            /// Teak Dashboard does not have sending credentials suitable for the current device
+            /// (i.e. Teak has not been provided with an FCM Sender ID/API Key, APNS certificate,
+            /// or ADM Client ID/Client Secret).
+            /// </remarks>
             UnconfiguredKey,
+
+            /// <summary>
+            /// The call could not be completed because Teak is not aware of the device scheduling
+            /// the notification.
+            /// </summary>
+            /// <remarks>
+            /// This can happen if Teak was completely unable to get a push token for the device,
+            /// which can occur due to intermittent failures in APNS/FCM/ADM,
+            /// intermittent networking failures between the device and those services,
+            /// or system modifications made on rooted devices.
+            /// </remarks>
             InvalidDevice,
+
+            /// <summary>
+            /// An unknown error occured, and the call should be retried.
+            /// </summary>
             InternalError
         }
 
