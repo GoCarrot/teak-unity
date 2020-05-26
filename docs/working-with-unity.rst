@@ -103,13 +103,13 @@ All notification related methods are coroutines, which use a callback to communi
 The ``TeakNotification.Reply`` class has two properties:
     :Status: A value that indicates success, or reason for the failure of the call:
 
-        :Ok: The call was successful.
+        :Ok: The call was successful, and the notification has been scheduled for delivery.
 
-        :UnconfiguredKey: The call could not be completed because the device does not have a push key associated with it.
+        :UnconfiguredKey: The call could not be completed because Teak is unable to send a notification to the device due to a configuration setting. This can either be that the user has not granted push permissions on iOS, or that the Teak Dashboard does not have sending credentials suitable for the current device (i.e. Teak has not been provided with an FCM Sender ID/API Key, APNS certificate, or ADM Client ID/Client Secret).
 
-        :InvalidDevice: The call could not be completed because Teak has not registered the device.
+        :InvalidDevice: The call could not be completed because Teak is not aware of the device scheduling the notification. This can happen if Teak was completely unable to get a push token for the device, which can occur due to intermittent failures in APNS/FCM/ADM, intermittent networking failures between the device and those services, or system modifications made on rooted devices.
 
-        :InternalError: An unknown error occured, the call may be retried.
+        :InternalError: An unknown error occured, and the call should be retried.
 
     :Notifications: If the call was successful, a ``List`` containing the notification schedule ids that were created or canceled by the call.
 
