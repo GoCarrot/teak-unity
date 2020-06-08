@@ -179,16 +179,17 @@ If your build environment needs to provide the file itself, this is what it shou
         <string name="io_teak_gcm_sender_id">YOUR_GCM_SENDER_ID</string>
         <string name="io_teak_firebase_app_id">YOUR_FIREBASE_APPLICATION_ID</string>
         <string name="io_teak_firebase_api_key">YOUR_FIREBASE_API_KEY</string>
+        <string name="io_teak_firebase_project_id">YOUR_FIREBASE_PROJECT_ID</string>
     </resources>
 
-.. note:: Replace ``YOUR_TEAK_APP_ID``, ``YOUR_TEAK_API_KEY``, ``YOUR_GCM_SENDER_ID``, ``YOUR_FIREBASE_APPLICATION_ID``, and ``YOUR_FIREBASE_API_KEY`` with your game's values.
+.. note:: Replace ``YOUR_TEAK_APP_ID``, ``YOUR_TEAK_API_KEY``, ``YOUR_GCM_SENDER_ID``, ``YOUR_FIREBASE_APPLICATION_ID``, ``YOUR_FIREBASE_API_KEY``, and ``YOUR_FIREBASE_API_KEY`` with your game's values.
 
 Your Teak App Id and API Key can be found in the Settings for your app on the Teak dashboard.
 
-Your Firebase Application Id, API Key and GCM Sender Id can be found in your Firebase dashboard.
+Your Firebase Application Id, Project Id, API Key and GCM Sender Id can be found in your Firebase dashboard.
 
 `How to find your GCM Sender Id <https://teak.readthedocs.io/en/latest/firebase-gcm.html>`_
-`How to find your Firebase App Id and API Key <https://teak.readthedocs.io/en/latest/firebase-app-id.html>`_
+`How to find your Firebase App Id Project Id and API Key <https://teak.readthedocs.io/en/latest/firebase-app-id.html>`_
 
 What This Does
 ^^^^^^^^^^^^^^
