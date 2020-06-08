@@ -250,12 +250,14 @@ def gen_version(v):
 
 def setup(app):
     # Ensure all versions of iOS/Android/X have entries
+    sys.stderr.write("Ensuring all native docs have changelogs\n")
     ensure_versions()
 
     # Make array of includes
     versions = []
     for version in sorted(os.listdir('versions'), key = cmp_to_key(cmp_versions), reverse=True):
         gen_version(version)
+        sys.stderr.write("Adding version %s\n" % version)
         versions.append('.. include:: _versions/{0}'.format(version))
 
     changelog = """
@@ -271,5 +273,6 @@ Changelog
         data = ''
 
     if data != changelog:
+        sys.stderr.write("Writing new changelog.rst\n")
         with open('changelog.rst', 'w') as f:
             f.write(changelog)
