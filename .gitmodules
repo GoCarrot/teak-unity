@@ -6,4 +6,4 @@
 	url = https://github.com/GoCarrot/teak-ios-docs.git
 [submodule "upm-package-teak"]
 	path = upm-package-teak
-	url = https://github.com:GoCarrot/upm-package-teak.git
+	url = https://github.com/GoCarrot/upm-package-teak.git
