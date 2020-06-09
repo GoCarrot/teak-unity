@@ -45,6 +45,8 @@ NATIVE_CONFIG = YAML.load_file('native.config.yml')
 PROJECT_PATH = Rake.application.original_dir
 BUILD_TYPE = ENV.fetch('BUILD_TYPE', 'Release')
 
+UPM_PACKAGE_REPO = ENV.fetch('UPM_PACKAGE_REPO', '../upm-package-teak')
+
 TEMPLATE_PARAMETERS = {
   teak_sdk_version: TEAK_SDK_VERSION
 }
@@ -249,17 +251,20 @@ namespace :build do
 end
 
 namespace :upm do
-  UNITY_PACKAGE_SUBMODULE = 'upm-package-teak'
-
   task :build do
+    # Ensure repo exists
+    unless Dir.exist? UPM_PACKAGE_REPO
+      `git clone git@github.com:GoCarrot/upm-package-teak.git #{UPM_PACKAGE_REPO}`
+    end
+
     # package.json
     template = File.read(File.join(PROJECT_PATH, 'Templates', 'package.json.template'))
-    File.write(File.join(PROJECT_PATH, UNITY_PACKAGE_SUBMODULE, 'package.json'), Mustache.render(template, TEMPLATE_PARAMETERS))
+    File.write(File.join(PROJECT_PATH, UPM_PACKAGE_REPO, 'package.json'), Mustache.render(template, TEMPLATE_PARAMETERS))
 
     # Changelog
     cd 'docs' do
       `make html`
-      `pandoc -f rst -t gfm -o ../#{UNITY_PACKAGE_SUBMODULE}/CHANGELOG.md changelog.rst`
+      `pandoc -f rst -t gfm -o ../#{UPM_PACKAGE_REPO}/CHANGELOG.md changelog.rst`
     end
 
     editor_glob = Dir.glob('Assets/Teak/Editor/**/*')
@@ -280,12 +285,12 @@ namespace :upm do
       end
     end
 
-    copy_glob_to(editor_glob, File.join(UNITY_PACKAGE_SUBMODULE, 'Editor'), 'Assets/Teak/Editor')
-    copy_glob_to(runtime_glob, File.join(UNITY_PACKAGE_SUBMODULE, 'Runtime'), 'Assets/Teak')
+    copy_glob_to(editor_glob, File.join(UPM_PACKAGE_REPO, 'Editor'), 'Assets/Teak/Editor')
+    copy_glob_to(runtime_glob, File.join(UPM_PACKAGE_REPO, 'Runtime'), 'Assets/Teak')
   end
 
   task :push do
-    cd UNITY_PACKAGE_SUBMODULE do
+    cd UPM_PACKAGE_REPO do
       `git add -A`
       `git commit -m #{TEAK_SDK_VERSION}`
       `git push`
