@@ -144,7 +144,6 @@ public class TeakPostProcessBuild {
         string __FILE__ = new StackTrace(new StackFrame(true)).GetFrame(0).GetFileName();
         string teakEditorIosPath = Path.GetDirectoryName(__FILE__) + "/iOS";
         string extensionSrcPath = teakEditorIosPath + "/" + name;
-        string relativeTeakPath = GetRelativeAssetPath(Path.GetDirectoryName(Path.GetDirectoryName(__FILE__)));
 
         /////
         // Create app extension target
@@ -173,6 +172,12 @@ public class TeakPostProcessBuild {
 
         /////
         // Add libTeak.a
+
+        // If the 'Runtime' directory exists, this is coming from a UPM package
+        string relativeTeakPath = GetRelativeAssetPath(Path.GetDirectoryName(Path.GetDirectoryName(__FILE__)));
+        if (Directory.Exists(relativeTeakPath + "/Runtime")) {
+            relativeTeakPath = "io.teak.unity.sdk/Runtime";
+        }
         project.AddFileToBuild(extensionTarget, project.AddFile("libTeak.a", name + "/libTeak.a"));
         project.AddBuildProperty(extensionTarget, "LIBRARY_SEARCH_PATHS", "$(SRCROOT)/Libraries/" + relativeTeakPath + "/Plugins/iOS");
 
