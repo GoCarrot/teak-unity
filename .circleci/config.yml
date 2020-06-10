@@ -67,6 +67,9 @@ jobs:
       - checkout
       - attach_workspace:
           at: .
+      - add_ssh_keys:
+          fingerprints:
+            - "32:a9:a0:89:52:f0:29:d6:fa:7c:76:ed:ba:9a:70:17"
       - teak/tag-promote:
           fingerprint: "dc:b5:97:f2:a5:40:5e:ba:03:dd:83:fb:78:88:5e:bd"
           on_tag: (cd upm-package-teak ; git config user.email "team@teak.io" ; git config user.name "Teak CI" ; git checkout -b $PVERSION ; git status ; git commit -am "$PVERSION" ; git push --set-upstream origin $PVERSION)
