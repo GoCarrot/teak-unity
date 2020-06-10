@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-  teak: teak/sdk-utils@0.0.4
+  teak: teak/sdk-utils@0.0.6
 
 jobs:
   build:
@@ -65,13 +65,13 @@ jobs:
       - image: circleci/ruby:latest
     steps:
       - checkout
-      - teak/tag-promote:
-          fingerprint: "dc:b5:97:f2:a5:40:5e:ba:03:dd:83:fb:78:88:5e:bd"
       - attach_workspace:
           at: .
       - teak/tag-promote:
-          path: "upm-package-teak"
           fingerprint: "dc:b5:97:f2:a5:40:5e:ba:03:dd:83:fb:78:88:5e:bd"
+          on_tag: |
+            cd upm-package-teak
+            echo $PVERSION
 
   deploy_versioned:
     docker:
