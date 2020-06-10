@@ -69,7 +69,7 @@ jobs:
           at: .
       - teak/tag-promote:
           fingerprint: "dc:b5:97:f2:a5:40:5e:ba:03:dd:83:fb:78:88:5e:bd"
-          on_tag: (cd upm-package-teak ; git checkout -b $PVERSION ; git commit -am "$PVERSION" ; git push --set-upstream origin $PVERSION)
+          on_tag: (cd upm-package-teak ; git config user.email "team@teak.io" ; git config user.name "Teak CI" ; git checkout -b $PVERSION ; git status ; git commit -am "$PVERSION" ; git push --set-upstream origin $PVERSION)
 
   deploy_versioned:
     docker:
