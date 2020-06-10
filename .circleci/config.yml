@@ -70,8 +70,7 @@ jobs:
       - add_ssh_keys:
           fingerprints:
             - "c4:51:dc:a2:59:e6:5a:77:de:7b:c0:55:c8:ac:32:66"
-            # - "b1:bd:a9:f5:7d:e0:11:7c:50:a2:5c:3e:e5:80:45:1e"
-            # - "32:a9:a0:89:52:f0:29:d6:fa:7c:76:ed:ba:9a:70:17"
+            - "32:a9:a0:89:52:f0:29:d6:fa:7c:76:ed:ba:9a:70:17"
       - teak/tag-promote:
           on_tag: (cd upm-package-teak ; git config user.email "team@teak.io" ; git config user.name "Teak CI" ; git checkout -b $PVERSION ; git add -A ; git commit -am "$PVERSION" ; git push --set-upstream origin $PVERSION)
 
