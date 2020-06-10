@@ -69,9 +69,7 @@ jobs:
           at: .
       - teak/tag-promote:
           fingerprint: "dc:b5:97:f2:a5:40:5e:ba:03:dd:83:fb:78:88:5e:bd"
-          on_tag: |
-            cd upm-package-teak
-            echo $PVERSION
+          on_tag: cd upm-package-teak && echo $PVERSION
 
   deploy_versioned:
     docker:
