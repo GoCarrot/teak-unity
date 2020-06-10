@@ -279,7 +279,6 @@ namespace :upm do
         rel_path = abs_path.relative_path_from(package_root)
 
         dir = File.join(dest, File.dirname(rel_path))
-        # p "#{filename} -> #{dir}"
         FileUtils.mkdir_p(dir)
         FileUtils.cp(filename, dir) if File.file?(filename)
       end
@@ -287,13 +286,5 @@ namespace :upm do
 
     copy_glob_to(editor_glob, File.join(UPM_PACKAGE_REPO, 'Editor'), 'Assets/Teak/Editor')
     copy_glob_to(runtime_glob, File.join(UPM_PACKAGE_REPO, 'Runtime'), 'Assets/Teak')
-  end
-
-  task :push do
-    cd UPM_PACKAGE_REPO do
-      `git add -A`
-      `git commit -m #{TEAK_SDK_VERSION}`
-      `git push`
-    end
   end
 end

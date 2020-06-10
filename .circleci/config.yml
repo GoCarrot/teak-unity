@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-  teak: teak/sdk-utils@0.0.3
+  teak: teak/sdk-utils@0.0.4
 
 jobs:
   build:
@@ -45,12 +45,17 @@ jobs:
             cp unity.log /tmp/unity_logs
             bundle exec rake unity:returnlicense
           when: on_fail
+      - run:
+          name: Build UPM Package
+          command: |
+            bundle exec rake upm:build
       - store_artifacts:
           path: /tmp/unity_logs
       - persist_to_workspace:
           root: .
           paths:
             - build/*
+            - ../upm-package-teak
       - run:
           name: ReadTheDocs.org Unified Docs
           command: curl -X POST -d "branches=master" -d "token=$RTD_TOKEN" https://readthedocs.org/api/v2/webhook/teak/41148/
@@ -61,6 +66,11 @@ jobs:
     steps:
       - checkout
       - teak/tag-promote:
+          fingerprint: "dc:b5:97:f2:a5:40:5e:ba:03:dd:83:fb:78:88:5e:bd"
+      - attach_workspace:
+          at: .
+      - teak/tag-promote:
+          path: "../upm-package-teak"
           fingerprint: "dc:b5:97:f2:a5:40:5e:ba:03:dd:83:fb:78:88:5e:bd"
 
   deploy_versioned:
