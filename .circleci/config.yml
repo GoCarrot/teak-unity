@@ -72,7 +72,7 @@ jobs:
             - "37:d2:d9:09:bc:0d:c3:41:f4:68:58:79:80:9c:f5:78"
             - "c4:51:dc:a2:59:e6:5a:77:de:7b:c0:55:c8:ac:32:66"
       - teak/tag-promote:
-          on_tag: (cd upm-package-teak ; git config user.email "team@teak.io" ; git config user.name "Teak CI" ; git checkout -b $PVERSION ; git add -A ; git commit -am "$PVERSION" ; git push --set-upstream origin $PVERSION)
+          on_tag: (cd upm-package-teak ; git config user.email "team@teak.io" ; git config user.name "Teak CI" ; git checkout -b $PVERSION ; git add -A ; git commit -am "$PVERSION" ; GIT_SSH_COMMAND='ssh -i ~/.ssh/id_rsa_37d2d909bc0dc341f4685879809cf578' git push --set-upstream origin $PVERSION)
 
   deploy_versioned:
     docker:
