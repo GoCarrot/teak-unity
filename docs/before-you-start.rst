@@ -2,6 +2,8 @@
 
 Before You Start
 ================
+Update!
+
 It would be frustrating to start integrating the Teak SDK, only to find out you don't have credentials to test the push notifications, so before you start here's what you need to make things go smoothly.
 
 iOS
