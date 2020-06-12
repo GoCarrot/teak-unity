@@ -4,9 +4,6 @@
 [submodule "docs/ios"]
 	path = docs/ios
 	url = https://github.com/GoCarrot/teak-ios-docs.git
-[submodule "upm-package-teak"]
-	path = upm-package-teak
-	url = git@github.com:GoCarrot/upm-package-teak.git
 [submodule "docs/teak-docs-common"]
 	path = docs/teak-docs-common
 	url = https://github.com/GoCarrot/teak-docs-common.git
