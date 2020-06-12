@@ -9,6 +9,8 @@ We're going to give you step-by-step instructions for integrating Teak with Unit
 
 .. tip:: You can always ask us for help, don't be shy.
 
+.. include:: _sidebar.rst.inc
+
 .. toctree::
     :maxdepth: 1
     :titlesonly:
