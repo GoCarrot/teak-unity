@@ -1,10 +1,9 @@
 Unity Editor
 ============
 
-Update!
-
 Add Teak.unitypackage
 ---------------------
+
 Download the latest *Teak.unitypackage* from https://sdks.teakcdn.com/unity/Teak.unitypackage
 
 Import it into your project in Unity by going to the menu
