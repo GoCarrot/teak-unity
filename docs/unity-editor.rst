@@ -1,12 +1,7 @@
 Unity Editor
 ============
 
-Update! Are going to update RTD?
-
-Make Rtd Update
----------------
-
-No, seriously, why?
+Update!
 
 Add Teak.unitypackage
 ---------------------
