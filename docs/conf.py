@@ -23,6 +23,14 @@ import os, subprocess, re, sys, errno
 from functools import cmp_to_key
 
 read_the_docs_build = os.environ.get('READTHEDOCS', None) == 'True'
+
+import importlib
+import sys
+
+sys.path.append('.')
+
+docs_common = importlib.import_module('teak-docs-common')
+
 # if read_the_docs_build:
 #     subprocess.call('cd .. ; doxygen', shell=True)
 
@@ -37,7 +45,10 @@ read_the_docs_build = os.environ.get('READTHEDOCS', None) == 'True'
 # ones.
 
 # sys.path.append(os.path.abspath('./ext'))
-extensions = []# "breathe" ] , "teak-versions" ], "teak-sdk" ]
+extensions = [ 'sphinx.ext.intersphinx' ]
+
+# Intersphinx
+intersphinx_mapping = docs_common.intersphinx_mapping(globals())
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -178,6 +189,10 @@ texinfo_documents = [
      author, 'TeakUnity', 'One line description of project.',
      'Miscellaneous'),
 ]
+
+# -- Sidebar --------------------------------------------------------------
+
+docs_common.generate_sidebar(globals(), 'unity', './_sidebar.rst.inc')
 
 ####
 # Global include

@@ -1,5 +1,5 @@
-Unity
-=====
+Unity Editor
+============
 
 Add Teak.unitypackage
 ---------------------
