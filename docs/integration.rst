@@ -19,6 +19,7 @@ We're going to give you step-by-step instructions for integrating Teak with Unit
     unity-editor
     android
     android-permissions
+    android/notification-icon
     amazon
     ios
     ios-extensions
@@ -31,3 +32,5 @@ We're going to give you step-by-step instructions for integrating Teak with Unit
     fcm-migration
     api-28-migration
     changelog
+    Android 3rd Party Code Acknowledgements <android/third-party>
+    iOS 3rd Party Code Acknowledgements <ios/third-party>
