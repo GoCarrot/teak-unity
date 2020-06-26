@@ -14,7 +14,6 @@ We're going to give you step-by-step instructions for integrating Teak with Unit
     :titlesonly:
     :hidden:
 
-    intro
     before-you-start
     unity-editor
     android
