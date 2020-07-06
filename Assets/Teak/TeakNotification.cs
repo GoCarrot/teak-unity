@@ -92,9 +92,9 @@ public partial class TeakNotification {
     }
 
     // Returns an id that can be used to cancel a scheduled notification
-    public static IEnumerator ScheduleNotification(string creativeId, string defaultMessage, long delayInSeconds, System.Action<Reply> callback) {
+    public static IEnumerator ScheduleNotification(string scheduleName, string defaultMessage, long delayInSeconds, System.Action<Reply> callback) {
         if (Teak.Instance.Trace) {
-            Debug.Log("[TeakNotification] ScheduleNotification(" + creativeId + ", " + defaultMessage + ", " + delayInSeconds + ")");
+            Debug.Log("[TeakNotification] ScheduleNotification(" + scheduleName + ", " + defaultMessage + ", " + delayInSeconds + ")");
         }
 
 #if UNITY_EDITOR
@@ -103,7 +103,7 @@ public partial class TeakNotification {
         string data = null;
         string status = null;
         AndroidJavaClass teakNotification = new AndroidJavaClass("io.teak.sdk.TeakNotification");
-        AndroidJavaObject future = teakNotification.CallStatic<AndroidJavaObject>("scheduleNotification", creativeId, defaultMessage, delayInSeconds);
+        AndroidJavaObject future = teakNotification.CallStatic<AndroidJavaObject>("scheduleNotification", scheduleName, defaultMessage, delayInSeconds);
         if (future != null) {
             while (!future.Call<bool>("isDone")) yield return null;
 
@@ -117,11 +117,11 @@ public partial class TeakNotification {
             }
         }
 
-        SafePerformCallback("schedule_notification.local", callback, data, status, creativeId);
+        SafePerformCallback("schedule_notification.local", callback, data, status, scheduleName);
 #elif UNITY_IPHONE
         string data = null;
         string status = null;
-        IntPtr notif = TeakNotificationSchedule_Retained(creativeId, defaultMessage, delayInSeconds);
+        IntPtr notif = TeakNotificationSchedule_Retained(scheduleName, defaultMessage, delayInSeconds);
         if (notif != IntPtr.Zero) {
             while (!TeakNotificationIsCompleted(notif)) yield return null;
             data = Marshal.PtrToStringAnsi(TeakNotificationGetTeakNotifId(notif));
@@ -129,18 +129,18 @@ public partial class TeakNotification {
             TeakRelease(notif);
         }
 
-        SafePerformCallback("schedule_notification.local", callback, data, status, creativeId);
+        SafePerformCallback("schedule_notification.local", callback, data, status, scheduleName);
 #elif UNITY_WEBGL
         string callbackId = DateTime.Now.Ticks.ToString();
         webGlCallbackMap.Add(callbackId, callback);
-        TeakNotificationSchedule(callbackId, creativeId, defaultMessage, delayInSeconds);
+        TeakNotificationSchedule(callbackId, scheduleName, defaultMessage, delayInSeconds);
         yield return null;
 #endif
     }
 
-    public static IEnumerator ScheduleNotification(string creativeId, long delayInSeconds, string[] userIds, System.Action<Reply> callback) {
+    public static IEnumerator ScheduleNotification(string scheduleName, long delayInSeconds, string[] userIds, System.Action<Reply> callback) {
         if (Teak.Instance.Trace) {
-            Debug.Log("[TeakNotification] ScheduleNotification(" + creativeId + ", " + delayInSeconds + ", " + userIds + ")");
+            Debug.Log("[TeakNotification] ScheduleNotification(" + scheduleName + ", " + delayInSeconds + ", " + userIds + ")");
         }
 
 #if UNITY_EDITOR
@@ -149,7 +149,7 @@ public partial class TeakNotification {
         string data = null;
         string status = null;
         AndroidJavaClass teakNotification = new AndroidJavaClass("io.teak.sdk.TeakNotification");
-        AndroidJavaObject future = teakNotification.CallStatic<AndroidJavaObject>("scheduleNotification", creativeId, delayInSeconds, userIds);
+        AndroidJavaObject future = teakNotification.CallStatic<AndroidJavaObject>("scheduleNotification", scheduleName, delayInSeconds, userIds);
         if (future != null) {
             while (!future.Call<bool>("isDone")) yield return null;
 
@@ -163,11 +163,11 @@ public partial class TeakNotification {
             }
         }
 
-        SafePerformCallback("schedule_notification.long_distance", callback, data, status, creativeId);
+        SafePerformCallback("schedule_notification.long_distance", callback, data, status, scheduleName);
 #elif UNITY_IPHONE
         string data = null;
         string status = null;
-        IntPtr notif = TeakNotificationScheduleLongDistance_Retained(creativeId, delayInSeconds, userIds, userIds.Length);
+        IntPtr notif = TeakNotificationScheduleLongDistance_Retained(scheduleName, delayInSeconds, userIds, userIds.Length);
         if (notif != IntPtr.Zero) {
             while (!TeakNotificationIsCompleted(notif)) yield return null;
             data = Marshal.PtrToStringAnsi(TeakNotificationGetTeakNotifId(notif));
@@ -175,11 +175,11 @@ public partial class TeakNotification {
             TeakRelease(notif);
         }
 
-        SafePerformCallback("schedule_notification.long_distance", callback, data, status, creativeId);
+        SafePerformCallback("schedule_notification.long_distance", callback, data, status, scheduleName);
 #elif UNITY_WEBGL
         string callbackId = DateTime.Now.Ticks.ToString();
         webGlCallbackMap.Add(callbackId, callback);
-        TeakNotificationScheduleLongDistance(callbackId, creativeId, Json.Serialize(userIds), delayInSeconds);
+        TeakNotificationScheduleLongDistance(callbackId, scheduleName, Json.Serialize(userIds), delayInSeconds);
         yield return null;
 #endif
     }
@@ -277,15 +277,15 @@ public partial class TeakNotification {
     }
 
     /// @cond hide_from_doxygen
-    private static void SafePerformCallback(string method, System.Action<Reply> callback, string data, string status, string creativeId) {
+    private static void SafePerformCallback(string method, System.Action<Reply> callback, string data, string status, string scheduleName) {
         try {
-            callback(new Reply(status, data, creativeId));
+            callback(new Reply(status, data, scheduleName));
         } catch (Exception e) {
             Dictionary<string, object> extras = new Dictionary<string, object>();
             extras["data"] = data;
             extras["status"] = status;
             if (creativeId != null) {
-                extras["creative_id"] = creativeId;
+                extras["creative_id"] = scheduleName;
             }
             Teak.Instance.ReportCallbackError(method, e, extras);
         }
@@ -293,10 +293,10 @@ public partial class TeakNotification {
 
 #if UNITY_IOS
     [DllImport ("__Internal")]
-    private static extern IntPtr TeakNotificationSchedule_Retained(string creativeId, string message, long delay);
+    private static extern IntPtr TeakNotificationSchedule_Retained(string scheduleName, string message, long delay);
 
     [DllImport ("__Internal")]
-    private static extern IntPtr TeakNotificationScheduleLongDistance_Retained(string creativeId, long delayInSeconds, string[] userIds, int lenUserIds);
+    private static extern IntPtr TeakNotificationScheduleLongDistance_Retained(string scheduleName, long delayInSeconds, string[] userIds, int lenUserIds);
 
     [DllImport ("__Internal")]
     private static extern IntPtr TeakNotificationCancel_Retained(string scheduleId);
@@ -317,10 +317,10 @@ public partial class TeakNotification {
     private static extern IntPtr TeakNotificationGetStatus(IntPtr notif);
 #elif UNITY_WEBGL
     [DllImport ("__Internal")]
-    private static extern void TeakNotificationSchedule(string callbackId, string creativeId, string message, long delay);
+    private static extern void TeakNotificationSchedule(string callbackId, string scheduleName, string message, long delay);
 
     [DllImport ("__Internal")]
-    private static extern IntPtr TeakNotificationScheduleLongDistance(string callbackId, string creativeId, string jsonUserIds, long delay);
+    private static extern IntPtr TeakNotificationScheduleLongDistance(string callbackId, string scheduleName, string jsonUserIds, long delay);
 
     [DllImport ("__Internal")]
     private static extern void TeakNotificationCancel(string callbackId, string scheduleId);
@@ -329,11 +329,11 @@ public partial class TeakNotification {
     private static extern void TeakNotificationCancelAll(string callbackId);
 
     private static Dictionary<string, System.Action<Reply>> webGlCallbackMap = new Dictionary<string, System.Action<Reply>>();
-    public static void WebGLCallback(string callbackId, string status, string data, string creativeId) {
+    public static void WebGLCallback(string callbackId, string status, string data, string scheduleName) {
         if (webGlCallbackMap.ContainsKey(callbackId)) {
             System.Action<Reply> callback = webGlCallbackMap[callbackId];
             webGlCallbackMap.Remove(callbackId);
-            callback(new Reply(status, data, creativeId));
+            callback(new Reply(status, data, scheduleName));
         }
     }
 #endif
@@ -341,7 +341,7 @@ public partial class TeakNotification {
 
     /// @cond hide_from_doxygen
     public partial class Reply {
-        public Reply(string status, string data, string creativeId = null) {
+        public Reply(string status, string data, string scheduleName = null) {
             this.Status = ReplyStatus.InternalError;
             switch (status) {
                 case "ok":

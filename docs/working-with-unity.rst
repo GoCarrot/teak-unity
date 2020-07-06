@@ -118,11 +118,11 @@ Scheduling a Local Notification
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 To schedule a notification from your game, use::
 
-    IEnumerator TeakNotification.ScheduleNotification(string creativeId, string defaultMessage,
+    IEnumerator TeakNotification.ScheduleNotification(string scheduleName, string defaultMessage,
         long delayInSeconds, System.Action<TeakNotification.Reply> callback)
 
 Parameters
-    :creativeId: A value used to identify the message creative in the Teak CMS e.g. "daily_bonus"
+    :scheduleName: A value used to identify the message creative in the Teak CMS e.g. "daily_bonus"
 
     :defaultMessage: The text to use in the notification if there are no modifications in the Teak CMS.
 
@@ -136,11 +136,11 @@ Scheduling a Long-Distance Notification
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 To schedule a notification from your game, delivered to a different user of your game use::
 
-    IEnumerator TeakNotification.ScheduleNotification(string creativeId, long delayInSeconds,
+    IEnumerator TeakNotification.ScheduleNotification(string scheduleName, long delayInSeconds,
         string[] userIds, System.Action<TeakNotification.Reply> callback)
 
 Parameters
-    :creativeId: A value used to identify the message creative in the Teak CMS e.g. "daily_bonus"
+    :scheduleName: A value used to identify the message creative in the Teak CMS e.g. "daily_bonus"
 
     :delayInSeconds: The number of seconds from the current time before the notification should be sent.
 
@@ -158,7 +158,7 @@ To cancel a previously scheduled notification, use::
         System.Action<TeakNotification.Reply> callback)
 
 Parameters
-    :scheduleId: Passing the id received from ``ScheduleNotification()`` will cancel that specific notification; passing the ``creativeId`` used to schedule the notification will cancel **all** scheduled notifications with that creative id for the user
+    :scheduleId: Passing the id received from ``ScheduleNotification()`` will cancel that specific notification; passing the ``scheduleName`` used to schedule the notification will cancel **all** scheduled notifications with that creative id for the user
 
     :callback: The callback to be called after the notification is canceled
 
