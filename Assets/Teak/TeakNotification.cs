@@ -284,7 +284,7 @@ public partial class TeakNotification {
             Dictionary<string, object> extras = new Dictionary<string, object>();
             extras["data"] = data;
             extras["status"] = status;
-            if (creativeId != null) {
+            if (scheduleName != null) {
                 extras["creative_id"] = scheduleName;
             }
             Teak.Instance.ReportCallbackError(method, e, extras);
@@ -341,7 +341,7 @@ public partial class TeakNotification {
 
     /// @cond hide_from_doxygen
     public partial class Reply {
-        public Reply(string status, string data, string scheduleName = null) {
+        public Reply(string status, string data, string creativeId = null) {
             this.Status = ReplyStatus.InternalError;
             switch (status) {
                 case "ok":
