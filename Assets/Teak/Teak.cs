@@ -752,6 +752,13 @@ public partial class Teak : MonoBehaviour {
 #elif UNITY_WEBGL
         appId = (string.IsNullOrEmpty(Teak.AppId) ? TeakSettings.AppId : Teak.AppId);
         apiKey = (string.IsNullOrEmpty(Teak.APIKey) ? TeakSettings.APIKey : Teak.APIKey);
+
+        if (string.IsNullOrEmpty(appId)) {
+            throw new ArgumentNullException("Teak.AppId cannot be null or empty.");
+        } else if (string.IsNullOrEmpty(apiKey)) {
+            throw new ArgumentNullException("Teak.APIKey cannot be null or empty.");
+        }
+
         TeakInitWebGL(appId, apiKey);
 #else
         if (this.AppConfiguration != null) {
