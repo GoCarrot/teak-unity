@@ -31,6 +31,7 @@ public partial class Teak : MonoBehaviour {
                     if (teakGameObject == null) {
                         teakGameObject = new GameObject("TeakGameObject");
                         teakGameObject.AddComponent<Teak>();
+                        teakGameObject.hideFlags = HideFlags.DontSave;
                     }
                     mInstance = teakGameObject.GetComponent<Teak>();
                 }
@@ -834,8 +835,10 @@ public partial class Teak : MonoBehaviour {
         }
     }
 
-    void OnApplicationQuit() {
-        Destroy(this);
+    void OnDisable() {
+        if (Application.isEditor) {
+            UnityEngine.Object.DestroyImmediate(this);
+        }
     }
     /// @endcond
     #endregion
