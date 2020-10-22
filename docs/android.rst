@@ -1,3 +1,6 @@
+..
+  Be sure to make changes to the Android native docs as needed
+
 Android
 =======
 
@@ -47,9 +50,11 @@ All you need to do is add this to the main activity in your AndroidManifest.xml:
 
 .. note:: This should work just fine for most games. You can go right to :ref:`skip-to-edit-teak-xml`
 
-Make Teak your Main Activity
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Make Teak your Unity Main Activity
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. highlight:: xml
+
+.. note:: 
 
 If you can't use auto-initialization, for some reason, edit your ``Assets/Plugins/Android/AndroidManifest.xml`` and change the main activity from::
 
