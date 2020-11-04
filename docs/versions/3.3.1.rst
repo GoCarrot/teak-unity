@@ -1,0 +1,8 @@
+3.3.1
+-----
+:Breaking Changes:
+    * None
+:New Features:
+    * iOS 14 IDFA support
+:Bug Fixes:
+    * None
