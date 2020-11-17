@@ -1,3 +1,6 @@
+..
+  Be sure to make changes to the iOS native docs as needed
+
 iOS
 ===
 Dependencies
@@ -19,6 +22,7 @@ If you do not use the the post-process scripts, the following frameworks are req
 .. ::note These should be present as dependencies on libTeak.a (as specified in libTeak.a.meta), this is only in case you run into problems.
 
 This is the list of dependencies as compiler flags::
+
     -framework AdSupport -framework AVFoundation -framework MobileCoreServices -framework StoreKit -framework UserNotifications -framework ImageIO -framework CoreGraphics -framework UIKit -framework SystemConfiguration
 
 .. _ios-edit-info-plist:

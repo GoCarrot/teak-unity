@@ -121,6 +121,8 @@ To schedule a notification from your game, use::
     IEnumerator TeakNotification.ScheduleNotification(string scheduleName, string defaultMessage,
         long delayInSeconds, System.Action<TeakNotification.Reply> callback)
 
+.. important:: All notification related methods are coroutines. Unless you want the method to block execution, you must use ``StartCoroutine``
+
 Parameters
     :scheduleName: A value used to identify the message creative in the Teak CMS e.g. "daily_bonus"
 
@@ -130,7 +132,7 @@ Parameters
 
     :callback: The callback to be called after the notification is scheduled
 
-.. important:: The maximum delay for a Local Notification is 30 days.
+.. note:: The maximum delay for a Local Notification is 30 days.
 
 Scheduling a Long-Distance Notification
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -138,6 +140,8 @@ To schedule a notification from your game, delivered to a different user of your
 
     IEnumerator TeakNotification.ScheduleNotification(string scheduleName, long delayInSeconds,
         string[] userIds, System.Action<TeakNotification.Reply> callback)
+
+.. important:: All notification related methods are coroutines. Unless you want the method to block execution, you must use ``StartCoroutine``
 
 Parameters
     :scheduleName: A value used to identify the message creative in the Teak CMS e.g. "daily_bonus"
@@ -148,7 +152,7 @@ Parameters
 
     :callback: The callback to be called after the notifications are scheduled
 
-.. important:: The maximum delay for a Long-Distance Notification is 30 days.
+.. note:: The maximum delay for a Long-Distance Notification is 30 days.
 
 Canceling a Notification
 ^^^^^^^^^^^^^^^^^^^^^^^^
@@ -156,6 +160,8 @@ To cancel a previously scheduled notification, use::
 
     IEnumerator TeakNotification.CancelScheduledNotification(string scheduledId,
         System.Action<TeakNotification.Reply> callback)
+
+.. important:: All notification related methods are coroutines. Unless you want the method to block execution, you must use ``StartCoroutine``
 
 Parameters
     :scheduleId: Passing the id received from ``ScheduleNotification()`` will cancel that specific notification; passing the ``scheduleName`` used to schedule the notification will cancel **all** scheduled notifications with that creative id for the user
@@ -168,6 +174,8 @@ To cancel all previously scheduled local notifications, use::
 
     IEnumerator TeakNotification.CancelAllScheduledNotifications(
         System.Action<TeakNotification.Reply> callback)
+
+.. important:: All notification related methods are coroutines. Unless you want the method to block execution, you must use ``StartCoroutine``
 
 Parameters
     :callback: The callback to be called after the notifications are canceled
