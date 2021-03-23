@@ -12,12 +12,12 @@ jobs:
       - checkout
       - run: git fetch --tags
       - restore_cache:
-          key: v1-{{ checksum "setup" }}-{{ checksum "Gemfile.lock" }}-{{ .Environment.UNITY_VERSION }}
-      # - run:
-      #     name: Check Homebrew Version
-      #     command: |
-      #       echo "Checking for Homebrew version $HOMEBREW_VERSION"
-      #       [ `brew --version | sed -n 1p | sed 's/[^0-9.]*\([0-9.]*\).*/\1/'` = $HOMEBREW_VERSION ] || brew update
+          key: v1-{{ checksum "setup" }}-{{ checksum "Gemfile.lock" }}-{{ .Environment.HOMEBREW_VERSION }}-{{ .Environment.UNITY_VERSION }}
+      - run:
+          name: Check Homebrew Version
+          command: |
+            echo "Checking for Homebrew version $HOMEBREW_VERSION"
+            [ `brew --version | sed -n 1p | sed 's/[^0-9.]*\([0-9.]*\).*/\1/'` = $HOMEBREW_VERSION ] || brew update
       - run:
           name: Homebrew Depenendcies
           command: HOMEBREW_NO_AUTO_UPDATE=1 ./setup
@@ -31,7 +31,7 @@ jobs:
             # - /usr/local/Homebrew/
             - ~/Library/Caches/Homebrew
             - vendor/bundle
-          key: v1-{{ checksum "setup" }}-{{ checksum "Gemfile.lock" }}-{{ .Environment.UNITY_VERSION }}
+          key: v1-{{ checksum "setup" }}-{{ checksum "Gemfile.lock" }}-{{ .Environment.HOMEBREW_VERSION }}-{{ .Environment.UNITY_VERSION }}
       - run:
           name: Build Teak SDK
           command: |
