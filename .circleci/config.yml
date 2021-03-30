@@ -28,7 +28,7 @@ jobs:
             bundle check || bundle install --path vendor/bundle
       - save_cache:
           paths:
-            - /usr/local/Homebrew/
+            # - /usr/local/Homebrew/
             - ~/Library/Caches/Homebrew
             - vendor/bundle
           key: v1-{{ checksum "setup" }}-{{ checksum "Gemfile.lock" }}-{{ .Environment.HOMEBREW_VERSION }}-{{ .Environment.UNITY_VERSION }}

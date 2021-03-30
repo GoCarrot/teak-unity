@@ -851,10 +851,8 @@ public partial class Teak : MonoBehaviour {
         }
     }
 
-    void OnDisable() {
-        if (Application.isEditor) {
-            UnityEngine.Object.DestroyImmediate(this);
-        }
+    void OnApplicationQuit() {
+        Destroy(this);
     }
     /// @endcond
     #endregion
