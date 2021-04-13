@@ -36,9 +36,9 @@ public class TeakReward {
         this.RewardId = json["teakRewardId"] as string;
 
         // Optional
-        if (json.ContainsKey("teakScheduleName")) this.ScheduleId = json["teakScheduleName"] as string;
-        if (json.ContainsKey("teakCreativeName")) this.CreativeId = json["teakCreativeName"] as string;
-        if (json.ContainsKey("teakChannelName")) this.ChannelName = json["teakChannelName"] as string;
+        if (json.ContainsKey("teakScheduleName")) { this.ScheduleId = json["teakScheduleName"] as string; }
+        if (json.ContainsKey("teakCreativeName")) { this.CreativeId = json["teakCreativeName"] as string; }
+        if (json.ContainsKey("teakChannelName")) { this.ChannelName = json["teakChannelName"] as string; }
 
         switch (json["status"] as string) {
             case "grant_reward": {

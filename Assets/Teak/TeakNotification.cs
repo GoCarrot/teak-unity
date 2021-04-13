@@ -31,12 +31,12 @@ public partial class TeakNotification {
     public override string ToString() {
         string formatString = "{{ Incentivized = '{0}', ScheduleId = '{1}', CreativeId = '{2}', ChannelName = '{3}', RewardId = '{4}', DeepLink = '{5}' }}";
         return string.Format(formatString,
-            this.Incentivized,
-            this.ScheduleId,
-            this.CreativeId,
-            this.ChannelName,
-            this.RewardId,
-            this.DeepLink);
+                             this.Incentivized,
+                             this.ScheduleId,
+                             this.CreativeId,
+                             this.ChannelName,
+                             this.RewardId,
+                             this.DeepLink);
     }
 
     public partial class Reply {
@@ -82,8 +82,8 @@ public partial class TeakNotification {
             public override string ToString() {
                 string formatString = "{{ ScheduleId = '{0}', CreativeId = '{1}' }}";
                 return string.Format(formatString,
-                    this.ScheduleId,
-                    this.CreativeId);
+                                     this.ScheduleId,
+                                     this.CreativeId);
             }
         }
 
@@ -105,7 +105,7 @@ public partial class TeakNotification {
         AndroidJavaClass teakNotification = new AndroidJavaClass("io.teak.sdk.TeakNotification");
         AndroidJavaObject future = teakNotification.CallStatic<AndroidJavaObject>("scheduleNotification", scheduleName, defaultMessage, delayInSeconds);
         if (future != null) {
-            while (!future.Call<bool>("isDone")) yield return null;
+            while (!future.Call<bool>("isDone")) { yield return null; }
 
             try {
                 Dictionary<string, object> json = Json.TryDeserialize(future.Call<string>("get")) as Dictionary<string, object>;
@@ -123,7 +123,7 @@ public partial class TeakNotification {
         string status = null;
         IntPtr notif = TeakNotificationSchedule_Retained(scheduleName, defaultMessage, delayInSeconds);
         if (notif != IntPtr.Zero) {
-            while (!TeakNotificationIsCompleted(notif)) yield return null;
+            while (!TeakNotificationIsCompleted(notif)) { yield return null; }
             data = Marshal.PtrToStringAnsi(TeakNotificationGetTeakNotifId(notif));
             status = Marshal.PtrToStringAnsi(TeakNotificationGetStatus(notif));
             TeakRelease(notif);
@@ -151,7 +151,7 @@ public partial class TeakNotification {
         AndroidJavaClass teakNotification = new AndroidJavaClass("io.teak.sdk.TeakNotification");
         AndroidJavaObject future = teakNotification.CallStatic<AndroidJavaObject>("scheduleNotification", scheduleName, delayInSeconds, userIds);
         if (future != null) {
-            while (!future.Call<bool>("isDone")) yield return null;
+            while (!future.Call<bool>("isDone")) { yield return null; }
 
             try {
                 Dictionary<string, object> json = Json.TryDeserialize(future.Call<string>("get")) as Dictionary<string, object>;
@@ -169,7 +169,7 @@ public partial class TeakNotification {
         string status = null;
         IntPtr notif = TeakNotificationScheduleLongDistance_Retained(scheduleName, delayInSeconds, userIds, userIds.Length);
         if (notif != IntPtr.Zero) {
-            while (!TeakNotificationIsCompleted(notif)) yield return null;
+            while (!TeakNotificationIsCompleted(notif)) { yield return null; }
             data = Marshal.PtrToStringAnsi(TeakNotificationGetTeakNotifId(notif));
             status = Marshal.PtrToStringAnsi(TeakNotificationGetStatus(notif));
             TeakRelease(notif);
@@ -198,7 +198,7 @@ public partial class TeakNotification {
         AndroidJavaClass teakNotification = new AndroidJavaClass("io.teak.sdk.TeakNotification");
         AndroidJavaObject future = teakNotification.CallStatic<AndroidJavaObject>("cancelNotification", scheduleId);
         if (future != null) {
-            while (!future.Call<bool>("isDone")) yield return null;
+            while (!future.Call<bool>("isDone")) { yield return null; }
             try {
                 Dictionary<string, object> json = Json.TryDeserialize(future.Call<string>("get")) as Dictionary<string, object>;
                 data = json["data"] as string;
@@ -215,7 +215,7 @@ public partial class TeakNotification {
         string status = null;
         IntPtr notif = TeakNotificationCancel_Retained(scheduleId);
         if (notif != IntPtr.Zero) {
-            while (!TeakNotificationIsCompleted(notif)) yield return null;
+            while (!TeakNotificationIsCompleted(notif)) { yield return null; }
             data = Marshal.PtrToStringAnsi(TeakNotificationGetTeakNotifId(notif));
             status = Marshal.PtrToStringAnsi(TeakNotificationGetStatus(notif));
             TeakRelease(notif);
@@ -244,7 +244,7 @@ public partial class TeakNotification {
         AndroidJavaClass teakNotification = new AndroidJavaClass("io.teak.sdk.TeakNotification");
         AndroidJavaObject future = teakNotification.CallStatic<AndroidJavaObject>("cancelAll");
         if (future != null) {
-            while (!future.Call<bool>("isDone")) yield return null;
+            while (!future.Call<bool>("isDone")) { yield return null; }
             try {
                 Dictionary<string, object> json = Json.TryDeserialize(future.Call<string>("get")) as Dictionary<string, object>;
                 data = Json.Serialize(json["data"]);
@@ -261,7 +261,7 @@ public partial class TeakNotification {
         string status = null;
         IntPtr notif = TeakNotificationCancelAll_Retained();
         if (notif != IntPtr.Zero) {
-            while (!TeakNotificationIsCompleted(notif)) yield return null;
+            while (!TeakNotificationIsCompleted(notif)) { yield return null; }
             data = Marshal.PtrToStringAnsi(TeakNotificationGetTeakNotifId(notif));
             status = Marshal.PtrToStringAnsi(TeakNotificationGetStatus(notif));
             TeakRelease(notif);

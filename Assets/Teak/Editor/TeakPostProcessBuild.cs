@@ -15,8 +15,8 @@ using System.Diagnostics;
 public class TeakPostProcessBuild {
     [PostProcessBuild(100)]
     public static void OnPostprocessBuild(BuildTarget target, string pathToBuiltProject) {
-        if (TeakSettings.JustShutUpIKnowWhatImDoing) return;
-        if (target != BuildTarget.iOS) return;
+        if (TeakSettings.JustShutUpIKnowWhatImDoing) { return; }
+        if (target != BuildTarget.iOS) { return; }
 
         string projectPath = PBXProject.GetPBXProjectPath(pathToBuiltProject);
         PBXProject project = new PBXProject();
@@ -160,7 +160,7 @@ public class TeakPostProcessBuild {
         string[] extensionsIncluded = new string[] {".h", ".m", ".mm"};
         string[] fileEntries = Directory.GetFiles(extensionSrcPath);
         foreach (string fileName in fileEntries) {
-            if (!extensionsIncluded.Contains(Path.GetExtension(fileName))) continue;
+            if (!extensionsIncluded.Contains(Path.GetExtension(fileName))) { continue; }
 
             project.AddFileToBuild(extensionTarget,
                                    project.AddFile(fileName, name + "/" + Path.GetFileName(fileName)));

@@ -194,7 +194,7 @@ public partial class Teak : MonoBehaviour {
     /// <param name="optOut">A list containing zero or more of: OptOutIdfa, OptOutPushKey, OptOutFacebook</param>
     /// <param name="email">The email address for the current user.</param>
     public void IdentifyUser(string userIdentifier, List<string> optOut = null, String email = null) {
-        if (optOut == null) optOut = new List<string>();
+        if (optOut == null) { optOut = new List<string>(); }
 
         this.UserId = userIdentifier;
 
@@ -471,7 +471,7 @@ public partial class Teak : MonoBehaviour {
             PropertyInfo originalJson = purchase.GetType().GetProperty("originalJson");
             AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
             teak.CallStatic("pluginPurchaseSucceeded", originalJson.GetValue(purchase, null), "prime31");
-        } catch(Exception) {
+        } catch (Exception) {
         }
     }
 
@@ -479,7 +479,7 @@ public partial class Teak : MonoBehaviour {
         try {
             AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
             teak.CallStatic("pluginPurchaseFailed", errorCode, "prime31");
-        } catch(Exception) {
+        } catch (Exception) {
         }
     }
 
@@ -491,7 +491,7 @@ public partial class Teak : MonoBehaviour {
             if (json != null) {
                 teak.CallStatic("pluginPurchaseSucceeded", Json.Serialize(json["originalJson"]), "openiab");
             }
-        } catch(Exception) {
+        } catch (Exception) {
         }
     }
 
@@ -499,7 +499,7 @@ public partial class Teak : MonoBehaviour {
         try {
             AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
             teak.CallStatic("pluginPurchaseFailed", errorCode, "openiab");
-        } catch(Exception) {
+        } catch (Exception) {
         }
     }
 
@@ -783,8 +783,8 @@ public partial class Teak : MonoBehaviour {
             apiKey = this.AppConfiguration["apiKey"] as string;
         }
 #endif
-        if (appId != null) Teak.AppId = appId;
-        if (apiKey != null) Teak.APIKey = apiKey;
+        if (appId != null) { Teak.AppId = appId; }
+        if (apiKey != null) { Teak.APIKey = apiKey; }
 
         // Register our internal callback error handler
         OnCallbackError += InternalOnCallbackError;
@@ -797,10 +797,10 @@ public partial class Teak : MonoBehaviour {
 #elif UNITY_ANDROID
         // Try and find an active store plugin
         Type onePF = Type.GetType("OpenIABEventManager, Assembly-CSharp-firstpass");
-        if (onePF == null) onePF = Type.GetType("OpenIABEventManager, Assembly-CSharp");
+        if (onePF == null) { onePF = Type.GetType("OpenIABEventManager, Assembly-CSharp"); }
 
         Type prime31 = Type.GetType("Prime31.GoogleIABManager, Assembly-CSharp-firstpass");
-        if (prime31 == null) prime31 = Type.GetType("Prime31.GoogleIABManager, Assembly-CSharp");
+        if (prime31 == null) { prime31 = Type.GetType("Prime31.GoogleIABManager, Assembly-CSharp"); }
 
         if (onePF != null) {
             Debug.Log("[Teak] Found OpenIAB, adding event handlers.");
@@ -808,7 +808,7 @@ public partial class Teak : MonoBehaviour {
             EventInfo failEvent = onePF.GetEvent("purchaseFailedEvent");
 
             Type purchase = Type.GetType("OnePF.Purchase, Assembly-CSharp-firstpass");
-            if (purchase == null) purchase = Type.GetType("OnePF.Purchase, Assembly-CSharp");
+            if (purchase == null) { purchase = Type.GetType("OnePF.Purchase, Assembly-CSharp"); }
 
             MethodInfo magic = GetType().GetMethod("OpenIABPurchaseSucceded", BindingFlags.NonPublic | BindingFlags.Instance).MakeGenericMethod(purchase);
             Delegate successDelegate = Delegate.CreateDelegate(successEvent.EventHandlerType, this, magic);
@@ -825,7 +825,7 @@ public partial class Teak : MonoBehaviour {
             EventInfo failEvent = prime31.GetEvent("purchaseFailedEvent");
 
             Type purchase = Type.GetType("Prime31.GooglePurchase, Assembly-CSharp-firstpass");
-            if (purchase == null) purchase = Type.GetType("Prime31.GooglePurchase, Assembly-CSharp");
+            if (purchase == null) { purchase = Type.GetType("Prime31.GooglePurchase, Assembly-CSharp"); }
 
             MethodInfo magic = GetType().GetMethod("Prime31PurchaseSucceded", BindingFlags.NonPublic | BindingFlags.Instance).MakeGenericMethod(purchase);
             Delegate successDelegate = Delegate.CreateDelegate(successEvent.EventHandlerType, this, magic);
@@ -852,7 +852,7 @@ public partial class Teak : MonoBehaviour {
     }
 
     void OnApplicationQuit() {
-        Destroy(this);
+        Destroy(this.gameObject);
     }
     /// @endcond
     #endregion

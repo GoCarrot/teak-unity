@@ -7,7 +7,7 @@ indent-namespaces
 
 # Other formatting options
 keep-one-line-statements
-keep-one-line-blocks
+add-one-line-braces
 pad-header # this means if(foo) -> if (foo)
 
 # File options

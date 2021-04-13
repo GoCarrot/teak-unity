@@ -98,7 +98,7 @@ end
 task default: ['build:android', 'build:ios', 'build:package']
 
 task :format do
-  sh 'astyle --project --recursive Assets/*.cs'
+  sh 'astyle --project --recursive Assets/*.cs --exclude=Assets/Teak/Editor/iOS/Xcode'
 end
 
 namespace :unity do
