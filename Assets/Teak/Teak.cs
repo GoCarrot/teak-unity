@@ -852,7 +852,7 @@ public partial class Teak : MonoBehaviour {
     }
 
     void OnApplicationQuit() {
-        Destroy(this);
+        Destroy(this.gameObject);
     }
     /// @endcond
     #endregion
