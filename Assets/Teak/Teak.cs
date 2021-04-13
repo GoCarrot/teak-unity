@@ -27,7 +27,12 @@ public partial class Teak : MonoBehaviour {
         }
     }
 
-    /// <summary>Manually initialize Teak</summary>
+    /// <summary>
+    /// Manually initialize Teak.
+    ///
+    /// Note: Under normal circumstances it is not necessassary to call this, and you can
+    /// simply use Teak.Instance (which calls this method).
+    /// </summary>
     public static Teak Init() {
         if (mInstance == null) {
             mInstance = FindObjectOfType(typeof(Teak)) as Teak;
