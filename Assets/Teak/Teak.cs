@@ -23,21 +23,26 @@ public partial class Teak : MonoBehaviour {
     /// <value> The <see cref="Teak"/> singleton.</value>
     public static Teak Instance {
         get {
-            if (mInstance == null) {
-                mInstance = FindObjectOfType(typeof(Teak)) as Teak;
-
-                if (mInstance == null) {
-                    GameObject teakGameObject = GameObject.Find("TeakGameObject");
-                    if (teakGameObject == null) {
-                        teakGameObject = new GameObject("TeakGameObject");
-                        teakGameObject.AddComponent<Teak>();
-                        teakGameObject.hideFlags = HideFlags.DontSave;
-                    }
-                    mInstance = teakGameObject.GetComponent<Teak>();
-                }
-            }
-            return mInstance;
+            return Teak.Init();
         }
+    }
+
+    /// <summary>Manually initialize Teak</summary>
+    public static Teak Init() {
+        if (mInstance == null) {
+            mInstance = FindObjectOfType(typeof(Teak)) as Teak;
+
+            if (mInstance == null) {
+                GameObject teakGameObject = GameObject.Find("TeakGameObject");
+                if (teakGameObject == null) {
+                    teakGameObject = new GameObject("TeakGameObject");
+                    teakGameObject.AddComponent<Teak>();
+                    teakGameObject.hideFlags = HideFlags.DontSave;
+                }
+                mInstance = teakGameObject.GetComponent<Teak>();
+            }
+        }
+        return mInstance;
     }
 
     /// <summary>Teak SDK version.</summary>
