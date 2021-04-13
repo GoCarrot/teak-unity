@@ -14,7 +14,7 @@ public class TeakStoreListener : IStoreListener {
     public IStoreListener AttachedStoreListener { get; private set; }
 
     public TeakStoreListener(IStoreListener hostedListener) {
-        if (hostedListener == null) throw new ArgumentNullException("hostedListener");
+        if (hostedListener == null) { throw new ArgumentNullException("hostedListener"); }
         this.AttachedStoreListener = hostedListener;
     }
 
@@ -43,7 +43,7 @@ public class TeakStoreListener : IStoreListener {
                 AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
                 teak.CallStatic("pluginPurchaseSucceeded", receiptPayloadJsonString, "unityiap");
             }
-        } catch(Exception) {
+        } catch (Exception) {
         }
 #endif // UNITY_ANDROID && !TEAK_NOT_AVAILABLE
         return this.AttachedStoreListener.ProcessPurchase(e);
