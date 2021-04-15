@@ -468,6 +468,20 @@ public partial class Teak : MonoBehaviour {
 #endif
     }
 
+#if UNITY_WEBGL
+    /// <summary>
+    /// When using Facebook Payments, call this method from your callback
+    /// for FB.Canvas.Pay or FB.Canvas.PayWithProductId.
+    /// </summary>
+    /// <param name="rawResult">The contents of IPayResult.RawResult</param>
+    public void ReportCanvasPurchase(string rawResult) {
+        try {
+            TeakUnityReportCanvasPurchase(rawResult);
+        } catch (Exception) {
+        }
+    }
+#endif
+
     /// @cond hide_from_doxygen
     private static Teak mInstance;
     private Dictionary<string, Action<Dictionary<string, object>>> mDeepLinkRoutes = new Dictionary<string, Action<Dictionary<string, object>>>();
@@ -559,6 +573,9 @@ public partial class Teak : MonoBehaviour {
 
     [DllImport ("__Internal")]
     private static extern void TeakUnityReadyForDeepLinks();
+
+    [DllImport ("__Internal")]
+    private static extern void TeakUnityReportCanvasPurchase(string payload);
 #elif UNITY_IPHONE
     [DllImport ("__Internal")]
     private static extern IntPtr TeakGetAppConfiguration();
