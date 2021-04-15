@@ -1,0 +1,8 @@
+4.0.0
+-----
+:Breaking Changes:
+    * Minimum Unity version supported is now 2018.4.9f1
+:New Features:
+    * None
+:Bug Fixes:
+    * None
