@@ -108,14 +108,6 @@ public class TeakSettings : ScriptableObject {
     [SerializeField]
     private string mShortlinkDomain = "";
     [SerializeField]
-    private string mGCMSenderId = "";
-    [SerializeField]
-    private string mFirebaseAppId = "";
-    [SerializeField]
-    private string mFirebaseApiKey = "";
-    [SerializeField]
-    private string mFirebaseProjectId = "";
-    [SerializeField]
     private bool mJustShutUpIKnowWhatImDoing = true;
 
     private static TeakSettings mInstance;
