@@ -17,7 +17,6 @@ Assets/Resources/TeakSettings.*
 Assets/Teak/TeakVersion.cs*
 
 Assets/Plugins/Android/bolts.jar*
-Assets/Plugins/Android/android-support-v4.jar*
 Assets/Plugins/Android/AndroidManifest.xml*
 Assets/Plugins/Android/google-play-services.jar*
 
