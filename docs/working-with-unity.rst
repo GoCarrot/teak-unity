@@ -353,7 +353,7 @@ You can log out the current user using ``Logout``. If the user is logged out, Te
 Reporting Facebook Payments Purchases
 -------------------------------------
 
-If you need to report purchases on Facebook Canvas from using any of the ``FB.Canvas.Pay` methods, use::
+If you need to report purchases on Facebook Canvas from using any of the ``FB.Canvas.Pay`` methods, use::
 
     void ReportCanvasPurchase(string rawResult)
 
