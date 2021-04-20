@@ -2,6 +2,7 @@
 -----
 :Breaking Changes:
     * Minimum Unity version supported is now 2018.4.9f1
+    * Moved the Android configuration values written by Teak from ``Assets/Plugins/Android/res/values`` to ``Assets/Plugins/Android/teak-values.androidlib/res/values``
 :New Features:
     * None
 :Bug Fixes:
