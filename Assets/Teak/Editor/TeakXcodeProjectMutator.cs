@@ -1,7 +1,8 @@
 #region References
-using UnityEngine;
 using UnityEditor;
-using UnityEditor.Callbacks;
+using UnityEditor.Build;
+using UnityEditor.Build.Reporting;
+using UnityEngine;
 
 using UnityEditor.iOS.Xcode.Extensions;
 using UnityEditor.iOS.Xcode;
@@ -12,13 +13,14 @@ using System.Linq;
 using System.Diagnostics;
 #endregion
 
-public class TeakPostProcessBuild {
-    [PostProcessBuild(100)]
-    public static void OnPostprocessBuild(BuildTarget target, string pathToBuiltProject) {
-        if (TeakSettings.JustShutUpIKnowWhatImDoing) { return; }
-        if (target != BuildTarget.iOS) { return; }
+public class TeakXcodeProjectMutator : IPostprocessBuildWithReport {
+    public int callbackOrder { get { return 100; } }
 
-        string projectPath = PBXProject.GetPBXProjectPath(pathToBuiltProject);
+    public void OnPostprocessBuild(BuildReport report) {
+        if (TeakSettings.JustShutUpIKnowWhatImDoing) { return; }
+        if (report.summary.platformGroup != BuildTargetGroup.iOS) { return; }
+
+        string projectPath = PBXProject.GetPBXProjectPath(report.summary.outputPath);
         PBXProject project = new PBXProject();
         project.ReadFromFile(projectPath);
 
@@ -42,7 +44,7 @@ public class TeakPostProcessBuild {
 
         /////
         // Modify plist
-        string plistPath = pathToBuiltProject + "/Info.plist";
+        string plistPath = report.summary.outputPath + "/Info.plist";
         File.WriteAllText(plistPath, AddTeakEntriesToPlist(File.ReadAllText(plistPath)));
 
         /////
@@ -64,7 +66,7 @@ public class TeakPostProcessBuild {
         /////
         // Add/modify entitlements
         string unityTargetName = "Unity-iPhone";
-        string entitlementsFileName = unityTargetName + "Unity-iPhone.entitlements";
+        string entitlementsFileName = unityTargetName + ".entitlements";
         ProjectCapabilityManager capabilityManager = new ProjectCapabilityManager(projectPath, entitlementsFileName, unityTargetName);
         capabilityManager.AddPushNotifications(UnityEngine.Debug.isDebugBuild);
         capabilityManager.AddAssociatedDomains(new string[] {"applinks:" + TeakSettings.ShortlinkDomain});
