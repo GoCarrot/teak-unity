@@ -22,7 +22,11 @@ public class TeakPostProcessBuild {
         PBXProject project = new PBXProject();
         project.ReadFromFile(projectPath);
 
+#if UNITY_2019_3_OR_NEWER
+        string unityTarget = project.GetUnityMainTargetGuid();
+#else
         string unityTarget = project.TargetGuidByName(PBXProject.GetUnityTargetName());
+#endif
 
         /////
         // Add Frameworks to Unity target
@@ -59,8 +63,9 @@ public class TeakPostProcessBuild {
 
         /////
         // Add/modify entitlements
-        string entitlementsFileName = PBXProject.GetUnityTargetName() + ".entitlements";
-        ProjectCapabilityManager capabilityManager = new ProjectCapabilityManager(projectPath, entitlementsFileName, PBXProject.GetUnityTargetName());
+        string unityTargetName = "Unity-iPhone";
+        string entitlementsFileName = unityTargetName + "Unity-iPhone.entitlements";
+        ProjectCapabilityManager capabilityManager = new ProjectCapabilityManager(projectPath, entitlementsFileName, unityTargetName);
         capabilityManager.AddPushNotifications(UnityEngine.Debug.isDebugBuild);
         capabilityManager.AddAssociatedDomains(new string[] {"applinks:" + TeakSettings.ShortlinkDomain});
         capabilityManager.WriteToFile();
@@ -150,6 +155,7 @@ public class TeakPostProcessBuild {
         string extensionTarget = project.AddAppExtension(target, name,
                                  PlayerSettings.GetApplicationIdentifier(BuildTargetGroup.iOS) + "." + name,
                                  extensionSrcPath + "/Info.plist");
+        string buildPhaseId = project.AddSourcesBuildPhase(extensionTarget);
 
         /////
         // Set TeamId
@@ -162,7 +168,7 @@ public class TeakPostProcessBuild {
         foreach (string fileName in fileEntries) {
             if (!extensionsIncluded.Contains(Path.GetExtension(fileName))) { continue; }
 
-            project.AddFileToBuild(extensionTarget,
+            project.AddFileToBuildSection(extensionTarget, buildPhaseId,
                                    project.AddFile(fileName, name + "/" + Path.GetFileName(fileName)));
         }
 
