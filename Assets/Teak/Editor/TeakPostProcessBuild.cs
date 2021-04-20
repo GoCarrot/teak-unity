@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEditor;
 using UnityEditor.Callbacks;
 
-using TeakEditor.iOS.Xcode.Extensions;
+using UnityEditor.iOS.Xcode.Extensions;
 using UnityEditor.iOS.Xcode;
 
 using System;

@@ -18,10 +18,10 @@
 #region References
 using System;
 
-using TeakEditor.iOS.Xcode;
+using UnityEditor.iOS.Xcode;
 #endregion
 
-namespace TeakEditor.iOS.Xcode {
+namespace UnityEditor.iOS.Xcode {
     public static class TeakExtensions {
         /////
         // PlistElement
