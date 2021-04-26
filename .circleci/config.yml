@@ -40,6 +40,10 @@ jobs:
             mkdir -p build/$UNITY_VERSION
             mv Teak.unitypackage build/$UNITY_VERSION/Teak.unitypackage
       - run:
+          name: Compute Checksum
+          command: |
+            sha512sum build/$UNITY_VERSION/Teak.unitypackage > build/$UNITY_VERSION/Teak.unitypackage.sha512
+      - run:
           command: |
             mkdir -p /tmp/unity_logs
             cp unity.log /tmp/unity_logs
@@ -100,6 +104,7 @@ jobs:
           name: Upload SDK to S3
           command: |
             aws s3 cp build/$UNITY_VERSION/Teak.unitypackage s3://teak-build-artifacts/unity/Teak-$(git describe --tags --always).unitypackage --acl public-read
+            aws s3 cp build/$UNITY_VERSION/Teak.unitypackage.sha512 s3://teak-build-artifacts/unity/Teak-$(git describe --tags --always).unitypackage.sha512 --acl public-read
       # - run:
       #     name: Trigger Cleanroom Build
       #     command: bundle exec rake build:cleanroom
@@ -128,6 +133,7 @@ jobs:
           name: Upload SDK to S3
           command: |
             aws s3 cp build/$UNITY_VERSION/Teak.unitypackage s3://teak-build-artifacts/unity/Teak.unitypackage --acl public-read
+            aws s3 cp build/$UNITY_VERSION/Teak.unitypackage.sha512 s3://teak-build-artifacts/unity/Teak.unitypackage.sha512 --acl public-read
 workflows:
   version: 2
   un-tagged-build:
