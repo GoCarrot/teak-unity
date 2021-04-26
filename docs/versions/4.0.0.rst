@@ -4,6 +4,10 @@
     * Minimum Unity version supported is now 2018.4.9f1
     * Moved the Android configuration values written by Teak from ``Assets/Plugins/Android/res/values`` to ``Assets/Plugins/Android/teak-values.androidlib/res/values``
     * Firebase Job Dispatcher has been deprecated and removed, ``androidx.work:work-runtime:2.5.0`` is now required.
+    * OpenIAB support removed. The project was abandoned 4 years ago.
+    * We no longer auto-detect Prime31 purchasing to attach the Teak listeners. This was causing problems in Unity builds which had Prime31 in a different assembly. You must now attach the listeners yourself:
+        * ``Prime31.GoogleIABManager.purchaseFailedEvent += Teak.Instance.prime31PurchaseFailed;``
+        * ``Prime31.GoogleIABManager.purchaseSucceededEvent += Teak.Instance.prime31PurchaseSucceded;``
 :New Features:
     * None
 :Bug Fixes:

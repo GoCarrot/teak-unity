@@ -488,46 +488,29 @@ public partial class Teak : MonoBehaviour {
     private Dictionary<string, object> mAppConfiguration = null;
     /// @endcond
 
-    /// @cond hide_from_doxygen
+    public void prime31PurchaseSucceded<T>(T purchase) {
 #if UNITY_ANDROID
-    private void Prime31PurchaseSucceded<T>(T purchase) {
         try {
             PropertyInfo originalJson = purchase.GetType().GetProperty("originalJson");
             AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
             teak.CallStatic("pluginPurchaseSucceeded", originalJson.GetValue(purchase, null), "prime31");
         } catch (Exception) {
         }
+#endif
     }
 
-    private void Prime31PurchaseFailed(string error, int errorCode) {
+    public void prime31PurchaseFailed(string error, int errorCode) {
+#if UNITY_ANDROID
         try {
             AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
             teak.CallStatic("pluginPurchaseFailed", errorCode, "prime31");
         } catch (Exception) {
         }
+#endif
     }
 
-    private void OpenIABPurchaseSucceded<T>(T purchase) {
-        try {
-            MethodInfo serialize = purchase.GetType().GetMethod("Serialize");
-            AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
-            Dictionary<string, object> json = Json.TryDeserialize(serialize.Invoke(purchase, null) as string) as Dictionary<string, object>;
-            if (json != null) {
-                teak.CallStatic("pluginPurchaseSucceeded", Json.Serialize(json["originalJson"]), "openiab");
-            }
-        } catch (Exception) {
-        }
-    }
-
-    private void OpenIABPurchaseFailed(int errorCode, string error) {
-        try {
-            AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
-            teak.CallStatic("pluginPurchaseFailed", errorCode, "openiab");
-        } catch (Exception) {
-        }
-    }
-
-#elif UNITY_IPHONE || UNITY_WEBGL
+    /// @cond hide_from_doxygen
+#if UNITY_IPHONE || UNITY_WEBGL
     [DllImport ("__Internal")]
     private static extern void TeakIdentifyUser(string userId, string optOut, string email);
 
@@ -821,54 +804,6 @@ public partial class Teak : MonoBehaviour {
 #if UNITY_EDITOR
         // Editor mode default to trace on
         this.Trace = true;
-#elif UNITY_ANDROID
-        // Try and find an active store plugin
-        Type onePF = Type.GetType("OpenIABEventManager, Assembly-CSharp-firstpass");
-        if (onePF == null) { onePF = Type.GetType("OpenIABEventManager, Assembly-CSharp"); }
-
-        Type prime31 = Type.GetType("Prime31.GoogleIABManager, Assembly-CSharp-firstpass");
-        if (prime31 == null) { prime31 = Type.GetType("Prime31.GoogleIABManager, Assembly-CSharp"); }
-
-        if (onePF != null) {
-            Debug.Log("[Teak] Found OpenIAB, adding event handlers.");
-            EventInfo successEvent = onePF.GetEvent("purchaseSucceededEvent");
-            EventInfo failEvent = onePF.GetEvent("purchaseFailedEvent");
-
-            Type purchase = Type.GetType("OnePF.Purchase, Assembly-CSharp-firstpass");
-            if (purchase == null) { purchase = Type.GetType("OnePF.Purchase, Assembly-CSharp"); }
-
-            MethodInfo magic = GetType().GetMethod("OpenIABPurchaseSucceded", BindingFlags.NonPublic | BindingFlags.Instance).MakeGenericMethod(purchase);
-            Delegate successDelegate = Delegate.CreateDelegate(successEvent.EventHandlerType, this, magic);
-            object[] successHandlerArgs = { successDelegate };
-            successEvent.GetAddMethod().Invoke(null, successHandlerArgs);
-
-            Delegate failDelegate = Delegate.CreateDelegate(failEvent.EventHandlerType, this, "OpenIABPurchaseFailed");
-            object[] failHandlerArgs = { failDelegate };
-            failEvent.GetAddMethod().Invoke(null, failHandlerArgs);
-        } else if (prime31 != null) {
-            Debug.Log("[Teak] Found Prime31, adding event handlers.");
-
-            EventInfo successEvent = prime31.GetEvent("purchaseSucceededEvent");
-            EventInfo failEvent = prime31.GetEvent("purchaseFailedEvent");
-
-            Type purchase = Type.GetType("Prime31.GooglePurchase, Assembly-CSharp-firstpass");
-            if (purchase == null) { purchase = Type.GetType("Prime31.GooglePurchase, Assembly-CSharp"); }
-
-            MethodInfo magic = GetType().GetMethod("Prime31PurchaseSucceded", BindingFlags.NonPublic | BindingFlags.Instance).MakeGenericMethod(purchase);
-            Delegate successDelegate = Delegate.CreateDelegate(successEvent.EventHandlerType, this, magic);
-            object[] successHandlerArgs = { successDelegate };
-            successEvent.GetAddMethod().Invoke(null, successHandlerArgs);
-
-            Delegate failDelegate = Delegate.CreateDelegate(failEvent.EventHandlerType, this, "Prime31PurchaseFailed");
-            object[] failHandlerArgs = { failDelegate };
-            failEvent.GetAddMethod().Invoke(null, failHandlerArgs);
-        } else {
-#if UNITY_PURCHASING
-            Debug.Log("[Teak] Found Unity IAP, use TeakStoreListener to wrap IStoreListener.");
-#else
-            Debug.LogWarning("[Teak] No known store plugin found.");
-#endif
-        }
 #endif
 
         // Trace log default from app config

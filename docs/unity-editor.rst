@@ -102,4 +102,12 @@ Simply replace that call with this::
 
     UnityPurchasing.Initialize(new TeakStoreListener(listener), builder);
 
-.. note:: If you are using Prime31, or OpenIAB, this is not required. If you are using another solution please contact us.
+Purchase Tracking for Prime31
+-----------------------------
+If you are using Prime31 on Android you need to add Teak's listeners to the Prime31 Google purchase events::
+
+    Prime31.GoogleIABManager.purchaseSucceededEvent += Teak.Instance.prime31PurchaseSucceded;
+    Prime31.GoogleIABManager.purchaseFailedEvent += Teak.Instance.prime31PurchaseFailed;
+
+This is not needed for the Amazon App Store or iOS.
+
