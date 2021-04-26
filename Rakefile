@@ -164,27 +164,18 @@ namespace :build do
   end
 
   task :android do
-    Dir.mktmpdir do |dir|
-      Dir.chdir(dir) do
-        # Download or copy Teak SDK AAR
-        if build_local?
-          cp "#{PROJECT_PATH}/../teak-android/build/outputs/aar/teak-debug.aar", 'teak.aar'
-        else
-          sh "curl -o teak.aar https://sdks.teakcdn.com/android/teak-#{NATIVE_CONFIG['version']['android']}.aar"
-        end
+    # Write Unity SDK version information to 'res/values/teak_unity_version.xml'
+    template = File.read(File.join(PROJECT_PATH, 'Templates', 'teak_unity_version.xml.template'))
+    path = File.join(PROJECT_PATH, 'Assets', 'Teak', 'Plugins', 'Android', 'teak-version-information.androidlib', 'res', 'values')
+    mkdir_p path
+    File.write(File.join(path, 'teak_unity_version.xml'), Mustache.render(template, TEMPLATE_PARAMETERS))
 
-        # Unzip AAR, delete original AAR
-        sh 'unzip teak.aar'
-        rm 'teak.aar'
-
-        # Write Unity SDK version information to 'res/values/teak_unity_version.xml'
-        template = File.read(File.join(PROJECT_PATH, 'Templates', 'teak_unity_version.xml.template'))
-        path = File.join(PROJECT_PATH, 'Assets', 'Teak', 'Plugins', 'Android', 'res', 'values')
-        mkdir_p path
-        File.write(File.join(path, 'teak_unity_version.xml'), Mustache.render(template, TEMPLATE_PARAMETERS))
-
-        # Re-package AAR
-        sh "jar cf #{File.join(PROJECT_PATH, 'Assets', 'Teak', 'Plugins', 'Android', 'teak.aar')} ."
+    Dir.chdir(File.join(PROJECT_PATH, 'Assets', 'Teak', 'Plugins', 'Android')) do
+      # Download or copy Teak SDK AAR
+      if build_local?
+        cp "#{PROJECT_PATH}/../teak-android/build/outputs/aar/teak-debug.aar", 'teak.aar'
+      else
+        sh "curl -o teak.aar https://sdks.teakcdn.com/android/teak-#{NATIVE_CONFIG['version']['android']}.aar"
       end
     end
   end
