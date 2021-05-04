@@ -11,32 +11,21 @@ Dependencies
 
 The following dependencies are required by Teak
 
+* ``org.greenrobot:eventbus:3.2.0``
 * ``com.google.android.gms:play-services-ads-identifier:16+``
 * ``com.google.android.gms:play-services-base:16+``
 * ``com.google.android.gms:play-services-basement:16+``
 * ``com.google.firebase:firebase-messaging:17+``
-* ``com.firebase:firebase-jobdispatcher:0.8.5``
-
-If you are using AndroidX, Teak requires
-
 * ``androidx.core:core:1.0.+``
-
-If you are *not* using AndroidX, Teak requires
-
-* ``com.android.support:support-core-utils:26.1+``
-* ``com.android.support:support-compat:26.1+``
+* ``androidx.work:work-runtime:2.5.+``
 
 The following dependencies are optional
 
-* ``com.android.installreferrer:installreferrer:1+``
+* ``com.android.installreferrer:installreferrer:2.2+``
 
 .. note:: If you use the `Play Services Resolver plugin for Unity <https://github.com/googlesamples/unity-jar-resolver>`_, all dependencies should be taken care of automatically.
 
     **Please use Play Services Resolver version >= 1.2.95.** Issues have been reported using version 1.2.72, and issues with other versions may also exist.
-
-.. important:: ``firebase-messaging`` must be **20.1.0** or lower, and ``firebase-iid`` must be **20.0.2** or lower.
-
-    Other versions will be supported in the future.
 
 Tell Teak to Auto-Initialize
 ----------------------------

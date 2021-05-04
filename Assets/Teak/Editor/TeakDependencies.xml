@@ -21,7 +21,7 @@
     </androidPackage>
 
     <!-- Google Play Install Referrer Lib -->
-    <androidPackage spec="com.android.installreferrer:installreferrer:1+">
+    <androidPackage spec="com.android.installreferrer:installreferrer:2.2+">
       <androidSdkPackageIds>
         <androidSdkPackageId>extra-google-m2repository</androidSdkPackageId>
       </androidSdkPackageIds>
@@ -29,7 +29,7 @@
 
 
     <!-- Firebase -->
-    <androidPackage spec="com.google.firebase:firebase-messaging:21.0.0">
+    <androidPackage spec="com.google.firebase:firebase-messaging:21+">
       <androidSdkPackageIds>
         <androidSdkPackageId>extra-google-m2repository</androidSdkPackageId>
       </androidSdkPackageIds>
@@ -43,7 +43,7 @@
     </androidPackage>
 
     <!-- AndroidX WorkManager -->
-    <androidPackage spec="androidx.work:work-runtime:2.5.0">
+    <androidPackage spec="androidx.work:work-runtime:2.5.+">
       <androidSdkPackageIds>
         <androidSdkPackageId>extra-google-m2repository</androidSdkPackageId>
       </androidSdkPackageIds>
