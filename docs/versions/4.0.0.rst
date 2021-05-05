@@ -8,9 +8,10 @@
     * EventBus, ``org.greenrobot:eventbus:3.2.0`` is now required.
     * InstallReferrer version 2 is now required ``com.android.installreferrer:installreferrer:2.2+``
     * OpenIAB support removed. The project was abandoned 4 years ago.
-    * We no longer auto-detect Prime31 purchasing to attach the Teak listeners. This was causing problems in Unity builds which had Prime31 in a different assembly. You must now attach the listeners yourself:
+    * Prime31 users: We no longer auto-detect Prime31 purchasing to attach the Teak listeners. This was causing problems in Unity builds which had Prime31 in a different assembly. You must now attach the listeners yourself:
         * ``Prime31.GoogleIABManager.purchaseFailedEvent += Teak.Instance.prime31PurchaseFailed;``
         * ``Prime31.GoogleIABManager.purchaseSucceededEvent += Teak.Instance.prime31PurchaseSucceded;``
+    * Unity Purchasing users: Minimum Unity Purchasing version is now 3.1.0
 :New Features:
     * None
 :Bug Fixes:

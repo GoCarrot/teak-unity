@@ -484,11 +484,46 @@ public partial class Teak : MonoBehaviour {
     }
 #endif
 
-    /// @cond hide_from_doxygen
-    private static Teak mInstance;
-    private Dictionary<string, Action<Dictionary<string, object>>> mDeepLinkRoutes = new Dictionary<string, Action<Dictionary<string, object>>>();
-    private Dictionary<string, object> mAppConfiguration = null;
-    /// @endcond
+    /// <summary>
+    /// If you are using Unity Purchasing, call this method from the ProcessPurchase callback of your IStoreListener.
+    /// <code>Teak.Instance.UnityPurchaseSucceeded(purchaseEvent);</code>
+    /// </summary>
+    public void UnityPurchaseSucceeded<T>(T purchaseEventArgs) {
+#if !UNITY_EDITOR && UNITY_PURCHASING_GPBL
+        try {
+            PropertyInfo purchasedProductInfo = purchaseEventArgs.GetType().GetProperty("purchasedProduct");
+            var purchasedProduct = purchasedProductInfo.GetValue(purchaseEventArgs, null);
+            PropertyInfo receiptInfo = purchasedProduct.GetType().GetProperty("receipt");
+            string receiptString = receiptInfo.GetValue(purchasedProduct, null);
+
+            Dictionary<string, object> receipt = Json.TryDeserialize(receiptString) as Dictionary<string,object>;
+            if ("GooglePlay".Equals(receipt["Store"])) {
+                Dictionary<string, object> receiptPayload = Json.TryDeserialize(receipt["Payload"] as string) as Dictionary<string,object>;
+                Dictionary<string, object> receiptPayloadJson = Json.TryDeserialize(receiptPayload["json"] as string) as Dictionary<string,object>;
+                string receiptPayloadJsonString = Json.Serialize(receiptPayloadJson);
+
+                AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
+                teak.CallStatic("pluginPurchaseSucceeded", receiptPayloadJsonString, "unity_purchasing");
+            }
+        } catch (Exception) {
+        }
+#endif
+    }
+
+    /// <summary>
+    /// If you are using Unity Purchasing, call this method from the OnPurchaseFailed callback of your IStoreListener.
+    /// <code>Teak.Instance.UnityPurchaseFailed(failureReason);</code>
+    /// </summary>
+    public void UnityPurchaseFailed<T>(T purchaseFailureReason) {
+#if !UNITY_EDITOR && UNITY_PURCHASING_GPBL
+        try {
+            int errorCode = Convert.ToInt32(purchaseFailureReason);
+            AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
+            teak.CallStatic("pluginPurchaseFailed", errorCode, "unity_purchasing");
+        } catch (Exception) {
+        }
+#endif
+    }
 
     /// <summary>
     /// If you are using Prime31, add this to the purchaseSuccededEvent for the Google Play Store.
@@ -498,7 +533,7 @@ public partial class Teak : MonoBehaviour {
     /// Do not use this for the Amazon store, or any other store.
     /// </remarks>
     public void Prime31PurchaseSucceded<T>(T purchase) {
-#if UNITY_ANDROID
+#if !UNITY_EDITOR && UNITY_ANDROID
         try {
             PropertyInfo originalJson = purchase.GetType().GetProperty("originalJson");
             AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
@@ -516,7 +551,7 @@ public partial class Teak : MonoBehaviour {
     /// Do not use this for the Amazon store, or any other store.
     /// </remarks>
     public void Prime31PurchaseFailed(string error, int errorCode) {
-#if UNITY_ANDROID
+#if !UNITY_EDITOR && UNITY_ANDROID
         try {
             AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
             teak.CallStatic("pluginPurchaseFailed", errorCode, "prime31");
@@ -526,6 +561,10 @@ public partial class Teak : MonoBehaviour {
     }
 
     /// @cond hide_from_doxygen
+    private static Teak mInstance;
+    private Dictionary<string, Action<Dictionary<string, object>>> mDeepLinkRoutes = new Dictionary<string, Action<Dictionary<string, object>>>();
+    private Dictionary<string, object> mAppConfiguration = null;
+
 #if UNITY_IPHONE || UNITY_WEBGL
     [DllImport ("__Internal")]
     private static extern void TeakIdentifyUser(string userId, string optOut, string email);
