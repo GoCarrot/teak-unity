@@ -29,10 +29,11 @@ public partial class Teak : MonoBehaviour {
 
     /// <summary>
     /// Manually initialize Teak.
-    ///
-    /// Note: Under normal circumstances it is not necessassary to call this, and you can
-    /// simply use Teak.Instance (which calls this method).
     /// </summary>
+    /// <remarks>
+    /// Under normal circumstances it is not necessassary to call this, and you can
+    /// simply use Teak.Instance (which calls this method).
+    /// </remarks>
     public static Teak Init() {
         if (mInstance == null) {
             mInstance = FindObjectOfType(typeof(Teak)) as Teak;
@@ -84,9 +85,10 @@ public partial class Teak : MonoBehaviour {
 
     /// <summary>
     /// Possible push notification states.
-    ///
-    /// Note that some states are specific to iOS versions.
     /// </summary>
+    /// <remarks>
+    /// Some states are specific to iOS versions.
+    /// </remarks>
     public enum NotificationState : int {
         /// <summary>Unable to determine the notification state.</summary>
         UnableToDetermine   = -1,
@@ -471,7 +473,7 @@ public partial class Teak : MonoBehaviour {
 #if UNITY_WEBGL
     /// <summary>
     /// When using Facebook Payments, call this method from your callback
-    /// for FB.Canvas.Pay or FB.Canvas.PayWithProductId.
+    /// for <code>FB.Canvas.Pay</code> or <code>FB.Canvas.PayWithProductId</code>.
     /// </summary>
     /// <param name="rawResult">The contents of IPayResult.RawResult</param>
     public void ReportCanvasPurchase(string rawResult) {
@@ -488,7 +490,14 @@ public partial class Teak : MonoBehaviour {
     private Dictionary<string, object> mAppConfiguration = null;
     /// @endcond
 
-    public void prime31PurchaseSucceded<T>(T purchase) {
+    /// <summary>
+    /// If you are using Prime31, add this to the purchaseSuccededEvent for the Google Play Store.
+    /// <code>Prime31.GoogleIABManager.purchaseSucceededEvent += Teak.Instance.Prime31PurchaseSucceded;</code>
+    /// </summary>
+    /// <remarks>
+    /// Do not use this for the Amazon store, or any other store.
+    /// </remarks>
+    public void Prime31PurchaseSucceded<T>(T purchase) {
 #if UNITY_ANDROID
         try {
             PropertyInfo originalJson = purchase.GetType().GetProperty("originalJson");
@@ -499,7 +508,14 @@ public partial class Teak : MonoBehaviour {
 #endif
     }
 
-    public void prime31PurchaseFailed(string error, int errorCode) {
+    /// <summary>
+    /// If you are using Prime31, add this to the purchaseFailedEvent listeners.
+    /// <code>Prime31.GoogleIABManager.purchaseFailedEvent += Teak.Instance.Prime31PurchaseFailed;</code>
+    /// </summary>
+    /// <remarks>
+    /// Do not use this for the Amazon store, or any other store.
+    /// </remarks>
+    public void Prime31PurchaseFailed(string error, int errorCode) {
 #if UNITY_ANDROID
         try {
             AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
