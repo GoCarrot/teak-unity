@@ -188,6 +188,7 @@ public class TeakXcodeProjectMutator : IPostprocessBuildWithReport {
         }
         project.AddFileToBuild(extensionTarget, project.AddFile("libTeak.a", name + "/libTeak.a"));
         project.AddBuildProperty(extensionTarget, "LIBRARY_SEARCH_PATHS", "$(SRCROOT)/Libraries/" + relativeTeakPath + "/Plugins/iOS");
+        project.AddBuildProperty(extensionTarget, "ALWAYS_SEARCH_USER_PATHS", "NO");
 
         /////
         // Build properties
