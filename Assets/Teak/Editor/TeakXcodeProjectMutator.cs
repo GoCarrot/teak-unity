@@ -51,11 +51,11 @@ public class TeakXcodeProjectMutator : IPostprocessBuildWithReport {
         // Add Teak app extensions
         string[] teakExtensionCommonFrameworks = new string[] {"AdSupport", "AVFoundation", "CoreGraphics", "ImageIO", "CoreServices", "StoreKit", "SystemConfiguration", "UIKit", "UserNotifications"};
 
-        AddTeakExtensionToProjectTarget("TeakNotificationService",
+        AddTeakExtensionToProjectTarget("TeakNotificationService", "NotificationService",
                                         teakExtensionCommonFrameworks,
                                         project, unityTarget);
 
-        AddTeakExtensionToProjectTarget("TeakNotificationContent",
+        AddTeakExtensionToProjectTarget("TeakNotificationContent", "NotificationContent",
                                         new string[] {"UserNotificationsUI"}.Concat(teakExtensionCommonFrameworks).ToArray(),
                                         project, unityTarget);
 
@@ -147,7 +147,7 @@ public class TeakXcodeProjectMutator : IPostprocessBuildWithReport {
         return plistArray;
     }
 
-    private static string AddTeakExtensionToProjectTarget(string name, string[] frameworks, PBXProject project, string target) {
+    private static string AddTeakExtensionToProjectTarget(string name, string displayName, string[] frameworks, PBXProject project, string target) {
         string __FILE__ = new StackTrace(new StackFrame(true)).GetFrame(0).GetFileName();
         string teakEditorIosPath = Path.GetDirectoryName(__FILE__) + "/iOS";
         string extensionSrcPath = teakEditorIosPath + "/" + name;
@@ -155,7 +155,7 @@ public class TeakXcodeProjectMutator : IPostprocessBuildWithReport {
         /////
         // Create app extension target
         string extensionTarget = project.AddAppExtension(target, name,
-                                 PlayerSettings.GetApplicationIdentifier(BuildTargetGroup.iOS) + "." + name,
+                                 PlayerSettings.GetApplicationIdentifier(BuildTargetGroup.iOS) + "." + displayName,
                                  extensionSrcPath + "/Info.plist");
         string buildPhaseId = project.AddSourcesBuildPhase(extensionTarget);
 
