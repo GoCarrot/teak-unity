@@ -12,7 +12,7 @@ If you do not use the the post-process scripts, the following frameworks are req
 * AdSupport.framework
 * AVFoundation.framework
 * ImageIO.framework
-* MobileCoreServices.framework
+* Services.framework
 * StoreKit.framework
 * UserNotifications.framework
 * CoreGraphics.framework
@@ -23,7 +23,7 @@ If you do not use the the post-process scripts, the following frameworks are req
 
 This is the list of dependencies as compiler flags::
 
-    -framework AdSupport -framework AVFoundation -framework MobileCoreServices -framework StoreKit -framework UserNotifications -framework ImageIO -framework CoreGraphics -framework UIKit -framework SystemConfiguration
+    -framework AdSupport -framework AVFoundation -framework CoreServices -framework StoreKit -framework UserNotifications -framework ImageIO -framework CoreGraphics -framework UIKit -framework SystemConfiguration
 
 .. _ios-edit-info-plist:
 

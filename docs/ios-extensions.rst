@@ -29,7 +29,7 @@ This will create a group in your Xcode project that looks like this:
 Dependencies
 ^^^^^^^^^^^^
 
-Add ``AdSupport.framework``, ``AVFoundation.framework``, ``CoreGraphics.framework``, ``ImageIO.framework``, ``MobileCoreServices.framework``, ``StoreKit.framework``, ``SystemConfiguration.framework``, ``UIKit.framework``, ``UserNotifications.framework``, and ``libTeak.a`` to the `Link Binary with Libraries` Build Phase of the extension:
+Add ``AdSupport.framework``, ``AVFoundation.framework``, ``CoreGraphics.framework``, ``ImageIO.framework``, ``CoreServices.framework``, ``StoreKit.framework``, ``SystemConfiguration.framework``, ``UIKit.framework``, ``UserNotifications.framework``, and ``libTeak.a`` to the `Link Binary with Libraries` Build Phase of the extension:
 
 .. image:: images/service-extension-link.png
 
@@ -82,7 +82,7 @@ You should now have a group in your Xcode project that looks like this:
 Dependencies
 ^^^^^^^^^^^^
 
-Add ``AdSupport.framework``, ``AVFoundation.framework``, ``CoreGraphics.framework``, ``ImageIO.framework``, ``MobileCoreServices.framework``, ``StoreKit.framework``, ``SystemConfiguration.framework``, ``UIKit.framework``, ``UserNotifications.framework``, ``UserNotificationsUI.framework``, and ``libTeak.a`` to the `Link Binary with Libraries` Build Phase of the extension:
+Add ``AdSupport.framework``, ``AVFoundation.framework``, ``CoreGraphics.framework``, ``ImageIO.framework``, ``CoreServices.framework``, ``StoreKit.framework``, ``SystemConfiguration.framework``, ``UIKit.framework``, ``UserNotifications.framework``, ``UserNotificationsUI.framework``, and ``libTeak.a`` to the `Link Binary with Libraries` Build Phase of the extension:
 
 .. image:: images/content-extension-link.png
 
