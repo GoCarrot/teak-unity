@@ -2,6 +2,8 @@
 set -euo pipefail
 IFS=$'\n\t'
 
+brew install aws
+
 brew install pandoc
 
 brew tap wooga/unityversions
