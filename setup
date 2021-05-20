@@ -2,7 +2,7 @@
 set -euo pipefail
 IFS=$'\n\t'
 
-brew install aws
+brew install awscli
 
 brew install pandoc
 
