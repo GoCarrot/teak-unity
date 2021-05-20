@@ -278,4 +278,18 @@ namespace :upm do
     copy_glob_to(editor_glob, File.join(UPM_PACKAGE_REPO, 'Editor'), 'Assets/Teak/Editor')
     copy_glob_to(runtime_glob, File.join(UPM_PACKAGE_REPO, 'Runtime'), 'Assets/Teak')
   end
+
+  task :deploy do
+    # package.json
+    template = File.read(File.join(PROJECT_PATH, 'Templates', 'package.json.template'))
+    File.write(File.join(PROJECT_PATH, UPM_PACKAGE_REPO, 'package.json'), Mustache.render(template, TEMPLATE_PARAMETERS))
+
+    cd 'upm-package-teak' do
+      `git config user.email "team@teak.io"`
+      `git config user.name "Teak CI"`
+      `git checkout -b $PVERSION`
+      `git add -A ; git commit -am "$PVERSION"`
+      `GIT_SSH_COMMAND='ssh -i ~/.ssh/id_rsa_37d2d909bc0dc341f4685879809cf578' git push --set-upstream origin $PVERSION`
+    end
+  end
 end
