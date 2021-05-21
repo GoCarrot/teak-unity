@@ -170,106 +170,15 @@ If your build environment needs to provide the file itself, this is what it shou
     <resources>
         <string name="io_teak_app_id">YOUR_TEAK_APP_ID</string>
         <string name="io_teak_api_key">YOUR_TEAK_API_KEY</string>
-        <string name="io_teak_gcm_sender_id">YOUR_GCM_SENDER_ID</string>
-        <string name="io_teak_firebase_app_id">YOUR_FIREBASE_APPLICATION_ID</string>
-        <string name="io_teak_firebase_api_key">YOUR_FIREBASE_API_KEY</string>
-        <string name="io_teak_firebase_project_id">YOUR_FIREBASE_PROJECT_ID</string>
     </resources>
 
-.. note:: Replace ``YOUR_TEAK_APP_ID``, ``YOUR_TEAK_API_KEY``, ``YOUR_GCM_SENDER_ID``, ``YOUR_FIREBASE_APPLICATION_ID``, ``YOUR_FIREBASE_PROJECT_ID``, and ``YOUR_FIREBASE_API_KEY`` with your game's values.
+.. note:: Replace ``YOUR_TEAK_APP_ID``, and ``YOUR_TEAK_API_KEY`` with your game's values.
 
 Your Teak App Id and API Key can be found in the Settings for your app on the Teak dashboard.
-
-Your Firebase Application Id, Project Id, API Key and GCM Sender Id can be found in your Firebase dashboard.
-
-`How to find your GCM Sender Id <https://teak.readthedocs.io/en/latest/firebase-gcm.html>`_
-`How to find your Firebase App Id Project Id and API Key <https://teak.readthedocs.io/en/latest/firebase-app-id.html>`_
 
 What This Does
 ^^^^^^^^^^^^^^
 This provides Teak with the credentials needed to send information to the Teak Service.
-
-More about Firebase Credentials
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-The Firebase App Id (in ``io_teak_firebase_app_id``) is structured as follows::
-
-    [index]:[app id]:android:[?]
-
-The value of ``io_teak_gcm_sender_id`` must match the second element of the value in ``io_teak_firebase_app_id``. For example, if your ``io_teak_firebase_app_id`` is ``1:12126273415:android:10329156b15bf0c`` then your ``io_teak_gcm_sender_id`` should be ``12126273415``.
-
-If these values do not match, then an ``java.io.IOException`` will be thrown with the value ``FIS_AUTH_ERROR`` will be thrown.
-
-The value of ``io_teak_firebase_api_key`` must be correct for the specified ``io_teak_firebase_app_id`` as well, otherwise an ``java.io.IOException`` will be thrown with the value ``FIS_AUTH_ERROR`` will be thrown.
-
-Android does not provide any additional information at runtime for these issues.
-
-Teak will log this exception with an error similar to this::
-
-    E/Teak: {
-      "client_app_version_name":"1.0",
-      "run_id":"4c449d429c564fa2986d99fe329540eb",
-      "event_id":43,
-      "event_type":"exception",
-      "device_id":"6a8b1cd8-245b-38e6-9319-31523ace3baf",
-      "bundle_id":"io.teak.app.unity.dev",
-      "sdk_version":{
-        "unity":"3.2.0",
-        "android":"3.2.0"
-      },
-      "log_level":"ERROR",
-      "client_app_version":1,
-      "event_data":{
-        "stacktrace":{
-          "frames":[
-            {
-              "in_app":false,
-              "filename":"Thread.java",
-              "lineno":764,
-              "function":"run",
-              "module":"java.lang.Thread"
-            },
-            {
-              "in_app":true,
-              "lineno":6,
-              "function":"run",
-              "module":"com.google.android.gms.common.util.concurrent.zza"
-            },
-            {
-              "in_app":false,
-              "filename":"ThreadPoolExecutor.java",
-              "lineno":641,
-              "function":"run",
-              "module":"java.util.concurrent.ThreadPoolExecutor$Worker"
-            },
-            {
-              "in_app":false,
-              "filename":"ThreadPoolExecutor.java",
-              "lineno":1167,
-              "function":"runWorker",
-              "module":"java.util.concurrent.ThreadPoolExecutor"
-            },
-            {
-              "in_app":true,
-              "lineno":5,
-              "function":"run",
-              "module":"com.google.android.gms.tasks.zzd"
-            },
-            {
-              "in_app":true,
-              "filename":"com.google.firebase:firebase-iid@@20.1.5",
-              "lineno":16,
-              "function":"then",
-              "module":"com.google.firebase.iid.zzu"
-            }
-          ]
-        },
-        "type":"IOException",
-        "value":"FIS_AUTH_ERROR",
-        "module":"java.io"
-      },
-      "app_id":"613659812345256",
-      "timestamp":1586896331
-    }
 
 Set Notification Icons for your Game
 ------------------------------------
