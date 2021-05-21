@@ -189,7 +189,7 @@ This provides Teak with the credentials needed to send information to the Teak S
 
 Set Notification Icons for your Game
 ------------------------------------
-To specify the icon displayed in the system tray, and at the top of the notification, specify these resources.
+To specify the icon displayed in the system tray, and at the top of the notification, describe these resources in a file called ``teak_icons.xml``.
 
 You will need two versions of this file. One located in ``values`` and the other located in ``values-v21``::
 
@@ -202,10 +202,11 @@ You will need two versions of this file. One located in ``values`` and the other
         <drawable name="io_teak_small_notification_icon">@drawable/YOUR_ICON_FILE_NAME</drawable>
     </resources>
 
-The file in ``values`` should point to a full-color icon, for devices running less than Android 5, and the file in ``values-v21`` should point to a white and transparent PNG for Android 5 and above.
+The ``teak_icons.xml`` file in ``values`` should point to a full-color icon, for devices running less than Android 5, and the ``teak_icons.xml`` file in ``values-v21`` should point to a white and transparent PNG for Android 5 and above.
 
 .. important:: To make sure that your white and transparent PNG shows up properly, use :doc:`Android Asset Studio's Notification icon generator <android/notification-icon>`.
 
+.. note:: You may name the ``teak_icons.xml`` file anything you want, or include the values in an existing file, should you wish to do so.
 
 .. _android-set-up-deep-linking:
 
