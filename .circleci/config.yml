@@ -34,7 +34,7 @@ jobs:
       - run:
           name: Compute Checksum
           command: |
-            sha512sum build/$UNITY_VERSION/Teak.unitypackage > build/$UNITY_VERSION/Teak.unitypackage.sha512
+            shasum -a512 build/Teak.unitypackage > build/Teak.unitypackage.sha512
       - run:
           name: Build UPM Package
           command: |
