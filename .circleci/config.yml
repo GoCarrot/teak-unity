@@ -12,12 +12,7 @@ jobs:
       - checkout
       - run: git fetch --tags
       - restore_cache:
-          key: v1-{{ checksum "setup" }}-{{ checksum "Gemfile.lock" }}-{{ .Environment.HOMEBREW_VERSION }}-{{ .Environment.UNITY_VERSION }}
-      - run:
-          name: Check Homebrew Version
-          command: |
-            echo "Checking for Homebrew version $HOMEBREW_VERSION"
-            [ `brew --version | sed -n 1p | sed 's/[^0-9.]*\([0-9.]*\).*/\1/'` = $HOMEBREW_VERSION ] || brew update
+          key: v1-{{ checksum "setup" }}-{{ checksum "Gemfile.lock" }}
       - run:
           name: Homebrew Depenendcies
           command: HOMEBREW_NO_AUTO_UPDATE=1 ./setup
@@ -28,17 +23,14 @@ jobs:
             bundle check || bundle install --path vendor/bundle
       - save_cache:
           paths:
-            # - /usr/local/Homebrew/
             - ~/Library/Caches/Homebrew
             - vendor/bundle
-          key: v1-{{ checksum "setup" }}-{{ checksum "Gemfile.lock" }}-{{ .Environment.HOMEBREW_VERSION }}-{{ .Environment.UNITY_VERSION }}
+          key: v1-{{ checksum "setup" }}-{{ checksum "Gemfile.lock" }}
       - run:
           name: Build Teak SDK
           command: |
-            export UNITY_HOME=/Applications/Unity-$UNITY_VERSION/
             bundle exec rake
-            mkdir -p build/$UNITY_VERSION
-            mv Teak.unitypackage build/$UNITY_VERSION/Teak.unitypackage
+            mv Teak.unitypackage build/Teak.unitypackage
       - run:
           name: Compute Checksum
           command: |
@@ -95,8 +87,8 @@ jobs:
       - run:
           name: Upload SDK to S3
           command: |
-            aws s3 cp build/$UNITY_VERSION/Teak.unitypackage s3://teak-build-artifacts/unity/Teak-$(git describe --tags --always).unitypackage --acl public-read
-            aws s3 cp build/$UNITY_VERSION/Teak.unitypackage.sha512 s3://teak-build-artifacts/unity/Teak-$(git describe --tags --always).unitypackage.sha512 --acl public-read
+            aws s3 cp build/Teak.unitypackage s3://teak-build-artifacts/unity/Teak-$(git describe --tags --always).unitypackage --acl public-read
+            aws s3 cp build/Teak.unitypackage.sha512 s3://teak-build-artifacts/unity/Teak-$(git describe --tags --always).unitypackage.sha512 --acl public-read
 
   deploy_latest:
     docker:
@@ -121,8 +113,8 @@ jobs:
       - run:
           name: Upload SDK to S3
           command: |
-            aws s3 cp build/$UNITY_VERSION/Teak.unitypackage s3://teak-build-artifacts/unity/Teak.unitypackage --acl public-read
-            aws s3 cp build/$UNITY_VERSION/Teak.unitypackage.sha512 s3://teak-build-artifacts/unity/Teak.unitypackage.sha512 --acl public-read
+            aws s3 cp build/Teak.unitypackage s3://teak-build-artifacts/unity/Teak.unitypackage --acl public-read
+            aws s3 cp build/Teak.unitypackage.sha512 s3://teak-build-artifacts/unity/Teak.unitypackage.sha512 --acl public-read
 workflows:
   version: 2
   un-tagged-build:
@@ -141,14 +133,12 @@ workflows:
   tagged-build:
     jobs:
       - build:
-          context: unity-5
           filters:
             branches:
               ignore: /.*/
             tags:
               only: /.*/
       - deploy_versioned:
-          context: unity-5
           requires:
             - build
           filters:
@@ -166,7 +156,6 @@ workflows:
             tags:
               only: /.*/
       - deploy_latest:
-          context: unity-5
           requires:
             - hold
           filters:
