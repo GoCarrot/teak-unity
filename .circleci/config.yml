@@ -44,17 +44,9 @@ jobs:
           command: |
             sha512sum build/$UNITY_VERSION/Teak.unitypackage > build/$UNITY_VERSION/Teak.unitypackage.sha512
       - run:
-          command: |
-            mkdir -p /tmp/unity_logs
-            cp unity.log /tmp/unity_logs
-            bundle exec rake unity:returnlicense
-          when: on_fail
-      - run:
           name: Build UPM Package
           command: |
             UPM_PACKAGE_REPO=upm-package-teak bundle exec rake upm:build
-      - store_artifacts:
-          path: /tmp/unity_logs
       - persist_to_workspace:
           root: .
           paths:
@@ -105,9 +97,6 @@ jobs:
           command: |
             aws s3 cp build/$UNITY_VERSION/Teak.unitypackage s3://teak-build-artifacts/unity/Teak-$(git describe --tags --always).unitypackage --acl public-read
             aws s3 cp build/$UNITY_VERSION/Teak.unitypackage.sha512 s3://teak-build-artifacts/unity/Teak-$(git describe --tags --always).unitypackage.sha512 --acl public-read
-      # - run:
-      #     name: Trigger Cleanroom Build
-      #     command: bundle exec rake build:cleanroom
 
   deploy_latest:
     docker:

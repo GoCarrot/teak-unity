@@ -5,16 +5,3 @@ IFS=$'\n\t'
 brew install awscli
 
 brew install pandoc
-
-brew tap wooga/unityversions
-
-unityversion="${UNITY_VERSION:-2018.4.9f1}"
-
-# Install Unity
-if [ ! -f /Applications/Unity-$unityversion/Unity.app/Contents/Pkginfo ]; then
-  brew install unity@$unityversion
-fi
-
-if [ ! -f /Applications/Unity-$unityversion/PlaybackEngines/AndroidPlayer/ivy.xml ]; then
-  brew install unity-android-support-for-editor@$unityversion
-fi
