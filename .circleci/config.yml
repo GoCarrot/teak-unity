@@ -30,6 +30,7 @@ jobs:
           name: Build Teak SDK
           command: |
             bundle exec rake
+            mkdir build
             mv Teak.unitypackage build/Teak.unitypackage
       - run:
           name: Compute Checksum
