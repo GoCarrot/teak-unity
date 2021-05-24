@@ -7,38 +7,14 @@ require 'shellwords'
 require 'tmpdir'
 require 'yaml'
 require 'awesome_print'
-require 'terminal-notifier'
 require 'mustache'
 require 'pathname'
+require 'unitypackage'
 CLEAN.include '**/.DS_Store'
-
-#
-# Extend Rake to have current_task
-#
-require 'rake'
-module Rake
-  #
-  # Extend Application
-  #
-  class Application
-    attr_accessor :current_task
-  end
-  #
-  # Extend Task
-  #
-  class Task
-    alias old_execute execute
-    def execute(args = nil)
-      Rake.application.current_task = self
-      old_execute(args)
-    end
-  end
-end
 
 KMS_KEY = `aws kms decrypt --ciphertext-blob fileb://kms/store_encryption_key.key --output text --query Plaintext | base64 --decode`.freeze
 CIRCLE_TOKEN = ENV.fetch('CIRCLE_TOKEN') { `openssl enc -md MD5 -d -aes-256-cbc -in kms/encrypted_circle_ci_key.data -k #{KMS_KEY}` }
 
-UNITY_HOME = ENV.fetch('UNITY_HOME', Dir.glob('/Applications/Unity*').first)
 TEAK_SDK_VERSION = `git describe --tags`.strip
 NATIVE_CONFIG = YAML.load_file('native.config.yml')
 
@@ -50,25 +26,6 @@ UPM_PACKAGE_REPO = ENV.fetch('UPM_PACKAGE_REPO', '../upm-package-teak')
 TEMPLATE_PARAMETERS = {
   teak_sdk_version: TEAK_SDK_VERSION
 }
-
-#
-# Play a sound after finished
-#
-at_exit do
-  if ci?
-    add_unity_log_to_artifacts
-    Rake::Task['unity:returnlicense'].invoke
-  else
-    success = $ERROR_INFO.nil?
-    TerminalNotifier.notify(
-      Rake.application.top_level_tasks.join(', '),
-      title: 'Teak Unity',
-      subtitle: success ? 'Succeeded' : 'Failed',
-      sound: success ? 'Submarine' : 'Funk'
-    ) if !success || ENV.fetch('NOTIFY', true).to_s == 'true'
-  end
-end
-
 #
 # Helper methods
 #
@@ -81,35 +38,10 @@ def build_local?
   ENV.fetch('BUILD_LOCAL', false).to_s == 'true'
 end
 
-def add_unity_log_to_artifacts
-  cp('unity.log', "#{Rake.application.current_task.name.sub(':', '-')}.unity.log") unless $ERROR_INFO.nil?
-end
-
-def unity(*args, quit: true, nographics: true)
-  args.push('-serial', ENV['UNITY_SERIAL'], '-username', ENV['UNITY_EMAIL'], '-password', ENV['UNITY_PASSWORD']) if ci?
-
-  unity_cmd = UNITY_HOME.start_with?('/Applications') ? "#{UNITY_HOME}/Unity.app/Contents/MacOS/Unity" : "#{UNITY_HOME}/Unity"
-  escaped_args = args.map { |arg| Shellwords.escape(arg) }.join(' ')
-  sh "#{unity_cmd} -logFile #{PROJECT_PATH}/unity.log#{quit ? ' -quit' : ''}#{nographics ? ' -nographics' : ''} -batchmode -projectPath #{PROJECT_PATH} #{escaped_args}", verbose: false
-ensure
-  add_unity_log_to_artifacts if ci?
-end
-
 task default: ['build:android', 'build:ios', 'build:package']
 
 task :format do
   sh 'astyle --project --recursive Assets/*.cs --exclude=Assets/Teak/Editor/iOS/Xcode'
-end
-
-namespace :unity do
-  task :returnlicense do
-    begin
-      sh "#{UNITY_HOME}/Unity.app/Contents/MacOS/Unity -batchmode -quit -returnlicense", verbose: false
-    rescue StandardError
-      nil
-    end
-    puts 'Released Unity license...'
-  end
 end
 
 task :version, [:v] do |_, args|
@@ -149,20 +81,6 @@ namespace :version do
 end
 
 namespace :build do
-  task :cleanroom do
-    json = HTTParty.post("https://circleci.com/api/v1.1/project/github/GoCarrot/teak-unity-cleanroom/build?circle-token=#{CIRCLE_TOKEN}",
-                         body: {
-                           branch: 'master'
-                         }.to_json,
-                         headers: {
-                           'Content-Type' => 'application/json',
-                           'Accept' => 'application/json'
-                         }).body
-    response = JSON.parse(json)
-    ap(response)
-    throw response['message'] unless response['status'] == 200
-  end
-
   task :android do
     Dir.mktmpdir do |dir|
       Dir.chdir(dir) do
@@ -239,7 +157,11 @@ namespace :build do
     template = File.read(File.join(PROJECT_PATH, 'Templates', 'TeakVersion.cs.template'))
     File.write(File.join(PROJECT_PATH, 'Assets', 'Teak', 'TeakVersion.cs'), Mustache.render(template, TEMPLATE_PARAMETERS))
 
-    unity '-executeMethod', 'TeakPackageBuilder.BuildUnityPackage'
+    package = UnityPackage::UnityPackage.new
+    package << Dir['Assets/Teak/**/*']
+    File.open(package_path, 'wb') do |file|
+      package.write file
+    end
 
     begin
       sh 'python extractunitypackage.py Teak.unitypackage _temp_pkg/', verbose: false
