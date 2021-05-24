@@ -30,6 +30,7 @@ jobs:
           name: Build Teak SDK
           command: |
             bundle exec rake
+            mkdir build
             mv Teak.unitypackage build/Teak.unitypackage
       - persist_to_workspace:
           root: .
