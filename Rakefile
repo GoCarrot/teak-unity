@@ -175,10 +175,10 @@ namespace :upm do
     File.write(File.join(PROJECT_PATH, UPM_PACKAGE_REPO, 'package.json'), Mustache.render(template, TEMPLATE_PARAMETERS))
 
     # Changelog
-    cd 'docs' do
-      `make html`
-      `pandoc -f rst -t gfm -o ../#{UPM_PACKAGE_REPO}/CHANGELOG.md changelog.rst`
-    end
+    # cd 'docs' do
+    #   `make html`
+    #   `pandoc -f rst -t gfm -o ../#{UPM_PACKAGE_REPO}/CHANGELOG.md changelog.rst`
+    # end
 
     editor_glob = Dir.glob('Assets/Teak/Editor/**/*')
 
