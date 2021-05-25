@@ -205,13 +205,13 @@ namespace :upm do
     template = File.read(File.join(PROJECT_PATH, 'Templates', 'package.json.template'))
     File.write(File.join(PROJECT_PATH, UPM_PACKAGE_REPO, 'package.json'), Mustache.render(template, TEMPLATE_PARAMETERS))
 
-    cd 'upm-package-teak' do
-      PVERSION=`git log -1 --pretty=%B | perl -wne '/[Pp]romote( to)?: ([\w\.\-]+)/i and print $2'`
+    cd UPM_PACKAGE_REPO do
+      `echo Tagging $PVERSION`
       `git config user.email "team@teak.io"`
       `git config user.name "Teak CI"`
-      `git checkout -b #{PVERSION}`
-      `git add -A ; git commit -am "#{PVERSION}"`
-      `GIT_SSH_COMMAND='ssh -i ~/.ssh/id_rsa_37d2d909bc0dc341f4685879809cf578' git push --set-upstream origin #{PVERSION}`
+      `git checkout -b $PVERSION`
+      `git add -A ; git commit -am "$PVERSION"`
+      `GIT_SSH_COMMAND='ssh -i ~/.ssh/id_rsa_37d2d909bc0dc341f4685879809cf578' git push --set-upstream origin $PVERSION`
     end
   end
 end
