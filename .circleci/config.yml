@@ -77,7 +77,6 @@ jobs:
             - "c4:51:dc:a2:59:e6:5a:77:de:7b:c0:55:c8:ac:32:66"
       - teak/tag-promote:
           on_tag: |
-            export GIT_SSH_COMMAND='ssh -i ~/.ssh/id_rsa_37d2d909bc0dc341f4685879809cf578'
             UPM_PACKAGE_REPO=upm-package-teak bundle exec rake upm:deploy
 
   deploy_versioned:
@@ -135,7 +134,6 @@ jobs:
       - run:
             name: Merge UPM Branch
             command: |
-              export GIT_SSH_COMMAND='ssh -i ~/.ssh/id_rsa_37d2d909bc0dc341f4685879809cf578'
               export PVERSION=`git log -1 --pretty=%B | perl -wne '/[Pp]romote( to)?: ([\w\.\-]+)/i and print $2'`
               UPM_PACKAGE_REPO=upm-package-teak bundle exec rake upm:merge
       # - run:
