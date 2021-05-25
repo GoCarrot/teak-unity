@@ -169,6 +169,12 @@ namespace :upm do
       `git clone git@github.com:GoCarrot/upm-package-teak.git #{UPM_PACKAGE_REPO}`
     end
 
+    # Change to the template branch, and make sure it's clean
+    cd UPM_PACKAGE_REPO do
+      `git checkout template`
+      `git clean -fdx`
+    end
+
     # package.json
     template = File.read(File.join(PROJECT_PATH, 'Templates', 'package.json.template'))
     File.write(File.join(PROJECT_PATH, UPM_PACKAGE_REPO, 'package.json'), Mustache.render(template, TEMPLATE_PARAMETERS))
@@ -206,7 +212,6 @@ namespace :upm do
     File.write(File.join(PROJECT_PATH, UPM_PACKAGE_REPO, 'package.json'), Mustache.render(template, TEMPLATE_PARAMETERS))
 
     # $PVERSION should be in the ENV from tag-promote
-    puts "Tagging #{ENV['PVERSION']}"
     cd UPM_PACKAGE_REPO do
       `git config user.email "team@teak.io"`
       `git config user.name "Teak CI"`
