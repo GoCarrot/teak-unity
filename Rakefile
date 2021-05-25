@@ -205,8 +205,9 @@ namespace :upm do
     template = File.read(File.join(PROJECT_PATH, 'Templates', 'package.json.template'))
     File.write(File.join(PROJECT_PATH, UPM_PACKAGE_REPO, 'package.json'), Mustache.render(template, TEMPLATE_PARAMETERS))
 
+    # $PVERSION should be in the ENV from tag-promote
+    puts "Tagging #{ENV['PVERSION']}"
     cd UPM_PACKAGE_REPO do
-      `echo Tagging $PVERSION`
       `git config user.email "team@teak.io"`
       `git config user.name "Teak CI"`
       `git checkout -b $PVERSION`
