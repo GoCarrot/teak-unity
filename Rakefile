@@ -229,6 +229,8 @@ namespace :upm do
       `git clean -fdx`
       `git merge -m "Current version $PVERSION" --no-ff origin/$PVERSION &&
         git tag $PVERSION &&
+        GIT_SSH_COMMAND='ssh -i ~/.ssh/id_rsa_37d2d909bc0dc341f4685879809cf578' git push &&
+        GIT_SSH_COMMAND='ssh -i ~/.ssh/id_rsa_37d2d909bc0dc341f4685879809cf578' git push origin --delete $PVERSION &&
         GIT_SSH_COMMAND='ssh -i ~/.ssh/id_rsa_37d2d909bc0dc341f4685879809cf578' git push --tags`
     end
   end
