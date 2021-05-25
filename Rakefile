@@ -217,7 +217,7 @@ namespace :upm do
       `git config user.name "Teak CI"`
       `git checkout -b $PVERSION`
       `git add -A ; git commit -am "$PVERSION"`
-      `GIT_SSH_COMMAND='ssh -i ~/.ssh/id_rsa_37d2d909bc0dc341f4685879809cf578' git push --set-upstream origin $PVERSION`
+      `git push --set-upstream origin $PVERSION`
     end
   end
 
@@ -227,7 +227,7 @@ namespace :upm do
       `git config user.name "Teak CI"`
       `git checkout main`
       `git clean -fdx`
-      `GIT_SSH_COMMAND='ssh -i ~/.ssh/id_rsa_37d2d909bc0dc341f4685879809cf578' git merge -m "Current version $PVERSION" --no-ff origin/$PVERSION && git tag $PVERSION && git push origin --delete $PVERSION && git push --tags`
+      `git merge -m "Current version $PVERSION" --no-ff origin/$PVERSION && git tag $PVERSION && git push origin --delete $PVERSION && git push --tags`
     end
   end
 end
