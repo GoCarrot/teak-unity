@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'rake/clean'
-require 'aws-sdk-s3'
 require 'httparty'
 require 'shellwords'
 require 'tmpdir'
@@ -51,6 +50,8 @@ task :version, [:v] do |_, args|
 end
 
 namespace :version do
+  require 'aws-sdk-s3'
+
   task :ios, [:v] do |_, args|
     s3 = Aws::S3::Resource.new(
       region: 'us-east-1'
