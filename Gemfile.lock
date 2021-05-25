@@ -9,7 +9,6 @@ GEM
   remote: https://rubygems.org/
   specs:
     ast (2.4.0)
-    awesome_print (1.8.0)
     aws-eventstream (1.0.3)
     aws-partitions (1.286.0)
     aws-sdk-core (3.92.0)
@@ -26,15 +25,8 @@ GEM
       aws-sigv4 (~> 1.1)
     aws-sigv4 (1.1.1)
       aws-eventstream (~> 1.0, >= 1.0.2)
-    httparty (0.18.0)
-      mime-types (~> 3.0)
-      multi_xml (>= 0.5.2)
     jaro_winkler (1.5.4)
     jmespath (1.4.0)
-    mime-types (3.3.1)
-      mime-types-data (~> 3.2015)
-    mime-types-data (3.2019.1009)
-    multi_xml (0.6.0)
     mustache (1.1.1)
     parallel (1.19.1)
     parser (2.7.0.4)
@@ -52,18 +44,18 @@ GEM
       unicode-display_width (>= 1.4.0, < 1.7)
     ruby-progressbar (1.10.1)
     unicode-display_width (1.6.1)
+    webrick (1.7.0)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
-  awesome_print
   aws-sdk-s3
-  httparty
   mustache
   rake
   rubocop
   unitypackage (= 0.1.0)!
+  webrick
 
 BUNDLED WITH
    2.1.4
