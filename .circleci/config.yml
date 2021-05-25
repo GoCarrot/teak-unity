@@ -19,7 +19,7 @@ jobs:
       - run:
           name: Ruby Gems
           command: |
-            # gem update bundler # This isn't needed right now, it'll cause an error and 2.0.2 is ok for a version
+            gem update bundler
             bundle check || bundle install --path vendor/bundle
       - save_cache:
           paths:
@@ -54,6 +54,18 @@ jobs:
       - image: circleci/ruby:latest
     steps:
       - checkout
+      - run: git fetch --tags
+      - restore_cache:
+          key: v0-{{ checksum "Gemfile.lock" }}
+      - run:
+          name: Ruby Gems
+          command: |
+            gem update bundler
+            bundle check || bundle install --path vendor/bundle
+      - save_cache:
+          paths:
+            - vendor/bundle
+          key: v0-{{ checksum "Gemfile.lock" }}
       - attach_workspace:
           at: .
       - add_ssh_keys:

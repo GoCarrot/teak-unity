@@ -1,11 +1,9 @@
 # frozen_string_literal: true
 
 require 'rake/clean'
-require 'httparty'
 require 'shellwords'
 require 'tmpdir'
 require 'yaml'
-require 'awesome_print'
 require 'mustache'
 require 'pathname'
 require 'unitypackage'
