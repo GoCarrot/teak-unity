@@ -62,6 +62,9 @@ jobs:
           command: |
             gem update bundler
             bundle check || bundle install --path vendor/bundle
+      - run:
+          name: Install AWS CLI
+          command: sudo apt-get -y -qq install awscli
       - save_cache:
           paths:
             - vendor/bundle
