@@ -136,11 +136,11 @@ jobs:
             command: |
               export PVERSION=`git log -1 --pretty=%B | perl -wne '/[Pp]romote( to)?: ([\w\.\-]+)/i and print $2'`
               UPM_PACKAGE_REPO=upm-package-teak bundle exec rake upm:merge
-      # - run:
-      #     name: Upload SDK to S3
-      #     command: |
-      #       aws s3 cp build/Teak.unitypackage s3://teak-build-artifacts/unity/Teak.unitypackage --acl public-read
-      #       aws s3 cp build/Teak.unitypackage.sha512 s3://teak-build-artifacts/unity/Teak.unitypackage.sha512 --acl public-read
+      - run:
+          name: Upload SDK to S3
+          command: |
+            aws s3 cp build/Teak.unitypackage s3://teak-build-artifacts/unity/Teak.unitypackage --acl public-read
+            aws s3 cp build/Teak.unitypackage.sha512 s3://teak-build-artifacts/unity/Teak.unitypackage.sha512 --acl public-read
 workflows:
   version: 2
   un-tagged-build:
