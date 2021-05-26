@@ -217,9 +217,9 @@ namespace :upm do
 
       sh "git checkout main" # Start on the main branch
       sh "git checkout #{major}.#{minor} || " +  # If the current minor version branch exists, check it out
-         "git checkout #{major}.#{minor - 1} && git checkout -b #{major}.#{minor} || " + # Check out the previous minor revision and then create a new minor version branch off that
-         "git checkout #{major} && git checkout -b #{major}.#{minor} || " + # If there is no previous minor version branch, check out the major version and create one
-         "git checkout #{major - 1} ; (git checkout -b #{major} && git checkout -b #{major}.#{minor})" # New major version based on previous major version, or main
+         "(git checkout #{major}.#{minor - 1} && git checkout -b #{major}.#{minor}) || " + # Check out the previous minor revision and then create a new minor version branch off that
+         "(git checkout #{major} && git checkout -b #{major}.#{minor}) || " + # If there is no previous minor version branch, check out the major version and create one
+         "(git checkout #{major - 1} ; (git checkout -b #{major} && git checkout -b #{major}.#{minor}))" # New major version based on previous major version, or main
       sh "rm -fr *" # Delete all files
       sh "git ls-tree --name-only -r main | xargs git checkout --" # Restore files which exist in the main branch
     end
