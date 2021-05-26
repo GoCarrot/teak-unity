@@ -33,6 +33,7 @@ Assets/Teak/Plugins/Android/res*
 
 Teak.unitypackage
 unity.log
+temp-upm-build
 
 AndroidBuild/
 iOSBuild/

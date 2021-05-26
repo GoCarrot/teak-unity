@@ -18,6 +18,7 @@ NATIVE_CONFIG = YAML.load_file('native.config.yml')
 PROJECT_PATH = Rake.application.original_dir
 BUILD_TYPE = ENV.fetch('BUILD_TYPE', 'Release')
 
+UPM_BUILD_TEMP = ENV.fetch('UPM_BUILD_TEMP', 'temp-upm-build')
 UPM_PACKAGE_REPO = ENV.fetch('UPM_PACKAGE_REPO', '../upm-package-teak')
 
 TEMPLATE_PARAMETERS = {
@@ -164,25 +165,13 @@ end
 
 namespace :upm do
   task :build do
-    # Ensure repo exists
-    unless Dir.exist? UPM_PACKAGE_REPO
-      `git clone git@github.com:GoCarrot/upm-package-teak.git #{UPM_PACKAGE_REPO}`
-    end
-
-    # Change to the template branch, and make sure it's clean
-    cd UPM_PACKAGE_REPO do
-      `git checkout template`
-      `git clean -fdx`
-    end
-
-    # package.json
-    template = File.read(File.join(PROJECT_PATH, 'Templates', 'package.json.template'))
-    File.write(File.join(PROJECT_PATH, UPM_PACKAGE_REPO, 'package.json'), Mustache.render(template, TEMPLATE_PARAMETERS))
+    FileUtils.rm_rf(UPM_BUILD_TEMP)
+    FileUtils.mkdir_p(UPM_BUILD_TEMP)
 
     # Changelog
     # cd 'docs' do
     #   `make html`
-    #   `pandoc -f rst -t gfm -o ../#{UPM_PACKAGE_REPO}/CHANGELOG.md changelog.rst`
+    #   `pandoc -f rst -t gfm -o ../#{UPM_BUILD_TEMP}/CHANGELOG.md changelog.rst`
     # end
 
     editor_glob = Dir.glob('Assets/Teak/Editor/**/*')
@@ -202,36 +191,68 @@ namespace :upm do
       end
     end
 
-    copy_glob_to(editor_glob, File.join(UPM_PACKAGE_REPO, 'Editor'), 'Assets/Teak/Editor')
-    copy_glob_to(runtime_glob, File.join(UPM_PACKAGE_REPO, 'Runtime'), 'Assets/Teak')
+    copy_glob_to(editor_glob, File.join(UPM_BUILD_TEMP, 'Editor'), 'Assets/Teak/Editor')
+    copy_glob_to(runtime_glob, File.join(UPM_BUILD_TEMP, 'Runtime'), 'Assets/Teak')
   end
 
-  task :deploy do
+  task :deploy_versioned do
+    # Ensure repo exists
+    unless Dir.exist? UPM_PACKAGE_REPO
+      `git clone git@github.com:GoCarrot/upm-package-teak.git #{UPM_PACKAGE_REPO}`
+    end
+
     # package.json
     template = File.read(File.join(PROJECT_PATH, 'Templates', 'package.json.template'))
     File.write(File.join(PROJECT_PATH, UPM_PACKAGE_REPO, 'package.json'), Mustache.render(template, TEMPLATE_PARAMETERS))
 
-    # $PVERSION should be in the ENV from tag-promote
+    # Construct our version.
+    version_parts = TEAK_SDK_VERSION.split('-')
+    version = version_parts[0]
+    version_suffix = version_parts[1..-1].join('-')
+    major, minor, patch = version.split('.').map(&:to_i)
+
     cd UPM_PACKAGE_REPO do
-      `git config user.email "team@teak.io"`
-      `git config user.name "Teak CI"`
-      `git checkout -b $PVERSION`
-      `git add -A ; git commit -am "$PVERSION"`
-      `GIT_SSH_COMMAND='ssh -i ~/.ssh/id_rsa_37d2d909bc0dc341f4685879809cf578' git push --set-upstream origin $PVERSION`
+      sh "git config user.email \"team@teak.io\""
+      sh "git config user.name \"Teak CI\""
+
+      sh "git checkout main" # Start on the main branch
+      sh "git checkout #{major}.#{minor} | " # If the current minor version branch exists, check it out
+         "git checkout #{major}.#{minor - 1} && git checkout -b #{major}.#{minor} | "# Check out the previous minor revision and then create a new minor version branch off that
+         "git checkout #{major} && git checkout -b #{major}.#{minor} | "# If there is no previous minor version branch, check out the major version and create one
+         "git checkout #{major - 1} ; git checkout -b #{major} # New major version based on previous major version, or main"
+      sh "rm -fr *" # Delete all files
+      sh "git ls-tree --name-only -r main | xargs git checkout --" # Restore files which exist in the main branch
+    end
+
+    sh "cp -RT #{UPM_BUILD_TEMP} #{UPM_PACKAGE_REPO}" # Copy in all the files
+
+    cd UPM_PACKAGE_REPO do
+      sh "git add -A" # Add all files present
+      sh "git commit -am \"#{TEAK_SDK_VERSION}\"" # Commit with message set to full version
+      sh "git tag #{TEAK_SDK_VERSION}" # Create a tag of the full version
+
+      # Push versioned
+      sh "GIT_SSH_COMMAND='ssh -i ~/.ssh/id_rsa_37d2d909bc0dc341f4685879809cf578' git push origin #{major}.#{minor}"
+      sh "GIT_SSH_COMMAND='ssh -i ~/.ssh/id_rsa_37d2d909bc0dc341f4685879809cf578' git push --tags"
+
+      # puts "git switch #{major} # Checkout branch '#{major}' or create it if it doesn't exist"
+      # puts "git reset --hard #{TEAK_SDK_VERSION} # Reset the HEAD of the '#{major}' branch to the tag we just created"
+      # puts "git push --all origin # Push all branches and commits"
+      # puts "git push --tags # Push tags"
     end
   end
 
-  task :merge do
-    cd UPM_PACKAGE_REPO do
-      `git config user.email "team@teak.io"`
-      `git config user.name "Teak CI"`
-      `git checkout main`
-      `git clean -fdx`
-      `git merge -m "Current version $PVERSION" --no-ff origin/$PVERSION &&
-        git tag $PVERSION &&
-        GIT_SSH_COMMAND='ssh -i ~/.ssh/id_rsa_37d2d909bc0dc341f4685879809cf578' git push &&
-        GIT_SSH_COMMAND='ssh -i ~/.ssh/id_rsa_37d2d909bc0dc341f4685879809cf578' git push origin --delete $PVERSION &&
-        GIT_SSH_COMMAND='ssh -i ~/.ssh/id_rsa_37d2d909bc0dc341f4685879809cf578' git push --tags`
-    end
-  end
+  # task :merge do
+  #   cd UPM_PACKAGE_REPO do
+  #     `git config user.email "team@teak.io"`
+  #     `git config user.name "Teak CI"`
+  #     `git checkout main`
+  #     `git clean -fdx`
+  #     `git merge -m "Current version $PVERSION" --no-ff origin/$PVERSION &&
+  #       git tag $PVERSION &&
+  #       GIT_SSH_COMMAND='ssh -i ~/.ssh/id_rsa_37d2d909bc0dc341f4685879809cf578' git push &&
+  #       GIT_SSH_COMMAND='ssh -i ~/.ssh/id_rsa_37d2d909bc0dc341f4685879809cf578' git push origin --delete $PVERSION &&
+  #       GIT_SSH_COMMAND='ssh -i ~/.ssh/id_rsa_37d2d909bc0dc341f4685879809cf578' git push --tags`
+  #   end
+  # end
 end
