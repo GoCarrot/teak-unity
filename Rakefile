@@ -82,13 +82,13 @@ end
 
 namespace :build do
   task :android do
-    # Write Unity SDK version information to 'res/values/teak_unity_version.xml'
-    template = File.read(File.join(PROJECT_PATH, 'Templates', 'teak_unity_version.xml.template'))
-    path = File.join(PROJECT_PATH, 'Assets', 'Teak', 'Plugins', 'Android', 'teak-version-information.androidlib', 'res', 'values')
-    mkdir_p path
-    File.write(File.join(path, 'teak_unity_version.xml'), Mustache.render(template, TEMPLATE_PARAMETERS))
+    # Write Unity SDK version information
+    plugins_android = File.join(PROJECT_PATH, 'Assets', 'Teak', 'Plugins', 'Android')
 
-    Dir.chdir(File.join(PROJECT_PATH, 'Assets', 'Teak', 'Plugins', 'Android')) do
+    template = File.read(File.join(PROJECT_PATH, 'Templates', 'Version.java.template'))
+    File.write(File.join(plugins_android, 'Version.java'), Mustache.render(template, TEMPLATE_PARAMETERS))
+
+    Dir.chdir(plugins_android) do
       # Download or copy Teak SDK AAR
       if build_local?
         cp "#{PROJECT_PATH}/../teak-android/build/outputs/aar/teak-debug.aar", 'teak.aar'
