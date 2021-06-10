@@ -130,7 +130,7 @@ namespace :build do
     if build_local?
       cp "#{PROJECT_PATH}/../teak-ios/TeakExtensions/TeakNotificationContent/Info.plist", content_plist
     else
-      sh "curl --fail -o #{content_plist} https://sdks.teakcdn.com/ios/Info.plist"
+      sh "curl --fail -o #{content_plist} https://sdks.teakcdn.com/ios/Info-#{NATIVE_CONFIG['version']['ios']}.plist"
     end
 
     # Write Unity SDK version information to 'Assets/Teak/Plugins/iOS/teak_version.m'
