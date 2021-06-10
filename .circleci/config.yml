@@ -71,10 +71,6 @@ jobs:
           key: v0-{{ checksum "Gemfile.lock" }}
       - attach_workspace:
           at: .
-      - add_ssh_keys:
-          fingerprints:
-            - "37:d2:d9:09:bc:0d:c3:41:f4:68:58:79:80:9c:f5:78"
-            - "c4:51:dc:a2:59:e6:5a:77:de:7b:c0:55:c8:ac:32:66"
       - teak/tag-promote
 
   deploy_versioned:
@@ -99,10 +95,6 @@ jobs:
           key: v0-{{ checksum "Gemfile.lock" }}
       - attach_workspace:
           at: .
-      - add_ssh_keys:
-          fingerprints:
-            - "37:d2:d9:09:bc:0d:c3:41:f4:68:58:79:80:9c:f5:78"
-            - "c4:51:dc:a2:59:e6:5a:77:de:7b:c0:55:c8:ac:32:66"
       - run:
           name: Deploy UPM to Git Repo
           command: UPM_BUILD_TEMP=upm-build UPM_PACKAGE_REPO=upm-package-teak bundle exec rake upm:deploy_versioned
@@ -137,10 +129,6 @@ jobs:
           key: v0-{{ checksum "Gemfile.lock" }}
       - attach_workspace:
           at: .
-      - add_ssh_keys:
-          fingerprints:
-            - "37:d2:d9:09:bc:0d:c3:41:f4:68:58:79:80:9c:f5:78"
-            - "c4:51:dc:a2:59:e6:5a:77:de:7b:c0:55:c8:ac:32:66"
       - run:
             name: Update UPM Branch Heads
             command: |
