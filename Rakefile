@@ -232,8 +232,8 @@ namespace :upm do
       sh "git tag #{TEAK_SDK_VERSION}" # Create a tag of the full version
 
       # Push versioned
-      sh "GIT_SSH_COMMAND='ssh -i ~/.ssh/id_rsa_37d2d909bc0dc341f4685879809cf578' git push origin #{major}.#{minor}"
-      sh "GIT_SSH_COMMAND='ssh -i ~/.ssh/id_rsa_37d2d909bc0dc341f4685879809cf578' git push --tags"
+      sh "git push origin #{major}.#{minor}"
+      sh "git push --tags"
 
       # puts "git switch #{major} # Checkout branch '#{major}' or create it if it doesn't exist"
       # puts "git reset --hard #{TEAK_SDK_VERSION} # Reset the HEAD of the '#{major}' branch to the tag we just created"
@@ -250,9 +250,9 @@ namespace :upm do
   #     `git clean -fdx`
   #     `git merge -m "Current version $PVERSION" --no-ff origin/$PVERSION &&
   #       git tag $PVERSION &&
-  #       GIT_SSH_COMMAND='ssh -i ~/.ssh/id_rsa_37d2d909bc0dc341f4685879809cf578' git push &&
-  #       GIT_SSH_COMMAND='ssh -i ~/.ssh/id_rsa_37d2d909bc0dc341f4685879809cf578' git push origin --delete $PVERSION &&
-  #       GIT_SSH_COMMAND='ssh -i ~/.ssh/id_rsa_37d2d909bc0dc341f4685879809cf578' git push --tags`
+  #       git push &&
+  #       git push origin --delete $PVERSION &&
+  #       git push --tags`
   #   end
   # end
 end
