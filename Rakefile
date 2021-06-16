@@ -242,6 +242,21 @@ namespace :upm do
     end
   end
 
+  task :deploy_latest do
+    version_parts = TEAK_SDK_VERSION.split('-')
+    version = version_parts[0]
+    version_suffix = version_parts[1..-1].join('-')
+    major, minor, patch = version.split('.').map(&:to_i)
+
+    cd UPM_PACKAGE_REPO do
+      sh "git checkout #{major}.#{minor}"
+      sh "git reset --hard #{TEAK_SDK_VERSION}" # Move the major.minor branch HEAD to the latest tag
+      sh "git checkout #{major}"
+      sh "git reset --hard #{TEAK_SDK_VERSION}" # Move the major branch HEAD to the latest tag
+      sh "git push --all"
+    end
+  end
+
   # task :merge do
   #   cd UPM_PACKAGE_REPO do
   #     `git config user.email "team@teak.io"`
