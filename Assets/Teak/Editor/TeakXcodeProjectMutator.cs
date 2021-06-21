@@ -35,7 +35,7 @@ public class TeakXcodeProjectMutator : IPostprocessBuildWithReport {
         string[] teakRequiredFrameworks = new string[] {
             "AdSupport",
             "AVFoundation",
-            "CoreServices",
+            "MobileCoreServices",
             "StoreKit",
             "UserNotifications",
             "ImageIO"
@@ -49,7 +49,7 @@ public class TeakXcodeProjectMutator : IPostprocessBuildWithReport {
 
         /////
         // Add Teak app extensions
-        string[] teakExtensionCommonFrameworks = new string[] {"AdSupport", "AVFoundation", "CoreGraphics", "ImageIO", "CoreServices", "StoreKit", "SystemConfiguration", "UIKit", "UserNotifications"};
+        string[] teakExtensionCommonFrameworks = new string[] {"AdSupport", "AVFoundation", "CoreGraphics", "ImageIO", "MobileCoreServices", "StoreKit", "SystemConfiguration", "UIKit", "UserNotifications"};
 
         AddTeakExtensionToProjectTarget("TeakNotificationService", "TeakNotificationService",
                                         teakExtensionCommonFrameworks,
