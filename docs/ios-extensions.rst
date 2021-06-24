@@ -216,3 +216,10 @@ Make sure that ``TeakNotificationService`` is being built properly.
 
     https://sdks.teakcdn.com/ios/TeakExtensions.zip
 
+Emails from Apple
+-----------------
+You may recieve some confusing error/warning emails from Apple that are related to App Extensions.
+
+* CFBundle(Short)VersionString Mismatch <ios/version-string-mismatch>
+* Potential Loss of Keychain Access <ios/keychain-access-email>
+
