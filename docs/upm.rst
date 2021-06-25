@@ -1,6 +1,11 @@
 Unity Package Manager
 =====================
-Starting with SDK 4.0, Teak is available via UPM through a GitHub repo.
+
+.. _upm-usage:
+
+:Since: 4.0.0
+
+Teak is available via UPM through a GitHub repo.
 
 The repo uses a specific branch structure so that you can manage the Teak dependency via git in the same way you would use other package management, to automatically get minor and patch version updates.
 

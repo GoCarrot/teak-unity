@@ -22,16 +22,6 @@ or::
 
     E/Teak.Integration: Failed to find R.string.io_teak_app_id
 
-or::
-
-    E/Teak.Integration: R.string.io_teak_gcm_sender_id not present or empty, push notifications disabled.
-
-or::
-
-    E/Teak.Integration: R.string.io_teak_firebase_app_id not present or empty, push notifications disabled.
-
-This means that the XML values for Teak are not present. You need to :ref:`android-edit-teak-xml`.
-
 If You See
 ^^^^^^^^^^
 ::

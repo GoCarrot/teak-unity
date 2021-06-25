@@ -1,8 +1,12 @@
 Unity Editor
 ============
 
-Add Teak.unitypackage
----------------------
+Add Teak
+--------
+
+You can use the :ref:`upm-usage`.
+
+Or...
 
 Download the latest *Teak.unitypackage* from https://sdks.teakcdn.com/unity/Teak.unitypackage
 

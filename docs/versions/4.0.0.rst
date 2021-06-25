@@ -2,11 +2,13 @@
 -----
 :Breaking Changes:
     * Minimum Unity version supported is now 2018.4.9f1
-    * Moved the Android configuration values written by Teak from ``Assets/Plugins/Android/res/values`` to ``Assets/Plugins/Android/teak-values.androidlib/res/values``
-    * ``support-v4`` support has been removed, AndroidX is now required
-    * Firebase Job Dispatcher has been deprecated and removed, ``androidx.work:work-runtime:2.5.0`` is now required.
-    * EventBus, ``org.greenrobot:eventbus:3.2.0`` is now required.
-    * InstallReferrer version 2 is now required ``com.android.installreferrer:installreferrer:2.2+``
+    * Android
+        * Moved the Android configuration values written by Teak from ``Assets/Plugins/Android/res/values`` to ``Assets/Plugins/Android/teak-values.androidlib/res/values``
+        * ``support-v4`` support has been removed, AndroidX is now required
+        * Firebase Job Dispatcher has been deprecated and removed, ``androidx.work:work-runtime:2.5.0`` is now required.
+        * Firebase's Unity Plugin is now required for configuration of Push on Android.
+        * EventBus, ``org.greenrobot:eventbus:3.2.0`` is now required.
+        * InstallReferrer version 2 is now required ``com.android.installreferrer:installreferrer:2.2+``
     * OpenIAB support removed. The project was abandoned 4 years ago.
     * Unity Purchasing: Minimum Unity Purchasing version is now 3.1.0
     * Unity Purchasing: ``TeakStoreListener`` is no longer supported or required.
