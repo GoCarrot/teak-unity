@@ -12,6 +12,8 @@
     * OpenIAB support removed. The project was abandoned 4 years ago.
     * Unity Purchasing: Minimum Unity Purchasing version is now 3.1.0
     * Unity Purchasing: ``TeakStoreListener`` is no longer supported or required.
+    * The value previously contained as a string in ``ScheduleName`` is now an ulong value in ``ScheduleId``
+    * The value previously contained as a string in ``CreativeName`` is now an ulong value in ``CreativeId``
 :New Features:
     * None
 :Bug Fixes:

@@ -22,17 +22,37 @@ using System.Text;
 /// </summary>
 public partial class TeakNotification {
     public bool Incentivized { get; set; }
-    public string ScheduleId { get; set; }
-    public string CreativeId { get; set; }
+    public string ScheduleName { get; set; }
+    public ulong ScheduleId { get; set; }
+    public string CreativeName { get; set; }
+    public ulong CreativeId { get; set; }
     public string ChannelName { get; set; }
     public string RewardId { get; set; }
     public string DeepLink { get; set; }
 
+    public TeakNotification(Dictionary<string, object> json) {
+        this.Incentivized = (json["incentivized"] is bool) ? (bool) json["incentivized"] : false;
+        this.ScheduleName = json["teakScheduleName"] as string;
+        this.CreativeName = json["teakCreativeName"] as string;
+        this.ChannelName = json.ContainsKey("teakChannelName") ? json["teakChannelName"] as string : null;
+        this.RewardId = json.ContainsKey("teakRewardId") ? json["teakRewardId"] as string : null;
+        this.DeepLink = json.ContainsKey("teakDeepLink") ? json["teakDeepLink"] as string : null;
+
+        ulong temp = 0;
+        UInt64.TryParse(json["teakScheduleId"] as string, out temp);
+        this.ScheduleId = temp;
+        temp = 0;
+        UInt64.TryParse(json["teakCreativeId"] as string, out temp);
+        this.CreativeId = temp;
+    }
+
     public override string ToString() {
-        string formatString = "{{ Incentivized = '{0}', ScheduleId = '{1}', CreativeId = '{2}', ChannelName = '{3}', RewardId = '{4}', DeepLink = '{5}' }}";
+        string formatString = "{{ Incentivized = '{0}', ScheduleName = '{1}', ScheduleId = '{2}', CreativeName = '{3}', CreativeId = '{4}', ChannelName = '{5}', RewardId = '{6}', DeepLink = '{7}' }}";
         return string.Format(formatString,
                              this.Incentivized,
+                             this.ScheduleName,
                              this.ScheduleId,
+                             this.CreativeName,
                              this.CreativeId,
                              this.ChannelName,
                              this.RewardId,
