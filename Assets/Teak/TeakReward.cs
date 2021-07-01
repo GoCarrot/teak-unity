@@ -24,8 +24,10 @@ public class TeakReward {
 
     public RewardStatus Status { get; set; }
     public Dictionary<string, object> Reward { get; set; }
-    public string ScheduleId { get; set; }
-    public string CreativeId { get; set; }
+    public string ScheduleName { get; set; }
+    public ulong ScheduleId { get; set; }
+    public string CreativeName { get; set; }
+    public ulong CreativeId { get; set; }
     public string ChannelName { get; set; }
     public bool Incentivized { get; set; }
     public string RewardId { get; set; }
@@ -36,8 +38,18 @@ public class TeakReward {
         this.RewardId = json["teakRewardId"] as string;
 
         // Optional
-        if (json.ContainsKey("teakScheduleName")) { this.ScheduleId = json["teakScheduleName"] as string; }
-        if (json.ContainsKey("teakCreativeName")) { this.CreativeId = json["teakCreativeName"] as string; }
+        if (json.ContainsKey("teakScheduleName")) { this.ScheduleName = json["teakScheduleName"] as string; }
+        if (json.ContainsKey("teakScheduleId")) {
+            ulong temp = 0;
+            UInt64.TryParse(json["teakScheduleId"] as string, out temp);
+            this.ScheduleId = temp;
+        }
+        if (json.ContainsKey("teakCreativeName")) { this.CreativeName = json["teakCreativeName"] as string; }
+        if (json.ContainsKey("teakCreativeId")) {
+            ulong temp = 0;
+            UInt64.TryParse(json["teakCreativeId"] as string, out temp);
+            this.CreativeId = temp;
+        }
         if (json.ContainsKey("teakChannelName")) { this.ChannelName = json["teakChannelName"] as string; }
 
         switch (json["status"] as string) {
