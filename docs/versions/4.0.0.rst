@@ -12,8 +12,12 @@
     * OpenIAB support removed. The project was abandoned 4 years ago.
     * Unity Purchasing: Minimum Unity Purchasing version is now 3.1.0
     * Unity Purchasing: ``TeakStoreListener`` is no longer supported or required.
-    * The value previously contained as a string in ``ScheduleName`` is now an ulong value in ``ScheduleId``
-    * The value previously contained as a string in ``CreativeName`` is now an ulong value in ``CreativeId``
+    * ``TeakNotification``
+        * Previously there was a ``string`` value in ``ScheduleId`` that was actually the name of the schedule. This is now contained in ``ScheduleName`` and the contents of ``ScheduleId`` are now the ``ulong`` id of the schedule.
+        * Previously there was a ``string`` value in ``CreativeId`` that was actually the name of the creative. This is now contained in ``CreativeName`` and the contents of ``CreativeId`` are now the ``ulong`` id of the creative.
+    * ``TeakReward``
+        * Previously there was a ``string`` value in ``ScheduleId`` that was actually the name of the schedule. This is now contained in ``ScheduleName`` and the contents of ``ScheduleId`` are now the ``ulong`` id of the schedule.
+        * Previously there was a ``string`` value in ``CreativeId`` that was actually the name of the creative. This is now contained in ``CreativeName`` and the contents of ``CreativeId`` are now the ``ulong`` id of the creative.
 :New Features:
     * None
 :Bug Fixes:

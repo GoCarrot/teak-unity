@@ -39,11 +39,15 @@ public partial class TeakNotification {
         this.DeepLink = json.ContainsKey("teakDeepLink") ? json["teakDeepLink"] as string : null;
 
         ulong temp = 0;
-        UInt64.TryParse(json["teakScheduleId"] as string, out temp);
-        this.ScheduleId = temp;
-        temp = 0;
-        UInt64.TryParse(json["teakCreativeId"] as string, out temp);
-        this.CreativeId = temp;
+        if (json.ContainsKey("teakScheduleId")) {
+            UInt64.TryParse(json["teakScheduleId"] as string, out temp);
+            this.ScheduleId = temp;
+        }
+        if (json.ContainsKey("teakCreativeId")) {
+            temp = 0;
+            UInt64.TryParse(json["teakCreativeId"] as string, out temp);
+            this.CreativeId = temp;
+        }
     }
 
     public override string ToString() {
