@@ -1,74 +1,29 @@
 # frozen_string_literal: true
 
 require 'rake/clean'
-require 'aws-sdk-s3'
-require 'httparty'
 require 'shellwords'
 require 'tmpdir'
 require 'yaml'
-require 'awesome_print'
-require 'terminal-notifier'
 require 'mustache'
 require 'pathname'
+require 'unitypackage'
 CLEAN.include '**/.DS_Store'
-
-#
-# Extend Rake to have current_task
-#
-require 'rake'
-module Rake
-  #
-  # Extend Application
-  #
-  class Application
-    attr_accessor :current_task
-  end
-  #
-  # Extend Task
-  #
-  class Task
-    alias old_execute execute
-    def execute(args = nil)
-      Rake.application.current_task = self
-      old_execute(args)
-    end
-  end
-end
 
 KMS_KEY = `aws kms decrypt --ciphertext-blob fileb://kms/store_encryption_key.key --output text --query Plaintext | base64 --decode`.freeze
 CIRCLE_TOKEN = ENV.fetch('CIRCLE_TOKEN') { `openssl enc -md MD5 -d -aes-256-cbc -in kms/encrypted_circle_ci_key.data -k #{KMS_KEY}` }
 
-UNITY_HOME = ENV.fetch('UNITY_HOME', Dir.glob('/Applications/Unity*').first)
 TEAK_SDK_VERSION = `git describe --tags`.strip
 NATIVE_CONFIG = YAML.load_file('native.config.yml')
 
 PROJECT_PATH = Rake.application.original_dir
 BUILD_TYPE = ENV.fetch('BUILD_TYPE', 'Release')
 
+UPM_BUILD_TEMP = ENV.fetch('UPM_BUILD_TEMP', 'temp-upm-build')
 UPM_PACKAGE_REPO = ENV.fetch('UPM_PACKAGE_REPO', '../upm-package-teak')
 
 TEMPLATE_PARAMETERS = {
   teak_sdk_version: TEAK_SDK_VERSION
 }
-
-#
-# Play a sound after finished
-#
-at_exit do
-  if ci?
-    add_unity_log_to_artifacts
-    Rake::Task['unity:returnlicense'].invoke
-  else
-    success = $ERROR_INFO.nil?
-    TerminalNotifier.notify(
-      Rake.application.top_level_tasks.join(', '),
-      title: 'Teak Unity',
-      subtitle: success ? 'Succeeded' : 'Failed',
-      sound: success ? 'Submarine' : 'Funk'
-    ) if !success || ENV.fetch('NOTIFY', true).to_s == 'true'
-  end
-end
-
 #
 # Helper methods
 #
@@ -81,35 +36,10 @@ def build_local?
   ENV.fetch('BUILD_LOCAL', false).to_s == 'true'
 end
 
-def add_unity_log_to_artifacts
-  cp('unity.log', "#{Rake.application.current_task.name.sub(':', '-')}.unity.log") unless $ERROR_INFO.nil?
-end
-
-def unity(*args, quit: true, nographics: true)
-  args.push('-serial', ENV['UNITY_SERIAL'], '-username', ENV['UNITY_EMAIL'], '-password', ENV['UNITY_PASSWORD']) if ci?
-
-  unity_cmd = UNITY_HOME.start_with?('/Applications') ? "#{UNITY_HOME}/Unity.app/Contents/MacOS/Unity" : "#{UNITY_HOME}/Unity"
-  escaped_args = args.map { |arg| Shellwords.escape(arg) }.join(' ')
-  sh "#{unity_cmd} -logFile #{PROJECT_PATH}/unity.log#{quit ? ' -quit' : ''}#{nographics ? ' -nographics' : ''} -batchmode -projectPath #{PROJECT_PATH} #{escaped_args}", verbose: false
-ensure
-  add_unity_log_to_artifacts if ci?
-end
-
 task default: ['build:android', 'build:ios', 'build:package']
 
 task :format do
-  sh 'astyle --project --recursive Assets/*.cs'
-end
-
-namespace :unity do
-  task :returnlicense do
-    begin
-      sh "#{UNITY_HOME}/Unity.app/Contents/MacOS/Unity -batchmode -quit -returnlicense", verbose: false
-    rescue StandardError
-      nil
-    end
-    puts 'Released Unity license...'
-  end
+  sh 'astyle --project --recursive Assets/*.cs --exclude=Assets/Teak/Editor/iOS/Xcode'
 end
 
 task :version, [:v] do |_, args|
@@ -119,6 +49,8 @@ task :version, [:v] do |_, args|
 end
 
 namespace :version do
+  require 'aws-sdk-s3'
+
   task :ios, [:v] do |_, args|
     s3 = Aws::S3::Resource.new(
       region: 'us-east-1'
@@ -149,42 +81,19 @@ namespace :version do
 end
 
 namespace :build do
-  task :cleanroom do
-    json = HTTParty.post("https://circleci.com/api/v1.1/project/github/GoCarrot/teak-unity-cleanroom/build?circle-token=#{CIRCLE_TOKEN}",
-                         body: {
-                           branch: 'master'
-                         }.to_json,
-                         headers: {
-                           'Content-Type' => 'application/json',
-                           'Accept' => 'application/json'
-                         }).body
-    response = JSON.parse(json)
-    ap(response)
-    throw response['message'] unless response['status'] == 200
-  end
-
   task :android do
-    Dir.mktmpdir do |dir|
-      Dir.chdir(dir) do
-        # Download or copy Teak SDK AAR
-        if build_local?
-          cp "#{PROJECT_PATH}/../teak-android/build/outputs/aar/teak-debug.aar", 'teak.aar'
-        else
-          sh "curl -o teak.aar https://sdks.teakcdn.com/android/teak-#{NATIVE_CONFIG['version']['android']}.aar"
-        end
+    # Write Unity SDK version information
+    plugins_android = File.join(PROJECT_PATH, 'Assets', 'Teak', 'Plugins', 'Android')
 
-        # Unzip AAR, delete original AAR
-        sh 'unzip teak.aar'
-        rm 'teak.aar'
+    template = File.read(File.join(PROJECT_PATH, 'Templates', 'Version.java.template'))
+    File.write(File.join(plugins_android, 'Version.java'), Mustache.render(template, TEMPLATE_PARAMETERS))
 
-        # Write Unity SDK version information to 'res/values/teak_unity_version.xml'
-        template = File.read(File.join(PROJECT_PATH, 'Templates', 'teak_unity_version.xml.template'))
-        path = File.join(PROJECT_PATH, 'Assets', 'Teak', 'Plugins', 'Android', 'res', 'values')
-        mkdir_p path
-        File.write(File.join(path, 'teak_unity_version.xml'), Mustache.render(template, TEMPLATE_PARAMETERS))
-
-        # Re-package AAR
-        sh "jar cf #{File.join(PROJECT_PATH, 'Assets', 'Teak', 'Plugins', 'Android', 'teak.aar')} ."
+    Dir.chdir(plugins_android) do
+      # Download or copy Teak SDK AAR
+      if build_local?
+        cp "#{PROJECT_PATH}/../teak-android/build/outputs/aar/teak-debug.aar", 'teak.aar'
+      else
+        sh "curl -o teak.aar https://sdks.teakcdn.com/android/teak-#{NATIVE_CONFIG['version']['android']}.aar"
       end
     end
   end
@@ -221,7 +130,7 @@ namespace :build do
     if build_local?
       cp "#{PROJECT_PATH}/../teak-ios/TeakExtensions/TeakNotificationContent/Info.plist", content_plist
     else
-      sh "curl --fail -o #{content_plist} https://sdks.teakcdn.com/ios/Info.plist"
+      sh "curl --fail -o #{content_plist} https://sdks.teakcdn.com/ios/Info-#{NATIVE_CONFIG['version']['ios']}.plist"
     end
 
     # Write Unity SDK version information to 'Assets/Teak/Plugins/iOS/teak_version.m'
@@ -239,7 +148,11 @@ namespace :build do
     template = File.read(File.join(PROJECT_PATH, 'Templates', 'TeakVersion.cs.template'))
     File.write(File.join(PROJECT_PATH, 'Assets', 'Teak', 'TeakVersion.cs'), Mustache.render(template, TEMPLATE_PARAMETERS))
 
-    unity '-executeMethod', 'TeakPackageBuilder.BuildUnityPackage'
+    package = UnityPackage::UnityPackage.new
+    package << Dir['Assets/Teak/**/*']
+    File.open(package_path, 'wb') do |file|
+      package.write file
+    end
 
     begin
       sh 'python extractunitypackage.py Teak.unitypackage _temp_pkg/', verbose: false
@@ -252,20 +165,14 @@ end
 
 namespace :upm do
   task :build do
-    # Ensure repo exists
-    unless Dir.exist? UPM_PACKAGE_REPO
-      `git clone git@github.com:GoCarrot/upm-package-teak.git #{UPM_PACKAGE_REPO}`
-    end
-
-    # package.json
-    template = File.read(File.join(PROJECT_PATH, 'Templates', 'package.json.template'))
-    File.write(File.join(PROJECT_PATH, UPM_PACKAGE_REPO, 'package.json'), Mustache.render(template, TEMPLATE_PARAMETERS))
+    FileUtils.rm_rf(UPM_BUILD_TEMP)
+    FileUtils.mkdir_p(UPM_BUILD_TEMP)
 
     # Changelog
-    cd 'docs' do
-      `make html`
-      `pandoc -f rst -t gfm -o ../#{UPM_PACKAGE_REPO}/CHANGELOG.md changelog.rst`
-    end
+    # cd 'docs' do
+    #   `make html`
+    #   `pandoc -f rst -t gfm -o ../#{UPM_BUILD_TEMP}/CHANGELOG.md changelog.rst`
+    # end
 
     editor_glob = Dir.glob('Assets/Teak/Editor/**/*')
 
@@ -284,7 +191,83 @@ namespace :upm do
       end
     end
 
-    copy_glob_to(editor_glob, File.join(UPM_PACKAGE_REPO, 'Editor'), 'Assets/Teak/Editor')
-    copy_glob_to(runtime_glob, File.join(UPM_PACKAGE_REPO, 'Runtime'), 'Assets/Teak')
+    copy_glob_to(editor_glob, File.join(UPM_BUILD_TEMP, 'Editor'), 'Assets/Teak/Editor')
+    copy_glob_to(runtime_glob, File.join(UPM_BUILD_TEMP, 'Runtime'), 'Assets/Teak')
   end
+
+  task :deploy_versioned do
+    # Ensure repo exists
+    unless Dir.exist? UPM_PACKAGE_REPO
+      `git clone git@github.com:GoCarrot/upm-package-teak.git #{UPM_PACKAGE_REPO}`
+    end
+
+    # package.json
+    template = File.read(File.join(PROJECT_PATH, 'Templates', 'package.json.template'))
+    File.write(File.join(PROJECT_PATH, UPM_PACKAGE_REPO, 'package.json'), Mustache.render(template, TEMPLATE_PARAMETERS))
+
+    # Construct our version.
+    version_parts = TEAK_SDK_VERSION.split('-')
+    version = version_parts[0]
+    version_suffix = version_parts[1..-1].join('-')
+    major, minor, patch = version.split('.').map(&:to_i)
+
+    cd UPM_PACKAGE_REPO do
+      sh "git config user.email \"team@teak.io\""
+      sh "git config user.name \"Teak CI\""
+
+      sh "git checkout main" # Start on the main branch
+      sh "git checkout #{major}.#{minor} || " +  # If the current minor version branch exists, check it out
+         "(git checkout #{major}.#{minor - 1} && git checkout -b #{major}.#{minor}) || " + # Check out the previous minor revision and then create a new minor version branch off that
+         "(git checkout #{major} && git checkout -b #{major}.#{minor}) || " + # If there is no previous minor version branch, check out the major version and create one
+         "(git checkout #{major - 1} ; (git checkout -b #{major} && git checkout -b #{major}.#{minor}))" # New major version based on previous major version, or main
+      sh "rm -fr *" # Delete all files
+      sh "git ls-tree --name-only -r main | xargs git checkout --" # Restore files which exist in the main branch
+    end
+
+    sh "cp -RT #{UPM_BUILD_TEMP} #{UPM_PACKAGE_REPO}" # Copy in all the files
+
+    cd UPM_PACKAGE_REPO do
+      sh "git add -A" # Add all files present
+      sh "git commit -am \"#{TEAK_SDK_VERSION}\"" # Commit with message set to full version
+      sh "git tag #{TEAK_SDK_VERSION}" # Create a tag of the full version
+
+      # Push versioned
+      sh "git push origin #{major}.#{minor}"
+      sh "git push --tags"
+
+      # puts "git switch #{major} # Checkout branch '#{major}' or create it if it doesn't exist"
+      # puts "git reset --hard #{TEAK_SDK_VERSION} # Reset the HEAD of the '#{major}' branch to the tag we just created"
+      # puts "git push --all origin # Push all branches and commits"
+      # puts "git push --tags # Push tags"
+    end
+  end
+
+  task :deploy_latest do
+    version_parts = TEAK_SDK_VERSION.split('-')
+    version = version_parts[0]
+    version_suffix = version_parts[1..-1].join('-')
+    major, minor, patch = version.split('.').map(&:to_i)
+
+    cd UPM_PACKAGE_REPO do
+      sh "git checkout #{major}.#{minor}"
+      sh "git reset --hard #{TEAK_SDK_VERSION}" # Move the major.minor branch HEAD to the latest tag
+      sh "git checkout #{major}"
+      sh "git reset --hard #{TEAK_SDK_VERSION}" # Move the major branch HEAD to the latest tag
+      sh "git push --all"
+    end
+  end
+
+  # task :merge do
+  #   cd UPM_PACKAGE_REPO do
+  #     `git config user.email "team@teak.io"`
+  #     `git config user.name "Teak CI"`
+  #     `git checkout main`
+  #     `git clean -fdx`
+  #     `git merge -m "Current version $PVERSION" --no-ff origin/$PVERSION &&
+  #       git tag $PVERSION &&
+  #       git push &&
+  #       git push origin --delete $PVERSION &&
+  #       git push --tags`
+  #   end
+  # end
 end

@@ -23,21 +23,32 @@ public partial class Teak : MonoBehaviour {
     /// <value> The <see cref="Teak"/> singleton.</value>
     public static Teak Instance {
         get {
-            if (mInstance == null) {
-                mInstance = FindObjectOfType(typeof(Teak)) as Teak;
-
-                if (mInstance == null) {
-                    GameObject teakGameObject = GameObject.Find("TeakGameObject");
-                    if (teakGameObject == null) {
-                        teakGameObject = new GameObject("TeakGameObject");
-                        teakGameObject.AddComponent<Teak>();
-                        teakGameObject.hideFlags = HideFlags.DontSave;
-                    }
-                    mInstance = teakGameObject.GetComponent<Teak>();
-                }
-            }
-            return mInstance;
+            return Teak.Init();
         }
+    }
+
+    /// <summary>
+    /// Manually initialize Teak.
+    /// </summary>
+    /// <remarks>
+    /// Under normal circumstances it is not necessassary to call this, and you can
+    /// simply use Teak.Instance (which calls this method).
+    /// </remarks>
+    public static Teak Init() {
+        if (mInstance == null) {
+            mInstance = FindObjectOfType(typeof(Teak)) as Teak;
+
+            if (mInstance == null) {
+                GameObject teakGameObject = GameObject.Find("TeakGameObject");
+                if (teakGameObject == null) {
+                    teakGameObject = new GameObject("TeakGameObject");
+                    teakGameObject.AddComponent<Teak>();
+                    teakGameObject.hideFlags = HideFlags.DontSave;
+                }
+                mInstance = teakGameObject.GetComponent<Teak>();
+            }
+        }
+        return mInstance;
     }
 
     /// <summary>Teak SDK version.</summary>
@@ -74,9 +85,10 @@ public partial class Teak : MonoBehaviour {
 
     /// <summary>
     /// Possible push notification states.
-    ///
-    /// Note that some states are specific to iOS versions.
     /// </summary>
+    /// <remarks>
+    /// Some states are specific to iOS versions.
+    /// </remarks>
     public enum NotificationState : int {
         /// <summary>Unable to determine the notification state.</summary>
         UnableToDetermine   = -1,
@@ -194,7 +206,7 @@ public partial class Teak : MonoBehaviour {
     /// <param name="optOut">A list containing zero or more of: OptOutIdfa, OptOutPushKey, OptOutFacebook</param>
     /// <param name="email">The email address for the current user.</param>
     public void IdentifyUser(string userIdentifier, List<string> optOut = null, String email = null) {
-        if (optOut == null) optOut = new List<string>();
+        if (optOut == null) { optOut = new List<string>(); }
 
         this.UserId = userIdentifier;
 
@@ -458,52 +470,26 @@ public partial class Teak : MonoBehaviour {
 #endif
     }
 
+#if UNITY_WEBGL
+    /// <summary>
+    /// When using Facebook Payments, call this method from your callback
+    /// for <code>FB.Canvas.Pay</code> or <code>FB.Canvas.PayWithProductId</code>.
+    /// </summary>
+    /// <param name="rawResult">The contents of IPayResult.RawResult</param>
+    public void ReportCanvasPurchase(string rawResult) {
+        try {
+            TeakUnityReportCanvasPurchase(rawResult);
+        } catch (Exception) {
+        }
+    }
+#endif
+
     /// @cond hide_from_doxygen
     private static Teak mInstance;
     private Dictionary<string, Action<Dictionary<string, object>>> mDeepLinkRoutes = new Dictionary<string, Action<Dictionary<string, object>>>();
     private Dictionary<string, object> mAppConfiguration = null;
-    /// @endcond
 
-    /// @cond hide_from_doxygen
-#if UNITY_ANDROID
-    private void Prime31PurchaseSucceded<T>(T purchase) {
-        try {
-            PropertyInfo originalJson = purchase.GetType().GetProperty("originalJson");
-            AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
-            teak.CallStatic("pluginPurchaseSucceeded", originalJson.GetValue(purchase, null), "prime31");
-        } catch(Exception) {
-        }
-    }
-
-    private void Prime31PurchaseFailed(string error, int errorCode) {
-        try {
-            AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
-            teak.CallStatic("pluginPurchaseFailed", errorCode, "prime31");
-        } catch(Exception) {
-        }
-    }
-
-    private void OpenIABPurchaseSucceded<T>(T purchase) {
-        try {
-            MethodInfo serialize = purchase.GetType().GetMethod("Serialize");
-            AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
-            Dictionary<string, object> json = Json.TryDeserialize(serialize.Invoke(purchase, null) as string) as Dictionary<string, object>;
-            if (json != null) {
-                teak.CallStatic("pluginPurchaseSucceeded", Json.Serialize(json["originalJson"]), "openiab");
-            }
-        } catch(Exception) {
-        }
-    }
-
-    private void OpenIABPurchaseFailed(int errorCode, string error) {
-        try {
-            AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
-            teak.CallStatic("pluginPurchaseFailed", errorCode, "openiab");
-        } catch(Exception) {
-        }
-    }
-
-#elif UNITY_IPHONE || UNITY_WEBGL
+#if UNITY_IPHONE || UNITY_WEBGL
     [DllImport ("__Internal")]
     private static extern void TeakIdentifyUser(string userId, string optOut, string email);
 
@@ -549,6 +535,9 @@ public partial class Teak : MonoBehaviour {
 
     [DllImport ("__Internal")]
     private static extern void TeakUnityReadyForDeepLinks();
+
+    [DllImport ("__Internal")]
+    private static extern void TeakUnityReportCanvasPurchase(string payload);
 #elif UNITY_IPHONE
     [DllImport ("__Internal")]
     private static extern IntPtr TeakGetAppConfiguration();
@@ -569,14 +558,7 @@ public partial class Teak : MonoBehaviour {
         json.Remove("teakReward");
 
         if (OnLaunchedFromNotification != null) {
-            OnLaunchedFromNotification(new TeakNotification {
-                Incentivized = (json["incentivized"] is bool) ? (bool) json["incentivized"] : false,
-                ScheduleId = json["teakScheduleName"] as string,
-                CreativeId = json["teakCreativeName"] as string,
-                ChannelName = json.ContainsKey("teakChannelName") ? json["teakChannelName"] as string : null,
-                RewardId = json.ContainsKey("teakRewardId") ? json["teakRewardId"] as string : null,
-                DeepLink = json.ContainsKey("teakDeepLink") ? json["teakDeepLink"] as string : null
-            });
+            OnLaunchedFromNotification(new TeakNotification(json));
         }
     }
 
@@ -691,14 +673,7 @@ public partial class Teak : MonoBehaviour {
         json.Remove("teakReward");
 
         if (OnForegroundNotification != null) {
-            OnForegroundNotification(new TeakNotification {
-                Incentivized = (json["incentivized"] is bool) ? (bool) json["incentivized"] : false,
-                ScheduleId = json["teakScheduleName"] as string,
-                CreativeId = json["teakCreativeName"] as string,
-                ChannelName = json.ContainsKey("teakChannelName") ? json["teakChannelName"] as string : null,
-                RewardId = json.ContainsKey("teakRewardId") ? json["teakRewardId"] as string : null,
-                DeepLink = json.ContainsKey("teakDeepLink") ? json["teakDeepLink"] as string : null
-            });
+            OnForegroundNotification(new TeakNotification(json));
         }
     }
 
@@ -783,8 +758,8 @@ public partial class Teak : MonoBehaviour {
             apiKey = this.AppConfiguration["apiKey"] as string;
         }
 #endif
-        if (appId != null) Teak.AppId = appId;
-        if (apiKey != null) Teak.APIKey = apiKey;
+        if (appId != null) { Teak.AppId = appId; }
+        if (apiKey != null) { Teak.APIKey = apiKey; }
 
         // Register our internal callback error handler
         OnCallbackError += InternalOnCallbackError;
@@ -794,54 +769,6 @@ public partial class Teak : MonoBehaviour {
 #if UNITY_EDITOR
         // Editor mode default to trace on
         this.Trace = true;
-#elif UNITY_ANDROID
-        // Try and find an active store plugin
-        Type onePF = Type.GetType("OpenIABEventManager, Assembly-CSharp-firstpass");
-        if (onePF == null) onePF = Type.GetType("OpenIABEventManager, Assembly-CSharp");
-
-        Type prime31 = Type.GetType("Prime31.GoogleIABManager, Assembly-CSharp-firstpass");
-        if (prime31 == null) prime31 = Type.GetType("Prime31.GoogleIABManager, Assembly-CSharp");
-
-        if (onePF != null) {
-            Debug.Log("[Teak] Found OpenIAB, adding event handlers.");
-            EventInfo successEvent = onePF.GetEvent("purchaseSucceededEvent");
-            EventInfo failEvent = onePF.GetEvent("purchaseFailedEvent");
-
-            Type purchase = Type.GetType("OnePF.Purchase, Assembly-CSharp-firstpass");
-            if (purchase == null) purchase = Type.GetType("OnePF.Purchase, Assembly-CSharp");
-
-            MethodInfo magic = GetType().GetMethod("OpenIABPurchaseSucceded", BindingFlags.NonPublic | BindingFlags.Instance).MakeGenericMethod(purchase);
-            Delegate successDelegate = Delegate.CreateDelegate(successEvent.EventHandlerType, this, magic);
-            object[] successHandlerArgs = { successDelegate };
-            successEvent.GetAddMethod().Invoke(null, successHandlerArgs);
-
-            Delegate failDelegate = Delegate.CreateDelegate(failEvent.EventHandlerType, this, "OpenIABPurchaseFailed");
-            object[] failHandlerArgs = { failDelegate };
-            failEvent.GetAddMethod().Invoke(null, failHandlerArgs);
-        } else if (prime31 != null) {
-            Debug.Log("[Teak] Found Prime31, adding event handlers.");
-
-            EventInfo successEvent = prime31.GetEvent("purchaseSucceededEvent");
-            EventInfo failEvent = prime31.GetEvent("purchaseFailedEvent");
-
-            Type purchase = Type.GetType("Prime31.GooglePurchase, Assembly-CSharp-firstpass");
-            if (purchase == null) purchase = Type.GetType("Prime31.GooglePurchase, Assembly-CSharp");
-
-            MethodInfo magic = GetType().GetMethod("Prime31PurchaseSucceded", BindingFlags.NonPublic | BindingFlags.Instance).MakeGenericMethod(purchase);
-            Delegate successDelegate = Delegate.CreateDelegate(successEvent.EventHandlerType, this, magic);
-            object[] successHandlerArgs = { successDelegate };
-            successEvent.GetAddMethod().Invoke(null, successHandlerArgs);
-
-            Delegate failDelegate = Delegate.CreateDelegate(failEvent.EventHandlerType, this, "Prime31PurchaseFailed");
-            object[] failHandlerArgs = { failDelegate };
-            failEvent.GetAddMethod().Invoke(null, failHandlerArgs);
-        } else {
-#if UNITY_PURCHASING
-            Debug.Log("[Teak] Found Unity IAP, use TeakStoreListener to wrap IStoreListener.");
-#else
-            Debug.LogWarning("[Teak] No known store plugin found.");
-#endif
-        }
 #endif
 
         // Trace log default from app config
@@ -852,7 +779,7 @@ public partial class Teak : MonoBehaviour {
     }
 
     void OnApplicationQuit() {
-        Destroy(this);
+        Destroy(this.gameObject);
     }
     /// @endcond
     #endregion

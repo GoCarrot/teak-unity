@@ -64,7 +64,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'Teak for Unity'
-copyright = u'2017-2019, Teak.io, Inc.'
+copyright = u'Teak.io, Inc.'
 author = u'Teak'
 
 # The version info for the project you're documenting, acts as replacement for

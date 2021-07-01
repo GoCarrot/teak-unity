@@ -1,0 +1,24 @@
+4.0.0
+-----
+:Breaking Changes:
+    * Minimum Unity version supported is now 2018.4.9f1
+    * Android
+        * Moved the Android configuration values written by Teak from ``Assets/Plugins/Android/res/values`` to ``Assets/Plugins/Android/teak-values.androidlib/res/values``
+        * ``support-v4`` support has been removed, AndroidX is now required
+        * Firebase Job Dispatcher has been deprecated and removed, ``androidx.work:work-runtime:2.5.0`` is now required.
+        * Firebase's Unity Plugin is now required for configuration of Push on Android.
+        * EventBus, ``org.greenrobot:eventbus:3.2.0`` is now required.
+        * InstallReferrer version 2 is now required ``com.android.installreferrer:installreferrer:2.2+``
+    * OpenIAB support removed. The project was abandoned 4 years ago.
+    * Unity Purchasing: Minimum Unity Purchasing version is now 3.1.0
+    * Unity Purchasing: ``TeakStoreListener`` is no longer supported or required.
+    * ``TeakNotification``
+        * Previously there was a ``string`` value in ``ScheduleId`` that was actually the name of the schedule. This is now contained in ``ScheduleName`` and the contents of ``ScheduleId`` are now the ``ulong`` id of the schedule.
+        * Previously there was a ``string`` value in ``CreativeId`` that was actually the name of the creative. This is now contained in ``CreativeName`` and the contents of ``CreativeId`` are now the ``ulong`` id of the creative.
+    * ``TeakReward``
+        * Previously there was a ``string`` value in ``ScheduleId`` that was actually the name of the schedule. This is now contained in ``ScheduleName`` and the contents of ``ScheduleId`` are now the ``ulong`` id of the schedule.
+        * Previously there was a ``string`` value in ``CreativeId`` that was actually the name of the creative. This is now contained in ``CreativeName`` and the contents of ``CreativeId`` are now the ``ulong`` id of the creative.
+:New Features:
+    * None
+:Bug Fixes:
+    * None

@@ -74,15 +74,8 @@ If you really cannot use the Play Services Resolver plugin, make sure your depen
 
 Configuration
 -------------
-If you use Firebase's ``google-services.json`` and its accompanying Gradle plugin (or something else that turns ``google-services.json`` into XML resources), then you are all set.
+You must use Firebase's Unity SDK, which uses ``google-services.json`` and an accompanying Gradle plugin to configure your Firebase App.
 
-If you use Teak's configuration panel in Unity, it has a setting for ``Firebase App Id``.
-
-(`How to find this value <https://teak.readthedocs.io/en/latest/firebase-app-id.html>`_)
-
-Otherwise, you will need to make the value available to Teak via XML::
-
-    <string name="io_teak_firebase_app_id">YOUR_FIREBASE_APPLICATION_ID</string>
 
 Optionally Disable Google's Automatic Analytics Collection
 ----------------------------------------------------------

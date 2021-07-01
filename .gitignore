@@ -16,24 +16,19 @@ ProjectSettings/ProjectVersion.txt
 Assets/Resources/TeakSettings.*
 Assets/Teak/TeakVersion.cs*
 
-Assets/Plugins/Android/bolts.jar*
-Assets/Plugins/Android/android-support-v4.jar*
-Assets/Plugins/Android/AndroidManifest.xml*
-Assets/Plugins/Android/google-play-services.jar*
-
 Assets/Teak/Plugins/iOS/teak_version.m
+Assets/Teak/Plugins/Android/Version.java
 
 # Teak binaries
 Assets/Teak/Plugins/Android/teak.aar
 Assets/Teak/Plugins/iOS/libTeak.a
-AndroidLibBuild/androidtemp
 
 # Teak resources
 Assets/Teak/Plugins/iOS/TeakResources.bundle
-Assets/Teak/Plugins/Android/res*
 
 Teak.unitypackage
 unity.log
+temp-upm-build
 
 AndroidBuild/
 iOSBuild/

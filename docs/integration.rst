@@ -32,6 +32,7 @@ We're going to give you step-by-step instructions for integrating Teak with Unit
     limiting-data-collection
     fcm-migration
     api-28-migration
+    upm
     changelog
     Android 3rd Party Code Acknowledgements <android/third-party>
     iOS 3rd Party Code Acknowledgements <ios/third-party>

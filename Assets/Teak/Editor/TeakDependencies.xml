@@ -1,5 +1,8 @@
 <dependencies>
   <androidPackages>
+    <!-- EventBus -->
+    <androidPackage spec="org.greenrobot:eventbus:3.2.0" />
+
     <!-- Google Play Services -->
     <androidPackage spec="com.google.android.gms:play-services-ads-identifier:16+">
       <androidSdkPackageIds>
@@ -18,7 +21,7 @@
     </androidPackage>
 
     <!-- Google Play Install Referrer Lib -->
-    <androidPackage spec="com.android.installreferrer:installreferrer:1+">
+    <androidPackage spec="com.android.installreferrer:installreferrer:2.2+">
       <androidSdkPackageIds>
         <androidSdkPackageId>extra-google-m2repository</androidSdkPackageId>
       </androidSdkPackageIds>
@@ -26,14 +29,7 @@
 
 
     <!-- Firebase -->
-    <androidPackage spec="com.google.firebase:firebase-messaging:21.0.0">
-      <androidSdkPackageIds>
-        <androidSdkPackageId>extra-google-m2repository</androidSdkPackageId>
-      </androidSdkPackageIds>
-    </androidPackage>
-
-    <!-- Firebase Job Dispatcher -->
-    <androidPackage spec="com.firebase:firebase-jobdispatcher:0.8.5">
+    <androidPackage spec="com.google.firebase:firebase-messaging:21+">
       <androidSdkPackageIds>
         <androidSdkPackageId>extra-google-m2repository</androidSdkPackageId>
       </androidSdkPackageIds>
@@ -43,6 +39,13 @@
     <androidPackage spec="androidx.core:core:1.0.+">
       <androidSdkPackageIds>
         <androidSdkPackageId>extra-android-m2repository</androidSdkPackageId>
+      </androidSdkPackageIds>
+    </androidPackage>
+
+    <!-- AndroidX WorkManager -->
+    <androidPackage spec="androidx.work:work-runtime:2.5.+">
+      <androidSdkPackageIds>
+        <androidSdkPackageId>extra-google-m2repository</androidSdkPackageId>
       </androidSdkPackageIds>
     </androidPackage>
   </androidPackages>

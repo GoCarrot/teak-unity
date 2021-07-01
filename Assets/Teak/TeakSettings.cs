@@ -78,59 +78,6 @@ public class TeakSettings : ScriptableObject {
 #endif
     }
 
-    public static string GCMSenderId {
-        get { return Instance.mGCMSenderId; }
-#if UNITY_EDITOR
-        set {
-            string valueTrim = value.Trim();
-            if (valueTrim != Instance.mGCMSenderId) {
-                Instance.mGCMSenderId = valueTrim;
-                DirtyEditor();
-            }
-        }
-#endif
-    }
-
-    public static string FirebaseAppId {
-        get { return Instance.mFirebaseAppId; }
-#if UNITY_EDITOR
-        set {
-            string valueTrim = value.Trim();
-            if (valueTrim != Instance.mFirebaseAppId) {
-                Instance.mFirebaseAppId = valueTrim;
-                DirtyEditor();
-            }
-        }
-#endif
-    }
-
-    public static string FirebaseApiKey {
-        get { return Instance.mFirebaseApiKey; }
-#if UNITY_EDITOR
-        set {
-            string valueTrim = value.Trim();
-            if (valueTrim != Instance.mFirebaseApiKey) {
-                Instance.mFirebaseApiKey = valueTrim;
-                DirtyEditor();
-            }
-        }
-#endif
-    }
-
-    public static string FirebaseProjectId {
-        get { return Instance.mFirebaseProjectId; }
-#if UNITY_EDITOR
-        set {
-            string valueTrim = value.Trim();
-            if (valueTrim != Instance.mFirebaseApiKey) {
-                Instance.mFirebaseProjectId = valueTrim;
-                DirtyEditor();
-            }
-        }
-#endif
-    }
-
-
     public static bool JustShutUpIKnowWhatImDoing {
         get { return Instance.mJustShutUpIKnowWhatImDoing; }
 #if UNITY_EDITOR
@@ -160,14 +107,6 @@ public class TeakSettings : ScriptableObject {
     private string mAPIKey = "";
     [SerializeField]
     private string mShortlinkDomain = "";
-    [SerializeField]
-    private string mGCMSenderId = "";
-    [SerializeField]
-    private string mFirebaseAppId = "";
-    [SerializeField]
-    private string mFirebaseApiKey = "";
-    [SerializeField]
-    private string mFirebaseProjectId = "";
     [SerializeField]
     private bool mJustShutUpIKnowWhatImDoing = true;
 

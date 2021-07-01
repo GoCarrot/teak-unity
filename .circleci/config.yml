@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-  teak: teak/sdk-utils@0.0.9
+  teak: teak/sdk-utils@0.0.13
 
 jobs:
   build:
@@ -12,50 +12,39 @@ jobs:
       - checkout
       - run: git fetch --tags
       - restore_cache:
-          key: v1-{{ checksum "setup" }}-{{ checksum "Gemfile.lock" }}-{{ .Environment.HOMEBREW_VERSION }}-{{ .Environment.UNITY_VERSION }}
-      - run:
-          name: Check Homebrew Version
-          command: |
-            echo "Checking for Homebrew version $HOMEBREW_VERSION"
-            [ `brew --version | sed -n 1p | sed 's/[^0-9.]*\([0-9.]*\).*/\1/'` = $HOMEBREW_VERSION ] || brew update
+          key: v1-{{ checksum "setup" }}-{{ checksum "Gemfile.lock" }}
       - run:
           name: Homebrew Depenendcies
           command: HOMEBREW_NO_AUTO_UPDATE=1 ./setup
       - run:
           name: Ruby Gems
           command: |
-            # gem update bundler # This isn't needed right now, it'll cause an error and 2.0.2 is ok for a version
+            gem update bundler
             bundle check || bundle install --path vendor/bundle
       - save_cache:
           paths:
-            # - /usr/local/Homebrew/
             - ~/Library/Caches/Homebrew
             - vendor/bundle
-          key: v1-{{ checksum "setup" }}-{{ checksum "Gemfile.lock" }}-{{ .Environment.HOMEBREW_VERSION }}-{{ .Environment.UNITY_VERSION }}
+          key: v1-{{ checksum "setup" }}-{{ checksum "Gemfile.lock" }}
       - run:
           name: Build Teak SDK
           command: |
-            export UNITY_HOME=/Applications/Unity-$UNITY_VERSION/
             bundle exec rake
-            mkdir -p build/$UNITY_VERSION
-            mv Teak.unitypackage build/$UNITY_VERSION/Teak.unitypackage
+            mkdir build
+            mv Teak.unitypackage build/Teak.unitypackage
       - run:
+          name: Compute Checksum
           command: |
-            mkdir -p /tmp/unity_logs
-            cp unity.log /tmp/unity_logs
-            bundle exec rake unity:returnlicense
-          when: on_fail
+            shasum -a512 build/Teak.unitypackage > build/Teak.unitypackage.sha512
       - run:
           name: Build UPM Package
           command: |
-            UPM_PACKAGE_REPO=upm-package-teak bundle exec rake upm:build
-      - store_artifacts:
-          path: /tmp/unity_logs
+            UPM_BUILD_TEMP=upm-build bundle exec rake upm:build
       - persist_to_workspace:
           root: .
           paths:
             - build/*
-            - upm-package-teak/*
+            - upm-build/*
       - run:
           name: ReadTheDocs.org Unified Docs
           command: curl -X POST -d "branches=master" -d "token=$RTD_TOKEN" https://readthedocs.org/api/v2/webhook/teak/41148/
@@ -65,14 +54,24 @@ jobs:
       - image: circleci/ruby:latest
     steps:
       - checkout
+      - run: git fetch --tags
+      - restore_cache:
+          key: v0-{{ checksum "Gemfile.lock" }}
+      - run:
+          name: Ruby Gems
+          command: |
+            gem update bundler
+            bundle check || bundle install --path vendor/bundle
+      - run:
+          name: Install AWS CLI
+          command: sudo apt-get -y -qq install awscli
+      - save_cache:
+          paths:
+            - vendor/bundle
+          key: v0-{{ checksum "Gemfile.lock" }}
       - attach_workspace:
           at: .
-      - add_ssh_keys:
-          fingerprints:
-            - "37:d2:d9:09:bc:0d:c3:41:f4:68:58:79:80:9c:f5:78"
-            - "c4:51:dc:a2:59:e6:5a:77:de:7b:c0:55:c8:ac:32:66"
-      - teak/tag-promote:
-          on_tag: (cd upm-package-teak ; git config user.email "team@teak.io" ; git config user.name "Teak CI" ; git checkout -b $PVERSION ; git add -A ; git commit -am "$PVERSION" ; GIT_SSH_COMMAND='ssh -i ~/.ssh/id_rsa_37d2d909bc0dc341f4685879809cf578' git push --set-upstream origin $PVERSION)
+      - teak/tag-promote
 
   deploy_versioned:
     docker:
@@ -97,12 +96,18 @@ jobs:
       - attach_workspace:
           at: .
       - run:
+          name: Deploy UPM to Git Repo
+          command: UPM_BUILD_TEMP=upm-build UPM_PACKAGE_REPO=upm-package-teak bundle exec rake upm:deploy_versioned
+      - persist_to_workspace:
+          root: .
+          paths:
+            - build/*
+            - upm-package-teak/*
+      - run:
           name: Upload SDK to S3
           command: |
-            aws s3 cp build/$UNITY_VERSION/Teak.unitypackage s3://teak-build-artifacts/unity/Teak-$(git describe --tags --always).unitypackage --acl public-read
-      # - run:
-      #     name: Trigger Cleanroom Build
-      #     command: bundle exec rake build:cleanroom
+            aws s3 cp build/Teak.unitypackage s3://teak-build-artifacts/unity/Teak-$(git describe --tags --always).unitypackage --acl public-read
+            aws s3 cp build/Teak.unitypackage.sha512 s3://teak-build-artifacts/unity/Teak-$(git describe --tags --always).unitypackage.sha512 --acl public-read
 
   deploy_latest:
     docker:
@@ -125,9 +130,14 @@ jobs:
       - attach_workspace:
           at: .
       - run:
+            name: Update UPM Branch Heads
+            command: |
+              UPM_PACKAGE_REPO=upm-package-teak bundle exec rake upm:deploy_latest
+      - run:
           name: Upload SDK to S3
           command: |
-            aws s3 cp build/$UNITY_VERSION/Teak.unitypackage s3://teak-build-artifacts/unity/Teak.unitypackage --acl public-read
+            aws s3 cp build/Teak.unitypackage s3://teak-build-artifacts/unity/Teak.unitypackage --acl public-read
+            aws s3 cp build/Teak.unitypackage.sha512 s3://teak-build-artifacts/unity/Teak.unitypackage.sha512 --acl public-read
 workflows:
   version: 2
   un-tagged-build:
@@ -146,14 +156,12 @@ workflows:
   tagged-build:
     jobs:
       - build:
-          context: unity-5
           filters:
             branches:
               ignore: /.*/
             tags:
               only: /.*/
       - deploy_versioned:
-          context: unity-5
           requires:
             - build
           filters:
@@ -171,7 +179,6 @@ workflows:
             tags:
               only: /.*/
       - deploy_latest:
-          context: unity-5
           requires:
             - hold
           filters:
