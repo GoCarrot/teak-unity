@@ -49,5 +49,11 @@ public class TeakAndroidAssetLibBuilder : IPreprocessBuildWithReport {
             "</manifest>"
         };
         File.WriteAllLines(Path.Combine(Application.dataPath, androidLibPath, "AndroidManifest.xml"), lines);
+
+        // Update AssetDatabase
+        AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport);
+        AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
+        AssetDatabase.Refresh(ImportAssetOptions.ImportRecursive);
+        AssetDatabase.SaveAssets();
     }
 }
