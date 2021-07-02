@@ -242,6 +242,7 @@ def gen_version(v):
     with open('versions/%s.rst' % version, 'r') as f:
         contents = f.read()
 
+    contents = ('.. _%s:\n\n' % version) + contents
     contents += '\nAndroid\n^^^^^^^\n'
     with open('android/versions/%s.rst' % version, 'r') as f:
         data = f.read().splitlines(True)
