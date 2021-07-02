@@ -203,7 +203,7 @@ namespace :upm do
 
     # package.json
     template = File.read(File.join(PROJECT_PATH, 'Templates', 'package.json.template'))
-    File.write(File.join(PROJECT_PATH, UPM_PACKAGE_REPO, 'package.json'), Mustache.render(template, TEMPLATE_PARAMETERS))
+    File.write(File.join(UPM_BUILD_TEMP, 'package.json'), Mustache.render(template, TEMPLATE_PARAMETERS))
 
     # Construct our version.
     version_parts = TEAK_SDK_VERSION.split('-')
