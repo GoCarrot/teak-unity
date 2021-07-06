@@ -1,5 +1,5 @@
 _build
 _static
 _doxygen
-_versions
 changelog.rst
+_sidebar.rst.inc

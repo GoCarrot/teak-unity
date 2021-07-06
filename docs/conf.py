@@ -237,30 +237,22 @@ def mkdir_p(path):
 
 def gen_version(v):
     version = os.path.splitext(v)[0]
-    mkdir_p('_versions')
 
+    contents = '.. _unity-%s:\n\n' % version.replace('.', '-')
     with open('versions/%s.rst' % version, 'r') as f:
-        contents = f.read()
+        contents += f.read()
 
-    contents += '\nAndroid\n^^^^^^^\n'
+    contents += '\n.. _android-%s:\n\nAndroid\n^^^^^^^\n' % version.replace('.', '-')
     with open('android/versions/%s.rst' % version, 'r') as f:
         data = f.read().splitlines(True)
         contents += ''.join(map(lambda ln: '    %s' % ln, data[2:]))
 
-    contents += '\niOS\n^^^\n'
+    contents += '\n.. _ios-%s:\n\niOS\n^^^\n' % version.replace('.', '-')
     with open('ios/versions/%s.rst' % version, 'r') as f:
         data = f.read().splitlines(True)
         contents += ''.join(map(lambda ln: '    %s' % ln, data[2:]))
 
-    if os.path.isfile('_versions/%s.rst' % version):
-        with open('_versions/%s.rst' % version, 'r') as f:
-            prev = f.read()
-    else:
-        prev = ''
-
-    if contents != prev:
-        with open('_versions/%s.rst' % version, 'w') as f:
-            f.write(contents)
+    return contents
 
 
 def setup(app):
@@ -268,16 +260,15 @@ def setup(app):
     sys.stderr.write("Ensuring all native docs have changelogs\n")
     ensure_versions()
 
-    # Make array of includes
+    # Make array of versions
     versions = []
     for version in sorted(os.listdir('versions'), key = cmp_to_key(cmp_versions), reverse=True):
-        gen_version(version)
         sys.stderr.write("Adding version %s\n" % version)
-        versions.append('.. include:: _versions/{0}'.format(version))
+        versions.append(gen_version(version))
 
-    changelog = """
-Changelog
+    changelog = """Changelog
 =========
+
 %s
 """ % '\n'.join(versions)
 
