@@ -243,6 +243,11 @@ namespace :upm do
   end
 
   task :deploy_latest do
+    # Ensure repo exists
+    unless Dir.exist? UPM_PACKAGE_REPO
+      `git clone git@github.com:GoCarrot/upm-package-teak.git #{UPM_PACKAGE_REPO}`
+    end
+
     version_parts = TEAK_SDK_VERSION.split('-')
     version = version_parts[0]
     version_suffix = version_parts[1..-1].join('-')
@@ -251,7 +256,7 @@ namespace :upm do
     cd UPM_PACKAGE_REPO do
       sh "git checkout #{major}.#{minor}"
       sh "git reset --hard #{TEAK_SDK_VERSION}" # Move the major.minor branch HEAD to the latest tag
-      sh "git checkout #{major}"
+      sh "git checkout #{major} || git checkout -b #{major}"
       sh "git reset --hard #{TEAK_SDK_VERSION}" # Move the major branch HEAD to the latest tag
       sh "git push --all"
     end
