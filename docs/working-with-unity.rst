@@ -414,6 +414,32 @@ Logout
 ------
 You can log out the current user using ``Logout``. If the user is logged out, Teak will not process deep links or rewards until a user is logged in, via ``IdentifyUser``.
 
+Reporting Facebook Payments Purchases
+-------------------------------------
+
+If you need to report purchases on Facebook Canvas from using any of the ``FB.Canvas.Pay`` methods, use::
+
+    void ReportCanvasPurchase(string rawResult)
+
+For example::
+
+    FB.Canvas.PayWithProductId(
+        this.testPurchaseSku,
+        "purchaseiap",
+        null,
+        null,
+        (IPayResult result) => {
+            if(!string.IsNullOrEmpty(result.Error)) {
+                Debug.LogError(result.Error);
+            } else {
+                Teak.Instance.ReportCanvasPurchase(result.RawResult);
+            }
+        }
+    );
+
+Parameters
+    :rawResult: The value of ``IPayResult.RawResult``
+
 Preprocessor Defines
 --------------------
 Teak sets some preprocessor defines for your use in ``Teak/Editor/TeakPreProcessDefiner.cs``.
