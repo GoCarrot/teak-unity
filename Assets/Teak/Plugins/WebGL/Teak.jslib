@@ -33,7 +33,9 @@ mergeInto(LibraryManager.library, {
           incentivized: false,
           teakScheduleName: window.teak.queryParameters.teak_schedule_name,
           teakCreativeName: window.teak.queryParameters.teak_creative_name,
-          teakChannelName: window.teak.queryParameters.teak_channel_name
+          teakChannelName: window.teak.queryParameters.teak_channel_name,
+          teakScheduleId: window.teak.queryParameters.teak_schedule_id,
+          teakCreativeId: window.teak.queryParameters.teak_creative_id
         };
         if (window.teak.queryParameters.teak_reward_id) {
           notification.incentivized = true;
@@ -48,6 +50,8 @@ mergeInto(LibraryManager.library, {
       // reply.reward = JSON.parse(reply.reward);
       // reply.teakScheduleName = window.teak.queryParameters.teak_schedule_name;
       // reply.teakCreativeName = window.teak.queryParameters.teak_creative_name;
+      // reply.teakScheduleId = window.teak.queryParameters.teak_schedule_id;
+      // reply.teakCreativeId = window.teak.queryParameters.teak_creative_id;
 
       reply.teakRewardId = window.teak.queryParameters.teak_reward_id;
       SendMessage("TeakGameObject", "RewardClaimAttempt", JSON.stringify(reply));
