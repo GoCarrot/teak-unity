@@ -30,16 +30,38 @@ This gives Teak the information it needs to send ADM messages to your app.
 
 Update Your AndroidManifest.xml
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-https://developer.amazon.com/docs/adm/integrate-your-app.html#update-your-app-manifest
+Teak uses the manifest merger stage to automatically add the required changes to your AndroidManifest.xml.
 
-Follow steps 1, 2, 3, and 4.
+If you are having issues, please check to make sure that the following exist in the final manifest for your game::
 
-In step 3, you should specify ``android:required="false"`` as Teak will gracefully handle cases when ADM is not available.
+    <permission
+        android:name="${applicationId}.permission.RECEIVE_ADM_MESSAGE"
+        android:protectionLevel="signature" />
+    <uses-permission android:name="${applicationId}.permission.RECEIVE_ADM_MESSAGE" />
+    <uses-permission android:name="com.amazon.device.messaging.permission.RECEIVE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
-In step 4, these are the values you should use:
+    <amazon:enable-feature
+        android:name="com.amazon.device.messaging"
+        android:required="false"/>
 
-* [YOUR SERVICE NAME] = io.teak.sdk.push.ADMPushProvider
-* [YOUR RECEIVER NAME] = io.teak.sdk.push.ADMPushProvider$MessageAlertReceiver
+    <service android:name="io.teak.sdk.push.ADMPushProvider$ADMMessageHandler_1_0_1"
+        android:exported="false" />
+
+    <service
+        android:name="io.teak.sdk.push.ADMPushProvider$ADMMessageHandler_1_1_0"
+        android:permission="android.permission.BIND_JOB_SERVICE"
+        android:exported="false" />
+
+    <receiver
+        android:name="io.teak.sdk.push.ADMPushProvider$MessageAlertReceiver"
+        android:permission="com.amazon.device.messaging.permission.SEND" >
+        <intent-filter>
+            <action android:name="com.amazon.device.messaging.intent.REGISTRATION" />
+            <action android:name="com.amazon.device.messaging.intent.RECEIVE" />
+            <category android:name="${applicationId}" />
+        </intent-filter>
+    </receiver>
 
 Store Your API Key as an Asset
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
