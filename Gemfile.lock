@@ -1,10 +1,3 @@
-GIT
-  remote: https://github.com/GoCarrot/unitypackage
-  revision: 6d75530d22aaf0c733955dd103d67bba7e5b347a
-  branch: main
-  specs:
-    unitypackage (0.1.0)
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -52,6 +45,7 @@ GEM
       unicode-display_width (>= 1.4.0, < 1.7)
     ruby-progressbar (1.10.1)
     unicode-display_width (1.6.1)
+    unitypackage (0.1.0)
 
 PLATFORMS
   ruby
@@ -63,7 +57,7 @@ DEPENDENCIES
   mustache
   rake
   rubocop
-  unitypackage (= 0.1.0)!
+  unitypackage
 
 BUNDLED WITH
    2.1.4
