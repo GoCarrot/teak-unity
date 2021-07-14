@@ -1,0 +1,8 @@
+3.5.3
+-----
+:Breaking Changes:
+    * None
+:New Features:
+    * None
+:Bug Fixes:
+    * WebGL now properly allows email address collection via ``IdentifyUser``
