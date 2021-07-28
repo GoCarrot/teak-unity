@@ -220,6 +220,6 @@ Emails from Apple
 -----------------
 You may recieve some confusing error/warning emails from Apple that are related to App Extensions.
 
-* CFBundle(Short)VersionString Mismatch <ios/version-string-mismatch>
-* Potential Loss of Keychain Access <ios/keychain-access-email>
+* :ref:`version_string_mistatch_email`
+* :ref:`keychain_access_email`
 
