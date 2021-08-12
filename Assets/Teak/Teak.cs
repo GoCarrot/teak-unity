@@ -208,7 +208,7 @@ public partial class Teak : MonoBehaviour {
     /// <param name="email">The email address for the current user.</param>
     [Obsolete]
     public void IdentifyUser(string userIdentifier, List<string> optOut = null, String email = null) {
-        if (optOut == null) optOut = new List<string>();
+        if (optOut == null) { optOut = new List<string>(); }
 
         UserConfiguration userConfiguration = new UserConfiguration {
             Email = email,
@@ -235,7 +235,7 @@ public partial class Teak : MonoBehaviour {
 #if UNITY_ANDROID
         public AndroidJavaObject ToAndroidJavaObject() {
             return new AndroidJavaObject("io.teak.sdk.Teak$UserConfiguration",
-                this.Email, this.FacebookId, this.OptOutFacebook, this.OptOutIdfa, this.OptOutPushKey);
+                                         this.Email, this.FacebookId, this.OptOutFacebook, this.OptOutIdfa, this.OptOutPushKey);
         }
 #endif
 
@@ -269,7 +269,7 @@ public partial class Teak : MonoBehaviour {
 #if UNITY_EDITOR
 #elif UNITY_ANDROID
         AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
-        using(AndroidJavaObject javaConfig = userConfiguration.ToAndroidJavaObject()) {
+        using (AndroidJavaObject javaConfig = userConfiguration.ToAndroidJavaObject()) {
             teak.CallStatic("identifyUser", userIdentifier, javaConfig);
         }
 #elif UNITY_IPHONE || UNITY_WEBGL
