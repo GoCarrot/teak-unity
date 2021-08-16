@@ -55,7 +55,8 @@ If you are having issues, please check to make sure that the following exist in 
 
     <receiver
         android:name="io.teak.sdk.push.ADMPushProvider$MessageAlertReceiver"
-        android:permission="com.amazon.device.messaging.permission.SEND" >
+        android:permission="com.amazon.device.messaging.permission.SEND"
+        android:exported="true">
         <intent-filter>
             <action android:name="com.amazon.device.messaging.intent.REGISTRATION" />
             <action android:name="com.amazon.device.messaging.intent.RECEIVE" />
