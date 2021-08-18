@@ -297,6 +297,19 @@ public partial class Teak : MonoBehaviour {
     }
 
     /// <summary>
+    /// On iOS, if 'TeakDoNotRefreshPushToken' is set to 'true' then this method
+    /// will tell Teak that the push token is ready, and that the user has authorized
+    /// push notifications. If the user has not authorized push notifications, this will
+    /// have no effect.
+    /// </summary>
+    public void RefreshPushTokenIfAuthorized() {
+#if UNITY_EDITOR
+#elif UNITY_IPHONE
+        TeakRefreshPushTokenIfAuthorized();
+#endif
+    }
+
+    /// <summary>
     /// Track an arbitrary event in Teak.
     /// </summary>
     /// <param name="actionId">The identifier for the action, e.g. 'complete'.</param>
@@ -599,6 +612,9 @@ public partial class Teak : MonoBehaviour {
 
     [DllImport ("__Internal")]
     private static extern IntPtr TeakGetDeviceConfiguration();
+
+    [DllImport ("__Internal")]
+    private static extern void TeakRefreshPushTokenIfAuthorized();
 #endif
     /// @endcond
 

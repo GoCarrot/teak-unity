@@ -18,7 +18,8 @@ class TeakPreProcessDefiner : IPreprocessBuildWithReport {
         "TEAK_3_2_OR_NEWER",
         "TEAK_3_3_OR_NEWER",
         "TEAK_3_4_OR_NEWER",
-        "TEAK_4_0_OR_NEWER"
+        "TEAK_4_0_OR_NEWER",
+        "TEAK_4_1_OR_NEWER"
     };
 
     public void OnPreprocessBuild(BuildReport report) {
