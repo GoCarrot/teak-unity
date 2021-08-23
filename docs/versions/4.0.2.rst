@@ -1,0 +1,9 @@
+4.0.2
+-----
+:Breaking Changes:
+    * None
+:New Features:
+    * None
+:Bug Fixes:
+    * WebGL now properly supports ``TeakScheduleId`` and ``TeakCreativeId``
+    * WebGL now properly allows email address collection via ``IdentifyUser``
