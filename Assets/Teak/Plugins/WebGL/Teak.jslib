@@ -30,7 +30,6 @@ mergeInto(LibraryManager.library, {
     window.teak.on('udidAvailable', function() {
       if (window.teak.queryParameters.teak_notif_id) {
         var notification = {
-          incentivized: false,
           teakScheduleName: window.teak.queryParameters.teak_schedule_name,
           teakCreativeName: window.teak.queryParameters.teak_creative_name,
           teakChannelName: window.teak.queryParameters.teak_channel_name,
@@ -38,7 +37,6 @@ mergeInto(LibraryManager.library, {
           teakCreativeId: window.teak.queryParameters.teak_creative_id
         };
         if (window.teak.queryParameters.teak_reward_id) {
-          notification.incentivized = true;
           notification.teakRewardId = window.teak.queryParameters.teak_reward_id;
         }
         SendMessage("TeakGameObject", "NotificationLaunch", JSON.stringify(notification));
