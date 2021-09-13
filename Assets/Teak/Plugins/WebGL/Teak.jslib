@@ -41,6 +41,8 @@ mergeInto(LibraryManager.library, {
       // Notifications have teak_notif_id, reward links have teak_rewardlink_id
       if (window.teak.queryParameters.teak_notif_id) {
         SendMessage("TeakGameObject", "NotificationLaunch", JSON.stringify(attribution));
+      } else if (window.teak.queryParameters.teak_rewardlink_id) {
+        SendMessage("TeakGameObject", "LaunchedFromLink", JSON.stringify(attribution));
       }
 
       // Always send launch summary
