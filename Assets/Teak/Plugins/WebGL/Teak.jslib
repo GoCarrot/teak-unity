@@ -28,18 +28,19 @@ mergeInto(LibraryManager.library, {
     window.teak.identify(userId, null, null, {email: email});
 
     window.teak.on('udidAvailable', function() {
+      // Teak attribution params
+      var attribution = {
+        teakScheduleName: window.teak.queryParameters.teak_schedule_name,
+        teakScheduleId: window.teak.queryParameters.teak_schedule_id,
+        teakCreativeName: window.teak.queryParameters.teak_creative_name || window.teak.queryParameters.teak_rewardlink_name,
+        teakCreativeId: window.teak.queryParameters.teak_creative_id || window.teak.queryParameters.teak_rewardlink_id,
+        teakChannelName: window.teak.queryParameters.teak_channel_name,
+        teakRewardId: window.teak.queryParameters.teak_reward_id
+      };
+
+      // Notifications have teak_notif_id, reward links have teak_rewardlink_id
       if (window.teak.queryParameters.teak_notif_id) {
-        var notification = {
-          teakScheduleName: window.teak.queryParameters.teak_schedule_name,
-          teakCreativeName: window.teak.queryParameters.teak_creative_name,
-          teakChannelName: window.teak.queryParameters.teak_channel_name,
-          teakScheduleId: window.teak.queryParameters.teak_schedule_id,
-          teakCreativeId: window.teak.queryParameters.teak_creative_id
-        };
-        if (window.teak.queryParameters.teak_reward_id) {
-          notification.teakRewardId = window.teak.queryParameters.teak_reward_id;
-        }
-        SendMessage("TeakGameObject", "NotificationLaunch", JSON.stringify(notification));
+        SendMessage("TeakGameObject", "NotificationLaunch", JSON.stringify(attribution));
       }
 
       // Always send launch summary
