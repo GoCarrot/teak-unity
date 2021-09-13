@@ -382,6 +382,11 @@ public partial class Teak : MonoBehaviour {
     public event System.Action<Dictionary<string, object>> OnLaunchedFromLink;
 
     /// <summary>
+    /// An event which is dispatched each time the app is launched, with info about the launch.
+    /// </summary>
+    public event System.Action<Dictionary<string, object>> OnPostLaunchSummary;
+
+    /// <summary>
     /// An event which is dispatched when your code, executed via deep link callback, throws an exception.
     /// </summary>
     public event System.Action<string, Exception, Dictionary<string, object>> OnCallbackError;
@@ -639,6 +644,17 @@ public partial class Teak : MonoBehaviour {
 
         if (OnReward != null) {
             OnReward(new TeakReward(json));
+        }
+    }
+
+    void PostLaunchSummary(string jsonString) {
+        Dictionary<string, object> json = Json.TryDeserialize(jsonString) as Dictionary<string, object>;
+        if (json == null) {
+            return;
+        }
+
+        if (OnPostLaunchSummary != null) {
+            OnPostLaunchSummary(json);
         }
     }
 
