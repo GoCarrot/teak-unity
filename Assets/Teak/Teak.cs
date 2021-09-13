@@ -626,8 +626,6 @@ public partial class Teak : MonoBehaviour {
             return;
         }
 
-        json.Remove("teakReward");
-
         if (OnLaunchedFromNotification != null) {
             OnLaunchedFromNotification(new TeakNotification(json));
         }
@@ -740,8 +738,6 @@ public partial class Teak : MonoBehaviour {
         if (json == null) {
             return;
         }
-
-        json.Remove("teakReward");
 
         if (OnForegroundNotification != null) {
             OnForegroundNotification(new TeakNotification(json));
