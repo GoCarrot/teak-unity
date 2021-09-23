@@ -35,7 +35,8 @@ mergeInto(LibraryManager.library, {
         teakCreativeName: window.teak.queryParameters.teak_creative_name || window.teak.queryParameters.teak_rewardlink_name,
         teakCreativeId: window.teak.queryParameters.teak_creative_id || window.teak.queryParameters.teak_rewardlink_id,
         teakChannelName: window.teak.queryParameters.teak_channel_name,
-        teakRewardId: window.teak.queryParameters.teak_reward_id
+        teakRewardId: window.teak.queryParameters.teak_reward_id,
+        teakDeepLink: window.teak.queryParameters.teak_deep_link
       };
 
       // Notifications have teak_notif_id, reward links have teak_rewardlink_id
