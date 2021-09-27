@@ -47,7 +47,7 @@ mergeInto(LibraryManager.library, {
       }
 
       // Always send launch summary
-      SendMessage("TeakGameObject", "PostLaunchSummary", JSON.stringify(window.teak.queryParameters));
+      SendMessage("TeakGameObject", "PostLaunchSummary", JSON.stringify(attribution));
     });
 
     window.teak.claimReward(function(reply) {
