@@ -16,3 +16,5 @@ We know integrating SDKs isn't your favorite thing in the world, but we're going
 We're going to give you step-by-step instructions for integrating Teak with Unity for iOS and Android, how to test your integration, and how to fix errors you may run into.
 
 .. tip:: You can always ask us for help, don't be shy.
+
+.. important:: Please note that Teak SDK 4.0.0 supports a maximum ``targetSdkVersion`` of 30; Teak SDK 4.1.0 and greater supports ``targetSdkVersion`` of 31.

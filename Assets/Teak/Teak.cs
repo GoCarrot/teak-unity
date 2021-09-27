@@ -192,6 +192,7 @@ public partial class Teak : MonoBehaviour {
     /// </remarks>
     /// <param name="userIdentifier">An identifier which is unique for the current user.</param>
     /// <param name="email">The email address for the current user.</param>
+    [Obsolete]
     public void IdentifyUser(string userIdentifier, String email) {
         this.IdentifyUser(userIdentifier, null, email);
     }
@@ -205,20 +206,74 @@ public partial class Teak : MonoBehaviour {
     /// <param name="userIdentifier">An identifier which is unique for the current user.</param>
     /// <param name="optOut">A list containing zero or more of: OptOutIdfa, OptOutPushKey, OptOutFacebook</param>
     /// <param name="email">The email address for the current user.</param>
+    [Obsolete]
     public void IdentifyUser(string userIdentifier, List<string> optOut = null, String email = null) {
         if (optOut == null) { optOut = new List<string>(); }
 
+        UserConfiguration userConfiguration = new UserConfiguration {
+            Email = email,
+            OptOutFacebook = optOut.Contains(OptOutFacebook),
+            OptOutPushKey = optOut.Contains(OptOutPushKey),
+            OptOutIdfa = optOut.Contains(OptOutIdfa)
+        };
+
+        this.IdentifyUser(userIdentifier, userConfiguration);
+    }
+
+    /// <summary>
+    /// Configuration options for identifying a user.
+    /// </summary>
+    public class UserConfiguration {
+        /// Email address
+        public string Email { get; set; }
+        public string FacebookId { get; set; }
+        [Obsolete]
+        public bool OptOutFacebook { get; set; }
+        public bool OptOutIdfa { get; set; }
+        public bool OptOutPushKey { get; set; }
+
+#if UNITY_ANDROID
+        public AndroidJavaObject ToAndroidJavaObject() {
+            return new AndroidJavaObject("io.teak.sdk.Teak$UserConfiguration",
+                                         this.Email, this.FacebookId, this.OptOutFacebook, this.OptOutIdfa, this.OptOutPushKey);
+        }
+#endif
+
+        public Dictionary<string, object> ToDictionary() {
+            Dictionary<string, object> dict = new Dictionary<string, object>();
+            dict["email"] = this.Email;
+            dict["facebook_id"] = this.FacebookId;
+            dict["opt_out_facebook"] = this.OptOutFacebook;
+            dict["opt_out_idfa"] = this.OptOutIdfa;
+            dict["opt_out_push_key"] = this.OptOutPushKey;
+            return dict;
+        }
+    }
+
+    /// <summary>
+    /// Tell Teak how it should identify the current user.
+    /// </summary>
+    /// <remarks>
+    /// This should be the same way you identify the user in your backend.
+    /// </remarks>
+    /// <param name="userIdentifier">An identifier which is unique for the current user.</param>
+    /// <param name="userConfiguration">Additional configuration for the current user.</param>
+    public void IdentifyUser(string userIdentifier, UserConfiguration userConfiguration) {
         this.UserId = userIdentifier;
+        if (userConfiguration == null) { userConfiguration = new UserConfiguration(); }
 
         if (this.Trace) {
             Debug.Log("[Teak] IdentifyUser(): " + userIdentifier);
         }
+
 #if UNITY_EDITOR
 #elif UNITY_ANDROID
         AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
-        teak.CallStatic("identifyUser", userIdentifier, optOut.ToArray(), email);
+        using (AndroidJavaObject javaConfig = userConfiguration.ToAndroidJavaObject()) {
+            teak.CallStatic("identifyUser", userIdentifier, javaConfig);
+        }
 #elif UNITY_IPHONE || UNITY_WEBGL
-        TeakIdentifyUser(userIdentifier, Json.Serialize(optOut), email);
+        TeakIdentifyUser(userIdentifier, Json.Serialize(userConfiguration.ToDictionary()));
 #   if UNITY_WEBGL
         TeakUnityReadyForDeepLinks();
 #   endif
@@ -238,6 +293,19 @@ public partial class Teak : MonoBehaviour {
         teak.CallStatic("logout");
 #elif UNITY_IPHONE
         TeakLogout();
+#endif
+    }
+
+    /// <summary>
+    /// On iOS, if 'TeakDoNotRefreshPushToken' is set to 'true' then this method
+    /// will tell Teak that the push token is ready, and that the user has authorized
+    /// push notifications. If the user has not authorized push notifications, this will
+    /// have no effect.
+    /// </summary>
+    public void RefreshPushTokenIfAuthorized() {
+#if UNITY_EDITOR
+#elif UNITY_IPHONE
+        TeakRefreshPushTokenIfAuthorized();
 #endif
     }
 
@@ -312,6 +380,11 @@ public partial class Teak : MonoBehaviour {
     /// An event which is dispatched when the app is launched from a link created by the Teak dashboard.
     /// </summary>
     public event System.Action<Dictionary<string, object>> OnLaunchedFromLink;
+
+    /// <summary>
+    /// An event which is dispatched each time the app is launched, with info about the launch.
+    /// </summary>
+    public event System.Action<TeakPostLaunchSummary> OnPostLaunchSummary;
 
     /// <summary>
     /// An event which is dispatched when your code, executed via deep link callback, throws an exception.
@@ -491,7 +564,7 @@ public partial class Teak : MonoBehaviour {
 
 #if UNITY_IPHONE || UNITY_WEBGL
     [DllImport ("__Internal")]
-    private static extern void TeakIdentifyUser(string userId, string optOut, string email);
+    private static extern void TeakIdentifyUser(string userId, string userConfigurationJson);
 
     [DllImport ("__Internal")]
     private static extern void TeakTrackEvent(string actionId, string objectTypeId, string objectInstanceId);
@@ -544,6 +617,9 @@ public partial class Teak : MonoBehaviour {
 
     [DllImport ("__Internal")]
     private static extern IntPtr TeakGetDeviceConfiguration();
+
+    [DllImport ("__Internal")]
+    private static extern void TeakRefreshPushTokenIfAuthorized();
 #endif
     /// @endcond
 
@@ -554,8 +630,6 @@ public partial class Teak : MonoBehaviour {
         if (json == null) {
             return;
         }
-
-        json.Remove("teakReward");
 
         if (OnLaunchedFromNotification != null) {
             OnLaunchedFromNotification(new TeakNotification(json));
@@ -570,6 +644,17 @@ public partial class Teak : MonoBehaviour {
 
         if (OnReward != null) {
             OnReward(new TeakReward(json));
+        }
+    }
+
+    void PostLaunchSummary(string jsonString) {
+        Dictionary<string, object> json = Json.TryDeserialize(jsonString) as Dictionary<string, object>;
+        if (json == null) {
+            return;
+        }
+
+        if (OnPostLaunchSummary != null) {
+            OnPostLaunchSummary(new TeakPostLaunchSummary(json));
         }
     }
 
@@ -669,8 +754,6 @@ public partial class Teak : MonoBehaviour {
         if (json == null) {
             return;
         }
-
-        json.Remove("teakReward");
 
         if (OnForegroundNotification != null) {
             OnForegroundNotification(new TeakNotification(json));

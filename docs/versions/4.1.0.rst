@@ -1,0 +1,9 @@
+4.1.0
+-----
+:Breaking Changes:
+    * None
+:New Features:
+    * Added new overload to ``Teak#IdentifyUser`` which takes a ``Teak.UserConfiguration``, old methods are now ``[Obsolete]`` and will be removed in Teak SDK verison 5.0
+    * Added ``Teak.Instance.RefreshPushTokenIfAuthorized()`` for manual push token refresh. This is used when you need to disable automatic push token refreshes.
+:Bug Fixes:
+    * Fixed attribution for the ``Teak#OnLaunchedFromLink`` event to be present for all creative types

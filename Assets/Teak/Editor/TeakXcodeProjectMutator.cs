@@ -171,7 +171,7 @@ public class TeakXcodeProjectMutator : IPostprocessBuildWithReport {
             if (!extensionsIncluded.Contains(Path.GetExtension(fileName))) { continue; }
 
             project.AddFileToBuildSection(extensionTarget, buildPhaseId,
-                                   project.AddFile(fileName, name + "/" + Path.GetFileName(fileName)));
+                                          project.AddFile(fileName, name + "/" + Path.GetFileName(fileName)));
         }
 
         /////

@@ -31,12 +31,12 @@ public partial class TeakNotification {
     public string DeepLink { get; set; }
 
     public TeakNotification(Dictionary<string, object> json) {
-        this.Incentivized = (json["incentivized"] is bool) ? (bool) json["incentivized"] : false;
         this.ScheduleName = json["teakScheduleName"] as string;
         this.CreativeName = json["teakCreativeName"] as string;
         this.ChannelName = json.ContainsKey("teakChannelName") ? json["teakChannelName"] as string : null;
         this.RewardId = json.ContainsKey("teakRewardId") ? json["teakRewardId"] as string : null;
         this.DeepLink = json.ContainsKey("teakDeepLink") ? json["teakDeepLink"] as string : null;
+        this.Incentivized = (this.RewardId != null);
 
         ulong temp = 0;
         if (json.ContainsKey("teakScheduleId")) {
