@@ -384,7 +384,7 @@ public partial class Teak : MonoBehaviour {
     /// <summary>
     /// An event which is dispatched each time the app is launched, with info about the launch.
     /// </summary>
-    public event System.Action<Dictionary<string, object>> OnPostLaunchSummary;
+    public event System.Action<TeakPostLaunchSummary> OnPostLaunchSummary;
 
     /// <summary>
     /// An event which is dispatched when your code, executed via deep link callback, throws an exception.
@@ -654,7 +654,7 @@ public partial class Teak : MonoBehaviour {
         }
 
         if (OnPostLaunchSummary != null) {
-            OnPostLaunchSummary(json);
+            OnPostLaunchSummary(new TeakPostLaunchSummary(json));
         }
     }
 
