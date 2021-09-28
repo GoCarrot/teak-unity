@@ -49,22 +49,31 @@ Tell Teak how to Identify The Current User
 
 Call the ``IdentifyUser`` function and pass it a string which uniquely identifies the current user::
 
-    void IdentifyUser(string userIdentifier, String email = null)
-
-    void IdentifyUser(string userIdentifier, List<string> optOut = null, String email = null)
+    void IdentifyUser(string userIdentifier, UserConfiguration userConfiguration)
 
 Parameters
     :userIdentifier: Unique identifier for the user (255 characters or fewer).
 
-    :optOut: An optional ``List<string>`` of tracking the specified user wants to opt out of.
+    :userConfiguration: Additional user configuration:
 
-    :email: An optional email address to associate with this user.
+        :Email: Email address
+
+        :FacebookId: Facebook id
+
+        :OptOutFacebook: Opts out of tracking Facebook token. Teak will no longer be able to correlate users across multiple devices.
+
+        :OptOutIdfa: Opts out of collected the Id For Advertising (IDFA). Teak will no longer be able to sync this user to Facebook Ad Audiences.
+
+        :OptOutPushKey: Opts out of collecting the push key. Teak will no longer be able to send Local Notifications or Push Notifications for your game.
 
 Example::
 
     // ...
     // As soon as you know the id for the current user.
-    Teak.Instance.IdentifyUser("user_123456");
+    UserConfiguration userConfiguration = new UserConfiguration {
+        Email = "email@user.com"
+    };
+    Teak.Instance.IdentifyUser("user_123456", userConfiguration);
 
 .. note:: The ``userIdentifier`` value should be the same as you send to your back-end for a user id.
 
@@ -72,12 +81,7 @@ Opting Out of Tracking
 ^^^^^^^^^^^^^^^^^^^^^^
 If the user has opted out of data collection completely, do not call ``IdentifyUser``, and Teak will not track the user at all.
 
-If the user has opted out of specific data collection, pass the applicable values into the **optOut** parameter.
-    :OptOutIdfa: Opts out of collected the Id For Advertising (IDFA). Teak will no longer be able to sync this user to Facebook Ad Audiences.
-
-    :OptOutPushKey: Opts out of collecting the push key. Teak will no longer be able to send Local Notifications or Push Notifications for your game.
-
-    :OptOutFacebook: Opts out of tracking Facebook token. Teak will no longer be able to correlate users across multiple devices.
+If the user has opted out of specific data collection, set the corrisponding opt-out to ``true`` in the user configuration.
 
 What This Does
 ^^^^^^^^^^^^^^
