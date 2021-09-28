@@ -7,4 +7,4 @@
     * Added ``Teak.Instance.RefreshPushTokenIfAuthorized()`` for manual push token refresh. This is used when you need to disable automatic push token refreshes
     * Added ``OnPostLaunchSummary`` event which is posted with every game launch and contains details about the launch
 :Bug Fixes:
-    * Fixed attribution for the ``Teak#OnLaunchedFromLink`` event to be present for all creative types
+    * ``Teak#OnLaunchedFromNotification`` event will be posted when launched from an email link
