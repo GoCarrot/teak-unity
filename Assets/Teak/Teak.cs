@@ -227,7 +227,6 @@ public partial class Teak : MonoBehaviour {
         /// Email address
         public string Email { get; set; }
         public string FacebookId { get; set; }
-        [Obsolete]
         public bool OptOutFacebook { get; set; }
         public bool OptOutIdfa { get; set; }
         public bool OptOutPushKey { get; set; }

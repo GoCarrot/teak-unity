@@ -54,9 +54,13 @@ Parameters
 
         :Email: Email address
 
-        :FacebookId: Facebook id
+        :FacebookId: Facebook id.
+
+        Note: If you provide a Facebook id, Teak will send it; regardless of the state of ``OptOutFacebook``.
 
         :OptOutFacebook: Opts out of tracking Facebook token. Teak will no longer be able to correlate users across multiple devices.
+
+        Note: Instead of using ``OptOutFacebook`` you should enable SDK5 behavior (which will disable automatic collection of Facebook user tokens) and not provide a ``FacebookId`` to the user configuration.
 
         :OptOutIdfa: Opts out of collected the Id For Advertising (IDFA). Teak will no longer be able to sync this user to Facebook Ad Audiences.
 
