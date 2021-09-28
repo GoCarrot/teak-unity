@@ -93,25 +93,3 @@ You Should See
 ::
 
     [Teak] IdentifyUser(): a unique user identifier
-
-Purchase Tracking for UnityPurchasing
--------------------------------------
-If you are using UnityPurchasing for your game, you need to take one extra step in order for Teak to track Android purchases.
-
-When you initialize UnityPurchasing, with a call like::
-
-    UnityPurchasing.Initialize(listener, builder);
-
-Simply replace that call with this::
-
-    UnityPurchasing.Initialize(new TeakStoreListener(listener), builder);
-
-Purchase Tracking for Prime31
------------------------------
-If you are using Prime31 on Android you need to add Teak's listeners to the Prime31 Google purchase events::
-
-    Prime31.GoogleIABManager.purchaseSucceededEvent += Teak.Instance.prime31PurchaseSucceded;
-    Prime31.GoogleIABManager.purchaseFailedEvent += Teak.Instance.prime31PurchaseFailed;
-
-This is not needed for the Amazon App Store or iOS.
-
