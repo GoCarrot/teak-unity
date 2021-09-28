@@ -39,10 +39,6 @@ What This Does
 
 This stores the Teak App Id and API Key for use by Teak's runtime, and helpers.
 
-Testing It
-^^^^^^^^^^^^^^
-Just click the **Validate Settings** button, and it will confirm that the settings are correct for your game, or tell you what is wrong.
-
 Tell Teak how to Identify The Current User
 ------------------------------------------
 .. highlight:: csharp
