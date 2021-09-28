@@ -15,7 +15,7 @@ In order to use push notifications on iOS, you will need to request permissions.
 
 Push Notifications and Local Notifications
 ------------------------------------------
-Whenever your game is launched via a push notification, or local notification Teak will let you know by sending out an event to all listeners.
+Whenever your game is launched via a push notification, local notification, or email link Teak will let you know by sending out an event to all listeners.
 
 You can listen for that event during by first writing a listener function, for example::
 
@@ -147,6 +147,8 @@ A ``TeakReward``
         :fb_a2u: Facebook App-to-User Notification
 
         :email: Email
+
+        :generic_link: Reward link
 
     :Incentivized: Will always be ``true``.
 
@@ -290,6 +292,38 @@ Example::
     // ...
     // When a user presses a button indicating they want to change their notification settings
     Teak.Instance.OpenSettingsAppToThisAppsSettings()
+
+Post Launch Summary
+-------------------
+Each time your game launches, Teak will pass all of the information it has on the launch to you via the ``OnPostLaunchSummary`` event.
+
+    :LaunchLink: The URL used to launch the game, or null.
+
+    :ScheduleName: If launched via a Teak channel, the name of the schedule on the Teak dashboard which was responsible, or null.
+
+    :ScheduleId: If launched via a Teak channel, the id of the schedule on the Teak dashboard which was responsible, or null.
+
+    :CreativeName: If launched via a Teak channel, the name of the creative on the Teak dashboard which was responsible, or null.
+
+    :CreativeId: If launched via a Teak channel, the id of the creative on the Teak dashboard which was responsible, or null.
+
+    :RewardId: If a Teak reward was attached, the id of that reward, or null.
+
+    :ChannelName: If launched via a Teak channel, null, or one of:
+
+            :ios_push: iOS Push Notification
+
+            :android_push: Android Push Notification
+
+            :fb_a2u: Facebook App-to-User Notification
+
+            :email: Email
+
+            :generic_link: Reward link
+
+    :DeepLink: The deep link, or null.
+
+    :SourceSendId: If launched via a Teak push notification or email, the id of that push or email, or null.
 
 .. player-properties:
 
@@ -457,3 +491,11 @@ Teak sets some preprocessor defines for your use in ``Teak/Editor/TeakPreProcess
     :TEAK_3_1_OR_NEWER: The Teak SDK version is at least 3.1
 
     :TEAK_3_2_OR_NEWER: The Teak SDK version is at least 3.2
+
+    :TEAK_3_3_OR_NEWER: The Teak SDK version is at least 3.3
+
+    :TEAK_3_4_OR_NEWER: The Teak SDK version is at least 3.4
+
+    :TEAK_4_0_OR_NEWER: The Teak SDK version is at least 4.0
+
+    :TEAK_4_1_OR_NEWER: The Teak SDK version is at least 4.1
