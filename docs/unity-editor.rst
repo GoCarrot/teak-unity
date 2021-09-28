@@ -4,7 +4,7 @@ Unity Editor
 Add Teak
 --------
 
-You can use the :ref:`upm-usage`.
+You can use Unity Package Manager (See :ref:`upm-usage`).
 
 Or...
 
