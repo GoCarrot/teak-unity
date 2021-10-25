@@ -542,6 +542,31 @@ public partial class Teak : MonoBehaviour {
 #endif
     }
 
+    /// <summary>
+    /// Manually pass Teak a deep link path to evalute.
+    /// </summary>
+    /// <remarks>
+    /// This path should be prefixed with a forward slash, and can contain query
+    /// parameters, e.g.
+    ///    /foo/bar?fizz=buzz
+    /// It should not contain a host, or a scheme.
+    ///
+    /// This function will only execute deep links that have been defined through Teak.
+    /// It has no visibility into any other SDKs or custom code.
+    /// </remarks>
+    /// <param name="url">The url to attempt handling.</param>
+    /// <returns>true if the deep link was handled by Teak.</returns>
+    public bool HandleDeepLinkPath(string url) {
+#if UNITY_EDITOR
+        return false;
+#elif UNITY_ANDROID
+        AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
+        return teak.CallStatic<bool>("handleDeepLinkPath", url);
+#elif UNITY_IPHONE || UNITY_WEBGL
+        return TeakHandleDeepLinkPath(url);
+#endif
+    }
+
 #if UNITY_WEBGL
     /// <summary>
     /// When using Facebook Payments, call this method from your callback
@@ -582,6 +607,9 @@ public partial class Teak : MonoBehaviour {
 
     [DllImport ("__Internal")]
     private static extern void TeakSetStringAttribute(string key, string value);
+
+    [DllImport ("__Internal")]
+    private static extern bool TeakHandleDeepLink(string url);
 #endif
 
 #if UNITY_IPHONE
