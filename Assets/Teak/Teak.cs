@@ -163,6 +163,7 @@ public partial class Teak : MonoBehaviour {
     /// If you prevent Teak from collecting the Identifier For Advertisers (IDFA),
     /// Teak will no longer be able to add this user to Facebook Ad Audiences.
     /// </remarks>
+    [Obsolete]
     public const string OptOutIdfa = "opt_out_idfa";
 
     /// <summary>
@@ -172,6 +173,7 @@ public partial class Teak : MonoBehaviour {
     /// If you prevent Teak from collecting the Push Key, Teak will no longer be able
     /// to send Local Notifications or Push Notifications for this user.
     /// </remarks>
+    [Obsolete]
     public const string OptOutPushKey = "opt_out_push_key";
 
     /// <summary>
@@ -181,7 +183,7 @@ public partial class Teak : MonoBehaviour {
     /// If you prevent Teak from collecting the Facebook Access Token,
     /// Teak will no longer be able to correlate this user across multiple devices.
     /// </remarks>
-
+    [Obsolete]
     public const string OptOutFacebook = "opt_out_facebook";
 
     /// <summary>
