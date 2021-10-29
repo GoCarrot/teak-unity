@@ -297,6 +297,31 @@ public partial class Teak : MonoBehaviour {
 #endif
     }
 
+    /// <summary>Assign email opt-out status for the current user.</summary>
+    /// <param name="optOut">True if the user wants to opt-out of Teak email campaigns.</param>
+    public void SetOptOutEmail(bool optOut) {
+#if UNITY_EDITOR
+#elif UNITY_ANDROID
+        AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
+        teak.CallStatic("setOptOutEmail", optOut);
+#elif UNITY_IPHONE || UNITY_WEBGL
+        TODO
+#endif
+    }
+
+    /// <summary>Assign push notification opt-out status for the current user.</summary>
+    /// <param name="optOut">True if the user wants to opt-out of Teak push notification campaigns.</param>
+    public void SetOptOutPush(bool optOut) {
+#if UNITY_EDITOR
+#elif UNITY_ANDROID
+        AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
+        teak.CallStatic("setOptOutPush", optOut);
+#elif UNITY_IPHONE || UNITY_WEBGL
+        TODO
+#endif
+    }
+
+
     /// <summary>
     /// On iOS, if 'TeakDoNotRefreshPushToken' is set to 'true' then this method
     /// will tell Teak that the push token is ready, and that the user has authorized
@@ -376,6 +401,12 @@ public partial class Teak : MonoBehaviour {
     /// An event which is dispatched when additional data is available for the current user.
     /// </summary>
     public event System.Action<Dictionary<string, object>> OnAdditionalData;
+
+
+    /// <summary>
+    /// An event which is dispatched when user data becomes available or is changed.
+    /// </summary>
+    public event System.Action<Teak.UserData> OnUserData;
 
     /// <summary>
     /// An event which is dispatched when the app is launched from a link created by the Teak dashboard.
@@ -611,7 +642,7 @@ public partial class Teak : MonoBehaviour {
     private static extern void TeakSetStringAttribute(string key, string value);
 
     [DllImport ("__Internal")]
-    private static extern bool TeakHandleDeepLink(string url);
+    private static extern bool TeakHandleDeepLinkPath(string url);
 #endif
 
 #if UNITY_IPHONE
@@ -808,6 +839,17 @@ public partial class Teak : MonoBehaviour {
 
         if (OnLaunchedFromLink != null) {
             OnLaunchedFromLink(json);
+        }
+    }
+
+    void UserDataEvent(string jsonString) {
+        Dictionary<string, object> json = Json.TryDeserialize(jsonString) as Dictionary<string, object>;
+        if (json == null) {
+            return;
+        }
+
+        if (OnUserData != null) {
+            OnUserData(new Teak.UserData(json));
         }
     }
 
