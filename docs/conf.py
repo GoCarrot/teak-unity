@@ -240,7 +240,13 @@ def gen_version(v):
 
     contents = '.. _unity-%s:\n\n' % version.replace('.', '-')
     with open('versions/%s.rst' % version, 'r') as f:
-        contents += f.read().replace(version, '{0} - `Download <http://sdks.teakcdn.com/unity/Teak-{1}.unitypackage>`_'.format(version, version))
+        data = f.read().splitlines(True)
+        contents += data[0]
+        contents += data[1]
+        contents += "\n"
+        contents += '`Download <http://sdks.teakcdn.com/unity/Teak-{1}.unitypackage>`_'.format(version, version)
+        contents += "\n\n"
+        contents += ''.join(data[2:])
 
     contents += '\n.. _android-%s:\n\nAndroid\n^^^^^^^\n' % version.replace('.', '-')
     with open('android/versions/%s.rst' % version, 'r') as f:
