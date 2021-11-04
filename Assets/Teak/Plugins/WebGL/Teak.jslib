@@ -22,10 +22,11 @@ mergeInto(LibraryManager.library, {
       doTeakInit();
     }
   },
-  TeakIdentifyUser: function(ptr_userId, ptr_optOutJson, ptr_email) {
+  TeakIdentifyUser: function(ptr_userId, ptr_configJson) {
     var userId = Pointer_stringify(ptr_userId);
-    var email = Pointer_stringify(ptr_email);
-    window.teak.identify(userId, null, null, {email: email});
+    var configJson = Pointer_stringify(ptr_configJson);
+    var config = JSON.parse(configJson);
+    window.teak.identify(userId, null, null, {email: config.email});
 
     window.teak.on('udidAvailable', function() {
       // Teak attribution params
