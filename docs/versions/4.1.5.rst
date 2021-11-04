@@ -1,0 +1,8 @@
+4.1.5
+-----
+:Breaking Changes:
+    * None
+:New Features:
+    * None
+:Bug Fixes:
+    * WebGL fix for providing email with IdentifyUser
