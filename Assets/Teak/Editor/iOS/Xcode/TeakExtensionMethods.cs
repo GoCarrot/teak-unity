@@ -1,3 +1,5 @@
+#if UNITY_IOS
+
 #region License
 /* Teak -- Copyright (C) 2018-2019 Teak.io,Inc.
  *
@@ -81,3 +83,5 @@ namespace UnityEditor.iOS.Xcode {
         }
     }
 }
+
+#endif // UNITY_IOS

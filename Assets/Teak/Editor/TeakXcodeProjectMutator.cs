@@ -1,3 +1,5 @@
+#if UNITY_IOS
+
 #region References
 using UnityEditor;
 using UnityEditor.Build;
@@ -210,3 +212,5 @@ public class TeakXcodeProjectMutator : IPostprocessBuildWithReport {
         return (index < 0) ? relativePath : relativePath.Remove(index, assets.Length + 1);
     }
 }
+
+#endif // UNITY_IOS
