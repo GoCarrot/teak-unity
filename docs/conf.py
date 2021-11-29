@@ -223,8 +223,8 @@ def ensure_versions():
         raise Exception('Android versions missing: %s' % ios.difference(android))
     if len(android.difference(ios)) != 0:
         raise Exception('iOS versions missing: %s' % android.difference(ios))
-    if len(android.difference(sdk)):
-        raise Exception('Versions missing: %s' % android.difference(sdk))
+    # if len(android.difference(sdk)):
+    #     raise Exception('Versions missing: %s' % android.difference(sdk))
 
 def mkdir_p(path):
     try:
