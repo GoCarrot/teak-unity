@@ -11,6 +11,14 @@ In order to use push notifications on iOS, you will need to request permissions.
     UnityEngine.iOS.NotificationServices.RegisterForNotifications(UnityEngine.iOS.NotificationType.Alert |
         UnityEngine.iOS.NotificationType.Badge |  UnityEngine.iOS.NotificationType.Sound);
 
+:Since: 4.1.7
+
+If you do not wish to use this method, or its Unity Replacement, you can simply call::
+
+    Teak.Instance.RegisterForNotifications();
+
+It will be have no effect on non-iOS builds, and is safe to use on iOS 8+.
+
 .. note:: We suggest that you don't simply ask for push permissions when the app starts. We'll be happy to talk with you to figure out what works best for your title.
 
 Push Notifications and Local Notifications

@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 public partial class Teak {
     /// <summary>
-    /// 
+    ///
     /// </summary>
     public class UserData {
         /// <summary>Arbitrary, per-user, information sent from the Teak server.</summary>
