@@ -5,3 +5,4 @@ IFS=$'\n\t'
 brew install awscli
 
 brew install pandoc
+brew install sphinx-doc
