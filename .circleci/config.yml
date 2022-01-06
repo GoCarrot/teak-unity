@@ -39,6 +39,7 @@ jobs:
       - run:
           name: Build UPM Package
           command: |
+            git submodule sync --recursive && git submodule update --recursive
             UPM_BUILD_TEMP=upm-build bundle exec rake upm:build
       - persist_to_workspace:
           root: .
