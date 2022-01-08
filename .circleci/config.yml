@@ -39,6 +39,7 @@ jobs:
       - run:
           name: Build UPM Package
           command: |
+            git submodule init && git submodule update --recursive
             UPM_BUILD_TEMP=upm-build bundle exec rake upm:build
       - persist_to_workspace:
           root: .
@@ -47,7 +48,7 @@ jobs:
             - upm-build/*
       - run:
           name: ReadTheDocs.org Unified Docs
-          command: curl -X POST -d "branches=master" -d "token=$RTD_TOKEN" https://readthedocs.org/api/v2/webhook/teak/41148/
+          command: curl --insecure -X POST -d "branches=master" -d "token=$RTD_TOKEN" https://readthedocs.org/api/v2/webhook/teak/41148/
 
   tag_build:
     docker:

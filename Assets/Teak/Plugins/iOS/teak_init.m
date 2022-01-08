@@ -30,8 +30,6 @@ extern NSDictionary* TeakXcodeVersion;
 typedef void (^TeakLinkBlock)(NSDictionary* _Nonnull parameters);
 extern void TeakRegisterRoute(const char* route, const char* name, const char* description, TeakLinkBlock block);
 
-extern void TeakRequestProvisionalPushAuthorization();
-
 typedef void (^TeakLogListener)(NSString* _Nonnull event,
                                 NSString* _Nonnull level,
                                 NSDictionary* _Nullable eventData);
