@@ -518,9 +518,21 @@ public partial class Teak : MonoBehaviour {
     /// <returns>true if the device was an iOS 12+ device</returns>
     public bool RegisterForProvisionalNotifications() {
 #if !UNITY_EDITOR && UNITY_IPHONE
-        return TeakRequestProvisionalPushAuthorization();
+        return TeakRequestPushAuthorization(true);
 #else
         return false;
+#endif
+    }
+
+    /// <summary>
+    /// Register for Push Notifications.
+    /// </summary>
+    /// <remarks>
+    /// This method only has any effect on iOS devices, and is safe to use on iOS 8+
+    /// </remarks>
+    public void RegisterForNotifications() {
+#if !UNITY_EDITOR && UNITY_IPHONE
+        TeakRequestPushAuthorization(false);
 #endif
     }
 
@@ -592,7 +604,7 @@ public partial class Teak : MonoBehaviour {
     private static extern bool TeakOpenSettingsAppToThisAppsSettings();
 
     [DllImport ("__Internal")]
-    private static extern bool TeakRequestProvisionalPushAuthorization();
+    private static extern bool TeakRequestPushAuthorization(bool includeProvisional);
 
     [DllImport ("__Internal")]
     private static extern void TeakProcessDeepLinks();

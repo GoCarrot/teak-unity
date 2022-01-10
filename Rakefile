@@ -169,10 +169,10 @@ namespace :upm do
     FileUtils.mkdir_p(UPM_BUILD_TEMP)
 
     # Changelog
-    # cd 'docs' do
-    #   `make html`
-    #   `pandoc -f rst -t gfm -o ../#{UPM_BUILD_TEMP}/CHANGELOG.md changelog.rst`
-    # end
+    cd 'docs' do
+      `make html`
+      `pandoc -f rst -t gfm -o ../#{UPM_BUILD_TEMP}/CHANGELOG.md changelog.rst`
+    end
 
     editor_glob = Dir.glob('Assets/Teak/Editor/**/*')
 
