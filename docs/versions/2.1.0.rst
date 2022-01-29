@@ -1,9 +1,0 @@
-2.1.0
------
-:Breaking Changes:
-    * None
-:New Features:
-    * Added ``IncrementEvent``
-    * Optional requirement for ``com.android.installreferrer:installreferrer:1+`` to support ``com.android.installreferrer.api.InstallReferrerClient``
-:Bug Fixes:
-    * None

@@ -1,8 +1,0 @@
-3.0.0
------
-:Breaking Changes:
-    * None
-:New Features:
-    * Support for AndroidX (you must use 1.2.119 of the Google Play Services Resolver to use AndroidX)
-:Bug Fixes:
-    * None
