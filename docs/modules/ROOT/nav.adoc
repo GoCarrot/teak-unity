@@ -6,4 +6,5 @@
 * xref:ios.adoc[iOS]
 ** xref:ios-extensions.adoc[iOS Extensions]
 ** xref:custom-app-delegate.adoc[Using a Custom App Delegate]
+* xref:working-with-unity.adoc[Working with Teak in Unity]
 * xref:upm.adoc[Unity Package Manager]

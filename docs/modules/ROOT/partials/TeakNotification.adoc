@@ -1,0 +1,32 @@
+[cols="1,2a"]
+|===
+|Value |Description
+
+|Incentivized |`true` if the notification was incentivized, `false` otherwise.
+
+|ScheduleId |The name of the schedule for the notification on the Teak Dashboard,
+or `null` if it was not a scheduled notification.
+
+|CreativeId |The name of the notification on the Teak Dashboard.
+
+|ChannelName |The name of the Teak 'channel', one of:
+[cols="1,2a"]
+!===
+!Value !Description
+
+!`ios_push` !iOS Push Notification
+
+!`android_push` !Android Push Notification
+
+!`fb_a2u` !Facebook App-to-User Notification
+
+!`email` !Email
+
+!`generic_link` !Reward link
+!===
+
+
+|RewardId |Opaque reward identifier, or `null` if no reward.
+
+|DeepLink |The complete deep link URL, or `null` if there was no deep link.
+|===
