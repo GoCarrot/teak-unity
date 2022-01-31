@@ -1,0 +1,29 @@
+[cols="1,2a"]
+|===
+|Value |Description
+
+|RunId |A UUID which identifies the log session.
+
+|EventId |Sequencing number, unique to each ``RunId``.
+
+|TimeStamp |UNIX timestamp for the log event.
+
+|EventType |A string describing the reason for the log event.
+
+|LogLevel |A value that indicates success, or reason for the failure of the call:
+
+[cols="1,2a"]
+!===
+!Value !Description
+
+!`VERBOSE` !Not currently in use.
+
+!`INFO` !Log event is informing the user about what actions Teak is taking.
+
+!`WARN` !An indication of something which is wrong, or could go wrong, but is not currently causing issues.
+
+!`ERROR` !Something has gone wrong, and Teak is telling you about it.
+!===
+
+|EventData |Event-defined dictionary of additional information.
+|===
