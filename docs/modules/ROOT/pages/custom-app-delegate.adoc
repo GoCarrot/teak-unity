@@ -41,7 +41,7 @@ with an unrecognized selector exception.
 
 Teak suggests handling this case with the following:
 
-[code,objc]
+[source,objc]
 ----
 - (BOOL)application:(UIApplication*)application
             openURL:(NSURL*)url
@@ -81,7 +81,7 @@ re-direct the call to `application:openURL:sourceApplication:annotation:` and al
 
 For reference, this is the implementation Teak uses in our test framework:
 
-[code,objc]
+[source,objc]
 ----
 - (BOOL)handleOpenURL:(NSURL*)url fromSelector:(SEL)sel {
     if (![url.scheme isEqualToString:@"nonteak"]) {

@@ -50,7 +50,7 @@ structure, and drag it into the 'Link Binary with Libraries' step.
 Change the code in `TeakNotificationService/NotificationService.h` to look like this:
 
 .TeakNotificationService/NotificationService.h
-[code, objc]
+[source, objc]
 ----
 #import <UserNotifications/UserNotifications.h>
 
@@ -72,7 +72,7 @@ in the functionality from `libTeak.a` which will take care of everything else.
 Change the code in `TeakNotificationService/NotificationService.m` to look like this:
 
 .TeakNotificationService/NotificationService.m
-[code,objc]
+[source,objc]
 ----
 #import "NotificationService.h"
 
@@ -120,7 +120,7 @@ project structure, and drag it into the 'Link Binary with Libraries' step.
 Change the code in `TeakNotificationContent/NotificationViewController.h` to look like this:
 
 .TeakNotificationContent/NotificationViewController.h
-[code,objc]
+[source,objc]
 ----
 #import <UIKit/UIKit.h>
 
@@ -139,7 +139,7 @@ Change the code in `TeakNotificationContent/NotificationViewController.h` to loo
 Change the code in `TeakNotificationContent/NotificationViewController.m` to look like this:
 
 .TeakNotificationContent/NotificationViewController.m
-[code,objc]
+[source,objc]
 ----
 #import "NotificationViewController.h"
 
@@ -158,7 +158,7 @@ NOTE: You can also download the latest copy of this PList here https://sdks.teak
 Open `TeakNotificationContent/Info.plist` *with a text editor* and replace the contents with:
 
 .TeakNotificationContent/Info.plist
-[code,xml]
+[source,xml]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">

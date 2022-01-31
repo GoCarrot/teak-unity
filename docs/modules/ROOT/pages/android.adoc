@@ -31,7 +31,7 @@ Teak can take advantage of Firebase's initialization of ContentProviders to auto
 This is the easiest way to integrate Teak with your Android target.
 
 .Add this to the main activity in your AndroidManifest.xml
-[code,xml]
+[source,xml]
 ----
 <meta-data android:name="io.teak.sdk.initialize" android:value="true"/>
 ----
@@ -42,13 +42,13 @@ If you can't use auto-initialization, for some reason, edit your `Assets/Plugins
 and change your main `<activity>`
 
 .From This
-[code,xml]
+[source,xml]
 ----
 <activity android:name="com.unity3d.player.UnityPlayerActivity" android:label="@string/app_name">
 ----
 
 .To This
-[code,xml]
+[source,xml]
 ----
 <activity android:name="io.teak.sdk.wrapper.unity.TeakUnityPlayerActivity" android:label="@string/app_name">
 ----
@@ -58,7 +58,7 @@ You can now <<Configure Credentials>>
 ==== What About Shortcuts?
 To preserve app shortcuts, add the following below (not inside) the `<activity>` you just changed:
 
-[code,xml]
+[source,xml]
 ----
 <activity-alias
     android:name="com.unity3d.player.UnityPlayerActivity"
@@ -79,13 +79,13 @@ If you can't change your main activity, and instead have your own custom activit
 that subclasses `UnityPlayerActivity` then simply change:
 
 .This
-[code, java]
+[source, java]
 ----
 extends UnityPlayerActivity
 ----
 
 .To
-[code, java]
+[source, java]
 ----
 extends TeakUnityPlayerActivity
 ----
@@ -100,7 +100,7 @@ initialization calls into your custom activity.
 ==== Import Teak into your main activity
 
 .Import the Teak Classes
-[code, java]
+[source, java]
 ----
 import io.teak.sdk.Teak;
 import io.teak.sdk.wrapper.unity;
@@ -111,7 +111,7 @@ Call Teak.onCreate **before** the call to super.onCreate, then call
 TeakUnity.initialize **after** the call to super.onCreate
 
 .Call Teak.onCreate()
-[code, java]
+[source, java]
 ----
 protected void onCreate(Bundle savedInstanceState) {
     Teak.onCreate(this);
@@ -122,7 +122,7 @@ protected void onCreate(Bundle savedInstanceState) {
 ----
 
 .Call setIntent()
-[code, java]
+[source, java]
 ----
 protected void onNewIntent(Intent intent) {
     super.onNewIntent(intent);
@@ -180,7 +180,7 @@ If your build environment requires that you create this file yourself, then the
 file should look like this:
 
 .res/values/teak.xml
-[code,xml]
+[source,xml]
 ----
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
@@ -204,7 +204,7 @@ NOTE: You will need two versions of this file. One located in `values` and the o
 located in `values-v21`.
 
 .teak_icons.xml
-[code,xml]
+[source,xml]
 ----
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
@@ -232,7 +232,7 @@ you are using the Teak Editor scripts, skip this step.
 Add the following to the `<activity>` section of your `Assets/Plugins/Android/AndroidManifest.xml`:
 
 .AndroidManifest.xml
-[code,xml]
+[source,xml]
 ----
     <intent-filter android:autoVerify="true">
         <action android:name="android.intent.action.VIEW" />

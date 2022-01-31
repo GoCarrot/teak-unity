@@ -38,7 +38,7 @@ For example: if you are using version 4.0.0 then you can update to version 4.0.1
 The version control structure for the Teak SDK, distributed via UPM, matches this and allows you to use the version that makes the most sense for you.
 
 .If you use
-[code, json]
+[source, json]
 ----
 {
   "dependencies": {
@@ -50,7 +50,7 @@ The version control structure for the Teak SDK, distributed via UPM, matches thi
 You will always use version `4.0.0`, even when new versions come out
 
 .If you use
-[code, json]
+[source, json]
 ----
 {
   "dependencies": {
@@ -62,7 +62,7 @@ You will always use version `4.0.0`, even when new versions come out
 You will use any version of `4.0.x`, so if `4.0.1` comes out, your dependency will be updated.
 
 .If you use
-[code, json]
+[source, json]
 ----
 {
   "dependencies": {

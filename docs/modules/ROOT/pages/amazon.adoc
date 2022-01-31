@@ -36,7 +36,7 @@ Teak uses the manifest merger stage to automatically add the required changes to
 
 If you are having issues, please check to make sure that the following exist in the final manifest for your game:
 
-[code,xml]
+[source,xml]
 ----
     <permission
         android:name="${applicationId}.permission.RECEIVE_ADM_MESSAGE"

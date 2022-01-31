@@ -14,7 +14,7 @@ The "make and manage phone calls" permission is the `READ_PHONE_STATE` permissio
 This can be removed using the Android `tools` XML namespace.
 
 Add this to your ``AndroidManifest.xml`` :
-[code,xml]
+[source,xml]
 ----
 <uses-permission android:name="android.permission.READ_PHONE_STATE"
                  tools:node="remove" />
@@ -36,7 +36,7 @@ image::android-photos-permission.png[]
 
 Can be suppressed by adding this to your `AndroidManifest.xml` inside your main `<activity>`:
 
-[code,xml]
+[source,xml]
 ----
 <meta-data android:name="unityplayer.SkipPermissionsDialog" android:value="true" />
 ----
