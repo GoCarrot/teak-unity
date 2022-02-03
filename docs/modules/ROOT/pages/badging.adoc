@@ -35,3 +35,4 @@ Samsung devices running Android 8+ are not supported (https://github.com/leolin3
 
 !All Versions !Can't Fix
 !===
+|===
