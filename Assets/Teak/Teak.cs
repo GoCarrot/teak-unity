@@ -195,7 +195,7 @@ public partial class Teak : MonoBehaviour {
     /// <param name="userIdentifier">An identifier which is unique for the current user.</param>
     /// <param name="email">The email address for the current user.</param>
     [Obsolete]
-    public void IdentifyUser(string userIdentifier, String email) {
+    public void IdentifyUser(string userIdentifier, string email) {
         this.IdentifyUser(userIdentifier, null, email);
     }
 
@@ -209,7 +209,7 @@ public partial class Teak : MonoBehaviour {
     /// <param name="optOut">A list containing zero or more of: OptOutIdfa, OptOutPushKey, OptOutFacebook</param>
     /// <param name="email">The email address for the current user.</param>
     [Obsolete]
-    public void IdentifyUser(string userIdentifier, List<string> optOut = null, String email = null) {
+    public void IdentifyUser(string userIdentifier, List<string> optOut = null, string email = null) {
         if (optOut == null) { optOut = new List<string>(); }
 
         UserConfiguration userConfiguration = new UserConfiguration {
