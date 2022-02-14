@@ -3,6 +3,7 @@ output: docs/modules/unity-api/pages
 template:
   struct: doxygen2adoc/struct.adoc
   class: doxygen2adoc/struct.adoc
+  index: doxygen2adoc/index.adoc
 
 partial:
   function: doxygen2adoc/function.adoc

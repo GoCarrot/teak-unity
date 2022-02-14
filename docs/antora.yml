@@ -3,3 +3,4 @@ title: Unity SDK
 version: 4.2.0
 nav:
 - modules/ROOT/nav.adoc
+- modules/unity-api/pages/index.adoc
