@@ -2,4 +2,4 @@ name: unity-api
 title: Unity API
 version: 4.2.0
 nav:
-- modules/ROOT/pages/index.adoc
+- modules/ROOT/nav.adoc

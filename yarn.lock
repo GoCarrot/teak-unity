@@ -37,7 +37,7 @@ color-name@~1.1.4:
 
 "doxygen2adoc@https://github.com/GoCarrot/doxygen2adoc":
   version "1.0.0"
-  resolved "https://github.com/GoCarrot/doxygen2adoc#753ebb9b6877a6d879553cb8f88b7b635a47469f"
+  resolved "https://github.com/GoCarrot/doxygen2adoc#9d3206217e7d92bef914d58e7615041a0b382fe6"
   dependencies:
     fast-xml-parser "^4.0.1"
     handlebars "^4.7.7"
@@ -55,9 +55,9 @@ escalade@^3.1.1:
   integrity sha512-k0er2gUkLf8O0zKJiAhmkTnJlTvINGv7ygDNPbeIsX/TJjGJZHuh9B2UxbsaEkmlEo9MfhrSzmhIlhRlI2GXnw==
 
 fast-xml-parser@^4.0.1:
-  version "4.0.2"
-  resolved "https://registry.yarnpkg.com/fast-xml-parser/-/fast-xml-parser-4.0.2.tgz#23f5da4393d9f4142e26792c1e675ddbafe7029a"
-  integrity sha512-3GOSbMTZxxrPPQ+aURM7Wia10bi71HBbiG/3mOEEkRSAkRtg4m7UhMSnB2rzOhBeRHyJUWsllOfyNnjTT1b85w==
+  version "4.0.3"
+  resolved "https://registry.yarnpkg.com/fast-xml-parser/-/fast-xml-parser-4.0.3.tgz#ad1ebfa53a447369634454073f7952f171ed4aba"
+  integrity sha512-xhQbg3a/EYNHwK0cxIG1nZmVkHX/0tWihamn5pU4Mhd9KEVE2ga8ZJiqEUgB2sApElvAATOdMTLjgqIpvYDUkQ==
   dependencies:
     strnum "^1.0.5"
 
