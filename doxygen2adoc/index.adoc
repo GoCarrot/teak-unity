@@ -1,4 +1,3 @@
-* Teak API
 {{#each items}}
-** xref:unity-api:{{refId}}.adoc[{{name}}]
+* xref:{{id}}.adoc[{{name}}]
 {{/each}}

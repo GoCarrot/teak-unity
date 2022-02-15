@@ -1,15 +1,11 @@
-= Getting started with Teak on Unity
-Hey there!
-
-We know integrating SDKs isn't your favorite thing in the world, but we're going to make this as painless as possible.
-
-We're going to give you step-by-step instructions for integrating Teak with Unity for iOS and Android, how to test your integration, and how to fix errors you may run into.
-
-TIP: You can always ask us for help, don't be shy.
-
-[IMPORTANT]
-.Android Target SDK Version
-====
-Please note that Teak SDK 4.0.0 supports a maximum `targetSdkVersion` of 30.
-Teak SDK 4.1.0 and greater supports `targetSdkVersion` of 31.
-====
+* xref:struct_teak_notification_1_1_reply_1_1_notification.adoc[TeakNotification.Reply.Notification]
+* xref:class_teak_notification_1_1_reply.adoc[TeakNotification.Reply]
+* xref:class_teak.adoc[Teak]
+* xref:class_teak_log_event.adoc[TeakLogEvent]
+* xref:class_teak_notification.adoc[TeakNotification]
+* xref:class_teak_post_launch_summary.adoc[TeakPostLaunchSummary]
+* xref:class_teak_reward.adoc[TeakReward]
+* xref:class_teak_settings.adoc[TeakSettings]
+* xref:class_teak_version.adoc[TeakVersion]
+* xref:class_teak_1_1_user_configuration.adoc[Teak.UserConfiguration]
+* xref:class_teak_1_1_user_data.adoc[Teak.UserData]

@@ -1,5 +1,0 @@
-[IMPORTANT]
-====
-All notification related methods are coroutines. Unless you want the
-method to block execution, you must use `StartCoroutine`.
-====

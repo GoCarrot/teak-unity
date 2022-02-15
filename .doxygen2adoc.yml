@@ -1,5 +1,5 @@
 input: _doxygen/xml
-output: docs/modules/unity-api/pages
+output: docs/modules/ROOT/pages
 template:
   struct: doxygen2adoc/struct.adoc
   class: doxygen2adoc/struct.adoc

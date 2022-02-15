@@ -1,6 +1,5 @@
-name: teak-unity
-title: Unity SDK
+name: unity-api
+title: Unity API
 version: 4.2.0
 nav:
-- modules/ROOT/nav.adoc
-- modules/unity-api/pages/index.adoc
+- modules/ROOT/pages/index.adoc
