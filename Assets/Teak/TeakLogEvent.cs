@@ -27,6 +27,10 @@ public class TeakLogEvent {
         this.EventData = logData.ContainsKey("event_data") ? logData["event_data"] as Dictionary<string, object> : null;
     }
 
+    /// <summary>
+    /// Returns a string that represents the current object.
+    /// </summary>
+    /// <returns>A string that represents the current object.</returns>
     public override string ToString() {
         string formatString = "{{ RunId = '{0}', EventId = '{1}', TimeStamp = '{2}', EventType = '{3}', LogLevel = '{4}'{5} }}";
         string eventDataString = "";

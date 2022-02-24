@@ -18,9 +18,9 @@ using System.Collections.Generic;
 /// </summary>
 public partial class Teak : MonoBehaviour {
     /// <summary>
-    /// Gets the <see cref="Teak"/> singleton.
+    /// Gets the Teak singleton.
     /// </summary>
-    /// <value> The <see cref="Teak"/> singleton.</value>
+    /// <value> The Teak singleton.</value>
     public static Teak Instance {
         get {
             return Teak.Init();
@@ -30,10 +30,9 @@ public partial class Teak : MonoBehaviour {
     /// <summary>
     /// Manually initialize Teak.
     /// </summary>
-    /// <remarks>
+    /// \note
     /// Under normal circumstances it is not necessassary to call this, and you can
     /// simply use Teak.Instance (which calls this method).
-    /// </remarks>
     public static Teak Init() {
         if (mInstance == null) {
             mInstance = FindObjectOfType(typeof(Teak)) as Teak;
@@ -148,9 +147,10 @@ public partial class Teak : MonoBehaviour {
 
     /// <summary>
     /// Teak will log all Unity method calls to the Unity log if true.
-    ///
-    /// This defaults to the setting for the native SDK, but can be assigned at runtime as well.
     /// </summary>
+    /// <remarks>
+    /// This defaults to the setting for the native SDK, but can be assigned at runtime as well.
+    /// </remarks>
     public bool Trace {
         get;
         set;
@@ -231,11 +231,20 @@ public partial class Teak : MonoBehaviour {
     /// Configuration options for identifying a user.
     /// </summary>
     public class UserConfiguration {
-        /// Email address
+        /// <summary>Email address for the user, or null.</summary>
         public string Email { get; set; }
+
+        /// <summary>Facebook id of the user, or null.</summary>
         public string FacebookId { get; set; }
+
+        /// <summary>True if the user should be opted out of Facebook Id collection.</summary>
+        /// \deprecated Set FacebookId to null instead of using this.
         public bool OptOutFacebook { get; set; }
+
+        /// <summary>True if the user should be opted out of IDFA collection.</summary>
         public bool OptOutIdfa { get; set; }
+
+        /// <summary>True if the user should be opted out of push key collection.</summary>
         public bool OptOutPushKey { get; set; }
 
 #if UNITY_ANDROID

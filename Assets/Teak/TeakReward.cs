@@ -102,6 +102,10 @@ public class TeakReward {
         }
     }
 
+    /// <summary>
+    /// Returns a string that represents the current object.
+    /// </summary>
+    /// <returns>A string that represents the current object.</returns>
     public override string ToString() {
         string formatString = "{{ Status = '{0}', ScheduleId = '{1}', CreativeId = '{2}', ChannelName = '{3}', Incentivized = '{4}', RewardId = '{5}'{6} }}";
         return string.Format(formatString,

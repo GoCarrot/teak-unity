@@ -9,20 +9,30 @@
 
 {{brief}}
 
-{{#if return.description}}
-*Return*
-{{return.description}}
-{{/if}}
 [source,csharp]
 ----
 {{{declaration}}}
 ----
-// TODO: collapseable here?
+
+{{#if return.description}}==== Return
+{{return.description}}{{/if}}
+
 {{description}}
+
+{{#each note}}
+NOTE: {{this}}
+{{/each}}
+
+{{#each warning}}
+CAUTION: {{this}}
+{{/each}}
+
 {{#if params}}
-[cols="1,2a"]
+==== Parameters
+
+[cols="1,3a", stripes="even"]
 |===
-|Parameter |Description
+|Name |Description
 
 {{#each params}}
 |{{name}} |{{description}}

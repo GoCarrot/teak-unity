@@ -24,6 +24,10 @@ public class TeakPostLaunchSummary {
         this.SourceSendId = json.ContainsKey("teakNotifId") ? json["teakNotifId"] as string : null;
     }
 
+    /// <summary>
+    /// Returns a string that represents the current object.
+    /// </summary>
+    /// <returns>A string that represents the current object.</returns>
     public override string ToString() {
         string formatString = "{{ LaunchLink = '{0}', ScheduleName = '{1}', ScheduleId = '{2}', CreativeName = '{3}', CreativeId = '{4}', RewardId = '{5}', ChannelName = '{6}', DeepLink = '{7}', SourceSendId = '{8}' }}";
         return string.Format(formatString,
