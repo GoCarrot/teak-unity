@@ -159,46 +159,46 @@ public partial class Teak : MonoBehaviour {
     /// <summary>
     /// Value provided to IdentifyUser to opt out of collecting an IDFA for this specific user.
     /// </summary>
-    /// \deprecated Please us IdentifyUser(string, UserConfiguration) instead.
+    /// \deprecated Please use IdentifyUser(string, UserConfiguration) instead.
     /// <remarks>
     /// If you prevent Teak from collecting the Identifier For Advertisers (IDFA),
     /// Teak will no longer be able to add this user to Facebook Ad Audiences.
     /// </remarks>
-    [Obsolete("Please us IdentifyUser(string, UserConfiguration) instead.")]
+    [Obsolete("Please use IdentifyUser(string, UserConfiguration) instead.")]
     public const string OptOutIdfa = "opt_out_idfa";
 
     /// <summary>
     /// Value provided to IdentifyUser to opt out of collecting a Push Key for this specific user.
     /// </summary>
-    /// \deprecated Please us IdentifyUser(string, UserConfiguration) instead.
+    /// \deprecated Please use IdentifyUser(string, UserConfiguration) instead.
     /// <remarks>
     /// If you prevent Teak from collecting the Push Key, Teak will no longer be able
     /// to send Local Notifications or Push Notifications for this user.
     /// </remarks>
-    [Obsolete("Please us IdentifyUser(string, UserConfiguration) instead.")]
+    [Obsolete("Please use IdentifyUser(string, UserConfiguration) instead.")]
     public const string OptOutPushKey = "opt_out_push_key";
 
     /// <summary>
     /// Value provided to IdentifyUser to opt out of collecting a Facebook Access Token for this specific user.
     /// </summary>
-    /// \deprecated Please us IdentifyUser(string, UserConfiguration) instead.
+    /// \deprecated Please use IdentifyUser(string, UserConfiguration) instead.
     /// <remarks>
     /// If you prevent Teak from collecting the Facebook Access Token,
     /// Teak will no longer be able to correlate this user across multiple devices.
     /// </remarks>
-    [Obsolete("Please us IdentifyUser(string, UserConfiguration) instead.")]
+    [Obsolete("Please use IdentifyUser(string, UserConfiguration) instead.")]
     public const string OptOutFacebook = "opt_out_facebook";
 
     /// <summary>
     /// Tell Teak how it should identify the current user.
     /// </summary>
-    /// \deprecated Please us IdentifyUser(string, UserConfiguration) instead.
+    /// \deprecated Please use IdentifyUser(string, UserConfiguration) instead.
     /// <remarks>
     /// This should be the same way you identify the user in your backend.
     /// </remarks>
     /// <param name="userIdentifier">An identifier which is unique for the current user.</param>
     /// <param name="email">The email address for the current user.</param>
-    [Obsolete("Please us IdentifyUser(string, UserConfiguration) instead.")]
+    [Obsolete("Please use IdentifyUser(string, UserConfiguration) instead.")]
     public void IdentifyUser(string userIdentifier, string email) {
         this.IdentifyUser(userIdentifier, null, email);
     }
@@ -206,14 +206,14 @@ public partial class Teak : MonoBehaviour {
     /// <summary>
     /// Tell Teak how it should identify the current user.
     /// </summary>
-    /// \deprecated Please us IdentifyUser(string, UserConfiguration) instead.
+    /// \deprecated Please use IdentifyUser(string, UserConfiguration) instead.
     /// <remarks>
     /// This should be the same way you identify the user in your backend.
     /// </remarks>
     /// <param name="userIdentifier">An identifier which is unique for the current user.</param>
     /// <param name="optOut">A list containing zero or more of: OptOutIdfa, OptOutPushKey, OptOutFacebook</param>
     /// <param name="email">The email address for the current user.</param>
-    [Obsolete("Please us IdentifyUser(string, UserConfiguration) instead.")]
+    [Obsolete("Please use IdentifyUser(string, UserConfiguration) instead.")]
     public void IdentifyUser(string userIdentifier, List<string> optOut = null, string email = null) {
         if (optOut == null) { optOut = new List<string>(); }
 

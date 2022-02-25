@@ -26,12 +26,12 @@
 {{/each}}{{/if}}
 
 {{#if properties}}== Properties
-[cols="2a,2a,3a,1a", stripes="even"]
+[cols="2a,2a,3a,1", stripes="even"]
 |===
 |Name |Type |Description |Access
 
 {{#each properties}}
-|{{name}} |``{{return.type}}`` |{{brief}} |Get{{#if settable}}/Set{{/if}}
+|{{name}} |``{{return.type}}`` |{{{brief}}} |Get{{#if settable}}/Set{{/if}}
 {{/each}}
 |===
 {{/if}}
@@ -51,7 +51,7 @@
 |Name |Description
 
 {{#each values}}
-|{{name}} |{{brief}}
+|{{name}} |{{{brief}}}
 {{/each}}
 |===
 {{/each}}

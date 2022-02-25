@@ -22,16 +22,30 @@ using System.Text;
 /// </summary>
 public partial class TeakNotification {
 
-    /// <summary>'true' if the notification has a reward attached.</summary>
+    /// <summary>``true`` if the notification was incentivized, ``false`` otherwise.</summary>
     public bool Incentivized { get; set; }
 
-    /// <summary>If this was a scheduled notification, the name of the schedule.</summary>
+    /// <summary>The name of the schedule for the notification on the Teak Dashboard, or ``null`` if it was not a scheduled notification.</summary>
     public string ScheduleName { get; set; }
+
+    /// <summary>The id of the schedule in the Teak CMS, or ``null`` if it was not a scheduled notification.</summary>
     public ulong ScheduleId { get; set; }
+
+    /// <summary>The name of the notification on the Teak Dashboard.</summary>
     public string CreativeName { get; set; }
+
+    /// <summary>The id of the notification in the Teak CMS.</summary>
     public ulong CreativeId { get; set; }
+
+    /// <summary>
+    /// The name of the Teak 'channel', one of: ``ios_push``, ``android_push``, ``fb_a2u``, ``email``, ``generic_link``.
+    /// </summary>
     public string ChannelName { get; set; }
+
+    /// <summary>Opaque reward identifier, or ``null`` if no reward.</summary>
     public string RewardId { get; set; }
+
+    /// <summary>The complete deep link URL, or ``null`` if there was no deep link.</summary>
     public string DeepLink { get; set; }
 
     /// @cond hide_from_doxygen
@@ -143,11 +157,13 @@ public partial class TeakNotification {
     /// Schedule a notification to send to the logged in user for a future time.
     /// </summary>
     /// <remarks>
-    /// \warning All notification related methods are coroutines. Unless you want the method to block execution, you must use StartCoroutine.
+    /// \warning All notification related methods are coroutines. Unless you want the method to block execution, you must use ``StartCoroutine``.
+    ///
+    /// \note The maximum delay for scheduling a notification is 30 days.
     /// </remarks>
     /// <param name="scheduleName">A value used to identify the message creative in the Teak CMS e.g. "daily_bonus".</param>
     /// <param name="defaultMessage">The text to use in the notification if there are no modifications in the Teak CMS.</param>
-    /// <param name="delayInSeconds">The number of seconds from the current time before the notification should be sent. The maximum delay for a Local Notification is 30 days.</param>
+    /// <param name="delayInSeconds">The number of seconds from the current time before the notification should be sent.</param>
     /// <param name="callback">The callback to be called after the notification is scheduled.</param>
     public static IEnumerator ScheduleNotification(string scheduleName, string defaultMessage, long delayInSeconds, System.Action<Reply> callback) {
         if (Teak.Instance.Trace) {
@@ -202,10 +218,12 @@ public partial class TeakNotification {
     /// A notification which is scheduled from code, but delivered to a different player
     /// beside the current player is called a "long distance notification".
     ///
-    /// \warning All notification related methods are coroutines. Unless you want the method to block execution, you must use StartCoroutine.
+    /// \warning All notification related methods are coroutines. Unless you want the method to block execution, you must use ``StartCoroutine``.
+    ///
+    /// \note The maximum delay for scheduling a notification is 30 days.
     /// </remarks>
     /// <param name="scheduleName">The name of the existing schedule to send in the Teak CMS e.g. "daily_bonus"</param>
-    /// <param name="delayInSeconds">The number of seconds from the current time before the notification should be sent. The maximum delay for a Local Notification is 30 days.</param>
+    /// <param name="delayInSeconds">The number of seconds from the current time before the notification should be sent.</param>
     /// <param name="userIds">An array of user ids to which the notification should be delivered.</param>
     /// <param name="callback">The callback to be called after the notification is scheduled.</param>
     public static IEnumerator ScheduleNotification(string scheduleName, long delayInSeconds, string[] userIds, System.Action<Reply> callback) {
@@ -258,7 +276,7 @@ public partial class TeakNotification {
     /// Cancel a previously scheduled notification.
     /// </summary>
     /// <remarks>
-    /// \warning All notification related methods are coroutines. Unless you want the method to block execution, you must use StartCoroutine.
+    /// \warning All notification related methods are coroutines. Unless you want the method to block execution, you must use ``StartCoroutine``.
     /// </remarks>
     /// <param name="scheduleId">Passing the id received from ScheduleNotification() will cancel that specific notification; passing the scheduleName used to schedule the notification will cancel all scheduled notifications with that creative id for the user.</param>
     /// <param name="callback">The callback to be called after the notification is canceled.</param>
@@ -311,7 +329,7 @@ public partial class TeakNotification {
     /// Cancel all previously scheduled notifications for the current user.
     /// </summary>
     /// <remarks>
-    /// \warning All notification related methods are coroutines. Unless you want the method to block execution, you must use StartCoroutine.
+    /// \warning All notification related methods are coroutines. Unless you want the method to block execution, you must use ``StartCoroutine``.
     /// </remarks>
     /// <param name="callback">The callback to be called after notifications are canceled.</param>
     public static IEnumerator CancelAllScheduledNotifications(System.Action<Reply> callback) {

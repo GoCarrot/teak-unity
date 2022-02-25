@@ -3,11 +3,11 @@
 {{#if deprecated}}
 [CAUTION]
 ====
-{{deprecatedDocs}}
+{{{deprecatedDocs}}}
 ====
 {{/if}}
 
-{{brief}}
+{{{brief}}}
 
 [source,csharp]
 ----
@@ -17,14 +17,14 @@
 {{#if return.description}}==== Return
 {{return.description}}{{/if}}
 
-{{description}}
+{{{description}}}
 
 {{#each note}}
-NOTE: {{this}}
+NOTE: {{{this}}}
 {{/each}}
 
 {{#each warning}}
-CAUTION: {{this}}
+WARNING: {{{this}}}
 {{/each}}
 
 {{#if params}}
@@ -35,7 +35,7 @@ CAUTION: {{this}}
 |Name |Description
 
 {{#each params}}
-|{{name}} |{{description}}
+|{{name}} |{{{description}}}
 {{/each}}
 |===
 {{/if}}
