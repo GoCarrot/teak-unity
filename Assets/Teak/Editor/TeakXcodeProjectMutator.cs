@@ -55,11 +55,11 @@ public class TeakXcodeProjectMutator : IPostprocessBuildWithReport {
 
         AddTeakExtensionToProjectTarget("TeakNotificationService", "TeakNotificationService",
                                         teakExtensionCommonFrameworks,
-                                        project, unityTarget);
+                                        project, unityTarget, projectPath);
 
         AddTeakExtensionToProjectTarget("TeakNotificationContent", "TeakNotificationContent",
                                         new string[] {"UserNotificationsUI"}.Concat(teakExtensionCommonFrameworks).ToArray(),
-                                        project, unityTarget);
+                                        project, unityTarget, projectPath);
 
         /////
         // Write out modified project
@@ -149,16 +149,17 @@ public class TeakXcodeProjectMutator : IPostprocessBuildWithReport {
         return plistArray;
     }
 
-    private static string AddTeakExtensionToProjectTarget(string name, string displayName, string[] frameworks, PBXProject project, string target) {
+    private static string AddTeakExtensionToProjectTarget(string name, string displayName, string[] frameworks, PBXProject project, string target, string projectPath) {
         string __FILE__ = new StackTrace(new StackFrame(true)).GetFrame(0).GetFileName();
         string teakEditorIosPath = Path.GetDirectoryName(__FILE__) + "/iOS";
         string extensionSrcPath = teakEditorIosPath + "/" + name;
+        FileInfo projectPathInfo = new FileInfo(Path.GetDirectoryName(projectPath));
 
         /////
         // Create app extension target
         string extensionTarget = project.AddAppExtension(target, name,
                                  PlayerSettings.GetApplicationIdentifier(BuildTargetGroup.iOS) + "." + displayName,
-                                 extensionSrcPath + "/Info.plist");
+                                 projectPathInfo.GetRelativePathTo(new FileInfo(extensionSrcPath + "/Info.plist")));
         string buildPhaseId = project.AddSourcesBuildPhase(extensionTarget);
 
         /////
@@ -172,8 +173,9 @@ public class TeakXcodeProjectMutator : IPostprocessBuildWithReport {
         foreach (string fileName in fileEntries) {
             if (!extensionsIncluded.Contains(Path.GetExtension(fileName))) { continue; }
 
+            string relativeFileName = projectPathInfo.GetRelativePathTo(new FileInfo(fileName));
             project.AddFileToBuildSection(extensionTarget, buildPhaseId,
-                                          project.AddFile(fileName, name + "/" + Path.GetFileName(fileName)));
+                                          project.AddFile(relativeFileName, name + "/" + Path.GetFileName(fileName)));
         }
 
         /////
@@ -184,8 +186,8 @@ public class TeakXcodeProjectMutator : IPostprocessBuildWithReport {
         // Add libTeak.a
 
         // If the 'Runtime' directory exists, this is coming from a UPM package
-        string relativeTeakPath = GetRelativeAssetPath(Path.GetDirectoryName(Path.GetDirectoryName(__FILE__)));
-        if (Directory.Exists(relativeTeakPath + "/Runtime")) {
+        string relativeTeakPath = new DirectoryInfo(Application.dataPath).GetRelativePathTo(new DirectoryInfo(Path.GetDirectoryName(Path.GetDirectoryName(__FILE__))));
+        if (Directory.Exists(relativeTeakPath + "Runtime")) {
             relativeTeakPath = "io.teak.unity.sdk/Runtime";
         }
         project.AddFileToBuild(extensionTarget, project.AddFile("libTeak.a", name + "/libTeak.a"));
@@ -201,15 +203,6 @@ public class TeakXcodeProjectMutator : IPostprocessBuildWithReport {
         project.AddBuildProperty(extensionTarget, "ARCHS", "arm64");
 
         return extensionTarget;
-    }
-
-    private static string GetRelativeAssetPath(string path) {
-        Uri pathUri = new Uri(path);
-        Uri projectUri = new Uri(Application.dataPath);
-        string relativePath = projectUri.MakeRelativeUri(pathUri).ToString();
-        string assets = "Assets";
-        int index = relativePath.IndexOf(assets, StringComparison.Ordinal);
-        return (index < 0) ? relativePath : relativePath.Remove(index, assets.Length + 1);
     }
 }
 
