@@ -4,6 +4,14 @@
 
 {{brief}}
 
+{{#if deprecated}}
+[CAUTION]
+====
+{{{deprecatedDocs}}}
+====
+{{/if}}
+
+
 {{#if attributes}}== Attributes
 [cols="1,2a,3a", stripes="even"]
 |===
