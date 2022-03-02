@@ -1,4 +1,4 @@
-
+[#{{id}}]
 === {{name}}
 {{#if deprecated}}
 [CAUTION]
