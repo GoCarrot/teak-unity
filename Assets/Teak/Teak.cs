@@ -588,7 +588,7 @@ public partial class Teak : MonoBehaviour {
     /// </summary>
     /// <remarks>
     /// Deep links will not be processed sooner than the earliest of:
-    /// - <see cref="IdentifyUser"/> is called
+    /// - <see cref="IdentifyUser(string, UserConfiguration)"/> is called
     /// - This method is called
     /// </remarks>
     public void ProcessDeepLinks() {
