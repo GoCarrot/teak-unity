@@ -3,3 +3,9 @@ title: Unity API
 version: 4.2.0
 nav:
 - modules/ROOT/nav.adoc
+
+asciidoc:
+  attributes:
+    source-language: csharp@
+    table-caption: false
+    caution-caption: Deprecated@
