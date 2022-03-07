@@ -159,7 +159,7 @@ public partial class Teak : MonoBehaviour {
     /// <summary>
     /// Value provided to IdentifyUser to opt out of collecting an IDFA for this specific user.
     /// </summary>
-    /// \deprecated Please use IdentifyUser(string, UserConfiguration) instead.
+    /// \deprecated Please use <see cref="IdentifyUser(string, UserConfiguration)"/> instead.
     /// <remarks>
     /// If you prevent Teak from collecting the Identifier For Advertisers (IDFA),
     /// Teak will no longer be able to add this user to Facebook Ad Audiences.
@@ -170,7 +170,7 @@ public partial class Teak : MonoBehaviour {
     /// <summary>
     /// Value provided to IdentifyUser to opt out of collecting a Push Key for this specific user.
     /// </summary>
-    /// \deprecated Please use IdentifyUser(string, UserConfiguration) instead.
+    /// \deprecated Please use <see cref="IdentifyUser(string, UserConfiguration)"/> instead.
     /// <remarks>
     /// If you prevent Teak from collecting the Push Key, Teak will no longer be able
     /// to send Local Notifications or Push Notifications for this user.
@@ -181,7 +181,7 @@ public partial class Teak : MonoBehaviour {
     /// <summary>
     /// Value provided to IdentifyUser to opt out of collecting a Facebook Access Token for this specific user.
     /// </summary>
-    /// \deprecated Please use IdentifyUser(string, UserConfiguration) instead.
+    /// \deprecated Please use <see cref="IdentifyUser(string, UserConfiguration)"/> instead.
     /// <remarks>
     /// If you prevent Teak from collecting the Facebook Access Token,
     /// Teak will no longer be able to correlate this user across multiple devices.
@@ -192,7 +192,7 @@ public partial class Teak : MonoBehaviour {
     /// <summary>
     /// Tell Teak how it should identify the current user.
     /// </summary>
-    /// \deprecated Please use IdentifyUser(string, UserConfiguration) instead.
+    /// \deprecated Please use <see cref="IdentifyUser(string, UserConfiguration)"/> instead.
     /// <remarks>
     /// This should be the same way you identify the user in your backend.
     /// </remarks>
@@ -206,7 +206,7 @@ public partial class Teak : MonoBehaviour {
     /// <summary>
     /// Tell Teak how it should identify the current user.
     /// </summary>
-    /// \deprecated Please use IdentifyUser(string, UserConfiguration) instead.
+    /// \deprecated Please use <see cref="IdentifyUser(string, UserConfiguration)"/> instead.
     /// <remarks>
     /// This should be the same way you identify the user in your backend.
     /// </remarks>
