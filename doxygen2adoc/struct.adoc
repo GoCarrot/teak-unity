@@ -90,7 +90,7 @@
 {{#each enums}}
 [#{{id}}]
 === {{name}}
-{{brief}}
+{{{brief}}}
 
 [cols="1,3a", stripes="even"]
 |===
