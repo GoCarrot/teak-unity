@@ -7,9 +7,6 @@ template:
 partial:
   structTitle: doxygen2adoc/structTitle.adoc
 
-global:
-  sourceLanguage: csharp
-
 antora: docs/antora.yml
 
 nav: docs/modules/ROOT/partials/nav.adoc

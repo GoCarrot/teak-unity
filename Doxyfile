@@ -16,4 +16,4 @@ INPUT                  = Assets/Teak
 FILE_PATTERNS          = *.cs
 EXCLUDE                = Assets/Teak/MiniJSON.cs
 EXCLUDE_SYMBOLS        = System::IO, System::Collections::Generic, UnityEngine, System
-PREDEFINED             = 
+PREDEFINED             = UNITY_WEBGL
