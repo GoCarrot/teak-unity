@@ -10,7 +10,13 @@ partial:
 global:
   sourceLanguage: csharp
 
+antora: docs/antora.yml
+
 nav: docs/modules/ROOT/partials/nav.adoc
+
+parts:
+  methods: ~
+  staticMethods: ~
 
 exclude:
   - file
