@@ -1,0 +1,6 @@
+android: ~
+ios: ~
+new:
+  - Added ``OnLaunchedFromLink``
+bug:
+  - Added additional protection against the auto-created ``TeakGameObject`` from getting saved into a scene

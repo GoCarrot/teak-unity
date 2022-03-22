@@ -1,0 +1,4 @@
+android: ~
+ios: ~
+bug:
+  - Fix Android IL2CPP when using Prime31

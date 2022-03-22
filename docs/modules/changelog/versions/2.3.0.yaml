@@ -1,0 +1,4 @@
+android: ~
+ios: ~
+new:
+  - "``IdentifyUser`` can now take an optional parameter for email"

@@ -1,0 +1,14 @@
+android: ~
+ios: ~
+breaking:
+  - Unity 4 is no longer supported
+  - New Android dependencies
+  - Firebase is now required
+  - "``AreNotificationsEnabled`` -> ``PushNotificationState``"
+new:
+  - Support for the UnityPurchasing plugin
+  - iOS Extensions can now be auto-magically added by the post-processing scripts
+  - iOS Entitlements can now be added by the post-processing scripts
+bug:
+  - Prime31 and OpenIAB purchase plugins will now work when using IL2CPP on Android
+  - Fixed bug which could happen with jQuery initialization with WebGL

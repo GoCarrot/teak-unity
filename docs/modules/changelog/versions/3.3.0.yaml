@@ -1,0 +1,7 @@
+android: ~
+ios: ~
+new:
+  - Now automagically adds deep links to ``AndroidManifest.xml`` when the Teak Post-Process script is run
+  - Now available in Unity Package Manager format on GitHub as https://github.com/GoCarrot/upm-package-teak[GoCarrot/upm-package-teak]
+bug:
+  - Now catching and reporting callback errors for scheduling and canceling notifications

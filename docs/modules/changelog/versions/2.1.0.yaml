@@ -1,0 +1,5 @@
+android: ~
+ios: ~
+new:
+  - Added ``IncrementEvent``
+  - Optional requirement for ``com.android.installreferrer:installreferrer:1+`` to support ``com.android.installreferrer.api.InstallReferrerClient``

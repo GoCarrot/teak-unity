@@ -1,0 +1,6 @@
+android: ~
+ios: ~
+new:
+  - Now supports Play Services Resolver plugin
+  - "``RewardId`` added to TeakReward``"
+  - "``SetBadgeCount``"

@@ -1,0 +1,5 @@
+android: ~
+ios: ~
+bug:
+  - Compiler warning under .NET 4.x fixed (``System.Xml.XmlReaderSettings.ProhibitDtd``)
+  - Fixed UnityPurchasing compile error on non-Facebook WebGL target builds

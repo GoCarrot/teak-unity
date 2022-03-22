@@ -8,3 +8,4 @@ include::sdk-reference:unity:partial$nav.adoc[]
 --
 include::partial$nav.adoc[]
 --
+* xref:unity-api:changelog:page$changelog.adoc[Changelog]

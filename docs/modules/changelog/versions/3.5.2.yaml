@@ -1,0 +1,4 @@
+android: ~
+ios: ~
+new:
+  - Adds ``Teak.Instance.ReportCanvasPurchase``for reporting purchases on Facebook Canvas

@@ -1,0 +1,6 @@
+android: ~
+ios: ~
+breaking:
+  - "``TeakUnityPlayerNativeActivity`` deprecated in favor of ``TeakUnityPlayerActivity``"
+bug:
+  - WebGL builds will now build cleanly
