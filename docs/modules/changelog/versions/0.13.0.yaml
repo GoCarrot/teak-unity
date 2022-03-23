@@ -1,4 +1,3 @@
 android: ~
-ios: ~
 breaking:
   - "``io.teak.sdk.TeakUnityPlayerNativeActivity`` renamed to ``io.teak.sdk.wrapper.unity.TeakUnityPlayerNativeActivity``"

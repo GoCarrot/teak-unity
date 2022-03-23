@@ -1,5 +1,4 @@
 android: ~
-ios: ~
 breaking:
   - Now using AAR for Android, remove these files:
     - "``Assets/Editor/TeakPackageBuilder.cs``"

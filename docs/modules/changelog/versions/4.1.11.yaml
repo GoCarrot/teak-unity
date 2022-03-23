@@ -1,5 +1,4 @@
 android: ~
-ios: ~
 breaking:
   - Now requiring Android work-runtime 2.7+ due to Google releasing a non-compliant version for Android 12
 new:

@@ -1,4 +1,3 @@
-android: ~
 ios: ~
 bug:
   - Fixes behavior for custom App Delegates when using a non-Teak deep link
