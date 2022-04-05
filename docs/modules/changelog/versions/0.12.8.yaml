@@ -1,0 +1,6 @@
+android: ~
+ios: ~
+breaking:
+  - "``TeakNotification`` callbacks are now (string, string)"
+new:
+  - Added ``CancelAllScheduledNotifications``

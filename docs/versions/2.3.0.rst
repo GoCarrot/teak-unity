@@ -1,8 +1,0 @@
-2.3.0
------
-:Breaking Changes:
-    * None
-:New Features:
-    * ``IdentifyUser`` can now take an optional parameter for email.
-:Bug Fixes:
-    * None

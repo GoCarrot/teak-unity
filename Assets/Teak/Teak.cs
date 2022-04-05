@@ -18,9 +18,9 @@ using System.Collections.Generic;
 /// </summary>
 public partial class Teak : MonoBehaviour {
     /// <summary>
-    /// Gets the <see cref="Teak"/> singleton.
+    /// Gets the Teak singleton.
     /// </summary>
-    /// <value> The <see cref="Teak"/> singleton.</value>
+    /// <value> The Teak singleton.</value>
     public static Teak Instance {
         get {
             return Teak.Init();
@@ -30,10 +30,9 @@ public partial class Teak : MonoBehaviour {
     /// <summary>
     /// Manually initialize Teak.
     /// </summary>
-    /// <remarks>
+    /// \note
     /// Under normal circumstances it is not necessassary to call this, and you can
     /// simply use Teak.Instance (which calls this method).
-    /// </remarks>
     public static Teak Init() {
         if (mInstance == null) {
             mInstance = FindObjectOfType(typeof(Teak)) as Teak;
@@ -148,9 +147,10 @@ public partial class Teak : MonoBehaviour {
 
     /// <summary>
     /// Teak will log all Unity method calls to the Unity log if true.
-    ///
-    /// This defaults to the setting for the native SDK, but can be assigned at runtime as well.
     /// </summary>
+    /// <remarks>
+    /// This defaults to the setting for the native SDK, but can be assigned at runtime as well.
+    /// </remarks>
     public bool Trace {
         get;
         set;
@@ -159,57 +159,62 @@ public partial class Teak : MonoBehaviour {
     /// <summary>
     /// Value provided to IdentifyUser to opt out of collecting an IDFA for this specific user.
     /// </summary>
+    /// \deprecated Please use <see cref="IdentifyUser(string, UserConfiguration)"/> instead.
     /// <remarks>
     /// If you prevent Teak from collecting the Identifier For Advertisers (IDFA),
     /// Teak will no longer be able to add this user to Facebook Ad Audiences.
     /// </remarks>
-    [Obsolete]
+    [Obsolete("Please use IdentifyUser(string, UserConfiguration) instead.")]
     public const string OptOutIdfa = "opt_out_idfa";
 
     /// <summary>
     /// Value provided to IdentifyUser to opt out of collecting a Push Key for this specific user.
     /// </summary>
+    /// \deprecated Please use <see cref="IdentifyUser(string, UserConfiguration)"/> instead.
     /// <remarks>
     /// If you prevent Teak from collecting the Push Key, Teak will no longer be able
     /// to send Local Notifications or Push Notifications for this user.
     /// </remarks>
-    [Obsolete]
+    [Obsolete("Please use IdentifyUser(string, UserConfiguration) instead.")]
     public const string OptOutPushKey = "opt_out_push_key";
 
     /// <summary>
     /// Value provided to IdentifyUser to opt out of collecting a Facebook Access Token for this specific user.
     /// </summary>
+    /// \deprecated Please use <see cref="IdentifyUser(string, UserConfiguration)"/> instead.
     /// <remarks>
     /// If you prevent Teak from collecting the Facebook Access Token,
     /// Teak will no longer be able to correlate this user across multiple devices.
     /// </remarks>
-    [Obsolete]
+    [Obsolete("Please use IdentifyUser(string, UserConfiguration) instead.")]
     public const string OptOutFacebook = "opt_out_facebook";
 
     /// <summary>
     /// Tell Teak how it should identify the current user.
     /// </summary>
+    /// \deprecated Please use <see cref="IdentifyUser(string, UserConfiguration)"/> instead.
     /// <remarks>
     /// This should be the same way you identify the user in your backend.
     /// </remarks>
     /// <param name="userIdentifier">An identifier which is unique for the current user.</param>
     /// <param name="email">The email address for the current user.</param>
-    [Obsolete]
-    public void IdentifyUser(string userIdentifier, String email) {
+    [Obsolete("Please use IdentifyUser(string, UserConfiguration) instead.")]
+    public void IdentifyUser(string userIdentifier, string email) {
         this.IdentifyUser(userIdentifier, null, email);
     }
 
     /// <summary>
     /// Tell Teak how it should identify the current user.
     /// </summary>
+    /// \deprecated Please use <see cref="IdentifyUser(string, UserConfiguration)"/> instead.
     /// <remarks>
     /// This should be the same way you identify the user in your backend.
     /// </remarks>
     /// <param name="userIdentifier">An identifier which is unique for the current user.</param>
     /// <param name="optOut">A list containing zero or more of: OptOutIdfa, OptOutPushKey, OptOutFacebook</param>
     /// <param name="email">The email address for the current user.</param>
-    [Obsolete]
-    public void IdentifyUser(string userIdentifier, List<string> optOut = null, String email = null) {
+    [Obsolete("Please use IdentifyUser(string, UserConfiguration) instead.")]
+    public void IdentifyUser(string userIdentifier, List<string> optOut = null, string email = null) {
         if (optOut == null) { optOut = new List<string>(); }
 
         UserConfiguration userConfiguration = new UserConfiguration {
@@ -226,11 +231,20 @@ public partial class Teak : MonoBehaviour {
     /// Configuration options for identifying a user.
     /// </summary>
     public class UserConfiguration {
-        /// Email address
+        /// <summary>Email address for the user, or null.</summary>
         public string Email { get; set; }
+
+        /// <summary>Facebook id of the user, or null.</summary>
         public string FacebookId { get; set; }
+
+        /// <summary>True if the user should be opted out of Facebook Id collection.</summary>
+        /// \deprecated Set FacebookId to null instead of using this.
         public bool OptOutFacebook { get; set; }
+
+        /// <summary>True if the user should be opted out of IDFA collection.</summary>
         public bool OptOutIdfa { get; set; }
+
+        /// <summary>True if the user should be opted out of push key collection.</summary>
         public bool OptOutPushKey { get; set; }
 
 #if UNITY_ANDROID
@@ -574,7 +588,7 @@ public partial class Teak : MonoBehaviour {
     /// </summary>
     /// <remarks>
     /// Deep links will not be processed sooner than the earliest of:
-    /// - <see cref="IdentifyUser"/> is called
+    /// - <see cref="IdentifyUser(string, UserConfiguration)"/> is called
     /// - This method is called
     /// </remarks>
     public void ProcessDeepLinks() {

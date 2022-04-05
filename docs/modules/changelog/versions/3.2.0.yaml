@@ -1,0 +1,6 @@
+android: ~
+ios: ~
+new:
+  - "``ChannelName added to ``TeakNotification`` and ``TeakReward``"
+  - Added ``OnCallbackError`` event which will inform you about errors which occur during callbacks, such as deep links
+  - Added ``Logout`` which will log out the current user

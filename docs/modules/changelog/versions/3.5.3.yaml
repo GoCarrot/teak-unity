@@ -1,0 +1,4 @@
+android: ~
+ios: ~
+bug:
+  - WebGL now properly allows email address collection via ``IdentifyUser``

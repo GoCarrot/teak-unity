@@ -1,8 +1,0 @@
-0.12.8
-------
-:Breaking Changes:
-    * TeakNotification callbacks are now (string, string)
-:New Features:
-    * Added CancelAllScheduledNotifications
-:Bug Fixes:
-    * Native SDK fixes

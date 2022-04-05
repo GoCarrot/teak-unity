@@ -1,0 +1,2 @@
+bug:
+  - Fixes behavior in Unity Editor for destroying the Teak Game Object automatically

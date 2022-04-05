@@ -1,8 +1,0 @@
-3.5.1
------
-:Breaking Changes:
-    * None
-:New Features:
-    * None
-:Bug Fixes:
-    * Fixes behavior in Unity Editor for destroying the Teak Game Object automatically

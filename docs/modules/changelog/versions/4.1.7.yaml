@@ -1,0 +1,6 @@
+android: ~
+ios: ~
+new:
+  - Added ``Teak.Instance.RegisterForNotifications()``
+bug:
+  - UPM Changelog Generation re-enabled

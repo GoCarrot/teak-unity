@@ -1,0 +1,4 @@
+android: ~
+ios: ~
+new:
+  - New setting (default off) controls if Teak does build post processing. Now it does not unless you enable it in Settings.
