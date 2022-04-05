@@ -118,6 +118,8 @@ public partial class Teak : MonoBehaviour {
             return (NotificationState) teak.CallStatic<int>("getNotificationStatus");
 #elif UNITY_IPHONE
             return (NotificationState) TeakGetNotificationState();
+#else
+            return NotificationState.UnableToDetermine;
 #endif
         }
     }
@@ -136,6 +138,8 @@ public partial class Teak : MonoBehaviour {
                 string configuration = teak.CallStatic<string>("getAppConfiguration");
 #elif UNITY_IPHONE
                 string configuration = Marshal.PtrToStringAnsi(TeakGetAppConfiguration());
+#else
+                string configuration = "{}";
 #endif
                 if (!string.IsNullOrEmpty(configuration)) {
                     mAppConfiguration = Json.TryDeserialize(configuration) as Dictionary<string,object>;
@@ -478,6 +482,8 @@ public partial class Teak : MonoBehaviour {
 #elif UNITY_IPHONE || UNITY_WEBGL
         TeakSetBadgeCount(count);
         return true;
+#else
+        return true;
 #endif
     }
 
@@ -489,16 +495,16 @@ public partial class Teak : MonoBehaviour {
         if (this.Trace) {
             Debug.Log("[Teak] OpenSettingsAppToThisAppsSettings()");
         }
-
-#if UNITY_EDITOR
-        return false;
-#elif UNITY_WEBGL
+ 
+#if UNITY_EDITOR || UNITY_WEBGL
         return false;
 #elif UNITY_ANDROID
         AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
         return !teak.CallStatic<bool>("openSettingsAppToThisAppsSettings");
 #elif UNITY_IPHONE
         return TeakOpenSettingsAppToThisAppsSettings();
+#else
+        return false;
 #endif
     }
 
@@ -553,6 +559,8 @@ public partial class Teak : MonoBehaviour {
 #elif UNITY_IPHONE
         string configuration = Marshal.PtrToStringAnsi(TeakGetDeviceConfiguration());
         return Json.TryDeserialize(configuration) as Dictionary<string,object>;
+#else
+        return new Dictionary<string, object>();
 #endif
     }
 

@@ -208,6 +208,8 @@ public partial class TeakNotification {
         webGlCallbackMap.Add(callbackId, callback);
         TeakNotificationSchedule(callbackId, scheduleName, defaultMessage, delayInSeconds);
         yield return null;
+#else
+        yield return null;
 #endif
     }
 
@@ -269,6 +271,8 @@ public partial class TeakNotification {
         webGlCallbackMap.Add(callbackId, callback);
         TeakNotificationScheduleLongDistance(callbackId, scheduleName, Json.Serialize(userIds), delayInSeconds);
         yield return null;
+#else
+        yield return null;
 #endif
     }
 
@@ -322,6 +326,8 @@ public partial class TeakNotification {
         webGlCallbackMap.Add(callbackId, callback);
         TeakNotificationCancel(callbackId, scheduleId);
         yield return null;
+#else
+        yield return null;
 #endif
     }
 
@@ -373,6 +379,8 @@ public partial class TeakNotification {
         string callbackId = DateTime.Now.Ticks.ToString();
         webGlCallbackMap.Add(callbackId, callback);
         TeakNotificationCancelAll(callbackId);
+        yield return null;
+#else
         yield return null;
 #endif
     }
