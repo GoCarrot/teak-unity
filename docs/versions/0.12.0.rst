@@ -1,9 +1,0 @@
-0.12.0
-------
-:Breaking Changes:
-    * None
-:New Features:
-    * Remote logging
-    * Remote exception tracking
-:Bug Fixes:
-    * Fixed an absolute path issue during iOS post process when BuildPipeline.BuildPlayer was used to build

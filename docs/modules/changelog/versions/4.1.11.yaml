@@ -1,0 +1,7 @@
+android: ~
+breaking:
+  - Now requiring Android work-runtime 2.7+ due to Google releasing a non-compliant version for Android 12
+new:
+  - Now using relative paths when constructing Xcode projects to allow for building the project on one build machine, and building it on another.
+bug:
+  - Adds missing ``#else`` cases for platforms Teak does not support.

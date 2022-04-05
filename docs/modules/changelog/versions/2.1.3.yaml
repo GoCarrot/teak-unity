@@ -1,0 +1,3 @@
+ios: ~
+bug:
+  - Undefines ``TEAK_X_Y_OR_NEWER`` before re-defining to prevent errors in the case of rollbacks

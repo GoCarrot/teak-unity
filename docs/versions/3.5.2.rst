@@ -1,8 +1,0 @@
-3.5.2
------
-:Breaking Changes:
-    * None
-:New Features:
-    * Adds ``Teak.Instance.ReportCanvasPurchase`` for reporting purchases on Facebook Canvas
-:Bug Fixes:
-    * None

@@ -1,0 +1,7 @@
+android: ~
+ios: ~
+new:
+  - Adds custom ``ToString`` to ``TeakNotification``
+bug:
+  - Fixes a warning in the vendored ``MiniJSON.cs``
+  - Fixes behavior of Unity custom app delegates for iOS, as well as provides a specific error message for Unity log listeners

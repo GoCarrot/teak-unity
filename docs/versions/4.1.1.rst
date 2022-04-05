@@ -1,8 +1,0 @@
-4.1.1
------
-:Breaking Changes:
-    * None
-:New Features:
-    * None
-:Bug Fixes:
-    * Android native bug fix

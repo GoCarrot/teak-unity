@@ -1,0 +1,4 @@
+android: ~
+ios: ~
+new:
+  - If another plugin is using ``IMPL_APP_CONTROLLER_SUBCLASS`` it now works

@@ -43,7 +43,7 @@
     </androidPackage>
 
     <!-- AndroidX WorkManager -->
-    <androidPackage spec="androidx.work:work-runtime:2.5.+">
+    <androidPackage spec="androidx.work:work-runtime:2.7.+">
       <androidSdkPackageIds>
         <androidSdkPackageId>extra-google-m2repository</androidSdkPackageId>
       </androidSdkPackageIds>

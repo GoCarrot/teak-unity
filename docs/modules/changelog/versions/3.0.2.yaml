@@ -1,0 +1,4 @@
+ios: ~
+bug:
+  - Fixes behavior for custom App Delegates when using a non-Teak deep link
+  - Android < 5.1 would send invalid UTF characters via ``UnitySendMessage`` resulting in a soft-exception in Teak log event listeners, this exception is now caught and reported to the log listener

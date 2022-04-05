@@ -1,9 +1,0 @@
-0.12.6
-------
-:Breaking Changes:
-    * None
-:New Features:
-    * None
-:Bug Fixes:
-    * Native SDK hotfixes
-    * Fix for Prime31/OpenIAB not being in default locations (firstpass assembly)
