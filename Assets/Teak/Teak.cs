@@ -495,7 +495,7 @@ public partial class Teak : MonoBehaviour {
         if (this.Trace) {
             Debug.Log("[Teak] OpenSettingsAppToThisAppsSettings()");
         }
- 
+
 #if UNITY_EDITOR || UNITY_WEBGL
         return false;
 #elif UNITY_ANDROID
@@ -957,12 +957,14 @@ public partial class Teak : MonoBehaviour {
 #if UNITY_EDITOR
         // Editor mode default to trace on
         this.Trace = true;
+#else
+        this.Trace = TeakSettings.TraceLogging;
 #endif
 
         // Trace log default from app config
         object trace = null;
         if (this.AppConfiguration != null && this.AppConfiguration.TryGetValue("traceLog", out trace)) {
-            this.Trace = (bool) trace;
+            this.Trace |= (bool) trace;
         }
     }
 

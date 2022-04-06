@@ -26,6 +26,7 @@ public class TeakSettingsEditor : Editor {
         TeakSettings.AppId = EditorGUILayout.TextField("Teak App Id", TeakSettings.AppId);
         TeakSettings.APIKey = EditorGUILayout.TextField("Teak API Key", TeakSettings.APIKey);
         TeakSettings.ShortlinkDomain = EditorGUILayout.TextField("Short Link Domain", TeakSettings.ShortlinkDomain);
+        TeakSettings.TraceLogging = EditorGUILayout.Toggle("Trace Logging", TeakSettings.TraceLogging);
 
         EditorGUILayout.Space();
         GUILayout.Label("Build Settings", EditorStyles.boldLabel);
