@@ -186,8 +186,9 @@ public class TeakXcodeProjectMutator : IPostprocessBuildWithReport {
         // Add libTeak.a
 
         // If the 'Runtime' directory exists, this is coming from a UPM package
-        string relativeTeakPath = new DirectoryInfo(Application.dataPath).GetRelativePathTo(new DirectoryInfo(Path.GetDirectoryName(Path.GetDirectoryName(__FILE__))));
-        if (Directory.Exists(relativeTeakPath + "Runtime")) {
+        string pathToCheck = Path.GetDirectoryName(Path.GetDirectoryName(__FILE__));
+        string relativeTeakPath = new DirectoryInfo(Application.dataPath).GetRelativePathTo(new DirectoryInfo(pathToCheck));
+        if (Directory.Exists(pathToCheck + "/Runtime")) {
             relativeTeakPath = "io.teak.unity.sdk/Runtime";
         }
         project.AddFileToBuild(extensionTarget, project.AddFile("libTeak.a", name + "/libTeak.a"));
