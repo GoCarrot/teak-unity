@@ -168,11 +168,7 @@ namespace :upm do
     FileUtils.rm_rf(UPM_BUILD_TEMP)
     FileUtils.mkdir_p(UPM_BUILD_TEMP)
 
-    # Changelog
-    cd 'docs' do
-      `make html`
-      `pandoc -f rst -t gfm -o ../#{UPM_BUILD_TEMP}/CHANGELOG.md changelog.rst`
-    end
+    `git clone git@github.com:GoCarrot/upm-package-teak.git #{UPM_BUILD_TEMP}` if build_local?
 
     editor_glob = Dir.glob('Assets/Teak/Editor/**/*')
 
@@ -193,6 +189,10 @@ namespace :upm do
 
     copy_glob_to(editor_glob, File.join(UPM_BUILD_TEMP, 'Editor'), 'Assets/Teak/Editor')
     copy_glob_to(runtime_glob, File.join(UPM_BUILD_TEMP, 'Runtime'), 'Assets/Teak')
+
+    # package.json
+    template = File.read(File.join(PROJECT_PATH, 'Templates', 'package.json.template'))
+    File.write(File.join(UPM_BUILD_TEMP, 'package.json'), Mustache.render(template, TEMPLATE_PARAMETERS))
   end
 
   task :deploy_versioned do
@@ -200,10 +200,6 @@ namespace :upm do
     unless Dir.exist? UPM_PACKAGE_REPO
       `git clone git@github.com:GoCarrot/upm-package-teak.git #{UPM_PACKAGE_REPO}`
     end
-
-    # package.json
-    template = File.read(File.join(PROJECT_PATH, 'Templates', 'package.json.template'))
-    File.write(File.join(UPM_BUILD_TEMP, 'package.json'), Mustache.render(template, TEMPLATE_PARAMETERS))
 
     # Construct our version.
     version_parts = TEAK_SDK_VERSION.split('-')
