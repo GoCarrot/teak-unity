@@ -52,7 +52,7 @@ jobs:
 
   tag_build:
     docker:
-      - image: cimg/ruby
+      - image: cimg/ruby:3.1-node
     steps:
       - checkout
       - run: git fetch --tags
@@ -76,7 +76,7 @@ jobs:
 
   deploy_versioned:
     docker:
-      - image: cimg/ruby
+      - image: cimg/ruby:3.1-node
     steps:
       - checkout
       - run: git fetch --tags
@@ -112,7 +112,7 @@ jobs:
 
   deploy_latest:
     docker:
-      - image: cimg/ruby
+      - image: cimg/ruby:3.1-node
     steps:
       - checkout
       - run: git fetch --tags
