@@ -34,6 +34,7 @@ public class TeakXcodeProjectMutator : IPostprocessBuildWithReport {
 
         /////
         // Add Frameworks to Unity target
+        // Note: This checks for the presence of a framework before blindly adding it
         string[] teakRequiredFrameworks = new string[] {
             "AdSupport",
             "AVFoundation",
@@ -155,9 +156,14 @@ public class TeakXcodeProjectMutator : IPostprocessBuildWithReport {
         string extensionSrcPath = teakEditorIosPath + "/" + name;
         FileInfo projectPathInfo = new FileInfo(Path.GetDirectoryName(projectPath));
 
+        string extensionTarget = project.TargetGuidByName(name);
+        if (!string.IsNullOrEmpty(extensionTarget)) {
+            return extensionTarget;
+        }
+
         /////
         // Create app extension target
-        string extensionTarget = project.AddAppExtension(target, name,
+        extensionTarget = project.AddAppExtension(target, name,
                                  PlayerSettings.GetApplicationIdentifier(BuildTargetGroup.iOS) + "." + displayName,
                                  projectPathInfo.GetRelativePathTo(new FileInfo(extensionSrcPath + "/Info.plist")));
         string buildPhaseId = project.AddSourcesBuildPhase(extensionTarget);
