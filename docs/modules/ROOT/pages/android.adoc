@@ -2,7 +2,7 @@
 
 == Dependencies
 
-include::partial$dependencies.adoc[]
+include:android::partial$dependencies.adoc[]
 
 [NOTE]
 ====
