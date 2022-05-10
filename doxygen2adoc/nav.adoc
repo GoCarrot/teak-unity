@@ -1,3 +1,5 @@
+* API
+
 {{#each items}}
-* xref:unity-api:ROOT:page${{id}}.adoc[{{name}}]
+** xref:api:page${{id}}.adoc[{{name}}]
 {{/each}}

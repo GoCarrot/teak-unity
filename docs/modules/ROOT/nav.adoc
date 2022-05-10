@@ -1,10 +1,15 @@
-* Unity
-+
---
-include::sdk-reference:unity:partial$nav.adoc[]
---
-** API
-+
---
-include::partial$nav.adoc[]
---
+* xref:page$before-you-start.adoc[Before You Start]
+* xref:page$unity-editor.adoc[Unity Editor]
+* xref:page$android.adoc[Android]
+** xref:page$android-permissions.adoc[Android Permissions]
+** xref:page$amazon.adoc[Amazon]
+* xref:page$ios.adoc[iOS]
+** xref:page$ios-extensions.adoc[iOS Extensions]
+** xref:page$custom-app-delegate.adoc[Using a Custom App Delegate]
+* xref:page$working-with-unity.adoc[Working with Teak in Unity]
+* xref:page$debugging.adoc[Debugging Your Code with Teak]
+* xref:page$badging.adoc[Badging Your App]
+* xref:page$custom-versions.adoc[Custom Version Numbers]
+* xref:page$data-collection.adoc[Limiting Data Collection]
+* xref:page$upm.adoc[Unity Package Manager]
+* xref:changelog:page$changelog.adoc[Changelog]

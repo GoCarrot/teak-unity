@@ -1,0 +1,69 @@
+= iOS
+
+IMPORTANT: The Teak post-process scripts will manage all of this for you, if you are
+using the Teak post-process scripts, you can skip all of these steps.
+
+== Dependencies
+If you do not use the the post-process scripts, the following frameworks are required by Teak:
+
+* `AdSupport.framework`
+* `AVFoundation.framework`
+* `ImageIO.framework`
+* `Services.framework`
+* `StoreKit.framework`
+* `UserNotifications.framework`
+* `CoreGraphics.framework`
+* `UIKit.framework`
+* `SystemConfiguration.framework`
+
+NOTE: These should be present as dependencies on libTeak.a (as specified in libTeak.a.meta),
+this is only in case you run into problems.
+
+.Dependencies as compiler flags
+    -framework AdSupport -framework AVFoundation -framework CoreServices -framework StoreKit -framework UserNotifications -framework ImageIO -framework CoreGraphics -framework UIKit -framework SystemConfiguration
+
+== Edit Info.plist
+
+The Teak Editor scripts for Unity will attempt to manage this file for you, if
+your build environment needs to provide the file itself, this is what it should look like:
+
+.Info.plist
+[source,xml]
+----
+<key>CFBundleURLTypes</key>
+<array>
+    <dict>
+        <key>CFBundleTypeRole</key>
+        <string>Editor</string>
+        <key>CFBundleURLSchemes</key>
+        <array>
+            <string>teakYOUR_TEAK_APP_ID</string>
+        </array>
+    </dict>
+</array>
+<key>TeakApiKey</key>
+<string>YOUR_TEAK_API_KEY</string>
+<key>TeakAppId</key>
+<string>YOUR_TEAK_APP_ID</string>
+----
+
+NOTE: Replace `YOUR_TEAK_APP_ID`, and `YOUR_TEAK_API_KEY` with your game's values.
+
+Your Teak App Id and API Key can be found in the Settings for your app on the Teak dashboard.
+
+== Edit Unity-iPhone.entitlements
+You'll need to add your Teak subdomain to the associated domains in order for deep
+linking to work properly on iOS. Add the following to your `Unity-iPhone.entitlements`:
+
+.Unity-iPhone.entitlements
+[source,xml]
+----
+<key>com.apple.developer.associated-domains</key>
+<array>
+    <string>applinks:YOUR_SUBDOMAIN.jckpt.me</string>
+</array>
+----
+
+NOTE: Replace `YOUR_SUBDOMAIN` with your game's subdomain.
+
+Your Teak Subdomain can be found in the Settings for your app on the Teak dashboard.

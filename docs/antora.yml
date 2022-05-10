@@ -1,8 +1,10 @@
-name: unity-api
-title: Unity API
+name: unity
+title: Unity SDK
 version: 4.2.0
+start_page: before-you-start.adoc
 nav:
 - modules/ROOT/nav.adoc
+- modules/api/nav.adoc
 
 asciidoc:
   attributes:
