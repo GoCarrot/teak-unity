@@ -28,7 +28,7 @@ This stores the Teak App Id and API Key for use by Teak's runtime, and helpers.
 
 == Tell Teak how to Identify The Current User
 
-Call the `IdentifyUser` function and pass it a string which uniquely identifies the current user:
+Call the `IdentifyUser` function and pass it a string which uniquely identifies the current user. This will also begin tracking and reporting of a session, and track a daily active user.
 
 doxygen2adoc:IdentifyUser(string,UserConfiguration)[]
 

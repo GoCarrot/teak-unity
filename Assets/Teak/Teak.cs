@@ -198,8 +198,9 @@ public partial class Teak : MonoBehaviour {
     /// </summary>
     /// \deprecated Please use <see cref="IdentifyUser(string, UserConfiguration)"/> instead.
     /// <remarks>
-    /// This should be the same way you identify the user in your backend.
+    /// This will also begin tracking and reporting of a session, and track a daily active user.
     /// </remarks>
+    /// \note This should be the same way you identify the user in your backend.
     /// <param name="userIdentifier">An identifier which is unique for the current user.</param>
     /// <param name="email">The email address for the current user.</param>
     [Obsolete("Please use IdentifyUser(string, UserConfiguration) instead.")]
@@ -212,8 +213,9 @@ public partial class Teak : MonoBehaviour {
     /// </summary>
     /// \deprecated Please use <see cref="IdentifyUser(string, UserConfiguration)"/> instead.
     /// <remarks>
-    /// This should be the same way you identify the user in your backend.
+    /// This will also begin tracking and reporting of a session, and track a daily active user.
     /// </remarks>
+    /// \note This should be the same way you identify the user in your backend.
     /// <param name="userIdentifier">An identifier which is unique for the current user.</param>
     /// <param name="optOut">A list containing zero or more of: OptOutIdfa, OptOutPushKey, OptOutFacebook</param>
     /// <param name="email">The email address for the current user.</param>
@@ -273,8 +275,9 @@ public partial class Teak : MonoBehaviour {
     /// Tell Teak how it should identify the current user.
     /// </summary>
     /// <remarks>
-    /// This should be the same way you identify the user in your backend.
+    /// This will also begin tracking and reporting of a session, and track a daily active user.
     /// </remarks>
+    /// \note This should be the same way you identify the user in your backend.
     /// <param name="userIdentifier">An identifier which is unique for the current user.</param>
     /// <param name="userConfiguration">Additional configuration for the current user.</param>
     public void IdentifyUser(string userIdentifier, UserConfiguration userConfiguration) {
