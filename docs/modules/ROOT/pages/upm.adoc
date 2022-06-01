@@ -1,8 +1,9 @@
 = Unity Package Manager
+
 Teak is available via UPM through a GitHub repo.
 
 The repo uses a specific branch structure so that you can manage the Teak dependency
-via git in the same way you would use other package management, to automatically get
+via git in the same way you would use other package management, to get
 minor and patch version updates.
 
 [NOTE]
@@ -12,10 +13,14 @@ then make sure the reference is "io.teak.unity.sdk" instead of a different value
 
     {
       "dependencies": {
-        "io.teak.unity.sdk": "https://github.com/GoCarrot/upm-package-teak.git#4.0.0"
+        "io.teak.unity.sdk": "https://github.com/GoCarrot/upm-package-teak.git"
       }
     }
 ====
+
+== The Latest Version
+
+The latest version is always available at https://github.com/GoCarrot/upm-package-teak.git
 
 == How UPM Versions Work
 
@@ -59,7 +64,7 @@ You will always use version `4.0.0`, even when new versions come out
 }
 ----
 
-You will use any version of `4.0.x`, so if `4.0.1` comes out, your dependency will be updated.
+You will use any version of `4.0.x`, so if `4.0.1` comes out, your dependency can be updated.
 
 .If you use
 [source, json]
