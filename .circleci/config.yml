@@ -51,7 +51,7 @@ jobs:
 
   tag_build:
     docker:
-      - image: circleci/ruby:latest
+      - image: cimg/ruby:3.1
     steps:
       - checkout
       - run: git fetch --tags
@@ -64,7 +64,9 @@ jobs:
             bundle check || bundle install --path vendor/bundle
       - run:
           name: Install AWS CLI
-          command: sudo apt-get -y -qq install awscli
+          command: |
+            sudo apt-get update
+            sudo apt-get -y -qq install awscli
       - save_cache:
           paths:
             - vendor/bundle
@@ -75,7 +77,7 @@ jobs:
 
   deploy_versioned:
     docker:
-      - image: circleci/ruby:latest
+      - image: cimg/ruby:3.1
     steps:
       - checkout
       - run: git fetch --tags
@@ -88,7 +90,9 @@ jobs:
             bundle check || bundle install --path vendor/bundle
       - run:
           name: Install AWS CLI
-          command: sudo apt-get -y -qq install awscli
+          command: |
+            sudo apt-get update
+            sudo apt-get -y -qq install awscli
       - save_cache:
           paths:
             - vendor/bundle
@@ -111,7 +115,7 @@ jobs:
 
   deploy_latest:
     docker:
-      - image: circleci/ruby:latest
+      - image: cimg/ruby:3.1
     steps:
       - checkout
       - run: git fetch --tags
@@ -122,7 +126,9 @@ jobs:
           command: bundle check || bundle install --path vendor/bundle
       - run:
           name: Install AWS CLI
-          command: sudo apt-get -y -qq install awscli
+          command: |
+            sudo apt-get update
+            sudo apt-get -y -qq install awscli
       - save_cache:
           paths:
             - vendor/bundle
