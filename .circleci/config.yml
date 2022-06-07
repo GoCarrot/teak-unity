@@ -46,8 +46,8 @@ jobs:
           paths:
             - build/*
             - upm-build/*
-      - build_antora_playbook:
-          build_type: development
+      # - build_antora_playbook:
+      #     build_type: development
 
   tag_build:
     docker:
