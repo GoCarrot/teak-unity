@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-  teak: teak/sdk-utils@0.0.13
+  teak: teak/sdk-utils@0.7.0
 
 jobs:
   build:
@@ -46,8 +46,8 @@ jobs:
           paths:
             - build/*
             - upm-build/*
-      # - build_antora_playbook:
-      #     build_type: development
+      - teak/build-antora-playbook:
+          build_type: development
 
   tag_build:
     docker:
@@ -196,27 +196,3 @@ workflows:
               ignore: /.*/
             tags:
               only: /.*/
-
-commands:
-  #
-  # Trigger a playbook build
-  #
-  build_antora_playbook:
-    description: "Trigger Antora Playbook Build"
-    parameters:
-      build_type:
-        type: enum
-        default: "development"
-        enum: ["development", "production"]
-    steps:
-      - run:
-          name: Trigger Antora Playbook Build
-          command: |
-            curl --location --request POST 'https://circleci.com/api/v2/project/github/GoCarrot/antora-playbook/pipeline' \
-            --header 'Content-Type: application/json' \
-            -u "${CIRCLE_API_TOKEN}" \
-            -d '{
-              "parameters": {
-                "build_type": "<< parameters.build_type >>"
-              }
-            }'
