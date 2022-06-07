@@ -164,6 +164,8 @@ workflows:
   tagged-build:
     jobs:
       - build:
+          context:
+            - Antora
           filters:
             branches:
               ignore: /.*/
