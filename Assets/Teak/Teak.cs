@@ -535,12 +535,36 @@ public partial class Teak : MonoBehaviour {
     /// <summary>
     /// Register for Push Notifications.
     /// </summary>
-    /// <remarks>
-    /// This method only has any effect on iOS devices, and is safe to use on iOS 8+
-    /// </remarks>
     public void RegisterForNotifications() {
-#if !UNITY_EDITOR && UNITY_IPHONE
+#if UNITY_EDITOR || UNITY_WEBGL
+#elif UNITY_IPHONE
         TeakRequestPushAuthorization(false);
+#elif UNITY_ANDROID
+        // If we're not on API 33, no action needed.
+        using(var buildVersion = new AndroidJavaClass("android.os.Build$VERSION")) {
+            int sdkVersion = buildVersion.GetStatic<int>("SDK_INT");
+            if (sdkVersion < 33) {
+                return;
+            }
+        }
+
+        // If the TargetSDK version isn't 33, no action needed.
+        using(AndroidJavaClass helpers = new AndroidJavaClass("io.teak.sdk.Helpers"),
+              unityPlayer = new AndroidJavaClass("com.unity3d.player.UnityPlayer")) {
+
+            using (var activity = unityPlayer.GetStatic<AndroidJavaObject>("currentActivity")) {
+                int sdkVersion = helpers.CallStatic<int>("getTargetSDKVersion", activity);
+                if (sdkVersion < 33) {
+                    return;
+                }
+            }
+        }
+
+        // Skip if the permission is granted
+        string POST_NOTIFICATIONS = "android.permission.POST_NOTIFICATIONS";
+        if (!UnityEngine.Android.Permission.HasUserAuthorizedPermission(POST_NOTIFICATIONS)) {
+            UnityEngine.Android.Permission.RequestUserPermission(POST_NOTIFICATIONS);
+        }
 #endif
     }
 
