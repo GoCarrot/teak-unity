@@ -12,12 +12,19 @@ all dependencies should be taken care of automatically.
 *Please use Play Services Resolver version >= 1.2.95.* Issues have been reported using version 1.2.72, and issues with other versions may also exist.
 ====
 
+== AndroidManifest.xml
+
+You need to be using a Custom App Manifest with Unity in order to initialize Teak, as well as to allow Teak to automatically add URL handling.
+
+To do this, you should follow the instructions to https://docs.unity3d.com/Manual/overriding-android-manifest.html[Create a template Unity Library Manifest file] in the Unity documentation.
+
 == Initialize Teak
 
 There are a few ways to initialize Teak in an Android project, they are listed
 from easiest to more complicated.
 
 === Option 1: Tell Teak to Auto-Initialize
+
 Teak can take advantage of Firebase's initialization of ContentProviders to auto-initialize.
 This is the easiest way to integrate Teak with your Android target.
 
@@ -29,6 +36,7 @@ This is the easiest way to integrate Teak with your Android target.
 NOTE: This should work just fine for most games. You can go right to <<Configure Credentials>>
 
 === Option 2: Make Teak your Unity Main Activity
+
 If you can't use auto-initialization, for some reason, edit your `Assets/Plugins/Android/AndroidManifest.xml`
 and change your main `<activity>`
 
@@ -49,6 +57,7 @@ and change your main `<activity>`
 You can now <<Configure Credentials>>
 
 ==== What About Shortcuts?
+
 To preserve app shortcuts, add the following below (not inside) the `<activity>` you just changed:
 
 [source,xml]
@@ -100,6 +109,7 @@ import io.teak.sdk.wrapper.unity;
 ----
 
 ==== Initialize Teak
+
 Call ``<<Teak.onCreate(Activity)>>`` **before** the call to ``super.onCreate``, then call
 ``TeakUnity.initialize()`` **after** the call to ``super.onCreate``
 
@@ -128,13 +138,16 @@ from `UnityPlayerActivity`, otherwise it is done by `UnityPlayerActivity`.
 You can now <<Configure Credentials>>
 
 === What This Does
+
 This lets Teak hook into the Android app lifecycle and configure itself, listen
 for Facebook logins, billing events, and begin sending information to the Teak Service.
 
 === Testing It
+
 Run your game on an Android device, and look at the Android debug log output.
 
 === You Should See
+
     {
       "event_type":"teak.state",
       "log_level":"INFO",
@@ -187,9 +200,11 @@ NOTE: Replace `YOUR_TEAK_APP_ID`, and `YOUR_TEAK_API_KEY` with your game's value
 Your Teak App Id and API Key can be found in the Settings for your app on the Teak dashboard.
 
 === What This Does
+
 This provides Teak with the credentials needed to send information to the Teak Service.
 
 == Set Notification Icons for your Game
+
 To specify the icon displayed in the system tray, and at the top of the notification,
 describe these resources in a file called `teak_icons.xml`.
 
@@ -247,4 +262,5 @@ NOTE: Replace `YOUR_TEAK_APP_ID` with your Teak App Id and `YOUR_SHORTLINK_DOMAI
 Your Teak App Id and Shortlink Domain can be found in the Settings for your app on the Teak dashboard.
 
 === What This Does
+
 This tells Android to look for deep link URLs created by Teak.
