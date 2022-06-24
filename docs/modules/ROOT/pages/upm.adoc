@@ -80,7 +80,6 @@ Then any version of the `4.x.x` series that releases will be eligible.
 
 This is accomplished via git branches
 
-The 'main' branch contains only minimal framework for the UPM package.
-There is a branch per major version, then a branch per minor version, and a
-tag per full version. The HEAD of each major/minor branch is kept updated to match the
-latest corresponding release.
+There is a branch per major version, then a branch per minor version, and a tag per full version. The HEAD of each major/minor branch is kept updated to match the latest corresponding release.
+
+The HEAD of the `main` branch is kept updated to match the latest release.

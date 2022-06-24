@@ -211,13 +211,13 @@ namespace :upm do
       sh "git config user.email \"team@teak.io\""
       sh "git config user.name \"Teak CI\""
 
-      sh "git checkout main" # Start on the main branch
+      sh "git checkout build" # Start on the 'build' branch
       sh "git checkout #{major}.#{minor} || " +  # If the current minor version branch exists, check it out
          "(git checkout #{major}.#{minor - 1} && git checkout -b #{major}.#{minor}) || " + # Check out the previous minor revision and then create a new minor version branch off that
          "(git checkout #{major} && git checkout -b #{major}.#{minor}) || " + # If there is no previous minor version branch, check out the major version and create one
-         "(git checkout #{major - 1} ; (git checkout -b #{major} && git checkout -b #{major}.#{minor}))" # New major version based on previous major version, or main
+         "(git checkout #{major - 1} ; (git checkout -b #{major} && git checkout -b #{major}.#{minor}))" # New major version based on previous major version, or 'build'
       sh "rm -fr *" # Delete all files
-      sh "git ls-tree --name-only -r main | xargs git checkout --" # Restore files which exist in the main branch
+      sh "git ls-tree --name-only -r build | xargs git checkout --" # Restore files which exist in the 'build' branch
     end
 
     sh "cp -RT #{UPM_BUILD_TEMP} #{UPM_PACKAGE_REPO}" # Copy in all the files
@@ -254,21 +254,9 @@ namespace :upm do
       sh "git reset --hard #{TEAK_SDK_VERSION}" # Move the major.minor branch HEAD to the latest tag
       sh "git checkout #{major} || git checkout -b #{major}"
       sh "git reset --hard #{TEAK_SDK_VERSION}" # Move the major branch HEAD to the latest tag
+      sh "git checkout main"
+      sh "git reset --hard #{TEAK_SDK_VERSION}" # Move the main branch HEAD to the latest tag
       sh "git push --all"
     end
   end
-
-  # task :merge do
-  #   cd UPM_PACKAGE_REPO do
-  #     `git config user.email "team@teak.io"`
-  #     `git config user.name "Teak CI"`
-  #     `git checkout main`
-  #     `git clean -fdx`
-  #     `git merge -m "Current version $PVERSION" --no-ff origin/$PVERSION &&
-  #       git tag $PVERSION &&
-  #       git push &&
-  #       git push origin --delete $PVERSION &&
-  #       git push --tags`
-  #   end
-  # end
 end
