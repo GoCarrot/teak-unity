@@ -14,24 +14,13 @@ The Teak SDK will also automatically try to debug problems with ADM at runtime (
 Don't hesitate to contact us if you are confused by any of these steps.
 
 == Credentials and API Key
-First, you will need Amazon credentials and an Amazon API key.
 
-https://developer.amazon.com/docs/adm/obtain-credentials.html
+On Amazon you will need an account on the https://developer.amazon.com/home.html[Amazon Developer Console, window=_blank] with access to your game.
 
-Once you have completed these steps, go to your apps on the Amazon Developer site,
-and look at the Security Profiles https://developer.amazon.com/iba-sp/overview.html
-
-Click on the security profile for your app.
-
-Copy the value in the Amazon security profile for `Client ID` into the Teak Mobile
-Settings for your app for `ADM Client ID`.
-
-Copy the value in the Amazon security profile for `Client Secret` into the Teak Mobile
-Settings for your app for `ADM Client Secret`.
-
-This gives Teak the information it needs to send ADM messages to your app.
+Follow these instructions to get the credentials for sending push notifications on Anazon devices xref:usage:reference:page$amazon-device-messaging.adoc[Finding your Amazon Device Messaging Credentials].
 
 == Update Your AndroidManifest.xml
+
 Teak uses the manifest merger stage to automatically add the required changes to your `AndroidManifest.xml`.
 
 If you are having issues, please check to make sure that the following exist in the final manifest for your game:
