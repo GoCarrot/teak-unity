@@ -6,17 +6,19 @@ include::android::partial$dependencies.adoc[]
 
 [NOTE]
 ====
-If you use the https://github.com/googlesamples/unity-jar-resolver[Play Services Resolver plugin for Unity],
+If you use the https://github.com/googlesamples/unity-jar-resolver[External Dependency Manager for Unity, window=_blank],
 all dependencies should be taken care of automatically.
 
-*Please use Play Services Resolver version >= 1.2.95.* Issues have been reported using version 1.2.72, and issues with other versions may also exist.
+*Please use External Dependency Manager version >= 1.2.95.* Issues have been reported using version 1.2.72, and issues with other versions may also exist.
+
+For more help see: xref:page$play-services-resolver.adoc[Installing the External Dependency Manager for Unity]
 ====
 
 == AndroidManifest.xml
 
 You need to be using a Custom App Manifest with Unity in order to initialize Teak, as well as to allow Teak to automatically add URL handling.
 
-To do this, you should follow the instructions to https://docs.unity3d.com/Manual/overriding-android-manifest.html[Create a template Unity Library Manifest file] in the Unity documentation.
+To do this, you should follow the instructions to https://docs.unity3d.com/Manual/overriding-android-manifest.html[Create a template Unity Library Manifest file, window=_blank] in the Unity documentation.
 
 == Initialize Teak
 

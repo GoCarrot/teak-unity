@@ -1,6 +1,7 @@
 * xref:page$before-you-start.adoc[Before You Start]
 * xref:page$unity-editor.adoc[Unity Editor]
 * xref:page$android.adoc[Android]
+** xref:page$play-services-resolver.adoc[Installing the External Dependency Manager for Unity]
 ** xref:page$android-permissions.adoc[Android Permissions]
 ** xref:page$amazon.adoc[Amazon]
 * xref:page$ios.adoc[iOS]
