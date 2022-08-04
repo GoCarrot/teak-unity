@@ -318,31 +318,6 @@ public partial class Teak : MonoBehaviour {
 #endif
     }
 
-    /// <summary>Assign email opt-out status for the current user.</summary>
-    /// <param name="optOut">True if the user wants to opt-out of Teak email campaigns.</param>
-    public void SetOptOutEmail(bool optOut) {
-#if UNITY_EDITOR
-#elif UNITY_ANDROID
-        AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
-        teak.CallStatic("setOptOutEmail", optOut);
-#elif UNITY_IPHONE || UNITY_WEBGL
-        TODO
-#endif
-    }
-
-    /// <summary>Assign push notification opt-out status for the current user.</summary>
-    /// <param name="optOut">True if the user wants to opt-out of Teak push notification campaigns.</param>
-    public void SetOptOutPush(bool optOut) {
-#if UNITY_EDITOR
-#elif UNITY_ANDROID
-        AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
-        teak.CallStatic("setOptOutPush", optOut);
-#elif UNITY_IPHONE || UNITY_WEBGL
-        TODO
-#endif
-    }
-
-
     /// <summary>
     /// On iOS, if 'TeakDoNotRefreshPushToken' is set to 'true' then this method
     /// will tell Teak that the push token is ready, and that the user has authorized
