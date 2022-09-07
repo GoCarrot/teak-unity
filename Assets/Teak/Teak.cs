@@ -487,6 +487,21 @@ public partial class Teak : MonoBehaviour {
     }
 
     /// <summary>
+    /// Delete the email address associated with the current user.
+    /// </summary>
+    public void DeleteEmail() {
+#if UNITY_EDITOR
+        return;
+#elif UNITY_ANDROID
+        AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
+        teak.CallStatic("deleteEmail");
+#elif UNITY_IPHONE || UNITY_WEBGL
+        // TODO: WebGL impl.
+        TeakDeleteEmail();
+#endif
+    }
+
+    /// <summary>
     /// Assign a numeric value to a user profile attribute
     /// </summary>
     /// <param name="key">The name of the numeric attribute.</param>
@@ -679,6 +694,9 @@ public partial class Teak : MonoBehaviour {
 
     [DllImport ("__Internal")]
     private static extern bool TeakHandleDeepLinkPath(string url);
+
+    [DllImport ("__Internal")]
+    private static extern void TeakDeleteEmail();
 #endif
 
 #if UNITY_IPHONE
