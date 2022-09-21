@@ -230,7 +230,9 @@ The `teak_icons.xml` file in `values` should point to a full-color icon, for dev
 running less than Android 5, and the `teak_icons.xml` file in `values-v21` should point
 to a white and transparent PNG for Android 5 and above.
 
-IMPORTANT: To make sure that your white and transparent PNG shows up properly, use :doc:`Android Asset Studio's Notification icon generator <android/notification-icon>`.
+TEST
+
+IMPORTANT: To make sure that your white and transparent PNG shows up properly, use xref:android::page$notification-icon.adoc[Android Asset Studio's Notification icon generator].
 
 NOTE: You may name the ``teak_icons.xml`` file anything you want, or include the values in an existing file, should you wish to do so.
 
