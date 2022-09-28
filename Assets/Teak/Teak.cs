@@ -280,7 +280,7 @@ public partial class Teak : MonoBehaviour {
     /// \note This should be the same way you identify the user in your backend.
     /// <param name="userIdentifier">An identifier which is unique for the current user.</param>
     /// <param name="userConfiguration">Additional configuration for the current user.</param>
-    public void IdentifyUser(string userIdentifier, UserConfiguration userConfiguration) {
+    public void IdentifyUser(string userIdentifier, UserConfiguration userConfiguration = null) {
         this.UserId = userIdentifier;
         if (userConfiguration == null) { userConfiguration = new UserConfiguration(); }
 
