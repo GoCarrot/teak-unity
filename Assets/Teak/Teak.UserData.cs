@@ -19,10 +19,14 @@ public partial class Teak {
         /// <summary>True if the user has opted out of Teak push notification campaigns.</summary>
         public bool OptOutPush { get; private set; }
 
+        /// <summary>Push registration information for the current user, if available.</summary>
+        public Dictionary<string, object> PushRegistration { get; private set; }
+
         internal UserData(Dictionary<string, object> json) {
             this.AdditionalData = json["additionalData"] as Dictionary<string, object>;
             this.OptOutEmail = Convert.ToBoolean(json["optOutEmail"]);
             this.OptOutPush = Convert.ToBoolean(json["optOutPush"]);
+            this.PushRegistration = json["pushRegistration"] as Dictionary<string, object>;
         }
     }
 }
