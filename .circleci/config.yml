@@ -1,7 +1,8 @@
 version: 2.1
 
 orbs:
-  teak: teak/sdk-utils@0.7.0
+  teak: teak/sdk-utils@1
+  buildomat: teak/buildomat@0.1
 
 jobs:
   build:
@@ -107,6 +108,7 @@ jobs:
           paths:
             - build/*
             - upm-package-teak/*
+      - buildomat/aws-oidc-assume
       - run:
           name: Upload SDK to S3
           command: |
@@ -139,6 +141,7 @@ jobs:
             name: Update UPM Branch Heads
             command: |
               UPM_PACKAGE_REPO=upm-package-teak bundle exec rake upm:deploy_latest
+      - buildomat/aws-oidc-assume
       - run:
           name: Upload SDK to S3
           command: |
@@ -172,6 +175,8 @@ workflows:
             tags:
               only: /.*/
       - deploy_versioned:
+          context:
+            - AWS-OIDC-Role
           requires:
             - build
           filters:
@@ -189,6 +194,8 @@ workflows:
             tags:
               only: /.*/
       - deploy_latest:
+          context:
+            - AWS-OIDC-Role
           requires:
             - hold
           filters:
