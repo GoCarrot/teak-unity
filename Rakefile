@@ -9,9 +9,6 @@ require 'pathname'
 require 'unitypackage'
 CLEAN.include '**/.DS_Store'
 
-KMS_KEY = `aws kms decrypt --ciphertext-blob fileb://kms/store_encryption_key.key --output text --query Plaintext | base64 --decode`.freeze
-CIRCLE_TOKEN = ENV.fetch('CIRCLE_TOKEN') { `openssl enc -md MD5 -d -aes-256-cbc -in kms/encrypted_circle_ci_key.data -k #{KMS_KEY}` }
-
 TEAK_SDK_VERSION = `git describe --tags`.strip
 NATIVE_CONFIG = YAML.load_file('native.config.yml')
 
