@@ -2,3 +2,4 @@ android: ~
 ios: ~
 new:
   - Trace logging (<<Teak.Trace>>) is now supported as a setting in the Unity Editor.
+  - Callbacks are now optional for <<TeakNotification>> methods.
