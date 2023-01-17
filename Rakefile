@@ -152,7 +152,7 @@ namespace :build do
     end
 
     begin
-      sh 'python extractunitypackage.py Teak.unitypackage _temp_pkg/', verbose: false
+      sh 'python3 extractunitypackage.py Teak.unitypackage _temp_pkg/', verbose: false
       FileUtils.rm_rf('_temp_pkg')
     rescue StandardError
       raise 'Unity build failed'
