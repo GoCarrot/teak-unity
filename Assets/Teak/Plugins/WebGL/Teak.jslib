@@ -50,6 +50,15 @@ mergeInto(LibraryManager.library, {
 
       // Always send launch summary
       SendMessage("TeakGameObject", "PostLaunchSummary", JSON.stringify(attribution));
+
+      // Always send UserDataEvent
+      SendMessage("TeakGameObject", "UserDataEvent", JSON.stringify({
+        additionalData: window.teak.additionalData,
+        emailStatus: window.teak.optOutStates.email,
+        pushStatus: window.teak.optOutStates.push,
+        smsStatus: window.teak.optOutStates.sms,
+        pushRegistration: {}
+      }));
     });
 
     window.teak.claimReward(function(reply) {
