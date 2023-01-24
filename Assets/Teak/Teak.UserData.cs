@@ -2,6 +2,8 @@
 /// @cond hide_from_doxygen
 using System;
 using System.Collections.Generic;
+
+using TeakExtensions;
 /// @endcond
 #endregion
 
@@ -25,12 +27,14 @@ public partial class Teak {
         /// <summary>Push registration information for the current user, if available.</summary>
         public Dictionary<string, object> PushRegistration { get; private set; }
 
+        private static Dictionary<string, object> EmptyDictionary = new Dictionary<string, object>();
+
         internal UserData(Dictionary<string, object> json) {
-            this.AdditionalData = json["additionalData"] as Dictionary<string, object>;
-            this.EmailStatus = new ChannelStatus(json["emailStatus"] as Dictionary<string, object>);
-            this.PushStatus = new ChannelStatus(json["pushStatus"] as Dictionary<string, object>);
-            this.SmsStatus = new ChannelStatus(json["smsStatus"] as Dictionary<string, object>);
-            this.PushRegistration = json["pushRegistration"] as Dictionary<string, object>;
+            this.AdditionalData = json.Opt("additionalData", EmptyDictionary) as Dictionary<string, object>;
+            this.EmailStatus = new ChannelStatus(json.Opt("emailStatus", EmptyDictionary) as Dictionary<string, object>);
+            this.PushStatus = new ChannelStatus(json.Opt("pushStatus", EmptyDictionary) as Dictionary<string, object>);
+            this.SmsStatus = new ChannelStatus(json.Opt("smsStatus", EmptyDictionary) as Dictionary<string, object>);
+            this.PushRegistration = json.Opt("pushRegistration", EmptyDictionary) as Dictionary<string, object>;
         }
 
 

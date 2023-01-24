@@ -3,6 +3,8 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+
+using TeakExtensions;
 /// @endcond
 #endregion
 
@@ -48,6 +50,7 @@ public partial class Teak {
         }
 
         private void Assignment(int stateAsInt, bool deliveryFault) {
+            if (stateAsInt < 0 || stateAsInt > 4) stateAsInt = 4;
             this.State = (ChannelState) stateAsInt;
             this.DeliveryFault = deliveryFault;
         }
@@ -55,17 +58,13 @@ public partial class Teak {
         /// <summary>Constructor</summary>
         public ChannelStatus(ChannelState state, bool deliveryFault) {
             int stateAsInt = (int) state;
-            if (stateAsInt < 0 || stateAsInt > 4) stateAsInt = 4;
-
             Assignment(stateAsInt, deliveryFault);
         }
 
         /// <summary>Constructor</summary>
         public ChannelStatus(Dictionary<string, object> json) {
-            int stateAsInt = 4; // Unknown
-            int.TryParse(json["state"] as string, out stateAsInt);
-
-            Assignment(stateAsInt, Convert.ToBoolean(json["delivery_fault"]));
+            Assignment(ChannelStatusName.IndexOf(json.Opt("state") as string),
+                       Convert.ToBoolean(json.Opt("delivery_fault", "false")));
         }
 
         /// <summary>Dictionary representation of this object, suitable for JSON encoding.</summary>
