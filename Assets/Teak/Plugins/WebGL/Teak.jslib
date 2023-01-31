@@ -26,7 +26,7 @@ mergeInto(LibraryManager.library, {
     var userId = Pointer_stringify(ptr_userId);
     var configJson = Pointer_stringify(ptr_configJson);
     var config = JSON.parse(configJson);
-    window.teak.identify(userId, null, null, {email: config.email});
+    window.teak.identify(userId, null, null, config);
 
     window.teak.on('udidAvailable', function() {
       // Teak attribution params
