@@ -213,5 +213,8 @@ mergeInto(LibraryManager.library, {
   TeakUnityReportCanvasPurchase: function(ptr_payload) {
     var payload = Pointer_stringify(ptr_payload);
     window.teak.reportUnityCanvasPurchase(payload);
+  },
+  TeakDeleteEmail: function() {
+    window.teak.deleteEmail();
   }
 });
