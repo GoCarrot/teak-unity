@@ -36,6 +36,9 @@ typedef void (^TeakLogListener)(NSString* _Nonnull event,
 
 extern void TeakSetLogListener(TeakLogListener listener);
 
+// Teak Operation Things
+extern NSObject* TeakSetStateForChannel(const char* stateCstr, const char* channelCstr)
+
 // TeakNotification
 extern NSObject* TeakNotificationSchedule(const char* creativeId, const char* message, uint64_t delay);
 extern NSObject* TeakNotificationScheduleLongDistance(const char* creativeId, int64_t delay, const char* inUserIds[], int inUserIdCount);
@@ -93,6 +96,16 @@ void* TeakNotificationCancelAll_Retained()
 #if __has_feature(objc_arc)
    void* notif = (__bridge_retained void*)TeakNotificationCancelAll();
    return notif;
+#else
+   return [TeakNotificationCancelAll() retain];
+#endif
+}
+
+void* TeakSetStateForChannel_Retained(const char* stateCstr, const char* channelCstr)
+{
+#if __has_feature(objc_arc)
+   void* operation = (__bridge_retained void*)TeakSetStateForChannel(stateCstr, channelCstr);
+   return operation;
 #else
    return [TeakNotificationCancelAll() retain];
 #endif
