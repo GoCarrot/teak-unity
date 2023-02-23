@@ -16,13 +16,13 @@ public partial class Teak {
         public Dictionary<string, object> AdditionalData { get; private set; }
 
         /// <summary></summary>
-        public ChannelStatus EmailStatus { get; private set; }
+        public Channel.Status EmailStatus { get; private set; }
 
         /// <summary></summary>
-        public ChannelStatus PushStatus { get; private set; }
+        public Channel.Status PushStatus { get; private set; }
 
         /// <summary></summary>
-        public ChannelStatus SmsStatus { get; private set; }
+        public Channel.Status SmsStatus { get; private set; }
 
         /// <summary>Push registration information for the current user, if available.</summary>
         public Dictionary<string, object> PushRegistration { get; private set; }
@@ -31,9 +31,9 @@ public partial class Teak {
 
         internal UserData(Dictionary<string, object> json) {
             this.AdditionalData = json.Opt("additionalData", EmptyDictionary) as Dictionary<string, object>;
-            this.EmailStatus = new ChannelStatus(json.Opt("emailStatus", EmptyDictionary) as Dictionary<string, object>);
-            this.PushStatus = new ChannelStatus(json.Opt("pushStatus", EmptyDictionary) as Dictionary<string, object>);
-            this.SmsStatus = new ChannelStatus(json.Opt("smsStatus", EmptyDictionary) as Dictionary<string, object>);
+            this.EmailStatus = new Channel.Status(json.Opt("emailStatus", EmptyDictionary) as Dictionary<string, object>);
+            this.PushStatus = new Channel.Status(json.Opt("pushStatus", EmptyDictionary) as Dictionary<string, object>);
+            this.SmsStatus = new Channel.Status(json.Opt("smsStatus", EmptyDictionary) as Dictionary<string, object>);
             this.PushRegistration = json.Opt("pushRegistration", EmptyDictionary) as Dictionary<string, object>;
         }
 
