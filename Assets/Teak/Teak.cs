@@ -924,6 +924,27 @@ public partial class Teak : MonoBehaviour {
             Debug.LogError("[Teak] Error executing callback for notification data: " + jsonString + "\n" + e.ToString());
         }
     }
+
+    private static Dictionary<string, System.Action<Dictionary<string, object>>> teakOperationWebGlCallbackMap = new Dictionary<string, System.Action<Dictionary<string, object>>>();
+    void TeakOperationCallback(string jsonString) {
+        try {
+            Dictionary<string, object> json = Json.TryDeserialize(jsonString) as Dictionary<string, object>;
+            if (json == null) {
+                return;
+            }
+
+            string callbackId = json["_callbackId"] as string;
+            json.Remove("_callbackId");
+
+            if (teakOperationWebGlCallbackMap.ContainsKey(callbackId)) {
+                System.Action<Dictionary<string, object>> callback = teakOperationWebGlCallbackMap[callbackId];
+                teakOperationWebGlCallbackMap.Remove(callbackId);
+                callback(json);
+            }
+        } catch (Exception e) {
+            Debug.LogError("[Teak] Error executing callback: " + jsonString + "\n\t" + e.ToString());
+        }
+    }
 #endif
     /// @endcond
     #endregion

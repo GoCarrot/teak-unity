@@ -216,5 +216,16 @@ mergeInto(LibraryManager.library, {
   },
   TeakDeleteEmail: function() {
     window.teak.deleteEmail();
+  },
+  TeakSetStateForChannel_CallbackId: function(ptr_state, ptr_channel, ptr_callbackId) {
+    var state = Pointer_stringify(ptr_state);
+    var channel = Pointer_stringify(ptr_channel);
+    var callbackId = Pointer_stringify(ptr_callbackId);
+
+    window.teak.setChannelState(channel, state, function(reply) {
+      reply._callbackId = callbackId;
+      var replyAsString = JSON.stringify(reply);
+      SendMessage("TeakGameObject", "TeakOperationCallback", replyAsString);
+    });
   }
 });
