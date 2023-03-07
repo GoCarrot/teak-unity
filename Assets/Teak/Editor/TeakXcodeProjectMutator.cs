@@ -164,8 +164,8 @@ public class TeakXcodeProjectMutator : IPostprocessBuildWithReport {
         /////
         // Create app extension target
         extensionTarget = project.AddAppExtension(target, name,
-                                 PlayerSettings.GetApplicationIdentifier(BuildTargetGroup.iOS) + "." + displayName,
-                                 projectPathInfo.GetRelativePathTo(new FileInfo(extensionSrcPath + "/Info.plist")));
+                          PlayerSettings.GetApplicationIdentifier(BuildTargetGroup.iOS) + "." + displayName,
+                          projectPathInfo.GetRelativePathTo(new FileInfo(extensionSrcPath + "/Info.plist")));
         string buildPhaseId = project.AddSourcesBuildPhase(extensionTarget);
 
         /////

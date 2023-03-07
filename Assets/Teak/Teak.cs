@@ -581,7 +581,7 @@ public partial class Teak : MonoBehaviour {
         TeakRequestPushAuthorization(false);
 #elif UNITY_ANDROID
         // If we're not on API 33, no action needed.
-        using(var buildVersion = new AndroidJavaClass("android.os.Build$VERSION")) {
+        using (var buildVersion = new AndroidJavaClass("android.os.Build$VERSION")) {
             int sdkVersion = buildVersion.GetStatic<int>("SDK_INT");
             if (sdkVersion < 33) {
                 return;
@@ -589,8 +589,8 @@ public partial class Teak : MonoBehaviour {
         }
 
         // If the TargetSDK version isn't 33, no action needed.
-        using(AndroidJavaClass helpers = new AndroidJavaClass("io.teak.sdk.Helpers"),
-              unityPlayer = new AndroidJavaClass("com.unity3d.player.UnityPlayer")) {
+        using (AndroidJavaClass helpers = new AndroidJavaClass("io.teak.sdk.Helpers"),
+                unityPlayer = new AndroidJavaClass("com.unity3d.player.UnityPlayer")) {
 
             using (var activity = unityPlayer.GetStatic<AndroidJavaObject>("currentActivity")) {
                 int sdkVersion = helpers.CallStatic<int>("getTargetSDKVersion", activity);
