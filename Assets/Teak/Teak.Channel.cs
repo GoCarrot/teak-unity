@@ -109,14 +109,12 @@ public partial class Teak {
                 this.DeliveryFault = deliveryFault;
             }
 
-            /// <summary>Constructor</summary>
-            public Status(State state, bool deliveryFault) {
+            internal Status(State state, bool deliveryFault) {
                 int stateAsInt = (int) state;
                 Assignment(stateAsInt, deliveryFault);
             }
 
-            /// <summary>Constructor</summary>
-            public Status(Dictionary<string, object> json) {
+            internal Status(Dictionary<string, object> json) {
                 Assignment(StateName.IndexOf(json.Opt("state") as string),
                            Convert.ToBoolean(json.Opt("delivery_fault", "false")));
             }
@@ -131,20 +129,24 @@ public partial class Teak {
             }
         }
 
-        /// <summary>Reply to a SetChannelState call</summary>
+        /// <summary>Reply to a <see cref="Teak.SetChannelState"/> call.</summary>
         public class Reply {
+            /// <summary>True if the call resulted in an error.</summary>
             public bool Error {
                 get; private set;
             }
 
-            public Channel.State State {
+            /// <summary>The server-state of the marketing channel after the call.</summary>
+            public State State {
                 get; private set;
             }
 
-            public Channel.Type Channel {
+            /// <summary>The the marketing channel./summary>
+            public Type Channel {
                 get; private set;
             }
 
+            /// <summary>The JSON received from the server.</summary>
             public Dictionary<string, object> Json {
                 get; private set;
             }
@@ -171,6 +173,7 @@ public partial class Teak {
                 return MiniJSON.Teak.Json.Serialize(this.Json);
             }
 
+            /// @cond hide_from_doxygen
             public static Reply ReplyWithErrorForException(Exception e) {
                 return new Reply(new Dictionary<string, object> {
                     {"error", true},
@@ -183,6 +186,7 @@ public partial class Teak {
                     }
                 });
             }
+            /// @endcond
 
             /// <summary>Unknown Unity-related error</summary>
             public static Reply UndeterminedUnityError = new Reply(new Dictionary<string, object> {
@@ -201,8 +205,12 @@ public partial class Teak {
     /// <summary>
     /// Assign the opt-out state for a Teak marketing channel.
     /// </summary>
-    /// <blah>
-    /// Push - OptOut, Available (cannot set OptIn)
+    /// <remarks>
+    /// </remarks>
+    /// \note You may only assign the values <see cref="Teak.Channel.Type.OptOut"/> and <see cref="Teak.Channel.Type.Available"/> to Push Channels; OptIn is not allowed.
+    /// <param name="channel">The channel to which the new state is being assigned.</param>
+    /// <param name="state">The opt-out state to assign to the marketing channel.</param>
+    /// <param name="callback">A callback by which you will be informed of the result of the method.</param>
     public IEnumerator SetChannelState(Channel.Type channel, Channel.State state, System.Action<Channel.Reply> callback) {
         string stateAsString = Channel.StateToName[(int) state];
         string typeAsString = Channel.TypeToName[(int) channel];

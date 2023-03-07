@@ -31,7 +31,7 @@ public partial class Teak : MonoBehaviour {
     /// Manually initialize Teak.
     /// </summary>
     /// \note
-    /// Under normal circumstances it is not necessassary to call this, and you can
+    /// Under normal circumstances it is not necessary to call this, and you can
     /// simply use Teak.Instance (which calls this method).
     public static Teak Init() {
         if (mInstance == null) {
