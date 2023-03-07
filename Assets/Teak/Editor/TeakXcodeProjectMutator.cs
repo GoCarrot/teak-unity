@@ -169,6 +169,12 @@ public class TeakXcodeProjectMutator : IPostprocessBuildWithReport {
         string buildPhaseId = project.AddSourcesBuildPhase(extensionTarget);
 
         /////
+        // Disable Bitcode
+        //
+        // On Xcode 14+ Bitcode is deprecated. If you are building on Xcode 14+, uncomment the next line.
+        // project.SetBuildProperty(extensionTarget, "ENABLE_BITCODE", "NO");
+
+        /////
         // Set TeamId
         project.SetTeamId(extensionTarget, PlayerSettings.iOS.appleDeveloperTeamID);
 

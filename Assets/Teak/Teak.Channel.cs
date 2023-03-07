@@ -1,17 +1,23 @@
 #region References
 /// @cond hide_from_doxygen
-// using UnityEngine;
+using UnityEngine;
 
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Runtime.InteropServices;
 
+using MiniJSON.Teak;
 using TeakExtensions;
 /// @endcond
 #endregion
 
 public partial class Teak {
+
+    /// <summary>
+    /// Teak Marketing Channel Functionality
+    /// </summary>
     public class Channel {
 
         /// <summary>Teak Marketing Channel Type</summary>
@@ -35,17 +41,6 @@ public partial class Teak {
             Unknown = 5
         }
 
-        private static readonly ReadOnlyCollection<string> TypeToName = new ReadOnlyCollection<string>(
-            new string[] {
-                "push",
-                "desktop_push",
-                "platform_push",
-                "email",
-                "sms",
-                "unknown"
-            }
-        );
-
         /// <summary>Enum of possible state values for a Teak marketing channel.</summary>
         public enum State : int {
             /// <summary>The user has opted out of this channel</summary>
@@ -64,15 +59,28 @@ public partial class Teak {
             Unknown = 4
         }
 
-        private static readonly ReadOnlyCollection<string> StateToName = new ReadOnlyCollection<string>(
-            new string[] {
-                "opt_out",
-                "available",
-                "opt_in",
-                "absent",
-                "unknown"
-            }
+        /// @cond hide_from_doxygen
+        internal static readonly ReadOnlyCollection<string> TypeToName = new ReadOnlyCollection<string>(
+        new string[] {
+            "push",
+            "desktop_push",
+            "platform_push",
+            "email",
+            "sms",
+            "unknown"
+        }
         );
+
+        internal static readonly ReadOnlyCollection<string> StateToName = new ReadOnlyCollection<string>(
+        new string[] {
+            "opt_out",
+            "available",
+            "opt_in",
+            "absent",
+            "unknown"
+        }
+        );
+        /// @endcond
 
         /// <summary>
         /// Encapsulation of the state of a Teak marketing channel.
@@ -96,7 +104,7 @@ public partial class Teak {
             }
 
             private void Assignment(int stateAsInt, bool deliveryFault) {
-                if (stateAsInt < 0 || stateAsInt > 4) stateAsInt = 4;
+                if (stateAsInt < 0 || stateAsInt > 4) { stateAsInt = 4; }
                 this.State = (State) stateAsInt;
                 this.DeliveryFault = deliveryFault;
             }
@@ -122,12 +130,132 @@ public partial class Teak {
                 return dict;
             }
         }
+
+        /// <summary>Reply to a SetChannelState call</summary>
+        public class Reply {
+            public bool Error {
+                get; private set;
+            }
+
+            public Channel.State State {
+                get; private set;
+            }
+
+            public Channel.Type Channel {
+                get; private set;
+            }
+
+            public Dictionary<string, object> Json {
+                get; private set;
+            }
+
+            internal Reply(Dictionary<string, object> json) {
+                this.Json = json;
+
+                bool error = false;
+                bool.TryParse(json.Opt("error", "false") as string, out error);
+                this.Error = error;
+
+                int idx = StateToName.IndexOf(json.Opt("state", "unknown").ToString());
+                this.State = (idx > -1) ? (Teak.Channel.State) idx : Teak.Channel.State.Unknown;
+
+                idx = TypeToName.IndexOf(json.Opt("channel", "unknown").ToString());
+                this.Channel = (idx > -1) ? (Teak.Channel.Type) idx : Teak.Channel.Type.Unknown;
+            }
+
+            /// <summary>
+            /// Returns a string that represents the current object.
+            /// </summary>
+            /// <returns>A string that represents the current object.</returns>
+            public override string ToString() {
+                return MiniJSON.Teak.Json.Serialize(this.Json);
+            }
+
+            public static Reply ReplyWithErrorForException(Exception e) {
+                return new Reply(new Dictionary<string, object> {
+                    {"error", true},
+                    {"state", "unknown"},
+                    {"channel", "unknown"},
+                    {
+                        "errors", new Dictionary<string, object> {
+                            {"unity", new string[] { e.ToString() }}
+                        }
+                    }
+                });
+            }
+
+            /// <summary>Unknown Unity-related error</summary>
+            public static Reply UndeterminedUnityError = new Reply(new Dictionary<string, object> {
+                {"error", true},
+                {"state", "unknown"},
+                {"channel", "unknown"},
+                {
+                    "errors", new Dictionary<string, object> {
+                        {"unity", new string[] {"Undetermined error"}}
+                    }
+                }
+            });
+        }
     }
 
     /// <summary>
     /// Assign the opt-out state for a Teak marketing channel.
     /// </summary>
-    public IEnumerator SetChannelState(Channel.State state, Channel.Type channel, System.Action<Channel.State> callback) {
+    /// <blah>
+    /// Push - OptOut, Available (cannot set OptIn)
+    public IEnumerator SetChannelState(Channel.Type channel, Channel.State state, System.Action<Channel.Reply> callback) {
+        string stateAsString = Channel.StateToName[(int) state];
+        string typeAsString = Channel.TypeToName[(int) channel];
+
+        if (Teak.Instance.Trace) {
+            Debug.Log("[Teak] SetChannelState(" + stateAsString + ", " + typeAsString + ")");
+        }
+
+        Channel.Reply reply = Channel.Reply.UndeterminedUnityError;
+
+#if UNITY_EDITOR
         yield return null;
+#elif UNITY_ANDROID
+        AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
+        AndroidJavaObject future = teak.CallStatic<AndroidJavaObject>("setChannelState", typeAsString, stateAsString);
+
+        if (future != null) {
+            while (!future.Call<bool>("isDone")) { yield return null; }
+
+            try {
+                string json = future.Call<AndroidJavaObject>("get").Call<AndroidJavaObject>("toJSON").Call<string>("toString");
+                reply = new Channel.Reply(Json.TryDeserialize(json) as Dictionary<string, object>);
+            } catch (Exception e) {
+                reply = Channel.Reply.ReplyWithErrorForException(e);
+            }
+        }
+#elif UNITY_IPHONE
+        IntPtr operation = TeakSetStateForChannel_Retained(stateAsString, typeAsString);
+        if (operation != IntPtr.Zero) {
+            while (!TeakOperationIsFinished(operation)) { yield return null; }
+
+            string json = TeakOperationGetResultJson(operation);
+            reply = new Channel.Reply(Json.TryDeserialize(json) as Dictionary<string, object>);
+            TeakRelease(operation);
+        }
+#endif
+
+        Teak.SafePerformCallback("setchannelstate", callback, reply);
     }
+
+    /// @cond hide_from_doxygen
+#if UNITY_WEBGL
+    [DllImport ("__Internal")]
+    private static extern void TeakSetStateForChannel_CallbackId(string state, string channel, string callbackId);
+#elif UNITY_IPHONE
+    [DllImport ("__Internal")]
+    private static extern IntPtr TeakSetStateForChannel_Retained(string state, string channel);
+
+    [DllImport ("__Internal")]
+    private static extern bool TeakOperationIsFinished(IntPtr operation);
+
+    [DllImport ("__Internal")]
+    private static extern string TeakOperationGetResultJson(IntPtr operation);
+#endif
+    /// @endcond
 }

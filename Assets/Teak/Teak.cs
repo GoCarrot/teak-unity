@@ -734,6 +734,9 @@ public partial class Teak : MonoBehaviour {
 
     [DllImport ("__Internal")]
     private static extern void TeakRefreshPushTokenIfAuthorized();
+
+    [DllImport ("__Internal")]
+    private static extern void TeakRelease(IntPtr obj);
 #endif
     /// @endcond
 
@@ -946,6 +949,18 @@ public partial class Teak : MonoBehaviour {
         }
     }
 #endif
+
+    public static void SafePerformCallback<T>(string method, System.Action<T> callback, T param) {
+        try {
+            if (callback != null) {
+                callback(param);
+            }
+        } catch (Exception e) {
+            if (param is Dictionary<string, object>) {
+                Teak.Instance.ReportCallbackError(method, e, param as Dictionary<string, object>);
+            }
+        }
+    }
     /// @endcond
     #endregion
 
