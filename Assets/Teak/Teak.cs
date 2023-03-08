@@ -487,6 +487,27 @@ public partial class Teak : MonoBehaviour {
     }
 
     /// <summary>
+    /// Open the notification settings for your app.
+    /// </summary>
+    /// <returns>false if Teak was unable to open the notification settings for your app, true otherwise.</returns>
+    public bool OpenNotificationSettings() {
+        if (this.Trace) {
+            Debug.Log("[Teak] OpenNotificationSettings()");
+        }
+
+#if UNITY_EDITOR || UNITY_WEBGL
+        return false;
+#elif UNITY_ANDROID
+        AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
+        return teak.CallStatic<bool>("openNotificationSettings");
+#elif UNITY_IPHONE
+        return TeakOpenNotificationSettings();
+#else
+        return false;
+#endif
+    }
+
+    /// <summary>
     /// Delete the email address associated with the current user.
     /// </summary>
     public void DeleteEmail() {
@@ -705,6 +726,9 @@ public partial class Teak : MonoBehaviour {
 
     [DllImport ("__Internal")]
     private static extern bool TeakOpenSettingsAppToThisAppsSettings();
+
+    [DllImport ("__Internal")]
+    private static extern bool TeakOpenNotificationSettings();
 
     [DllImport ("__Internal")]
     private static extern bool TeakRequestPushAuthorization(bool includeProvisional);
