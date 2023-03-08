@@ -53,6 +53,7 @@ class TeakAndroidManifestAdditions : IPreprocessBuildWithReport {
         // <data android:scheme="https" android:host="{{teak_short_url_domain}}" />
         XElement universalLink = mainActivity.Descendants()
                                  .Where(e => e.Name.LocalName == "data")
+                                 .Where(e => e.Attribute("{http://schemas.android.com/apk/res/android}host") != null)
                                  .Where(e => e.Attribute("{http://schemas.android.com/apk/res/android}host").Value == TeakSettings.ShortlinkDomain)
                                  .ToList()
                                  .FirstOrDefault();
