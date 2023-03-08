@@ -11,6 +11,7 @@ Logs/
 *.pdb*
 *.mdb*
 
+teak-unity.sublime-workspace
 ProjectSettings/ProjectVersion.txt
 
 Assets/Resources/TeakSettings.*
