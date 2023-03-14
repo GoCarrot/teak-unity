@@ -615,6 +615,39 @@ public partial class Teak : MonoBehaviour {
     }
 
     /// <summary>
+    /// Get push notification registration information from Teak.
+    /// </summary>
+    /// <remarks>
+    /// This dictionary is in the the format: <br/>``{"key" : <"key as a string>", "type" : "<apns | gcm | adm>", "extras" : {}}``
+    /// </remarks>
+    /// \note The only current value inside extras is ``gcm_sender_id`` if ``type`` is ``'gcm'``
+    /// <returns>A dictionary containing push registration info, or null if it's not ready</returns>
+    public Dictionary<string, object> GetNotificationRegistration() {
+        Dictionary<string, object> ret = new Dictionary<string, object>() {
+            {"key", null},
+            {"type", null},
+            {"extras", new Dictionary<string, object()}
+        };
+
+        Dictionary<string, object> deviceConfiguration = this.GetDeviceConfiguration();
+        if (deviceConfiguration != null && deviceConfiguration.ContainsKey("pushRegistration")) {
+            Dictionary<string, object> pr = deviceConfiguration["pushRegistration"];
+            if (pr.ContainsKey("apns_push_key")) {
+                ret["key"] = pr["apns_push_key"];
+                ret["type"] = "apns";
+            } else if (pr.ContainsKey("adm_push_key")) {
+                ret["key"] = pr["adm_push_key"];
+                ret["type"] = "adm";
+            } else if (pr.ContainsKey("gcm_push_key")) {
+                ret["key"] = pr["gcm_push_key"];
+                ret["type"] = "apns";
+                ret["extras"]["gcm_sender_id"] = pr["gcm_sender_id"];
+            }
+        }
+        return ret;
+    }
+
+    /// <summary>
     /// Register for Provisional Push Notifications.
     /// </summary>
     /// <remarks>
