@@ -3,3 +3,5 @@ ios: ~
 new:
   - Trace logging (<<Teak.Trace>>) is now supported as a setting in the Unity Editor.
   - Callbacks are now optional for <<TeakNotification>> methods.
+  - Added <<Teak.CanOpenNotificationSettings>> and <<Teak.OpenNotificationSettings>> to allow users to open the settings app directly to the notification settings for their app
+  - Added <<Teak.CanOpenSettingsAppToThisAppsSettings>> for existing <<Teak.OpenNotificationSettings>>.

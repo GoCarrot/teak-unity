@@ -466,6 +466,24 @@ public partial class Teak : MonoBehaviour {
     }
 
     /// <summary>
+    /// Determine if Teak can open directly to the settings for this app.
+    /// </summary>
+    public bool CanOpenSettingsAppToThisAppsSettings {
+        public get {
+#if UNITY_EDITOR || UNITY_WEBGL
+            return false;
+#elif UNITY_ANDROID
+            AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
+            return teak.CallStatic<bool>("openSettingsAppToThisAppsSettings");
+#elif UNITY_IPHONE
+            return CanOpenSettingsAppToThisAppsSettings();
+#else
+            return false;
+#endif
+        }
+    }
+
+    /// <summary>
     /// Open the settings for your app.
     /// </summary>
     /// <returns>false if Teak was unable to open the settings for your app, true otherwise.</returns>
@@ -484,6 +502,24 @@ public partial class Teak : MonoBehaviour {
 #else
         return false;
 #endif
+    }
+
+    /// <summary>
+    /// Determine if Teak can open directly to the notification settings for this app.
+    /// </summary>
+    public bool CanOpenNotificationSettings {
+        get {
+#if UNITY_EDITOR || UNITY_WEBGL
+            return false;
+#elif UNITY_ANDROID
+            AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
+            return teak.CallStatic<bool>("canOpenNotificationSettings");
+#elif UNITY_IPHONE
+            return TeakCanOpenNotificationSettings();
+#else
+            return false;
+#endif
+        }
     }
 
     /// <summary>
@@ -723,6 +759,12 @@ public partial class Teak : MonoBehaviour {
 #if UNITY_IPHONE
     [DllImport ("__Internal")]
     private static extern int TeakGetNotificationState();
+
+    [DllImport ("__Internal")]
+    private static extern bool TeakCanOpenSettingsAppToThisAppsSettings();
+
+    [DllImport ("__Internal")]
+    private static extern bool TeakCanOpenNotificationSettings();
 
     [DllImport ("__Internal")]
     private static extern bool TeakOpenSettingsAppToThisAppsSettings();
