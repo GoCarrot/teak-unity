@@ -474,7 +474,7 @@ public partial class Teak : MonoBehaviour {
             return false;
 #elif UNITY_ANDROID
             AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
-            return teak.CallStatic<bool>("openSettingsAppToThisAppsSettings");
+            return teak.CallStatic<bool>("canOpenSettingsAppToThisAppsSettings");
 #elif UNITY_IPHONE
             return CanOpenSettingsAppToThisAppsSettings();
 #else
