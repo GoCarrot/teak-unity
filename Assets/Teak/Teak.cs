@@ -640,7 +640,7 @@ public partial class Teak : MonoBehaviour {
                 ret["type"] = "adm";
             } else if (pr.ContainsKey("gcm_push_key")) {
                 ret["key"] = pr["gcm_push_key"];
-                ret["type"] = "apns";
+                ret["type"] = "gcm";
                 ret["extras"]["gcm_sender_id"] = pr["gcm_sender_id"];
             }
         }
