@@ -469,14 +469,14 @@ public partial class Teak : MonoBehaviour {
     /// Determine if Teak can open directly to the settings for this app.
     /// </summary>
     public bool CanOpenSettingsAppToThisAppsSettings {
-        public get {
+        get {
 #if UNITY_EDITOR || UNITY_WEBGL
             return false;
 #elif UNITY_ANDROID
             AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
             return teak.CallStatic<bool>("canOpenSettingsAppToThisAppsSettings");
 #elif UNITY_IPHONE
-            return CanOpenSettingsAppToThisAppsSettings();
+            return TeakCanOpenSettingsAppToThisAppsSettings();
 #else
             return false;
 #endif
@@ -626,12 +626,12 @@ public partial class Teak : MonoBehaviour {
         Dictionary<string, object> ret = new Dictionary<string, object>() {
             {"key", null},
             {"type", null},
-            {"extras", new Dictionary<string, object()}
+            {"extras", new Dictionary<string, object>()}
         };
 
         Dictionary<string, object> deviceConfiguration = this.GetDeviceConfiguration();
         if (deviceConfiguration != null && deviceConfiguration.ContainsKey("pushRegistration")) {
-            Dictionary<string, object> pr = deviceConfiguration["pushRegistration"];
+            Dictionary<string, object> pr = deviceConfiguration["pushRegistration"] as Dictionary<string, object>;
             if (pr.ContainsKey("apns_push_key")) {
                 ret["key"] = pr["apns_push_key"];
                 ret["type"] = "apns";
@@ -641,7 +641,7 @@ public partial class Teak : MonoBehaviour {
             } else if (pr.ContainsKey("gcm_push_key")) {
                 ret["key"] = pr["gcm_push_key"];
                 ret["type"] = "gcm";
-                ret["extras"]["gcm_sender_id"] = pr["gcm_sender_id"];
+                (ret["extras"] as Dictionary<string, object>)["gcm_sender_id"] = pr["gcm_sender_id"];
             }
         }
         return ret;
