@@ -130,7 +130,7 @@ public partial class Teak {
         }
 
         /// <summary>Reply to a <see cref="Teak.SetChannelState"/> call.</summary>
-        public class Reply {
+        public class Reply : IToJson {
             /// <summary>True if the call resulted in an error.</summary>
             public bool Error {
                 get; private set;
@@ -149,6 +149,10 @@ public partial class Teak {
             /// <summary>The JSON received from the server.</summary>
             public Dictionary<string, object> Json {
                 get; private set;
+            }
+
+            public Dictionary<string, object> toJson() {
+                return this.Json;
             }
 
             internal Reply(Dictionary<string, object> json) {

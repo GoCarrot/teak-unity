@@ -1057,6 +1057,8 @@ public partial class Teak : MonoBehaviour {
         } catch (Exception e) {
             if (param is Dictionary<string, object>) {
                 Teak.Instance.ReportCallbackError(method, e, param as Dictionary<string, object>);
+            } else if (param is IToJson) {
+                Teak.Instance.ReportCallbackError(method, e, (param as IToJson).toJson());
             }
         }
     }
