@@ -34,10 +34,34 @@ class TeakAndroidManifestAdditions : IPreprocessBuildWithReport {
             return;
         }
 
+        XDocument androidManifest = XDocument.Load(manifestLocation);
         bool didModifyAndroidManifest = false;
 
+        // Find the application
+        if (TeakSettings.EnableSDK5Behaviors) {
+            XElement application = androidManifest.Descendants()
+                                   .Where(e => e.Name.LocalName == "application")
+                                   .FirstOrDefault();
+
+            if (application == null) {
+                Debug.LogWarning("[Teak] Could not find '<application>' in AndroidManifest.xml. Could not enable SDK 5 behaviors.");
+                return;
+            }
+
+            XElement enableSdk5BehaviorsElem = application.Descendants()
+                                                .Where(e => e.Name.LocalName == "meta-data")
+                                                .Where(e => e.Attribute("{http://schemas.android.com/apk/res/android}name").Value == "io_teak_sdk5_behaviors")
+                                                .FirstOrDefault();
+            if (enableSdk5BehaviorsElem == null) {
+                enableSdk5BehaviorsElem = new XElement("meta-data",
+                                         new XAttribute("{http://schemas.android.com/apk/res/android}name", "io_teak_sdk5_behaviors"),
+                                         new XAttribute("{http://schemas.android.com/apk/res/android}value", true));
+                application.Add(enableSdk5BehaviorsElem);
+                didModifyAndroidManifest = true;
+            }
+        }
+
         // Find the launch activity
-        XDocument androidManifest = XDocument.Load(manifestLocation);
         XElement mainActivity = androidManifest.Descendants()
                                 .Where(e => e.Name.LocalName == "action")
                                 .Where(e => e.Attribute("{http://schemas.android.com/apk/res/android}name").Value == "android.intent.action.MAIN")

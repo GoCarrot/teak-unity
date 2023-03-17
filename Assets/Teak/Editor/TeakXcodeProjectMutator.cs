@@ -90,6 +90,11 @@ public class TeakXcodeProjectMutator : IPostprocessBuildWithReport {
         // Add remote notifications background mode
         AddElementToArrayIfMissing(plist, "UIBackgroundModes", "remote-notification");
 
+        // SDK5 Behaviors
+        if (TeakSettings.EnableSDK5Behaviors) {
+            plist.root.SetBoolean("TeakSDK5Behaviors", true);
+        }
+
         return plist.WriteToString();
     }
 
@@ -172,7 +177,7 @@ public class TeakXcodeProjectMutator : IPostprocessBuildWithReport {
         // Disable Bitcode
         //
         // On Xcode 14+ Bitcode is deprecated. If you are building on Xcode 14+, uncomment the next line.
-        // project.SetBuildProperty(extensionTarget, "ENABLE_BITCODE", "NO");
+        project.SetBuildProperty(extensionTarget, "ENABLE_BITCODE", "NO");
 
         /////
         // Set TeamId
