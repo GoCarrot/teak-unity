@@ -115,7 +115,7 @@ public partial class Teak {
             }
 
             internal Status(Dictionary<string, object> json) {
-                Assignment(StateName.IndexOf(json.Opt("state") as string),
+                Assignment(StateName.IndexOf(json.Opt("state", "unknown") as string),
                            Convert.ToBoolean(json.Opt("delivery_fault", "false")));
             }
 
