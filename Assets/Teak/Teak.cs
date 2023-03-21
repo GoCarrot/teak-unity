@@ -817,7 +817,7 @@ public partial class Teak : MonoBehaviour {
 
 #if UNITY_WEBGL
     [DllImport ("__Internal")]
-    private static extern string TeakInitWebGL(string appId, string apiKey);
+    private static extern string TeakInitWebGL(string appId, string apiKey, int enableSdk5Behaviors);
 
     [DllImport ("__Internal")]
     private static extern void TeakUnityReadyForDeepLinks();
@@ -1096,7 +1096,7 @@ public partial class Teak : MonoBehaviour {
             throw new ArgumentNullException("Teak.APIKey cannot be null or empty.");
         }
 
-        TeakInitWebGL(appId, apiKey);
+        TeakInitWebGL(appId, apiKey, TeakSettings.EnableSDK5Behaviors ? 1 : 0);
 #else
         if (this.AppConfiguration != null) {
             appId = this.AppConfiguration["appId"] as string;
