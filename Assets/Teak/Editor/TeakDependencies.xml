@@ -1,7 +1,7 @@
 <dependencies>
   <androidPackages>
     <!-- EventBus -->
-    <androidPackage spec="org.greenrobot:eventbus:3.2.0" />
+    <androidPackage spec="org.greenrobot:eventbus:3.3.1" />
 
     <!-- Google Play Services -->
     <androidPackage spec="com.google.android.gms:play-services-ads-identifier:16+">

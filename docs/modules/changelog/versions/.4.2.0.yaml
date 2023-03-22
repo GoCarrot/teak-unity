@@ -5,3 +5,6 @@ new:
   - Callbacks are now optional for <<TeakNotification>> methods.
   - Added <<Teak.CanOpenNotificationSettings>> and <<Teak.OpenNotificationSettings>> to allow users to open the settings app directly to the notification settings for their app
   - Added <<Teak.CanOpenSettingsAppToThisAppsSettings>> for existing <<Teak.OpenNotificationSettings>>.
+
+breaking:
+  - Now requires EventBus 3.3.1 on Android
