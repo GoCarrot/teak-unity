@@ -49,13 +49,13 @@ class TeakAndroidManifestAdditions : IPreprocessBuildWithReport {
             }
 
             XElement enableSdk5BehaviorsElem = application.Descendants()
-                                                .Where(e => e.Name.LocalName == "meta-data")
-                                                .Where(e => e.Attribute("{http://schemas.android.com/apk/res/android}name").Value == "io_teak_sdk5_behaviors")
-                                                .FirstOrDefault();
+                                               .Where(e => e.Name.LocalName == "meta-data")
+                                               .Where(e => e.Attribute("{http://schemas.android.com/apk/res/android}name").Value == "io_teak_sdk5_behaviors")
+                                               .FirstOrDefault();
             if (enableSdk5BehaviorsElem == null) {
                 enableSdk5BehaviorsElem = new XElement("meta-data",
-                                         new XAttribute("{http://schemas.android.com/apk/res/android}name", "io_teak_sdk5_behaviors"),
-                                         new XAttribute("{http://schemas.android.com/apk/res/android}value", true));
+                                                       new XAttribute("{http://schemas.android.com/apk/res/android}name", "io_teak_sdk5_behaviors"),
+                                                       new XAttribute("{http://schemas.android.com/apk/res/android}value", true));
                 application.Add(enableSdk5BehaviorsElem);
                 didModifyAndroidManifest = true;
             }
