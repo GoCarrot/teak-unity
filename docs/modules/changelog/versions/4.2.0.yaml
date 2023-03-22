@@ -6,6 +6,7 @@ new:
   - Added <<Teak.CanOpenNotificationSettings>> and <<Teak.OpenNotificationSettings>> to allow users to open the settings app directly to the notification settings for their app
   - Added <<Teak.CanOpenSettingsAppToThisAppsSettings>> for existing <<Teak.OpenNotificationSettings>>.
   - Added <<Teak.SetChannelState>> to allow users to opt in/out of Teak marketing channels.
+  - Added <<Teak.DeleteEmail>> to allow users to delete the email address associated with a user.
 
 breaking:
   - Now requires EventBus 3.3.1 on Android
