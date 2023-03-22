@@ -91,9 +91,7 @@ public class TeakXcodeProjectMutator : IPostprocessBuildWithReport {
         AddElementToArrayIfMissing(plist, "UIBackgroundModes", "remote-notification");
 
         // SDK5 Behaviors
-        if (TeakSettings.EnableSDK5Behaviors) {
-            plist.root.SetBoolean("TeakSDK5Behaviors", true);
-        }
+        plist.root.SetBoolean("TeakSDK5Behaviors", TeakSettings.EnableSDK5Behaviors);
 
         return plist.WriteToString();
     }

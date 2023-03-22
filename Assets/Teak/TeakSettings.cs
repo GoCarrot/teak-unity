@@ -134,7 +134,7 @@ public class TeakSettings : ScriptableObject {
     [SerializeField]
     private bool mJustShutUpIKnowWhatImDoing = true;
     [SerializeField]
-    private bool mEnableSDK5Behaviors = false;
+    private bool mEnableSDK5Behaviors = true;
     [SerializeField]
     private bool mTraceLogging = false;
 

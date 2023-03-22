@@ -9,3 +9,4 @@ new:
 
 breaking:
   - Now requires EventBus 3.3.1 on Android
+  - SDK 5 Behaviors now enabled by default
