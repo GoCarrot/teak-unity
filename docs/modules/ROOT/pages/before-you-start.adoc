@@ -8,7 +8,14 @@ what you need to make things go smoothly.
 .Android Target SDK Version
 ====
 Please note that Teak SDK 4.0.0 supports a maximum `targetSdkVersion` of 30.
-Teak SDK 4.1.0 and greater supports `targetSdkVersion` of 31.
+Teak SDK 4.1.0 and greater supports `targetSdkVersion` of 31. Teak SDK 4.2.0
+supports `targetSdkVersion` of 33.
+====
+
+[IMPORTANT]
+.Unity Mobile Notifications Plugin
+====
+The Unity Mobile Notifications Plugin cannot be used alongside Teak.
 ====
 
 == iOS
