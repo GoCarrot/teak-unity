@@ -225,6 +225,10 @@ mergeInto(LibraryManager.library, {
     var channel = Pointer_stringify(ptr_channel);
     var callbackId = Pointer_stringify(ptr_callbackId);
 
+    if (channel === 'platform_push') {
+      channel = 'desktop_push';
+    }
+
     window.teak.setChannelState(channel, state, function(reply) {
       reply._callbackId = callbackId;
       var replyAsString = JSON.stringify(reply);
