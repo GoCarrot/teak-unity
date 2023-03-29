@@ -120,20 +120,23 @@ mergeInto(LibraryManager.library, {
       description: description
     };
   },
+  TeakUnityReadyForDeepLinks__deps: ['TeakHandleDeepLink_Internal'],
   TeakUnityReadyForDeepLinks: function() {
     window.teak.on('udidAvailable', function() {
       if (window.teak.queryParameters.teak_deep_link) {
-        TeakHandleDeepLink_Internal(window.teak.queryParameters.teak_deep_link);
+        _TeakHandleDeepLink_Internal(window.teak.queryParameters.teak_deep_link);
       }
     });
   },
   TeakSetBadgeCount: function(count) {
 
   },
+  TeakHandleDeepLinkPath__deps: ['TeakHandleDeepLink_Internal'],
   TeakHandleDeepLinkPath: function(ptr_url) {
     var url = Pointer_stringify(ptr_url);
-    return TeakHandleDeepLink_Internal(url);
+    return _TeakHandleDeepLink_Internal(url);
   },
+  TeakHandleDeepLink_Internal__deps: ['TeakDeepLinkTableInternal'],
   TeakHandleDeepLink_Internal: function(url) {
     // Iterate deep link table, keys are RegExp
     for (var key in _TeakDeepLinkTableInternal) {
@@ -143,7 +146,7 @@ mergeInto(LibraryManager.library, {
         var jsonObject = {
           route: deepLinkEntry.route,
           parameters: {
-            __incoming_url: window.teak.queryParameters.teak_deep_link
+            __incoming_url: url
           }
         };
 
