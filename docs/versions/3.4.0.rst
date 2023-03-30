@@ -1,8 +1,0 @@
-3.4.0
------
-:Breaking Changes:
-    * iOS library is now built using Xcode 11.3.1
-:New Features:
-    * Added ``OnLaunchedFromLink``
-:Bug Fixes:
-    * Added additional protection against the auto-created ``TeakGameObject`` from getting saved into a scene

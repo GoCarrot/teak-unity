@@ -1,0 +1,4 @@
+android: ~
+ios: ~
+new:
+  - Support for AndroidX (you must use 1.2.119 of the Google Play Services Resolver to use AndroidX)

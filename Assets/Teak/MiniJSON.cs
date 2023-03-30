@@ -33,6 +33,10 @@ using System.IO;
 using System.Text;
 
 namespace MiniJSON.Teak {
+    public interface IToJson {
+        Dictionary<string, object> toJson();
+    }
+
     // Example usage:
     //
     //  using UnityEngine;

@@ -9,9 +9,6 @@ require 'pathname'
 require 'unitypackage'
 CLEAN.include '**/.DS_Store'
 
-KMS_KEY = `aws kms decrypt --ciphertext-blob fileb://kms/store_encryption_key.key --output text --query Plaintext | base64 --decode`.freeze
-CIRCLE_TOKEN = ENV.fetch('CIRCLE_TOKEN') { `openssl enc -md MD5 -d -aes-256-cbc -in kms/encrypted_circle_ci_key.data -k #{KMS_KEY}` }
-
 TEAK_SDK_VERSION = `git describe --tags`.strip
 NATIVE_CONFIG = YAML.load_file('native.config.yml')
 
@@ -155,7 +152,7 @@ namespace :build do
     end
 
     begin
-      sh 'python extractunitypackage.py Teak.unitypackage _temp_pkg/', verbose: false
+      sh 'python3 extractunitypackage.py Teak.unitypackage _temp_pkg/', verbose: false
       FileUtils.rm_rf('_temp_pkg')
     rescue StandardError
       raise 'Unity build failed'
@@ -168,11 +165,7 @@ namespace :upm do
     FileUtils.rm_rf(UPM_BUILD_TEMP)
     FileUtils.mkdir_p(UPM_BUILD_TEMP)
 
-    # Changelog
-    cd 'docs' do
-      `make html`
-      `pandoc -f rst -t gfm -o ../#{UPM_BUILD_TEMP}/CHANGELOG.md changelog.rst`
-    end
+    `git clone git@github.com:GoCarrot/upm-package-teak.git #{UPM_BUILD_TEMP}` if build_local?
 
     editor_glob = Dir.glob('Assets/Teak/Editor/**/*')
 
@@ -193,6 +186,10 @@ namespace :upm do
 
     copy_glob_to(editor_glob, File.join(UPM_BUILD_TEMP, 'Editor'), 'Assets/Teak/Editor')
     copy_glob_to(runtime_glob, File.join(UPM_BUILD_TEMP, 'Runtime'), 'Assets/Teak')
+
+    # package.json
+    template = File.read(File.join(PROJECT_PATH, 'Templates', 'package.json.template'))
+    File.write(File.join(UPM_BUILD_TEMP, 'package.json'), Mustache.render(template, TEMPLATE_PARAMETERS))
   end
 
   task :deploy_versioned do
@@ -200,10 +197,6 @@ namespace :upm do
     unless Dir.exist? UPM_PACKAGE_REPO
       `git clone git@github.com:GoCarrot/upm-package-teak.git #{UPM_PACKAGE_REPO}`
     end
-
-    # package.json
-    template = File.read(File.join(PROJECT_PATH, 'Templates', 'package.json.template'))
-    File.write(File.join(UPM_BUILD_TEMP, 'package.json'), Mustache.render(template, TEMPLATE_PARAMETERS))
 
     # Construct our version.
     version_parts = TEAK_SDK_VERSION.split('-')
@@ -215,13 +208,13 @@ namespace :upm do
       sh "git config user.email \"team@teak.io\""
       sh "git config user.name \"Teak CI\""
 
-      sh "git checkout main" # Start on the main branch
+      sh "git checkout build" # Start on the 'build' branch
       sh "git checkout #{major}.#{minor} || " +  # If the current minor version branch exists, check it out
          "(git checkout #{major}.#{minor - 1} && git checkout -b #{major}.#{minor}) || " + # Check out the previous minor revision and then create a new minor version branch off that
          "(git checkout #{major} && git checkout -b #{major}.#{minor}) || " + # If there is no previous minor version branch, check out the major version and create one
-         "(git checkout #{major - 1} ; (git checkout -b #{major} && git checkout -b #{major}.#{minor}))" # New major version based on previous major version, or main
+         "(git checkout #{major - 1} ; (git checkout -b #{major} && git checkout -b #{major}.#{minor}))" # New major version based on previous major version, or 'build'
       sh "rm -fr *" # Delete all files
-      sh "git ls-tree --name-only -r main | xargs git checkout --" # Restore files which exist in the main branch
+      sh "git ls-tree --name-only -r build | xargs git checkout --" # Restore files which exist in the 'build' branch
     end
 
     sh "cp -RT #{UPM_BUILD_TEMP} #{UPM_PACKAGE_REPO}" # Copy in all the files
@@ -258,21 +251,9 @@ namespace :upm do
       sh "git reset --hard #{TEAK_SDK_VERSION}" # Move the major.minor branch HEAD to the latest tag
       sh "git checkout #{major} || git checkout -b #{major}"
       sh "git reset --hard #{TEAK_SDK_VERSION}" # Move the major branch HEAD to the latest tag
+      sh "git checkout main"
+      sh "git reset --hard #{TEAK_SDK_VERSION}" # Move the main branch HEAD to the latest tag
       sh "git push --all"
     end
   end
-
-  # task :merge do
-  #   cd UPM_PACKAGE_REPO do
-  #     `git config user.email "team@teak.io"`
-  #     `git config user.name "Teak CI"`
-  #     `git checkout main`
-  #     `git clean -fdx`
-  #     `git merge -m "Current version $PVERSION" --no-ff origin/$PVERSION &&
-  #       git tag $PVERSION &&
-  #       git push &&
-  #       git push origin --delete $PVERSION &&
-  #       git push --tags`
-  #   end
-  # end
 end

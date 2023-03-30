@@ -34,6 +34,7 @@ public class TeakXcodeProjectMutator : IPostprocessBuildWithReport {
 
         /////
         // Add Frameworks to Unity target
+        // Note: This checks for the presence of a framework before blindly adding it
         string[] teakRequiredFrameworks = new string[] {
             "AdSupport",
             "AVFoundation",
@@ -88,6 +89,9 @@ public class TeakXcodeProjectMutator : IPostprocessBuildWithReport {
 
         // Add remote notifications background mode
         AddElementToArrayIfMissing(plist, "UIBackgroundModes", "remote-notification");
+
+        // SDK5 Behaviors
+        plist.root.SetBoolean("TeakSDK5Behaviors", TeakSettings.EnableSDK5Behaviors);
 
         return plist.WriteToString();
     }
@@ -155,12 +159,23 @@ public class TeakXcodeProjectMutator : IPostprocessBuildWithReport {
         string extensionSrcPath = teakEditorIosPath + "/" + name;
         FileInfo projectPathInfo = new FileInfo(Path.GetDirectoryName(projectPath));
 
+        string extensionTarget = project.TargetGuidByName(name);
+        if (!string.IsNullOrEmpty(extensionTarget)) {
+            return extensionTarget;
+        }
+
         /////
         // Create app extension target
-        string extensionTarget = project.AddAppExtension(target, name,
-                                 PlayerSettings.GetApplicationIdentifier(BuildTargetGroup.iOS) + "." + displayName,
-                                 projectPathInfo.GetRelativePathTo(new FileInfo(extensionSrcPath + "/Info.plist")));
+        extensionTarget = project.AddAppExtension(target, name,
+                          PlayerSettings.GetApplicationIdentifier(BuildTargetGroup.iOS) + "." + displayName,
+                          projectPathInfo.GetRelativePathTo(new FileInfo(extensionSrcPath + "/Info.plist")));
         string buildPhaseId = project.AddSourcesBuildPhase(extensionTarget);
+
+        /////
+        // Disable Bitcode
+        //
+        // On Xcode 14+ Bitcode is deprecated. If you are building on Xcode 14+, uncomment the next line.
+        project.SetBuildProperty(extensionTarget, "ENABLE_BITCODE", "NO");
 
         /////
         // Set TeamId
@@ -186,8 +201,9 @@ public class TeakXcodeProjectMutator : IPostprocessBuildWithReport {
         // Add libTeak.a
 
         // If the 'Runtime' directory exists, this is coming from a UPM package
-        string relativeTeakPath = new DirectoryInfo(Application.dataPath).GetRelativePathTo(new DirectoryInfo(Path.GetDirectoryName(Path.GetDirectoryName(__FILE__))));
-        if (Directory.Exists(relativeTeakPath + "Runtime")) {
+        string pathToCheck = Path.GetDirectoryName(Path.GetDirectoryName(__FILE__));
+        string relativeTeakPath = new DirectoryInfo(Application.dataPath).GetRelativePathTo(new DirectoryInfo(pathToCheck));
+        if (Directory.Exists(pathToCheck + "/Runtime")) {
             relativeTeakPath = "io.teak.unity.sdk/Runtime";
         }
         project.AddFileToBuild(extensionTarget, project.AddFile("libTeak.a", name + "/libTeak.a"));

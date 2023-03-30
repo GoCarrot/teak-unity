@@ -3,8 +3,3 @@ set -euo pipefail
 IFS=$'\n\t'
 
 brew install awscli
-
-brew install pandoc
-
-pip3 install -U sphinx
-pip3 install sphinx_rtd_theme

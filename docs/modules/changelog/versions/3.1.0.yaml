@@ -1,0 +1,4 @@
+android: ~
+ios: ~
+new:
+  - Added ``DeepLink`` to ``TeakNotification``

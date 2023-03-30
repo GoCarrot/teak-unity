@@ -36,6 +36,10 @@ typedef void (^TeakLogListener)(NSString* _Nonnull event,
 
 extern void TeakSetLogListener(TeakLogListener listener);
 
+// Teak Operation Things
+extern NSObject* TeakSetStateForChannel(const char* stateCstr, const char* channelCstr);
+extern NSDictionary* TeakOperationGetResultAsDictionary(NSObject* operation);
+
 // TeakNotification
 extern NSObject* TeakNotificationSchedule(const char* creativeId, const char* message, uint64_t delay);
 extern NSObject* TeakNotificationScheduleLongDistance(const char* creativeId, int64_t delay, const char* inUserIds[], int inUserIdCount);
@@ -96,6 +100,41 @@ void* TeakNotificationCancelAll_Retained()
 #else
    return [TeakNotificationCancelAll() retain];
 #endif
+}
+
+void* TeakSetStateForChannel_Retained(const char* stateCstr, const char* channelCstr)
+{
+#if __has_feature(objc_arc)
+   void* operation = (__bridge_retained void*)TeakSetStateForChannel(stateCstr, channelCstr);
+   return operation;
+#else
+   return [TeakNotificationCancelAll() retain];
+#endif
+}
+
+BOOL TeakOperationIsFinished(NSInvocationOperation* operation) {
+   return [operation isFinished];
+}
+
+const char* TeakOperationGetResultJson(NSInvocationOperation* operation) {
+   NSDictionary* json = TeakOperationGetResultAsDictionary(operation);
+   NSError* error = nil;
+
+   NSData* jsonData = [NSJSONSerialization dataWithJSONObject:json
+                                                      options:0
+                                                        error:&error];
+
+   NSString* jsonString = nil;
+   if (error != nil) {
+      NSLog(@"[Teak:Unity] Error converting to JSON: %@", error);
+      jsonString = [NSString stringWithFormat:@"{\"error\" : \"true\", \"errors\" : { \"json\" : [\"%@\"]}}", error.localizedDescription];
+   } else {
+      jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+   }
+
+   // When *returning* a marshalled string, it should be heap-allocated; and pinvoke will take
+   // care of the free()
+   return strdup([jsonString UTF8String]);
 }
 
 void teakOnJsonEvent(NSDictionary* userInfo, const char* eventName, bool sendEmptyOnError)

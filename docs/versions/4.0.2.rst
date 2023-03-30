@@ -1,8 +1,0 @@
-4.0.2
------
-:Breaking Changes:
-    * None
-:New Features:
-    * Added support for targeting Android 12 (API level 31)
-:Bug Fixes:
-    * None

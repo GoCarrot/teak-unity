@@ -21,15 +21,34 @@ using System.Text;
 /// Interface for manipulating notifications from Teak.
 /// </summary>
 public partial class TeakNotification {
+
+    /// <summary>``true`` if the notification was incentivized, ``false`` otherwise.</summary>
     public bool Incentivized { get; set; }
+
+    /// <summary>The name of the schedule for the notification on the Teak Dashboard, or ``null`` if it was not a scheduled notification.</summary>
     public string ScheduleName { get; set; }
+
+    /// <summary>The id of the schedule in the Teak CMS, or ``null`` if it was not a scheduled notification.</summary>
     public ulong ScheduleId { get; set; }
+
+    /// <summary>The name of the notification on the Teak Dashboard.</summary>
     public string CreativeName { get; set; }
+
+    /// <summary>The id of the notification in the Teak CMS.</summary>
     public ulong CreativeId { get; set; }
+
+    /// <summary>
+    /// The name of the Teak 'channel', one of: ``ios_push``, ``android_push``, ``fb_a2u``, ``email``, ``generic_link``.
+    /// </summary>
     public string ChannelName { get; set; }
+
+    /// <summary>Opaque reward identifier, or ``null`` if no reward.</summary>
     public string RewardId { get; set; }
+
+    /// <summary>The complete deep link URL, or ``null`` if there was no deep link.</summary>
     public string DeepLink { get; set; }
 
+    /// @cond hide_from_doxygen
     public TeakNotification(Dictionary<string, object> json) {
         this.ScheduleName = json["teakScheduleName"] as string;
         this.CreativeName = json["teakCreativeName"] as string;
@@ -49,7 +68,12 @@ public partial class TeakNotification {
             this.CreativeId = temp;
         }
     }
+    /// @endcond
 
+    /// <summary>
+    /// Returns a string that represents the current object.
+    /// </summary>
+    /// <returns>A string that represents the current object.</returns>
     public override string ToString() {
         string formatString = "{{ Incentivized = '{0}', ScheduleName = '{1}', ScheduleId = '{2}', CreativeName = '{3}', CreativeId = '{4}', ChannelName = '{5}', RewardId = '{6}', DeepLink = '{7}' }}";
         return string.Format(formatString,
@@ -63,6 +87,9 @@ public partial class TeakNotification {
                              this.DeepLink);
     }
 
+    /// <summary>
+    /// A class used for asynchronous calls to manipulate Teak notifications.
+    /// </summary>
     public partial class Reply {
         public enum ReplyStatus {
             /// <summary>
@@ -99,10 +126,18 @@ public partial class TeakNotification {
             InternalError
         }
 
+        /// <summary>A notification manipulated by an asynchronous call.</summary>
         public struct Notification {
+            /// <summary>If this was a scheduled notification, the id of the schedule.</summary>
             public string ScheduleId;
+
+            /// <summary>The id of the creative for this notification.</summary>
             public string CreativeId;
 
+            /// <summary>
+            /// Returns a string that represents the current object.
+            /// </summary>
+            /// <returns>A string that represents the current object.</returns>
             public override string ToString() {
                 string formatString = "{{ ScheduleId = '{0}', CreativeId = '{1}' }}";
                 return string.Format(formatString,
@@ -111,11 +146,25 @@ public partial class TeakNotification {
             }
         }
 
+        /// <summary>A value that indicates success, or reason for the failure of the call.</summary>
         public ReplyStatus Status { get; set; }
+
+        /// <summary>If the call was successful, a List containing the notification schedule ids that were created or canceled by the call.</summary>
         public List<Notification> Notifications { get; set; }
     }
 
-    // Returns an id that can be used to cancel a scheduled notification
+    /// <summary>
+    /// Schedule a notification to send to the logged in user for a future time.
+    /// </summary>
+    /// <remarks>
+    /// \warning All notification related methods are coroutines. Unless you want the method to block execution, you must use ``StartCoroutine``.
+    ///
+    /// \note The maximum delay for scheduling a notification is 30 days.
+    /// </remarks>
+    /// <param name="scheduleName">A value used to identify the message creative in the Teak CMS e.g. "daily_bonus".</param>
+    /// <param name="defaultMessage">The text to use in the notification if there are no modifications in the Teak CMS.</param>
+    /// <param name="delayInSeconds">The number of seconds from the current time before the notification should be sent.</param>
+    /// <param name="callback">The callback to be called after the notification is scheduled.</param>
     public static IEnumerator ScheduleNotification(string scheduleName, string defaultMessage, long delayInSeconds, System.Action<Reply> callback) {
         if (Teak.Instance.Trace) {
             Debug.Log("[TeakNotification] ScheduleNotification(" + scheduleName + ", " + defaultMessage + ", " + delayInSeconds + ")");
@@ -164,6 +213,21 @@ public partial class TeakNotification {
 #endif
     }
 
+    /// <summary>
+    /// Schedule a 'long distance notification'
+    /// </summary>
+    /// <remarks>
+    /// A notification which is scheduled from code, but delivered to a different player
+    /// beside the current player is called a "long distance notification".
+    ///
+    /// \warning All notification related methods are coroutines. Unless you want the method to block execution, you must use ``StartCoroutine``.
+    ///
+    /// \note The maximum delay for scheduling a notification is 30 days.
+    /// </remarks>
+    /// <param name="scheduleName">The name of the existing schedule to send in the Teak CMS e.g. "daily_bonus"</param>
+    /// <param name="delayInSeconds">The number of seconds from the current time before the notification should be sent.</param>
+    /// <param name="userIds">An array of user ids to which the notification should be delivered.</param>
+    /// <param name="callback">The callback to be called after the notification is scheduled.</param>
     public static IEnumerator ScheduleNotification(string scheduleName, long delayInSeconds, string[] userIds, System.Action<Reply> callback) {
         if (Teak.Instance.Trace) {
             Debug.Log("[TeakNotification] ScheduleNotification(" + scheduleName + ", " + delayInSeconds + ", " + userIds + ")");
@@ -212,7 +276,14 @@ public partial class TeakNotification {
 #endif
     }
 
-    // Cancel an existing notification
+    /// <summary>
+    /// Cancel a previously scheduled notification.
+    /// </summary>
+    /// <remarks>
+    /// \warning All notification related methods are coroutines. Unless you want the method to block execution, you must use ``StartCoroutine``.
+    /// </remarks>
+    /// <param name="scheduleId">Passing the id received from ScheduleNotification() will cancel that specific notification; passing the scheduleName used to schedule the notification will cancel all scheduled notifications with that creative id for the user.</param>
+    /// <param name="callback">The callback to be called after the notification is canceled.</param>
     public static IEnumerator CancelScheduledNotification(string scheduleId, System.Action<Reply> callback) {
         if (Teak.Instance.Trace) {
             Debug.Log("[TeakNotification] CancelScheduledNotification(" + scheduleId + ")");
@@ -260,7 +331,13 @@ public partial class TeakNotification {
 #endif
     }
 
-    // Cancel all scheduled notifications
+    /// <summary>
+    /// Cancel all previously scheduled notifications for the current user.
+    /// </summary>
+    /// <remarks>
+    /// \warning All notification related methods are coroutines. Unless you want the method to block execution, you must use ``StartCoroutine``.
+    /// </remarks>
+    /// <param name="callback">The callback to be called after notifications are canceled.</param>
     public static IEnumerator CancelAllScheduledNotifications(System.Action<Reply> callback) {
         if (Teak.Instance.Trace) {
             Debug.Log("[TeakNotification] CancelAllScheduledNotifications()");
@@ -311,7 +388,9 @@ public partial class TeakNotification {
     /// @cond hide_from_doxygen
     private static void SafePerformCallback(string method, System.Action<Reply> callback, string data, string status, string scheduleName) {
         try {
-            callback(new Reply(status, data, scheduleName));
+            if (callback != null) {
+                callback(new Reply(status, data, scheduleName));
+            }
         } catch (Exception e) {
             Dictionary<string, object> extras = new Dictionary<string, object>();
             extras["data"] = data;

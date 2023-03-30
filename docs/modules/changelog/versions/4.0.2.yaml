@@ -1,0 +1,3 @@
+android: ~
+new:
+  - Added support for targeting Android 12 (API level 31)

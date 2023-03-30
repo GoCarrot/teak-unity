@@ -1,0 +1,2 @@
+bug:
+  - Fix path to ``libTeak.a`` when using UPM package.

@@ -3,5 +3,8 @@
     "displayName": "Teak SDK",
     "version": "{{teak_sdk_version}}",
     "unity": "2018.3",
-    "description": "Teak SDK for Unity."
+    "description": "Teak SDK for Unity.",
+    "changelogUrl": "https://docs.teak.io/unity/latest/changelog/changelog.html",
+    "documentationUrl": "https://docs.teak.io/unity/latest/before-you-start.html",
+    "license": "Apache-2.0"
 }

@@ -11,6 +11,7 @@ Logs/
 *.pdb*
 *.mdb*
 
+teak-unity.sublime-workspace
 ProjectSettings/ProjectVersion.txt
 
 Assets/Resources/TeakSettings.*
@@ -30,13 +31,7 @@ Teak.unitypackage
 unity.log
 temp-upm-build
 
-AndroidBuild/
-iOSBuild/
-WebBuild/
-StandaloneBuild*/
-FlashBuild/
-Assets/AssetStoreTools*
-_build
-_static
-_templates
+# Doc generation
 _doxygen
+yarn-error.log
+node_modules

@@ -1,0 +1,7 @@
+android: ~
+ios: ~
+new:
+  - Remote logging
+  - Remote exception tracking
+bug:
+  - Fixed an absolute path issue during iOS post process when BuildPipeline.BuildPlayer was used to build

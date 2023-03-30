@@ -65,6 +65,18 @@ public class TeakSettings : ScriptableObject {
 #endif
     }
 
+    public static bool TraceLogging {
+        get { return Instance.mTraceLogging; }
+#if UNITY_EDITOR
+        set {
+            if (value != Instance.mTraceLogging) {
+                Instance.mTraceLogging = value;
+                DirtyEditor();
+            }
+        }
+#endif
+    }
+
     public static string ShortlinkDomain {
         get { return Instance.mShortlinkDomain; }
 #if UNITY_EDITOR
@@ -90,6 +102,18 @@ public class TeakSettings : ScriptableObject {
 #endif
     }
 
+    public static bool EnableSDK5Behaviors {
+        get { return Instance.mEnableSDK5Behaviors; }
+#if UNITY_EDITOR
+        set {
+            if (value != Instance.mEnableSDK5Behaviors) {
+                Instance.mEnableSDK5Behaviors = value;
+                DirtyEditor();
+            }
+        }
+#endif
+    }
+
 #if UNITY_EDITOR
     [MenuItem("Edit/Teak")]
     public static void Edit() {
@@ -109,6 +133,10 @@ public class TeakSettings : ScriptableObject {
     private string mShortlinkDomain = "";
     [SerializeField]
     private bool mJustShutUpIKnowWhatImDoing = true;
+    [SerializeField]
+    private bool mEnableSDK5Behaviors = true;
+    [SerializeField]
+    private bool mTraceLogging = false;
 
     private static TeakSettings mInstance;
 }

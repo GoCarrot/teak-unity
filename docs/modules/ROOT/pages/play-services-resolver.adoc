@@ -1,0 +1,17 @@
+= External Dependency Manager for Unity
+
+Google maintains a Unity plugin which will automatically download Android dependencies, and incorporate them into your build.
+
+The file that specifies these dependencies for Teak is located at `<Teak Plugin Directory>/Editor/TeakDependencies.xml`.
+
+== Downloading and Installing
+
+For reasons unknown Google's GitHub project page for the External Dependency Manager (aka Play Services Resolver, aka Jar Resolver) does not use GitHub's Releases functionality.
+
+Instead a binary is checked into the repo. You can find the latest version at https://github.com/googlesamples/unity-jar-resolver/blob/master/external-dependency-manager-latest.unitypackage[window=_blank] by clicking the btn:[Download] button.
+
+Once you download the .unitypackage, follow these instructions for https://docs.unity3d.com/Manual/AssetPackagesImport.html[Importing local asset packages, window=_blank].
+
+NOTE: Unfortunately the External Dependency Manager is not available via Unity's Package Manager at the time of this writing.
+
+

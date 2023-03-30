@@ -1,8 +1,0 @@
-4.1.7
------
-:Breaking Changes:
-    * None
-:New Features:
-    * Added ``Teak.Instance.RegisterForNotifications()``
-:Bug Fixes:
-    * UPM Changelog Generation re-enabled

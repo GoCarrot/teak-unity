@@ -1,0 +1,13 @@
+{
+  "folders":
+  [
+    {
+      "folder_exclude_patterns":
+      [
+        "temp-upm-build",
+        "node_modules"
+      ],
+      "path": "."
+    }
+  ]
+}
