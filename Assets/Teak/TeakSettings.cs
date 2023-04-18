@@ -132,7 +132,7 @@ public class TeakSettings : ScriptableObject {
     [SerializeField]
     private string mShortlinkDomain = "";
     [SerializeField]
-    private bool mJustShutUpIKnowWhatImDoing = true;
+    private bool mJustShutUpIKnowWhatImDoing = false;
     [SerializeField]
     private bool mEnableSDK5Behaviors = true;
     [SerializeField]
