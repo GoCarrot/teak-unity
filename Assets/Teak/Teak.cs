@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 
 using MiniJSON.Teak;
+using System.Collections;
 using System.Collections.Generic;
 /// @endcond
 #endregion
@@ -665,7 +666,7 @@ public partial class Teak : MonoBehaviour {
     /// <summary>
     /// Register for Push Notifications.
     /// </summary>
-    public void RegisterForNotifications() {
+    public IEnumerator RegisterForNotifications() {
 #if UNITY_EDITOR || UNITY_WEBGL
 #elif UNITY_IPHONE
         TeakRequestPushAuthorization(false);
@@ -674,7 +675,7 @@ public partial class Teak : MonoBehaviour {
         using (var buildVersion = new AndroidJavaClass("android.os.Build$VERSION")) {
             int sdkVersion = buildVersion.GetStatic<int>("SDK_INT");
             if (sdkVersion < 33) {
-                return;
+                yield break;
             }
         }
 
@@ -685,7 +686,7 @@ public partial class Teak : MonoBehaviour {
             using (var activity = unityPlayer.GetStatic<AndroidJavaObject>("currentActivity")) {
                 int sdkVersion = helpers.CallStatic<int>("getTargetSDKVersion", activity);
                 if (sdkVersion < 33) {
-                    return;
+                    yield break;
                 }
             }
         }
@@ -693,9 +694,15 @@ public partial class Teak : MonoBehaviour {
         // Skip if the permission is granted
         string POST_NOTIFICATIONS = "android.permission.POST_NOTIFICATIONS";
         if (!UnityEngine.Android.Permission.HasUserAuthorizedPermission(POST_NOTIFICATIONS)) {
-            UnityEngine.Android.Permission.RequestUserPermission(POST_NOTIFICATIONS);
+            var callback = new UnityEngine.Android.PermissionCallbacks();
+            // callback.PermissionDenied += OnAllow;
+            // callback.PermissionGranted += OnDeny;
+            // callback.PermissionDeniedAndDontAskAgain += OnDenyAndNeverAskAgain;
+
+            UnityEngine.Android.Permission.RequestUserPermission(POST_NOTIFICATIONS, callback);
         }
 #endif
+        yield return null;
     }
 
     /// <summary>
