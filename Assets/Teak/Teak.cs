@@ -1033,28 +1033,28 @@ public partial class Teak : MonoBehaviour {
             Debug.LogError("[Teak] Error executing callback for notification data: " + jsonString + "\n" + e.ToString());
         }
     }
+#endif
 
-    private static Dictionary<string, System.Action<Dictionary<string, object>>> teakOperationWebGlCallbackMap = new Dictionary<string, System.Action<Dictionary<string, object>>>();
+    private static Dictionary<string, System.Action<Dictionary<string, object>>> teakOperationCallbackMap = new Dictionary<string, System.Action<Dictionary<string, object>>>();
     void TeakOperationCallback(string jsonString) {
         try {
             Dictionary<string, object> json = Json.TryDeserialize(jsonString) as Dictionary<string, object>;
-            if (json == null) {
+            if (json == null || !json.ContainsKey("_callbackId")) {
                 return;
             }
 
             string callbackId = json["_callbackId"] as string;
             json.Remove("_callbackId");
 
-            if (teakOperationWebGlCallbackMap.ContainsKey(callbackId)) {
-                System.Action<Dictionary<string, object>> callback = teakOperationWebGlCallbackMap[callbackId];
-                teakOperationWebGlCallbackMap.Remove(callbackId);
+            if (teakOperationCallbackMap.ContainsKey(callbackId)) {
+                System.Action<Dictionary<string, object>> callback = teakOperationCallbackMap[callbackId];
+                teakOperationCallbackMap.Remove(callbackId);
                 callback(json);
             }
         } catch (Exception e) {
             Debug.LogError("[Teak] Error executing callback: " + jsonString + "\n\t" + e.ToString());
         }
     }
-#endif
 
     public static void SafePerformCallback<T>(string method, System.Action<T> callback, T param) {
         try {
