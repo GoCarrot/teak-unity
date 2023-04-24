@@ -15,6 +15,7 @@
 
 // From TeakHooks.m
 extern void Teak_Plant(Class appDelegateClass, NSString* appId, NSString* appSecret);
+extern BOOL TeakRequestPushAuthorizationWithCallback(BOOL includeProvisional, void (*callback)(void*, BOOL, NSError*), void* context);
 
 // From Teak.m
 extern NSString* const TeakNotificationAppLaunch;
@@ -110,6 +111,36 @@ void* TeakSetStateForChannel_Retained(const char* stateCstr, const char* channel
 #else
    return [TeakNotificationCancelAll() retain];
 #endif
+}
+
+void TeakRequestPushAuthorizationUnityCallback(void* context, BOOL permissionGranted, NSError* error) {
+   NSDictionary* json = @{
+      @"_callbackId" : [NSString stringWithUTF8String:context],
+      @"permissionGranted" : permissionGranted ? @(YES) : @(NO),
+      @"error" : error != nil ? [error localizedDescription] : [NSNull null]
+   };
+   NSData* jsonData = [NSJSONSerialization dataWithJSONObject:json
+                                                      options:0
+                                                        error:&error];
+
+   NSString* jsonString = nil;
+   if (error != nil) {
+      NSLog(@"[Teak:Unity] Error converting to JSON: %@", error);
+      jsonString = @"{}";
+   } else {
+      jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+   }
+
+   free(context);
+
+   UnitySendMessage("TeakGameObject", "TeakOperationCallback", [jsonString UTF8String]);
+}
+
+BOOL TeakRequestPushAuthorizationUnity(BOOL includeProvisional, const char* callbackId) {
+   //void (*callback)(void*, BOOL, NSError*), void* context
+   return TeakRequestPushAuthorizationWithCallback(includeProvisional,
+                                                   &TeakRequestPushAuthorizationUnityCallback,
+                                                   strdup(callbackId));
 }
 
 BOOL TeakOperationIsFinished(NSInvocationOperation* operation) {

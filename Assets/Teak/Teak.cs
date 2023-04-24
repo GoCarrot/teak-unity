@@ -657,7 +657,7 @@ public partial class Teak : MonoBehaviour {
     /// <returns>true if the device was an iOS 12+ device</returns>
     public bool RegisterForProvisionalNotifications() {
 #if !UNITY_EDITOR && UNITY_IPHONE
-        return TeakRequestPushAuthorization(true);
+        return TeakRequestPushAuthorizationUnity(true, null);
 #else
         return false;
 #endif
@@ -666,15 +666,21 @@ public partial class Teak : MonoBehaviour {
     /// <summary>
     /// Register for Push Notifications.
     /// </summary>
-    public IEnumerator RegisterForNotifications() {
+    public IEnumerator RegisterForNotifications(System.Action<bool> callback = null) {
 #if UNITY_EDITOR || UNITY_WEBGL
+        // Nothing currently
 #elif UNITY_IPHONE
-        TeakRequestPushAuthorization(false);
+        string callbackId = DateTime.Now.Ticks.ToString();
+        teakOperationCallbackMap.Add(callbackId, json => {
+            callback(json.ContainsKey("permissionGranted") && json["permissionGranted"] is bool && (bool)json["permissionGranted"]);
+        });
+        TeakRequestPushAuthorizationUnity(false, callbackId);
 #elif UNITY_ANDROID
         // If we're not on API 33, no action needed.
         using (var buildVersion = new AndroidJavaClass("android.os.Build$VERSION")) {
             int sdkVersion = buildVersion.GetStatic<int>("SDK_INT");
             if (sdkVersion < 33) {
+                callback(true);
                 yield break;
             }
         }
@@ -686,6 +692,7 @@ public partial class Teak : MonoBehaviour {
             using (var activity = unityPlayer.GetStatic<AndroidJavaObject>("currentActivity")) {
                 int sdkVersion = helpers.CallStatic<int>("getTargetSDKVersion", activity);
                 if (sdkVersion < 33) {
+                    callback(true);
                     yield break;
                 }
             }
@@ -695,11 +702,14 @@ public partial class Teak : MonoBehaviour {
         string POST_NOTIFICATIONS = "android.permission.POST_NOTIFICATIONS";
         if (!UnityEngine.Android.Permission.HasUserAuthorizedPermission(POST_NOTIFICATIONS)) {
             var callback = new UnityEngine.Android.PermissionCallbacks();
-            // callback.PermissionDenied += OnAllow;
-            // callback.PermissionGranted += OnDeny;
-            // callback.PermissionDeniedAndDontAskAgain += OnDenyAndNeverAskAgain;
+            callback.PermissionDenied += () => callback(false);
+            callback.PermissionGranted += () => callback(true);
+            callback.PermissionDeniedAndDontAskAgain += () => callback(false);
 
             UnityEngine.Android.Permission.RequestUserPermission(POST_NOTIFICATIONS, callback);
+        } else {
+            // Already granted, so tell the callback
+            callback(true);
         }
 #endif
         yield return null;
@@ -813,7 +823,7 @@ public partial class Teak : MonoBehaviour {
     private static extern bool TeakOpenNotificationSettings();
 
     [DllImport ("__Internal")]
-    private static extern bool TeakRequestPushAuthorization(bool includeProvisional);
+    private static extern bool TeakRequestPushAuthorizationUnity(bool includeProvisional, string callbackId);
 
     [DllImport ("__Internal")]
     private static extern void TeakProcessDeepLinks();
