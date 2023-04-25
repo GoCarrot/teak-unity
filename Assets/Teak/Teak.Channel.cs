@@ -225,7 +225,7 @@ public partial class Teak {
 
 #if UNITY_WEBGL && !UNITY_EDITOR
         string callbackId = DateTime.Now.Ticks.ToString();
-        teakOperationWebGlCallbackMap.Add(callbackId, json => callback(new Channel.Reply(json)));
+        teakOperationCallbackMap.Add(callbackId, json => callback(new Channel.Reply(json)));
 
         TeakSetStateForChannel_CallbackId(stateAsString, typeAsString, callbackId);
         yield return null;
