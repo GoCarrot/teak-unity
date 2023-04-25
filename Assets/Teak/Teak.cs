@@ -666,15 +666,35 @@ public partial class Teak : MonoBehaviour {
     /// <summary>
     /// Register for Push Notifications.
     /// </summary>
-    public IEnumerator RegisterForNotifications(System.Action<bool> callback = null) {
-#if UNITY_EDITOR || UNITY_WEBGL
-        // Nothing currently
+    /// \deprecated Please use <see cref="RegisterForNotifications(System.Action)"/> instead.
+    /// <remarks>
+    /// This is a compatibility method which simply wraps <see cref="RegisterForNotifications(System.Action)"/> in
+    /// a StartCoRoutine()
+    /// </remarks>
+    [Obsolete("RegisterForNotifications(System.Action) instead.")]
+    public void RegisterForNotifications() {
+        StartCoroutine(this.RegisterForNotifications(null));
+    }
+
+    /// <summary>
+    /// Register for Push Notifications.
+    /// </summary>
+    /// <remarks>
+    /// This is a CoRoutine and will not return until complete.
+    /// </remarks>
+    /// <param name="callback">A callback that</param>
+    public IEnumerator RegisterForNotifications(System.Action<bool> callback) {
+#if UNITY_EDITOR
+        yield return null;
 #elif UNITY_IPHONE
+        bool keepWaiting = true;
         string callbackId = DateTime.Now.Ticks.ToString();
         teakOperationCallbackMap.Add(callbackId, json => {
             callback(json.ContainsKey("permissionGranted") && json["permissionGranted"] is bool && (bool)json["permissionGranted"]);
+            keepWaiting = false;
         });
         TeakRequestPushAuthorizationUnity(false, callbackId);
+        while(keepWaiting) yield return null;
 #elif UNITY_ANDROID
         // If we're not on API 33, no action needed.
         using (var buildVersion = new AndroidJavaClass("android.os.Build$VERSION")) {
@@ -701,18 +721,32 @@ public partial class Teak : MonoBehaviour {
         // Skip if the permission is granted
         string POST_NOTIFICATIONS = "android.permission.POST_NOTIFICATIONS";
         if (!UnityEngine.Android.Permission.HasUserAuthorizedPermission(POST_NOTIFICATIONS)) {
-            var callback = new UnityEngine.Android.PermissionCallbacks();
-            callback.PermissionDenied += () => callback(false);
-            callback.PermissionGranted += () => callback(true);
-            callback.PermissionDeniedAndDontAskAgain += () => callback(false);
+            bool keepWaiting = true;
 
-            UnityEngine.Android.Permission.RequestUserPermission(POST_NOTIFICATIONS, callback);
+            void permissionGranted(string permissionName) {
+                callback(true);
+                keepWaiting = false;
+            }
+
+            void permissionDenied(string permissionName) {
+                callback(false);
+                keepWaiting = false;
+            }
+
+            var androidCallback = new UnityEngine.Android.PermissionCallbacks();
+            androidCallback.PermissionGranted += permissionGranted;
+            androidCallback.PermissionDenied += permissionDenied;
+            androidCallback.PermissionDeniedAndDontAskAgain += permissionDenied;
+
+            UnityEngine.Android.Permission.RequestUserPermission(POST_NOTIFICATIONS, androidCallback);
+            while(keepWaiting) yield return null;
         } else {
             // Already granted, so tell the callback
             callback(true);
         }
-#endif
+#else
         yield return null;
+#endif
     }
 
     /// <summary>
