@@ -1,8 +1,0 @@
-4.1.10
-------
-:Breaking Changes:
-    * None
-:New Features:
-    * None
-:Bug Fixes:
-    * Native iOS Fix
