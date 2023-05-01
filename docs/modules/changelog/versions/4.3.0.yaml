@@ -1,0 +1,4 @@
+breaking:
+- Deprecated <<Teak.RegisterForNotifications()>>
+new:
+- Added <<Teak.RegisterForNotifications(System.Action)>> as a co-routine
