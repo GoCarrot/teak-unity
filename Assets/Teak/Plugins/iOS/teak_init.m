@@ -109,7 +109,7 @@ void* TeakSetStateForChannel_Retained(const char* stateCstr, const char* channel
    void* operation = (__bridge_retained void*)TeakSetStateForChannel(stateCstr, channelCstr);
    return operation;
 #else
-   return [TeakNotificationCancelAll() retain];
+   return [TeakSetStateForChannel(stateCstr, channelCstr)() retain];
 #endif
 }
 
