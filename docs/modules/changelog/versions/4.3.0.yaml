@@ -1,4 +1,8 @@
+android: ~
+ios: ~
 breaking:
 - Deprecated <<Teak.RegisterForNotifications()>>
 new:
 - Added <<Teak.RegisterForNotifications(System.Action)>> as a co-routine
+bug:
+- <<Teak.OnUserData>> will now get sent properly on iOS

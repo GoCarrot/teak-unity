@@ -24,6 +24,7 @@ extern NSString* const TeakForegroundNotification;
 extern NSString* const TeakAdditionalData;
 extern NSString* const TeakLaunchedFromLink;
 extern NSString* const TeakPostLaunchSummary;
+extern NSString* const TeakUserData;
 
 extern NSDictionary* TeakWrapperSDK;
 extern NSDictionary* TeakXcodeVersion;
@@ -270,5 +271,11 @@ static void teak_init()
                                                       queue:nil
                                                  usingBlock:^(NSNotification* notification) {
                                                     teakOnJsonEvent(notification.userInfo, "PostLaunchSummary", false);
+                                                 }];
+   [[NSNotificationCenter defaultCenter] addObserverForName:TeakUserData
+                                                     object:nil
+                                                      queue:nil
+                                                 usingBlock:^(NSNotification* notification) {
+                                                    teakOnJsonEvent(notification.userInfo, "UserDataEvent", false);
                                                  }];
 }
