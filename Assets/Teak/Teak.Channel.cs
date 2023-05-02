@@ -91,10 +91,27 @@ public partial class Teak {
                 get; private set;
             }
 
-            /// <summary>The string version of the State of the marketing channel.</summary>
+            /// <summary>The string version of the state of the marketing channel.</summary>
             public string StateName {
                 get {
                     return StateToName[(int) this.State];
+                }
+            }
+
+            /// <summary>The states of categories within the marketing channel.</summary>
+            public Dictionary<string, string> Categories {
+                get; private set;
+            }
+
+            /// <summary>The category state within the marketing channel.</summary>
+            public State this[string category] {
+                get {
+                    if (this.Categories == null || !this.Categories.ContainsKey(category)) {
+                        return State.Unknown;
+                    }
+                    int stateAsInt = StateName.IndexOf(this.Categories[category]);
+                    if (stateAsInt < 0 || stateAsInt > 4) { stateAsInt = 4; }
+                    return (State) stateAsInt;
                 }
             }
 
@@ -103,20 +120,22 @@ public partial class Teak {
                 get; private set;
             }
 
-            private void Assignment(int stateAsInt, bool deliveryFault) {
+            internal Status(Dictionary<string, object> json) {
+                int stateAsInt = StateName.IndexOf(json.Opt("state", "unknown") as string);
+
                 if (stateAsInt < 0 || stateAsInt > 4) { stateAsInt = 4; }
                 this.State = (State) stateAsInt;
-                this.DeliveryFault = deliveryFault;
-            }
+                this.DeliveryFault = Convert.ToBoolean(json.Opt("delivery_fault", "false"));
 
-            internal Status(State state, bool deliveryFault) {
-                int stateAsInt = (int) state;
-                Assignment(stateAsInt, deliveryFault);
-            }
-
-            internal Status(Dictionary<string, object> json) {
-                Assignment(StateName.IndexOf(json.Opt("state", "unknown") as string),
-                           Convert.ToBoolean(json.Opt("delivery_fault", "false")));
+                if (json.ContainsKey("categories")) {
+                    Dictionary<string, object> dict = json["categories"] as Dictionary<string, object>;
+                    this.Categories = new Dictionary<string, string>(); 
+                    if (dict != null) {
+                        foreach (KeyValuePair<string, object> keyValuePair in dict) {
+                          this.Categories.Add(keyValuePair.Key, keyValuePair.Value.ToString());
+                        }
+                    }
+                }
             }
 
             /// <summary>Dictionary representation of this object, suitable for JSON encoding.</summary>
@@ -124,6 +143,7 @@ public partial class Teak {
             public Dictionary<string, object> ToDictionary() {
                 Dictionary<string, object> dict = new Dictionary<string, object>();
                 dict.Add("state", this.StateName);
+                dict.Add("categories", this.Categories);
                 dict.Add("delivery_fault", this.DeliveryFault);
                 return dict;
             }
