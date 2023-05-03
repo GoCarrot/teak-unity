@@ -161,8 +161,13 @@ public partial class Teak {
                 get; private set;
             }
 
-            /// <summary>The the marketing channel./summary>
+            /// <summary>The type of marketing channel.</summary>
             public Type Channel {
+                get; private set;
+            }
+
+            /// <summary>The category of the marketing channel.</summary>
+            public string Category {
                 get; private set;
             }
 
@@ -187,6 +192,8 @@ public partial class Teak {
 
                 idx = TypeToName.IndexOf(json.Opt("channel", "unknown").ToString());
                 this.Channel = (idx > -1) ? (Teak.Channel.Type) idx : Teak.Channel.Type.Unknown;
+
+                this.Category = json.Opt("category", null) as string;
             }
 
             /// <summary>
@@ -282,13 +289,75 @@ public partial class Teak {
 #endif
     }
 
+    /// <summary>
+    /// Assign the opt-out state for a category on a Teak marketing channel.
+    /// </summary>
+    /// <remarks>
+    /// </remarks>
+    /// \note You may only assign the values <see cref="Teak.Channel.Type.OptOut"/> and <see cref="Teak.Channel.Type.Available"/> to categories.
+    /// <param name="channel">The channel to which the new state is being assigned.</param>
+    /// <param name="category">The category in the channel to which the new state is being assigned.</param>
+    /// <param name="state">The opt-out state to assign to the category.</param>
+    /// <param name="callback">A callback by which you will be informed of the result of the method.</param>
+    public IEnumerator SetCategoryState(Channel.Type channel, string category, Channel.State state, System.Action<Channel.Reply> callback) {
+        string stateAsString = Channel.StateToName[(int) state];
+        string typeAsString = Channel.TypeToName[(int) channel];
+
+        if (Teak.Instance.Trace) {
+            Debug.Log("[Teak] SetCategoryState(" + stateAsString + ", " + category + ", " + typeAsString + ")");
+        }
+
+#if UNITY_WEBGL && !UNITY_EDITOR
+        string callbackId = DateTime.Now.Ticks.ToString();
+        teakOperationCallbackMap.Add(callbackId, json => callback(new Channel.Reply(json)));
+
+        TeakSetCategoryForChannel_CallbackId(stateAsString, typeAsString, category, callbackId);
+        yield return null;
+#else
+        Channel.Reply reply = Channel.Reply.UndeterminedUnityError;
+#   if UNITY_ANDROID
+        AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
+        AndroidJavaObject future = teak.CallStatic<AndroidJavaObject>("setCategoryState", typeAsString, category, stateAsString);
+
+        if (future != null) {
+            while (!future.Call<bool>("isDone")) { yield return null; }
+
+            try {
+                string json = future.Call<AndroidJavaObject>("get").Call<AndroidJavaObject>("toJSON").Call<string>("toString");
+                reply = new Channel.Reply(Json.TryDeserialize(json) as Dictionary<string, object>);
+            } catch (Exception e) {
+                reply = Channel.Reply.ReplyWithErrorForException(e);
+            }
+        }
+#   elif UNITY_IPHONE
+        IntPtr operation = TeakSetStateForCategory_Retained(stateAsString, typeAsString, category);
+        if (operation != IntPtr.Zero) {
+            while (!TeakOperationIsFinished(operation)) { yield return null; }
+
+            string json = TeakOperationGetResultJson(operation);
+            reply = new Channel.Reply(Json.TryDeserialize(json) as Dictionary<string, object>);
+            TeakRelease(operation);
+        }
+#   else
+        yield return null;
+#   endif
+
+        Teak.SafePerformCallback("setcategorystate", callback, reply);
+#endif
+    }
+
     /// @cond hide_from_doxygen
 #if UNITY_WEBGL
     [DllImport ("__Internal")]
     private static extern void TeakSetStateForChannel_CallbackId(string state, string channel, string callbackId);
+    [DllImport ("__Internal")]
+    private static extern void TeakSetCategoryForChannel_CallbackId(string state, string channel, string category, string callbackId);
 #elif UNITY_IPHONE
     [DllImport ("__Internal")]
     private static extern IntPtr TeakSetStateForChannel_Retained(string state, string channel);
+
+    [DllImport ("__Internal")]
+    private static extern IntPtr TeakSetStateForCategory_Retained(string state, string channel, string category);
 
     [DllImport ("__Internal")]
     private static extern bool TeakOperationIsFinished(IntPtr operation);

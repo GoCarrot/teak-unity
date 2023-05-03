@@ -40,6 +40,7 @@ extern void TeakSetLogListener(TeakLogListener listener);
 
 // Teak Operation Things
 extern NSObject* TeakSetStateForChannel(const char* stateCstr, const char* channelCstr);
+extern NSObject* TeakSetStateForCategory(const char* stateCstr, const char* channelCstr, const char* categoryCstr);
 extern NSDictionary* TeakOperationGetResultAsDictionary(NSObject* operation);
 
 // TeakNotification
@@ -111,6 +112,16 @@ void* TeakSetStateForChannel_Retained(const char* stateCstr, const char* channel
    return operation;
 #else
    return [TeakSetStateForChannel(stateCstr, channelCstr)() retain];
+#endif
+}
+
+void* TeakSetStateForCategory_Retained(const char* stateCstr, const char* channelCstr, const char* categoryCstr)
+{
+#if __has_feature(objc_arc)
+   void* operation = (__bridge_retained void*)TeakSetStateForCategory(stateCstr, channelCstr, categoryCstr);
+   return operation;
+#else
+   return [TeakSetStateForCategory(stateCstr, channelCstr, categoryCstr)() retain];
 #endif
 }
 

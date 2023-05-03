@@ -4,5 +4,6 @@ breaking:
 - Deprecated <<Teak.RegisterForNotifications()>>
 new:
 - Added <<Teak.RegisterForNotifications(System.Action)>> as a co-routine
+- Added <<Teak.SetCategoryState>>
 bug:
 - <<Teak.OnUserData>> will now get sent properly on iOS
