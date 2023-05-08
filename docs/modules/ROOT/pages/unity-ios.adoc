@@ -1,0 +1,39 @@
+= Getting Teak on Your iOS Device
+:sectnums:
+
+== Ensure you have an Apple Developer account
+
+    You will need an Apple Developer account to use push notifications. While you can work in XCode and test code on your own devices with just your Apple ID, you won't be able to use Teak's notifications on iOS devices without a <span style="text-decoration:underline;">paid membership</span>.
+
+If you have an Organization membership, you can add additional members to your team and specify roles. Only team members with an App Manager, Admin, or Account Holder role will be able to configure push notifications.
+
+
+== Configure Apple push notification certificates and upload to Teak
+
+    These certificates are separate from your Development and Distribution certificates; follow the detailed instructions here if you're not familiar with creating certificates. Here's a quick summary of the process:
+
+* Enable push notifications for your game on your Apple Developer portal.
+* Create a new Certificate Signing Request from your Keychain and upload to Apple.
+* Download your new certificate from Apple and open it in Keychain.
+* Export the certificate as a .p12 file.
+* Upload the certificate to Teak from your Teak dashboard. Go to Settings > Mobile and click "Manage APNS Certificates" in the "iOS" section of the page.
+
+
+== Create a new iOS build
+
+In Unity, select File > Build Settings. Click on Player Settings. Double check that the bundle ID on your .p12 certificate (something like "com.MyGameCo.MyGame") matches the bundle ID in your Player Settings. Ensure that you are building for iOS, and create a new build that will include Teak. Open your new build in Xcode.
+
+You should now see Teak in the Targets menu in the sidebar.  Go to the Signing & Capabilities tab:
+
+image:start/xcodesigning.png[Signing in Xcode]
+
+Selecting "Automatically manage signing" and choosing the development team associated with this application should sign everything, including the TeakNotificationService and TeakNotificationContent. Double check by opening them from the Targets menu and looking to see that your signing certificate is listed.
+
+Make sure that the Push Notifications icon shows up in the settings for your main target app. If not, click the "+" button on the ribbon above your Signing settings, find Push Notifications, and double-click to add it.
+
+Now you're ready to build your app as usual and get it onto your iOS device.
+
+
+== Connect an iOS device
+
+Once your new app is on your iOS device, opening it should pop up a dialog box asking for permission to send notifications. Click Allow, and begin playing your game. Once you reach the point where your game script identifies a player, you've done everything you need to see Teak working.

@@ -1,0 +1,47 @@
+= Install the Teak SDK
+
+== Create a New Game in Teak
+
+First things first—log in to your Teak account and add a new game if you don't have one already.
+
+If you already have a game and want to add another, you can find "New Game," in the game picker drop down.
+
+image:start/newgame.png[New Game in Teak]
+
+
+== Get your App ID and API Key
+
+Once you've completed the series of dialogs and added your game, navigate to the Settings panel for your game to get your App ID and API Key. You'll add those to Unity shortly.
+
+Now is also a good time to set up https://docs.teak.io/usage/links.html[Short Links], which are required for https://docs.teak.io/usage/rewards.html#_bundle_creation[rewarding] and https://docs.teak.io/usage/email.html[email]. To do so, enter the base URL you will use to generate links for rewards and other player interactions. It's possible to proceed without ShortLinks, but filling this now will save you an extra step later on.
+
+image:start/settings.png[Teak Settings Page]
+
+
+== Install Teak in your Unity Project
+
+The easiest way to install Teak is using the Unity Package Manager. Add the Teak SDK package via https://docs.unity3d.com/Manual/upm-ui-giturl.html[Git URL].
+
+image:start/addpackage.png[Add package in Unity]
+
+In the dialog box, enter this URL for the latest Teak SDK:
+
+https://github.com/GoCarrot/upm-package-teak.git
+
+Alternatively, you can https://sdks.teakcdn.com/unity/Teak.unitypackage[download Teak] directly and import it as a custom package from the Assets menu in your Unity project.
+
+
+== Configure Teak in the Unity Editor
+
+After installation, you should see Teak in the Edit menu in your Unity project. Selecting it will open it in your Inspector.
+
+image:start/editmenu.png[Teak in Unity Edit menu]
+
+image:start/inspector.png[Unity Inspector]
+
+
+Add your App ID and API Key from your Teak Settings. These keys allow your game to authenticate and talk to Teak.
+
+If you set up ShortLinks when you added your app on Teak, enter the same base URL here.
+
+By default, the checkbox for "Build Post-Processing" will be checked. This automates the native iOS and Android integration. Unless you've worked extensively with Teak before, you should leave this option on.
