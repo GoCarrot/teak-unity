@@ -1,5 +1,4 @@
 = Hello World
-:sectnums:
 
 Putting it all together.
 

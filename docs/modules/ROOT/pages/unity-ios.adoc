@@ -1,16 +1,15 @@
 = Getting Teak on Your iOS Device
-:sectnums:
 
 == Ensure you have an Apple Developer account
 
-    You will need an Apple Developer account to use push notifications. While you can work in XCode and test code on your own devices with just your Apple ID, you won't be able to use Teak's notifications on iOS devices without a <span style="text-decoration:underline;">paid membership</span>.
+You will need an Apple Developer account to use push notifications. While you can work in XCode and test code on your own devices with just your Apple ID, you won't be able to use Teak's notifications on iOS devices without a paid membership.
 
 If you have an Organization membership, you can add additional members to your team and specify roles. Only team members with an App Manager, Admin, or Account Holder role will be able to configure push notifications.
 
 
 == Configure Apple push notification certificates and upload to Teak
 
-    These certificates are separate from your Development and Distribution certificates; follow the detailed instructions here if you're not familiar with creating certificates. Here's a quick summary of the process:
+These certificates are separate from your Development and Distribution certificates; follow the detailed instructions here if you're not familiar with creating certificates. Here's a quick summary of the process:
 
 * Enable push notifications for your game on your Apple Developer portal.
 * Create a new Certificate Signing Request from your Keychain and upload to Apple.

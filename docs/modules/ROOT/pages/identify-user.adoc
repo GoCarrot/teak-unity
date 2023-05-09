@@ -1,12 +1,11 @@
-= Identify a User with Teak
-:sectnums:
+= Identify User
 
 It's time to tell Teak about your players so you can start logging sessions, gathering metrics, and sending rewards. The first step is to identify a player.
 
 We assume your game uses a player ID to store progress, coin balances, and other useful data. All Teak needs is that ID; it doesn't require full user authentication, just a way to uniquely identify players or devices.
 
 
-== Locate your player IDs in your game scripts
+== Use your game's Player ID
 
 The only data point Teak needs from your game is a player ID. This should be the same ID you use in your game's backend, as that will keep code cleaner and make support simpler. Your Teak connection should be initialized wherever you first identify a player, as early as possible in your game's lifecycle, so you can log complete player sessions.
 
@@ -19,20 +18,14 @@ Find the script where you identify your user and open it in your code editor. Ev
 
 == Add Teak to your game script
 
-
 So far, you've set up Teak to accept requests from your game app, loaded Teak in your Unity project, and located where your game identifies players. Now, you're ready to connect Teak to your game!
-
-
 
 * First, add Teak to the ‘using' declarations & MonoBehaviour properties in the appropriate game script:
 
 [source, csharp]
 ----
-
 //…
-
 using static Teak;
-
 ----
 
 Teak is now available for use in this file. The https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/static[`static` keyword] imports Teak as its own type, without making it an object property of the MonoBehaviour, which means that you will call Teak's own `Instance` property directly, rather than creating a cached instance within the script.
@@ -42,11 +35,8 @@ Teak is now available for use in this file. The https://docs.microsoft.com/en-us
 
 [source, csharp]
 ----
-
 //…
-
 void Start()
-
 {
   Teak.Instance.Trace = true;
   //…
@@ -65,27 +55,13 @@ Now let's send the first piece of player data to Teak!
 
 [source, csharp]
 ----
-
 public void identifyTeakUser(string userIdentifier)
-
-
 {
-
-
-    UserConfiguration userConfiguration = new UserConfiguration {
-
-
-        Email = EmailInput.text
-
-
-    };
-
-
-    Teak.Instance.IdentifyUser(userIdentifier, userConfiguration);
-
-
+  UserConfiguration userConfiguration = new UserConfiguration {
+    Email = EmailInput.text
+  };
+  Teak.Instance.IdentifyUser(userIdentifier, userConfiguration);
 }
-
 ----
 
 This method has two parameters. The first is a `userIdentifier` string, which must be unique to the player—and again, we highly recommend using the same string you use elsewhere in your application. This argument is required.
@@ -98,8 +74,8 @@ The second parameter, https://docs.teak.io/unity/latest/api/classTeak_1_1UserCon
 ----
 private void handleSuccessfulIdentification(string playerID)
 {
-    //code executed when player ID is confirmed by your backend
-    identifyTeakUser(playerID);
+  //code executed when player ID is confirmed by your backend
+  identifyTeakUser(playerID);
 }
 ----
 
@@ -129,7 +105,7 @@ Now your game will ask for push permissions when you launch the game. Make sure 
 
 == Testing Your Teak Installation
 
-If the Teak package is successfully installed and called, you will see the following message in the console. \
+If the Teak package is successfully installed and called, you will see the following message in the console.
 
 ----
 [Teak] Unity SDK Version: 4.1.14

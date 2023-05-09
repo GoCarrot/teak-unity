@@ -14,9 +14,3 @@ To follow this guide and get started with Teak, you'll need to prepare a few thi
 
 Once you've got those, you'll be ready to add Teak to your Unity iOS game!
 
-
-
-
-
-
-
