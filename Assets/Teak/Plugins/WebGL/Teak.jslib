@@ -38,6 +38,7 @@ mergeInto(LibraryManager.library, {
         teakChannelName: window.teak.queryParameters.teak_channel_name,
         teakRewardId: window.teak.queryParameters.teak_reward_id,
         teakDeepLink: window.teak.queryParameters.teak_deep_link,
+        teakOptOutCategory: window.teak.queryParameters.teak_opt_out_category,
         launch_link: window.location.href
       };
 
