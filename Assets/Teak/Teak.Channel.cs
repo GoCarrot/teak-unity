@@ -315,34 +315,26 @@ public partial class Teak {
         yield return null;
 #else
         Channel.Reply reply = Channel.Reply.UndeterminedUnityError;
+        Teak.Operation operation = null;
 #   if UNITY_ANDROID
-        AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
-        AndroidJavaObject future = teak.CallStatic<AndroidJavaObject>("setCategoryState", typeAsString, category, stateAsString);
-
-        if (future != null) {
-            while (!future.Call<bool>("isDone")) { yield return null; }
-
-            try {
-                string json = future.Call<AndroidJavaObject>("get").Call<AndroidJavaObject>("toJSON").Call<string>("toString");
-                reply = new Channel.Reply(Json.TryDeserialize(json) as Dictionary<string, object>);
-            } catch (Exception e) {
-                reply = Channel.Reply.ReplyWithErrorForException(e);
-            }
-        }
+        operation = new Teak.Operation(() => {
+            AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
+            return teak.CallStatic<AndroidJavaObject>("setCategoryState", typeAsString, category, stateAsString);
+        });
 #   elif UNITY_IPHONE
-        IntPtr operation = TeakSetStateForCategory_Retained(stateAsString, typeAsString, category);
-        if (operation != IntPtr.Zero) {
-            while (!TeakOperationIsFinished(operation)) { yield return null; }
-
-            string json = TeakOperationGetResultJson(operation);
-            reply = new Channel.Reply(Json.TryDeserialize(json) as Dictionary<string, object>);
-            TeakRelease(operation);
-        }
-#   else
-        yield return null;
+        operation = new Teak.Operation(() => {
+            return TeakSetStateForCategory_Retained(stateAsString, typeAsString, category);
+        });
 #   endif
-
-        Teak.SafePerformCallback("setcategorystate", callback, reply);
+        operation.OnDone += (result, exception) => {
+            if (exception != null) {
+                reply = Channel.Reply.ReplyWithErrorForException(exception);
+            } else {
+                reply = new Channel.Reply(result);
+            }
+            Teak.SafePerformCallback("setcategorystate", callback, reply);
+        };
+        while (!operation.IsDone) yield return null;
 #endif
     }
 
@@ -358,12 +350,6 @@ public partial class Teak {
 
     [DllImport ("__Internal")]
     private static extern IntPtr TeakSetStateForCategory_Retained(string state, string channel, string category);
-
-    [DllImport ("__Internal")]
-    private static extern bool TeakOperationIsFinished(IntPtr operation);
-
-    [DllImport ("__Internal")]
-    private static extern string TeakOperationGetResultJson(IntPtr operation);
 #endif
     /// @endcond
 }

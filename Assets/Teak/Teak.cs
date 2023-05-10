@@ -1078,41 +1078,6 @@ public partial class Teak : MonoBehaviour {
         }
     }
 #endif
-
-    private static Dictionary<string, System.Action<Dictionary<string, object>>> teakOperationCallbackMap = new Dictionary<string, System.Action<Dictionary<string, object>>>();
-    void TeakOperationCallback(string jsonString) {
-        try {
-            Dictionary<string, object> json = Json.TryDeserialize(jsonString) as Dictionary<string, object>;
-            if (json == null || !json.ContainsKey("_callbackId")) {
-                return;
-            }
-
-            string callbackId = json["_callbackId"] as string;
-            json.Remove("_callbackId");
-
-            if (teakOperationCallbackMap.ContainsKey(callbackId)) {
-                System.Action<Dictionary<string, object>> callback = teakOperationCallbackMap[callbackId];
-                teakOperationCallbackMap.Remove(callbackId);
-                callback(json);
-            }
-        } catch (Exception e) {
-            Debug.LogError("[Teak] Error executing callback: " + jsonString + "\n\t" + e.ToString());
-        }
-    }
-
-    public static void SafePerformCallback<T>(string method, System.Action<T> callback, T param) {
-        try {
-            if (callback != null) {
-                callback(param);
-            }
-        } catch (Exception e) {
-            if (param is Dictionary<string, object>) {
-                Teak.Instance.ReportCallbackError(method, e, param as Dictionary<string, object>);
-            } else if (param is IToJson) {
-                Teak.Instance.ReportCallbackError(method, e, (param as IToJson).toJson());
-            }
-        }
-    }
     /// @endcond
     #endregion
 
