@@ -31,10 +31,6 @@ public partial class Teak {
                 this.isDone = future.Call<bool>("isDone");
 #elif UNITY_IPHONE
                 this.isDone = TeakOperationIsFinished(this.operation);
-#elif UNITY_WEBGL
-                this.isDone = true; // TODO: Callback based
-#else
-                this.isDone = true;
 #endif
                 if (this.isDone && this.OnDone != null) {
                     Dictionary<string, object> result = null;
@@ -66,7 +62,7 @@ public partial class Teak {
                     this.resultJson = TeakOperationGetResultJson(this.operation);
                     TeakRelease(this.operation);
 #elif UNITY_WEBGL
-                    this.resultJson = "{}"; // TODO
+                    this.resultJson = Json.Serialize(this.result);
 #else
                     this.resultJson = "{}";
 #endif
@@ -89,13 +85,24 @@ public partial class Teak {
             }
         }
 
-        public Operation(Func<object> init) {
 #if UNITY_ANDROID
-            this.future = (AndroidJavaObject) init();
-#elif UNITY_IPHONE
-            this.operation = (IntPtr) init();
-#endif
+        public Operation(Func<AndroidJavaObject> init) {
+            this.future = init();
         }
+#elif UNITY_IPHONE
+        public Operation(Func<IntPtr> init) {
+            this.operation = init();
+        }
+#elif UNITY_WEBGL
+        public Operation(Action<string> init) {
+            string callbackId = DateTime.Now.Ticks.ToString();
+            teakOperationCallbackMap.Add(callbackId, json => {
+                this.result = json;
+                this.isDone = true;
+            });
+            init(callbackId);
+        }
+#endif
 
         private bool isDone = false;
         private string resultJson = null;
