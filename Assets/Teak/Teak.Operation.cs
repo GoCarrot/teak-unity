@@ -108,9 +108,9 @@ public partial class Teak {
         private string resultJson = null;
         private Dictionary<string, object> result = null;
 #if UNITY_ANDROID
-        private AndroidJavaObject future = null;
+        private AndroidJavaObject future;
 #elif UNITY_IPHONE
-        private IntPtr operation = null;
+        private IntPtr operation;
 #endif
 
         /// @cond hide_from_doxygen

@@ -117,7 +117,8 @@ public partial class Teak {
             });
 #elif UNITY_IPHONE
             operation = new Teak.Operation(() => {
-                return TeakSetStateForChannel_Retained(stateAsString, typeAsString);
+                return TeakNotificationSchedulePersonalizationData_Retained(scheduleName, delayInSeconds,
+                    personalizationData == null ? null : Json.Serialize(personalizationData));
             });
 #endif
             operation.OnDone += (result, exception) => {
