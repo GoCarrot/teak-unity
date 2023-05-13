@@ -20,6 +20,8 @@ using System.Text;
 /// <summary>
 /// Interface for manipulating notifications from Teak.
 /// </summary>
+/// \deprecated Please use <see cref="Teak.Notification"/> instead.
+[Obsolete("Please use Teak.Notification instead.")]
 public partial class TeakNotification {
 
     /// <summary>``true`` if the notification was incentivized, ``false`` otherwise.</summary>
