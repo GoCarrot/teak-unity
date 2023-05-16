@@ -107,7 +107,8 @@ public partial class Teak {
 
 #if UNITY_WEBGL && !UNITY_EDITOR
             operation = new Teak.Operation(callbackId => {
-                TeakSetCategoryForChannel_CallbackId(stateAsString, typeAsString, category, callbackId);
+                TeakNotificationScheduleWithPersonalization(callbackId, scheduleName, delayInSeconds,
+                    personalizationData == null ? null : Json.Serialize(personalizationData));
             });
 #elif UNITY_ANDROID
             operation = new Teak.Operation(() => {
@@ -137,7 +138,8 @@ public partial class Teak {
         [DllImport ("__Internal")]
         private static extern IntPtr TeakNotificationSchedulePersonalizationData_Retained(string scheduleName, long delay, string personalizationDataJson);
 #elif UNITY_WEBGL
-        
+        [DllImport ("__Internal")]
+    private static extern void TeakNotificationScheduleWithPersonalization(string callbackId, string scheduleName, long delay, string personalizationDataJson);
 #endif
     /// @endcond
     }
