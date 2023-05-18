@@ -20,8 +20,6 @@ using System.Text;
 /// <summary>
 /// Interface for manipulating notifications from Teak.
 /// </summary>
-/// \deprecated Please use <see cref="Teak.Notification"/> instead.
-[Obsolete("Please use Teak.Notification instead.")]
 public partial class TeakNotification {
 
     /// <summary>``true`` if the notification was incentivized, ``false`` otherwise.</summary>
@@ -167,6 +165,8 @@ public partial class TeakNotification {
     /// <param name="defaultMessage">The text to use in the notification if there are no modifications in the Teak CMS.</param>
     /// <param name="delayInSeconds">The number of seconds from the current time before the notification should be sent.</param>
     /// <param name="callback">The callback to be called after the notification is scheduled.</param>
+    /// \deprecated Please use <see cref="Teak.Notification.Schedule"/> instead.
+    [Obsolete("Please use Teak.Notification.Schedule instead.")]
     public static IEnumerator ScheduleNotification(string scheduleName, string defaultMessage, long delayInSeconds, System.Action<Reply> callback) {
         if (Teak.Instance.Trace) {
             Debug.Log("[TeakNotification] ScheduleNotification(" + scheduleName + ", " + defaultMessage + ", " + delayInSeconds + ")");
