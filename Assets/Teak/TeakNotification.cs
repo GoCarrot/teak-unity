@@ -165,6 +165,8 @@ public partial class TeakNotification {
     /// <param name="defaultMessage">The text to use in the notification if there are no modifications in the Teak CMS.</param>
     /// <param name="delayInSeconds">The number of seconds from the current time before the notification should be sent.</param>
     /// <param name="callback">The callback to be called after the notification is scheduled.</param>
+    /// \deprecated Please use <see cref="Teak.Notification.Schedule"/> instead.
+    [Obsolete("Please use Teak.Notification.Schedule instead.")]
     public static IEnumerator ScheduleNotification(string scheduleName, string defaultMessage, long delayInSeconds, System.Action<Reply> callback) {
         if (Teak.Instance.Trace) {
             Debug.Log("[TeakNotification] ScheduleNotification(" + scheduleName + ", " + defaultMessage + ", " + delayInSeconds + ")");

@@ -49,6 +49,9 @@ extern NSObject* TeakNotificationScheduleLongDistance(const char* creativeId, in
 extern NSObject* TeakNotificationCancel(const char* scheduleId);
 extern NSObject* TeakNotificationCancelAll();
 
+// TeakNotification v2
+extern NSObject* TeakNotificationSchedulePersonalizationData(const char* creativeId, int64_t delay, const char* personalizationDataJson);
+
 // Unity
 extern void UnitySendMessage(const char*, const char*, const char*);
 
@@ -72,6 +75,16 @@ void* TeakNotificationSchedule_Retained(const char* creativeId, const char* mess
    return notif;
 #else
    return [TeakNotificationSchedule(creativeId, message, delay) retain];
+#endif
+}
+
+void* TeakNotificationSchedulePersonalizationData_Retained(const char* creativeId, int64_t delay, const char* personalizationDataJson)
+{
+#if __has_feature(objc_arc)
+   void* notif = (__bridge_retained void*)TeakNotificationSchedulePersonalizationData(creativeId, delay, personalizationDataJson);
+   return notif;
+#else
+   return [TeakNotificationSchedulePersonalizationData(creativeId, delay, personalizationDataJson) retain];
 #endif
 }
 
