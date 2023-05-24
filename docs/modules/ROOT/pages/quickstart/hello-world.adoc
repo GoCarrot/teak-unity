@@ -81,6 +81,6 @@ image:start/hello.jpg[alt_text]
 Congratulations, you've sent your first push notification using Teak!
 
 
-= Next Steps
+== Next Steps
 
 From here, you can customize notifications and metrics based on your particular use cases. Check out our other guides and extensive https://docs.teak.io/sdk-reference/index.html[documentation] for more detail on how to make Teak's tracking work for you and your games!

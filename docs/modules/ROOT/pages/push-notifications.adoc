@@ -1,0 +1,37 @@
+= Working with Notifications
+
+PLACEHOLDER CONTENT
+PLACEHOLDER CONTENT
+PLACEHOLDER CONTENT
+PLACEHOLDER CONTENT
+PLACEHOLDER CONTENT
+PLACEHOLDER CONTENT
+PLACEHOLDER CONTENT
+PLACEHOLDER CONTENT
+PLACEHOLDER CONTENT
+PLACEHOLDER CONTENT
+PLACEHOLDER CONTENT
+PLACEHOLDER CONTENT
+PLACEHOLDER CONTENT
+PLACEHOLDER CONTENT
+PLACEHOLDER CONTENT
+PLACEHOLDER CONTENT
+PLACEHOLDER CONTENT
+PLACEHOLDER CONTENT
+PLACEHOLDER CONTENT
+PLACEHOLDER CONTENT
+PLACEHOLDER CONTENT
+
+
+
+There are several types of Push notifcations.
+
+You can use Teak to schedule notifications for the future; delivered either to the current user, or other users.
+
+NOTE: You get the full benefit of Teak's analytics, A/B testing, and Content Management System when using local notifications!
+
+[IMPORTANT]
+====
+All notification related methods are coroutines. Unless you want the
+method to block execution, you must use `StartCoroutine`.
+====

@@ -1,0 +1,72 @@
+= Rewards
+
+Whenever your game should grant a reward to a user Teak will let you know by sending
+out an event to all listeners.
+
+You can listen for that event during by first writing a listener function, for example:
+
+.Example Reward Listener
+[source]
+----
+void MyRewardListener(TeakReward reward)
+{
+    switch (reward.Status) {
+        case TeakReward.RewardStatus.GrantReward: {
+            // The user has been issued this reward by Teak
+            foreach(KeyValuePair<string, object> entry in reward.Reward)
+            {
+                Debug.Log("[Teak Unity Cleanroom] OnReward -- Give the user " +
+                    entry.Value + " instances of " + entry.Key);
+            }
+        }
+        break;
+
+        case TeakReward.RewardStatus.SelfClick: {
+            // The user has attempted to claim a reward
+            // from their own social post
+        }
+        break;
+
+        case TeakReward.RewardStatus.AlreadyClicked: {
+            // The user has already been issued this reward
+        }
+        break;
+
+        case TeakReward.RewardStatus.TooManyClicks: {
+            // The reward has already been claimed its
+            // maximum number of times globally
+        }
+        break;
+
+        case TeakReward.RewardStatus.ExceedMaxClicksForDay: {
+            // The user has already claimed their maximum number of rewards
+            // of this type for the day
+        }
+        break;
+
+        case TeakReward.RewardStatus.Expired: {
+            // This reward has expired and is no longer valid
+        }
+        break;
+
+        case TeakReward.RewardStatus.InvalidPost: {
+            // Teak does not recognize this reward id
+        }
+        break;
+    }
+}
+----
+
+And then adding it to the `Teak.Instance.OnReward` event during `Awake()` in any `MonoBehaviour`:
+
+.Adding Listener to OnReward Event
+[source]
+----
+void Awake()
+{
+    Teak.Instance.OnReward += MyRewardListener;
+}
+----
+
+See <<TeakReward>> for more details.
+

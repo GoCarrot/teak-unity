@@ -1,4 +1,5 @@
 = Badging Your App
+:page-aliases: badging.adoc
 
 You can set the badge count on your app's icon using:
 

@@ -1,4 +1,5 @@
 = Getting Teak on Your iOS Device
+:page-pagination:
 
 == Ensure you have an Apple Developer account
 
@@ -36,3 +37,11 @@ Now you're ready to build your app as usual and get it onto your iOS device.
 == Connect an iOS device
 
 Once your new app is on your iOS device, opening it should pop up a dialog box asking for permission to send notifications. Click Allow, and begin playing your game. Once you reach the point where your game script identifies a player, you've done everything you need to see Teak working.
+
+
+== See your Active User
+
+
+Congrats, if everything is set up right, you should be able to log into the Teak dashboard and see 1 active user.
+
+

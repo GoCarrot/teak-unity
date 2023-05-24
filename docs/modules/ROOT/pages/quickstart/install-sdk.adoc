@@ -1,8 +1,9 @@
-= Install the Teak SDK
-:reftext: Install the Teak SDK
+= Install the SDK
+:page-pagination:
 
+== Setup the Unity Editor
 
-== Install Teak in your Unity Project
+=== Add the Teak SDK
 
 The easiest way to install Teak is using the Unity Package Manager. Add the Teak SDK package via https://docs.unity3d.com/Manual/upm-ui-giturl.html[Git URL].
 
@@ -15,7 +16,7 @@ https://github.com/GoCarrot/upm-package-teak.git
 Alternatively, you can https://sdks.teakcdn.com/unity/Teak.unitypackage[download Teak] directly and import it as a custom package from the Assets menu in your Unity project.
 
 
-== Get your App ID and API Key
+=== Get your App ID and API Key
 
 If you don't have an app setup in Teak, you need to https://docs.teak.io/usage/new-game.html[setup a new one].
 
@@ -26,7 +27,7 @@ Now is also a good time to set up https://docs.teak.io/usage/links.html[Short Li
 image:start/settings.png[Teak Settings Page]
 
 
-== Configure Teak in the Unity Editor
+=== Configure Teak in the Unity Editor
 
 After installation, you should see Teak in the Edit menu in your Unity project. Selecting it will open it in your Inspector.
 
@@ -40,3 +41,6 @@ Add your App ID and API Key from your Teak Settings. These keys allow your game 
 If you set up ShortLinks when you added your app on Teak, enter the same base URL here.
 
 By default, the checkbox for "Build Post-Processing" will be checked. This automates the native iOS and Android integration. Unless you've worked extensively with Teak before, you should leave this option on.
+
+
+

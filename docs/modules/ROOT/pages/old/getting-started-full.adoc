@@ -1,4 +1,7 @@
 = Getting Started with Teak in Unity for iOS
+:toc:
+
+Intro intro intro intro intro intro intro intro intro https://docs.teak.io/usage/notifications.html[push notifications]. All of those options start with the same basic setup, which we'll step through below.
 
 By the end of this guide, you'll see your iOS device on your Teak dashboard and send your first push notification to the device.
 

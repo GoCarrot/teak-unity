@@ -1,0 +1,40 @@
+= Getting Started with Teak in Unity
+:page-aliases: ../before-you-start.adoc
+:page-pagination:
+
+Welcome to the getting started guide for Teak in Unity.
+
+In this guide, we will walk you through the process of setting up Teak in your Unity game. By the end of this guide you will be able to send a xref:page$push-notifications.adoc[push notifications] to your Android or iOS device.
+
+== Requirements
+
+Before we begin, ensure that you have the following prerequisites in place to ensure a smooth integration:
+
+* [x] A Unity game with user authentication
+* [x] A https://app.teak.io/signup[Teak account]
+
+=== iOS Requirements
+* [x] An https://developer.apple.com/[Apple Developer, window=_blank] account
+* [x] You will need Administrator permissions in order to download your xref:usage:reference:page$apple-apns.adoc[Apple Push Notification Service (APNS) Certificates, window=_blank]
+* [x] https://developer.apple.com/xcode/[XCode, window=_blank] Install
+
+=== Android Requirements
+* [x] A https://firebase.google.com/[Firebase account] and project.
+* [x] You will need Editor or Owner role on the Firebase project in order to xref:usage:reference:page$firebase-gcm.adoc[view/create server keys for Cloud Messaging, window=_blank]
+* [x] Teak SDK 4.2.0 supports `targetSdkVersion` of 33.
+
+== Compatibility
+
+[IMPORTANT]
+.Android Target SDK Version
+====
+Teak SDK 4.2.0 supports `targetSdkVersion` of 33. Teak SDK 4.1.0 and greater supports `targetSdkVersion` of 31.  Please note that Teak SDK 4.0.0 supports a maximum `targetSdkVersion` of 30.
+====
+
+[IMPORTANT]
+.Unity Mobile Notifications Plugin
+====
+The Unity Mobile Notifications Plugin cannot be used alongside Teak.
+====
+
+Let's get started.

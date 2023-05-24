@@ -1,4 +1,6 @@
 = Android
+:page-aliases: ../android.adoc
+:page-pagination:
 
 == Dependencies
 

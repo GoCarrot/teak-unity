@@ -1,0 +1,42 @@
+= Custom Events
+
+Teak can be used to track analytics events which can then be used for targeting. These events are automatically batched by the Teak SDK, you do not need to perform your own batching.
+
+== Event Format
+
+Teak events are a tuple of values, 'action', 'object type' and 'object instance'.
+For example: ['LevelUp', 'Fishing', '13'].
+
+Object instance, and object type are optional, but if you provide an object instance,
+you must also provide an object type, for example ['FishCaught', null, '13'] is not allowed, but ['FishCaught', 'Salmon'] is allowed.
+
+== Tracking an Event
+
+To track that an event occurred, use:
+
+doxygen2adoc:TrackEvent(string,string,string)[]
+
+.Example
+[source]
+----
+Teak.Instance.TrackEvent("LevelUp", "Fishing", "13");
+----
+
+== Incrementing Events
+
+Incremented events are used for analytics which grow over time. You cannot provide negative values.
+
+To increment an event, use:
+
+doxygen2adoc:IncrementEvent(string,string,string,long)[]
+
+.Examples
+[source]
+----
+Teak.Instance.IncrementEvent("coin_sink", "slot", "Happy Land Slots", 25000);
+Teak.Instance.IncrementEvent("spin", "slot", "Happy Land Slots", 1);
+// <after the spin happens>
+Teak.Instance.IncrementEvent("coin_source", "slot", "Happy Land Slots", 1000000);
+----
+
+

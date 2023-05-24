@@ -1,4 +1,5 @@
 = Identify User
+:page-pagination:
 
 It's time to tell Teak about your players so you can start logging sessions, gathering metrics, and sending rewards. The first step is to identify a player.
 
@@ -7,18 +8,14 @@ We assume your game uses a player ID to store progress, coin balances, and other
 
 == Use your game's Player ID
 
-The only data point Teak needs from your game is a player ID. This should be the same ID you use in your game's backend, as that will keep code cleaner and make support simpler. Your Teak connection should be initialized wherever you first identify a player, as early as possible in your game's lifecycle, so you can log complete player sessions.
+Teak requires only a player ID from your game, ideally matching the ID used in your game's backend. By using the same ID that you use in the backend
 
-If you are authenticating users in your game, you will want to send the player ID to Teak in your authentication handler method.
-
-If you do not have authentication, you can implement your own method to identify users with a unique string or, on iOS, use https://developer.apple.com/documentation/uikit/uidevice/1620059-identifierforvendor[`identifierForVendor`], which uses your App Store bundle ID and a device ID and is compliant with Apple's privacy requirements.
-
-Find the script where you identify your user and open it in your code editor. Eventually, you'll add Teak functionality to other scripts to send push notifications during different stages of game play. But for now, our goal is just to identify a player, so we're only looking at this one file.
+Initialize the Teak connection early in your game's lifecycle where player identification occurs to ensure complete session logging.
 
 
 == Add Teak to your game script
 
-So far, you've set up Teak to accept requests from your game app, loaded Teak in your Unity project, and located where your game identifies players. Now, you're ready to connect Teak to your game!
+If you authenticate users, send the player ID to Teak in your authentication handler method.
 
 * First, add Teak to the ‘using' declarations & MonoBehaviour properties in the appropriate game script:
 
@@ -28,26 +25,12 @@ So far, you've set up Teak to accept requests from your game app, loaded Teak in
 using static Teak;
 ----
 
-Teak is now available for use in this file. The https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/static[`static` keyword] imports Teak as its own type, without making it an object property of the MonoBehaviour, which means that you will call Teak's own `Instance` property directly, rather than creating a cached instance within the script.
+Teak is now available for use in this file.
 
-* Create a Teak Instance in your Start() method.
-
-
-[source, csharp]
-----
-//…
-void Start()
-{
-  Teak.Instance.Trace = true;
-  //…
-}
-----
-
-Setting `Teak.Trace` to `true` will turn on automatic debugging - you'll know it's working because you'll see the Teak version in your console logs when the Start() method is called. RegisterForNotifications` configures Teak for push notifications, which are the main way to use Teak to interact with players.
+The https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/static[`static` keyword] imports Teak as its own type, which means that you will call Teak's own `Instance` property directly.
 
 
 == Send your player IDs to Teak
-
 
 Now let's send the first piece of player data to Teak!
 

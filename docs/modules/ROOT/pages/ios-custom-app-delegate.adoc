@@ -1,4 +1,5 @@
 = Using a Custom App Delegate on iOS
+:page-aliases: custom-app-delegate.adoc
 
 If your game uses a custom App Delegate, there are some things you should be aware of.
 

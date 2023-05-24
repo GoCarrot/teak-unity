@@ -1,0 +1,23 @@
+= Reporting Facebook Payments Purchases
+
+If you need to report purchases on Facebook Canvas from using any of the `FB.Canvas.Pay` methods, use:
+
+doxygen2adoc:ReportCanvasPurchase(string)[]
+
+.Example
+[source]
+----
+FB.Canvas.PayWithProductId(
+    this.testPurchaseSku,
+    "purchaseiap",
+    null,
+    null,
+    (IPayResult result) => {
+        if(!string.IsNullOrEmpty(result.Error)) {
+            Debug.LogError(result.Error);
+        } else {
+            Teak.Instance.ReportCanvasPurchase(result.RawResult);
+        }
+    }
+);
+----

@@ -1,4 +1,5 @@
 = Testing Your Teak Installation
+:toc:
 
 Testing SDK integrations in Unity can be a little tricky. Teak can't talk to Teak's servers from inside the Unity Editor. But there are a few things we can do to make sure things are installed correctly.
 

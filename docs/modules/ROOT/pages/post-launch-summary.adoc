@@ -1,0 +1,39 @@
+= Post Launch Summary
+
+Each time your game launches, Teak will pass all of the information it has on the launch to you via the ``OnPostLaunchSummary`` event.
+
+See <<TeakPostLaunchSummary>> for more details.
+
+== Player Properties
+
+Teak can store up to 16 numeric, and 16 string properties per player. These
+properties can then be used for targeting.
+
+You do not need to register the property in the Teak Dashboard prior to sending
+them from your game, however you will need to register them in the Teak Dashboard
+before using them in targeting.
+
+=== Numeric Property
+To set a numeric property, use::
+
+doxygen2adoc:SetNumericAttribute(string,double)[]
+
+.Example
+[source]
+----
+Teak.Instance.SetNumericAttribute("coins", new_coin_balance);
+----
+
+=== String Property
+
+To set a string property, use:
+
+doxygen2adoc:SetNumericAttribute(string,string)[]
+
+.Example
+[source]
+----
+Teak.Instance.SetStringAttribute("last_slot", "amazing_slot_name");
+----
+
+

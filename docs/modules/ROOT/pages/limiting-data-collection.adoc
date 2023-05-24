@@ -1,4 +1,5 @@
 = Limiting Data Collection
+:page-aliases: data-collection.adoc
 
 If you would like to restrict the data that Teak collects, for all users of your
 game, you can specify these options in your `AndroidManifest.xml` for Android,

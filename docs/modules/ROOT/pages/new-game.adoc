@@ -1,0 +1,8 @@
+
+== Create a New Game in Teak
+
+First things first—log in to your Teak account and add a new game if you don't have one already.
+
+If you already have a game and want to add another, you can find "New Game," in the game picker drop down.
+
+image:start/newgame.png[New Game in Teak]
