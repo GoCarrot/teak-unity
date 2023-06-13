@@ -47,7 +47,9 @@ public partial class Teak {
                 bool.TryParse(json.Opt("error", "false") as string, out error);
                 this.Error = error;
 
-                if (json.ContainsKey("schedule_ids")) {
+                if (json.ContainsKey("data")) {
+                    this.ScheduleIds = new List<string> { json["data"] as string };
+                } else if (json.ContainsKey("schedule_ids")) {
                     List<object> scheduleIds = json["schedule_ids"] as List<object>;
                     if (scheduleIds != null) {
                         this.ScheduleIds = scheduleIds.Cast<string>().ToList();
