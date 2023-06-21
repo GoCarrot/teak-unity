@@ -115,7 +115,7 @@ public class TeakSettings : ScriptableObject {
     }
 
 #if UNITY_EDITOR
-    [MenuItem("Edit/Teak")]
+    [MenuItem("Edit/Teak Settings...")]
     public static void Edit() {
         Selection.activeObject = Instance;
     }
