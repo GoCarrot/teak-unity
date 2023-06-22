@@ -21,6 +21,8 @@ public class TeakSettingsEditor : Editor {
     }
 
     public override void OnInspectorGUI() {
+        EditorGUILayout.LabelField("Teak SDK Version: ", TeakVersion.Version);
+        EditorGUILayout.Space();
 
         GUILayout.Label("Settings", EditorStyles.boldLabel);
         TeakSettings.AppId = EditorGUILayout.TextField("Teak App Id", TeakSettings.AppId);
