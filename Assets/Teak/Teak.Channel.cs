@@ -253,7 +253,8 @@ public partial class Teak {
         Channel.Reply reply = Channel.Reply.UndeterminedUnityError;
         Teak.Operation operation = null;
 
-#if UNITY_WEBGL && !UNITY_EDITOR
+#if UNITY_EDITOR
+#elif UNITY_WEBGL
         operation = new Teak.Operation(callbackId => {
             TeakSetStateForChannel_CallbackId(stateAsString, typeAsString, callbackId);
         });
@@ -298,7 +299,8 @@ public partial class Teak {
 
         Channel.Reply reply = Channel.Reply.UndeterminedUnityError;
         Teak.Operation operation = null;
-#if UNITY_WEBGL && !UNITY_EDITOR
+#if UNITY_EDITOR
+#elif UNITY_WEBGL
         operation = new Teak.Operation(callbackId => {
             TeakSetCategoryForChannel_CallbackId(stateAsString, typeAsString, category, callbackId);
         });

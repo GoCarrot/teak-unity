@@ -254,7 +254,7 @@ public partial class Teak : MonoBehaviour {
         /// <summary>True if the user should be opted out of push key collection.</summary>
         public bool OptOutPushKey { get; set; }
 
-#if UNITY_ANDROID
+#if !UNITY_EDITOR && UNITY_ANDROID
         public AndroidJavaObject ToAndroidJavaObject() {
             return new AndroidJavaObject("io.teak.sdk.Teak$UserConfiguration",
                                          this.Email, this.FacebookId, this.OptOutFacebook, this.OptOutIdfa, this.OptOutPushKey);

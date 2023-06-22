@@ -107,7 +107,8 @@ public partial class Teak {
             Reply reply = Reply.UndeterminedUnityError;
             Teak.Operation operation = null;
 
-#if UNITY_WEBGL && !UNITY_EDITOR
+#if UNITY_EDITOR
+#elif UNITY_WEBGL
             operation = new Teak.Operation(callbackId => {
                 TeakNotificationScheduleWithPersonalization(callbackId, scheduleName, delayInSeconds,
                     personalizationData == null ? null : Json.Serialize(personalizationData));

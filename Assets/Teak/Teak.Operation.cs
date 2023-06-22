@@ -87,7 +87,8 @@ public partial class Teak {
             }
         }
 
-#if UNITY_ANDROID
+#if UNITY_EDITOR
+#elif UNITY_ANDROID
         public Operation(Func<AndroidJavaObject> init) {
             this.future = init();
         }
@@ -109,7 +110,8 @@ public partial class Teak {
         private bool isDone = false;
         private string resultJson = null;
         private Dictionary<string, object> result = null;
-#if UNITY_ANDROID
+#if UNITY_EDITOR
+#elif UNITY_ANDROID
         private AndroidJavaObject future;
 #elif UNITY_IPHONE
         private IntPtr operation;
