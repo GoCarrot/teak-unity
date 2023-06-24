@@ -48,6 +48,7 @@ extern NSObject* TeakNotificationSchedule(const char* creativeId, const char* me
 extern NSObject* TeakNotificationScheduleLongDistance(const char* creativeId, int64_t delay, const char* inUserIds[], int inUserIdCount);
 extern NSObject* TeakNotificationCancel(const char* scheduleId);
 extern NSObject* TeakNotificationCancelAll();
+extern NSArray* TeakNotificationGetCategories();
 
 // TeakNotification v2
 extern NSObject* TeakNotificationSchedulePersonalizationData(const char* creativeId, int64_t delay, const char* personalizationDataJson);
@@ -191,6 +192,30 @@ const char* TeakOperationGetResultJson(NSInvocationOperation* operation) {
    // When *returning* a marshalled string, it should be heap-allocated; and pinvoke will take
    // care of the free()
    return strdup([jsonString UTF8String]);
+}
+
+const char* TeakNotificationGetCategoriesJson() {
+   NSArray* categories = TeakNotificationGetCategories();
+   if (categories == nil) {
+      return nil;
+   }
+
+   NSMutableArray* json = [[NSMutableArray alloc] init];
+   for (id category in categories) {
+      [json addObject:[category performSelector:@selector(json)]];
+   }
+
+   NSError* error = nil;
+   NSData* jsonData = [NSJSONSerialization dataWithJSONObject:json
+                                                      options:0
+                                                        error:&error];
+   if (error != nil) {
+      return nil;
+   }
+
+   // When *returning* a marshalled string, it should be heap-allocated; and pinvoke will take
+   // care of the free()
+   return strdup([[[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding] UTF8String]);
 }
 
 void teakOnJsonEvent(NSDictionary* userInfo, const char* eventName, bool sendEmptyOnError)

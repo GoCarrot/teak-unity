@@ -20,6 +20,46 @@ public partial class Teak {
     /// Teak Notification scheduling.
     /// </summary>
     public class Notification {
+        private static List<Channel.Category> mCategories;
+
+        /// <summary>This can be null until configuration has been received from the server.</summary>
+        public static List<Channel.Category> Categories {
+            get {
+                if (mCategories != null) {
+                    return mCategories;
+                }
+#if UNITY_EDITOR
+                string json = null;
+#elif UNITY_ANDROID
+                AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak$Notification");
+                string json = teak.CallStatic<string>("getCategoriesJson");
+#elif UNITY_IPHONE || UNITY_WEBGL
+                string json = TeakNotificationGetCategoriesJson();
+#endif
+                if (json == null) {
+                    return null;
+                }
+
+                List<object> categories = Json.Deserialize(json) as List<object>;
+                if (categories == null) {
+                    return null;
+                }
+
+                mCategories = new List<Teak.Channel.Category>();
+                foreach (object cObj in categories) {
+                    Dictionary<string, object> category = cObj as Dictionary<string, object>;
+                    if (category != null) {
+                        mCategories.Add(new Teak.Channel.Category(
+                                            category["id"] as string,
+                                            category["name"] as string,
+                                            category.ContainsKey("description") ? category["description"] as string : null));
+                    }
+                }
+                return mCategories;
+            }
+        }
+
+        /// <summary>Result of a function call working with notifications from the Teak server.</summary>
         public class Reply : IToJson {
             /// <summary>True if the call resulted in an error.</summary>
             public bool Error {
@@ -142,8 +182,14 @@ public partial class Teak {
         private static extern IntPtr TeakNotificationSchedulePersonalizationData_Retained(string scheduleName, long delay, string personalizationDataJson);
 #elif UNITY_WEBGL
         [DllImport ("__Internal")]
-    private static extern void TeakNotificationScheduleWithPersonalization(string callbackId, string scheduleName, long delay, string personalizationDataJson);
+        private static extern void TeakNotificationScheduleWithPersonalization(string callbackId, string scheduleName, long delay, string personalizationDataJson);
 #endif
+
+#if UNITY_IOS || UNITY_WEBGL
+        [DllImport ("__Internal")]
+        private static extern string TeakNotificationGetCategoriesJson();
+#endif
+
     /// @endcond
     }
 }

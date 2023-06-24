@@ -18,7 +18,7 @@ public partial class Teak {
     /// <summary>
     /// Teak Marketing Channel Functionality
     /// </summary>
-    public class Channel {
+    public partial class Channel {
 
         /// <summary>Teak Marketing Channel Type</summary>
         public enum Type : int {
