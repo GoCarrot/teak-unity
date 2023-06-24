@@ -694,7 +694,7 @@ public partial class Teak : MonoBehaviour {
             keepWaiting = false;
         });
         TeakRequestPushAuthorizationUnity(false, callbackId);
-        while(keepWaiting) yield return null;
+        while (keepWaiting) { yield return null; }
 #elif UNITY_ANDROID
         // If we're not on API 33, no action needed.
         using (var buildVersion = new AndroidJavaClass("android.os.Build$VERSION")) {
@@ -739,7 +739,7 @@ public partial class Teak : MonoBehaviour {
             androidCallback.PermissionDeniedAndDontAskAgain += permissionDenied;
 
             UnityEngine.Android.Permission.RequestUserPermission(POST_NOTIFICATIONS, androidCallback);
-            while(keepWaiting) yield return null;
+            while (keepWaiting) { yield return null; }
         } else {
             // Already granted, so tell the callback
             callback(true);

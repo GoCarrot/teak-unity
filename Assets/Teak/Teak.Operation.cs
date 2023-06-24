@@ -23,7 +23,7 @@ public partial class Teak {
         /// <summary>Returns <code>true</code> if the operation is complete.</summary>
         public bool IsDone {
             get {
-                if (this.isDone == true) return true;
+                if (this.isDone == true) { return true; }
 
 #if UNITY_EDITOR
                 this.isDone = true;

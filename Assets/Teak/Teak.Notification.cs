@@ -151,18 +151,18 @@ public partial class Teak {
 #elif UNITY_WEBGL
             operation = new Teak.Operation(callbackId => {
                 TeakNotificationScheduleWithPersonalization(callbackId, scheduleName, delayInSeconds,
-                    personalizationData == null ? null : Json.Serialize(personalizationData));
+                        personalizationData == null ? null : Json.Serialize(personalizationData));
             });
 #elif UNITY_ANDROID
             operation = new Teak.Operation(() => {
                 AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak$Notification");
                 return teak.CallStatic<AndroidJavaObject>("schedule", scheduleName, delayInSeconds,
-                    personalizationData == null ? null : Json.Serialize(personalizationData));
+                        personalizationData == null ? null : Json.Serialize(personalizationData));
             });
 #elif UNITY_IPHONE
             operation = new Teak.Operation(() => {
                 return TeakNotificationSchedulePersonalizationData_Retained(scheduleName, delayInSeconds,
-                    personalizationData == null ? null : Json.Serialize(personalizationData));
+                        personalizationData == null ? null : Json.Serialize(personalizationData));
             });
 #endif
             operation.OnDone += (result, exception) => {
@@ -173,7 +173,7 @@ public partial class Teak {
                 }
                 Teak.SafePerformCallback("teak.notification.schedule", callback, reply);
             };
-            while (!operation.IsDone) yield return null;
+            while (!operation.IsDone) { yield return null; }
         }
 
         /// @cond hide_from_doxygen
@@ -190,6 +190,6 @@ public partial class Teak {
         private static extern string TeakNotificationGetCategoriesJson();
 #endif
 
-    /// @endcond
+        /// @endcond
     }
 }

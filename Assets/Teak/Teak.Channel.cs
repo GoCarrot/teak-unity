@@ -129,10 +129,10 @@ public partial class Teak {
 
                 if (json.ContainsKey("categories")) {
                     Dictionary<string, object> dict = json["categories"] as Dictionary<string, object>;
-                    this.Categories = new Dictionary<string, string>(); 
+                    this.Categories = new Dictionary<string, string>();
                     if (dict != null) {
                         foreach (KeyValuePair<string, object> keyValuePair in dict) {
-                          this.Categories.Add(keyValuePair.Key, keyValuePair.Value.ToString());
+                            this.Categories.Add(keyValuePair.Key, keyValuePair.Value.ToString());
                         }
                     }
                 }
@@ -276,7 +276,7 @@ public partial class Teak {
             }
             Teak.SafePerformCallback("teak.channel.setchannelstate", callback, reply);
         };
-        while (!operation.IsDone) yield return null;
+        while (!operation.IsDone) { yield return null; }
     }
 
     /// <summary>
@@ -322,7 +322,7 @@ public partial class Teak {
             }
             Teak.SafePerformCallback("teak.channel.setcategorystate", callback, reply);
         };
-        while (!operation.IsDone) yield return null;
+        while (!operation.IsDone) { yield return null; }
     }
 
     /// @cond hide_from_doxygen
