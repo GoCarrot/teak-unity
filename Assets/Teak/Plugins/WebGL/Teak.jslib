@@ -265,5 +265,21 @@ mergeInto(LibraryManager.library, {
       var replyAsString = JSON.stringify(reply);
       SendMessage("TeakGameObject", "TeakOperationCallback", replyAsString);
     });
+  },
+  TeakNotificationGetCategoriesJson: function() {
+    var ret = [];
+    Object.keys(window.teak.availableCategories).forEach(function (key) {
+      ret.push({
+        id: key,
+        name: window.teak.availableCategories[key]["name"],
+        description: window.teak.availableCategories[key]["description"],
+      });
+    });
+
+    var retAsJson = JSON.stringify(ret);
+    var bufferSize = lengthBytesUTF8(retAsJson) + 1;
+    var buffer = _malloc(bufferSize);
+    stringToUTF8(retAsJson, buffer, bufferSize);
+    return buffer;
   }
 });
