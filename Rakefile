@@ -181,6 +181,7 @@ namespace :upm do
         dir = File.join(dest, File.dirname(rel_path))
         FileUtils.mkdir_p(dir)
         FileUtils.cp(filename, dir) if File.file?(filename)
+        puts "#{filename} => #{dir}"
       end
     end
 
