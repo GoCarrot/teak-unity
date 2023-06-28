@@ -119,7 +119,7 @@ namespace :build do
         end
 
         sh "unzip -o TeakResources.bundle.zip -d #{File.join(PROJECT_PATH, 'Assets', 'Teak', 'Plugins', 'iOS')}"
-        sh "rm -r #{File.join(PROJECT_PATH, 'Assets', 'Teak', 'Plugins', 'iOS', 'TeakResources.bundle', '_CodeSignature')}"
+        sh "rm -rf #{File.join(PROJECT_PATH, 'Assets', 'Teak', 'Plugins', 'iOS', 'TeakResources.bundle', '_CodeSignature')}"
       end
     end
 
