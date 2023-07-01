@@ -33,7 +33,7 @@ Call the `IdentifyUser` function and pass it a string which uniquely identifies 
 doxygen2adoc:IdentifyUser(string,UserConfiguration)[]
 
 .Example
-[source]
+[source, csharp]
 ----
 // ...
 // As soon as you know the id for the current user.

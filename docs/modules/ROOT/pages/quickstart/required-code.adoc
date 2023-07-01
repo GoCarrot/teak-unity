@@ -1,86 +1,88 @@
-= Identify User
+= Add Required Code
 :page-pagination:
 
-It's time to tell Teak about your players so you can start logging sessions, gathering metrics, and sending rewards. The first step is to identify a player.
+It's time to tell Teak about your players so you can start logging sessions and gathering metrics.
 
-We assume your game uses a player ID to store progress, coin balances, and other useful data. All Teak needs is that ID; it doesn't require full user authentication, just a way to uniquely identify players or devices.
+== Identify User
 
+This is where we tell Teak how to identify the current user.
 
-== Use your game's Player ID
+==== What Player ID should we use?
 
-Teak requires only a player ID from your game, ideally matching the ID used in your game's backend. By using the same ID that you use in the backend
+We assume your game uses a user ID to store progress, coin balances, and other useful data. For the sanity of your analytics team, you send us that ID and we'll use it too.
 
-Initialize the Teak connection early in your game's lifecycle where player identification occurs to ensure complete session logging.
+* [*] It should be uniquely identify the current user.
+* [*] Ideally the same ID that is used in your game's backend.
+* [*] Send it as early as possible in the game's lifecycle.
 
+=== Send your player IDs to Teak
 
-== Add Teak to your game script
+Let's tell Teak about our players using `<<Teak.IdentifyUser(string,UserConfiguration)>>`.
 
-If you authenticate users, send the player ID to Teak in your authentication handler method.
+In our game script, as soon as we know the id for our current player, we'll add our call.
 
-* First, add Teak to the ‘using' declarations & MonoBehaviour properties in the appropriate game script:
-
-[source, csharp]
+.Example
+[source,cs]
 ----
-//…
-using static Teak;
-----
-
-Teak is now available for use in this file.
-
-The https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/static[`static` keyword] imports Teak as its own type, which means that you will call Teak's own `Instance` property directly.
-
-
-== Send your player IDs to Teak
-
-Now let's send the first piece of player data to Teak!
-
-* Create a method that calls https://docs.teak.io/unity/latest/api/classTeak.html#classTeak_1aea6260058a77c4d85d7c031cb4e2e68b[Teak.IdentifyUser()]:
-
-[source, csharp]
-----
-public void identifyTeakUser(string userIdentifier)
-{
-  UserConfiguration userConfiguration = new UserConfiguration {
-    Email = EmailInput.text
-  };
-  Teak.Instance.IdentifyUser(userIdentifier, userConfiguration);
-}
+// ...
+Teak.UserConfiguration userConfiguration = new Teak.UserConfiguration {};
+Teak.Instance.IdentifyUser(YOUR_USER_ID, userConfiguration);
 ----
 
-This method has two parameters. The first is a `userIdentifier` string, which must be unique to the player—and again, we highly recommend using the same string you use elsewhere in your application. This argument is required.
+<1> We create an empty `userConfiguration` object for now. We'll add data to that in the next step.
 
-The second parameter, https://docs.teak.io/unity/latest/api/classTeak_1_1UserConfiguration.html[UserConfiguration], is optional. If you don't define a `userConfiguration`, Teak will create an empty object for this user, which you can update later. The example above shows how you might pass in a form input for a user email address. You can also use UserConfiguration to keep track of a user's Facebook ID or privacy settings.
+<2> Your `YOUR_USER_ID` string must be unique to the player. Again, we highly recommend using the same user id you use in your game's backend.
 
-* Then call your Teak user method when a user is successfully identified by your backend:
+This is enough to begin tracking and reporting of a session and tracking a daily active user.
 
-[source, csharp]
+
+=== Sending Additional Data
+
+Next we'll add some data to our `<<Teak.UserConfiguration>>[Farts]`.
+
+NOTE: In SDK 5, Teak will no longer automatically collect Facebook Access Tokens or Emails from Facebook, instead you must pass the Facebook User Id in the `UserConfiguration`.
+
+Here's how we would add an email address and their Facebook ID. This will enable sending emails and templating personalization into our notification and email content.
+
+.Data Example
+[source,cs]
 ----
-private void handleSuccessfulIdentification(string playerID)
-{
-  //code executed when player ID is confirmed by your backend
-  identifyTeakUser(playerID);
-}
+// ...
+Teak.UserConfiguration userConfiguration = new Teak.UserConfiguration {
+  Email = YOUR_USER_EMAIL,
+  FacebookId = YOUR_USER_FACEBOOK_ID
+};
+Teak.Instance.IdentifyUser(YOUR_PLAYER_ID, userConfiguration);
 ----
 
-As discussed above, you likely already have a handler method that is called when a user is first identified. Because you want Teak to track a complete user session, identifying a user for Teak in the handler method gets that data recorded as early as possible in the player journey.
+* Null and empty strings will be ignored.
+* If you want to update player data during a session, call `IdentifyUser` again with the new data.
+* You can also use `UserConfiguration` to opt-out of some types of data collection.
 
 
-== Ask the Player for Permission
+=== Opting Out of Tracking
 
-On iOS and Android 13 and greater you are required to ask the user if you can send them notifications. Do that with the RegisterForNotifications call.
+If the user has opted out of data collection completely, do not call `IdentifyUser`,
+and Teak will not track the user at all.
+
+If the user has opted out of specific data collection, set the corresponding
+opt-out to `true` in the `UserConfiguration`.
+
+See the <<Teak.UserConfiguration>>[UserConfiguration Docs] for the available options.
+
+
+== Ask the Player for Push Permissions
+
+On iOS and Android 13 and greater you are required to ask the user if you can send them notifications. Do that with the `<<RegisterForNotifications()>>` call.
 
 Ideally, you would ask for these permissions at a time that makes sense for your game. In the long term, you can increase your notification opt-in rates by being strategic about when you ask for permission.
 
-But for the purpose of getting up and running fast, let's just put the permissions request right here at game launch. \
+But for the purpose of getting up and running fast, let's just put the permissions request right here at game launch.
 
-[source, csharp]
+[source,cs]
 ----
-private void handleSuccessfulIdentification(string playerID)
-{
-  //code executed when player ID is confirmed by your backend
-  identifyTeakUser(userIdentifier);
-  Teak.Instance.RegisterForNotifications();
-}
+// ...
+Teak.Instance.RegisterForNotifications();
 ----
 
 Now your game will ask for push permissions when you launch the game. Make sure to approve them on your test device, so that we can send our notification at the end of this tutorial.
@@ -91,10 +93,10 @@ Now your game will ask for push permissions when you launch the game. Make sure 
 If the Teak package is successfully installed and called, you will see the following message in the console.
 
 ----
-[Teak] Unity SDK Version: 4.1.14
-[Teak] IdentifyUser(): the_unique_player_id
+[Teak] Unity SDK Version: 4.2.1
+[Teak] IdentifyUser(): YOUR_PLAYER_ID
 ----
 
-You'll find more logging options in https://docs.teak.io/unity/latest/debugging.html[Troubleshooting] that will help as you build more Teak functionality into your game. But before that, it's time to get your game built and running on a test device, and see your player in the Teak dashboard.
+You'll find more logging options in https://docs.teak.io/unity/latest/debugging.html[Troubleshooting] that will help as you build more Teak functionality into your game. But before that, it's time to build your game and get it running on a test device, so we can see your player in the Teak dashboard.
 
 

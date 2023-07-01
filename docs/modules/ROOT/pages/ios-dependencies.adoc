@@ -1,9 +1,12 @@
-= iOS
+= iOS Dependencies
+:page-aliases: ios.adoc
+:page-pagination:
 
-IMPORTANT: The Teak post-process scripts will manage all of this for you, if you are
-using the Teak post-process scripts, you can skip all of these steps.
+These are the dependencies that the build post-process scripts in the Teak Unity SDK will take care of for you. If your build process is incompatable with Teak's build scripts, you will need to do the steps here manually.
 
-== Dependencies
+IMPORTANT: If you are using the 'xref:quickstart/install-sdk.adoc#_build_post_processing[Build Post-Process]' option, you can skip all of these steps. The build post-process scripts in the Teak Unity SDK will manage all of this for you.
+
+== Add Dependencies
 If you do not use the the post-process scripts, the following frameworks are required by Teak:
 
 * `AdSupport.framework`
@@ -24,7 +27,7 @@ this is only in case you run into problems.
 
 == Edit Info.plist
 
-The Teak Editor scripts for Unity will attempt to manage this file for you, if
+The Teak build post-process scripts for Unity will attempt to manage this file for you, if
 your build environment needs to provide the file itself, this is what it should look like:
 
 .Info.plist
@@ -51,7 +54,9 @@ NOTE: Replace `YOUR_TEAK_APP_ID`, and `YOUR_TEAK_API_KEY` with your game's value
 
 Your Teak App Id and API Key can be found in the Settings for your app on the Teak dashboard.
 
+
 == Edit Unity-iPhone.entitlements
+
 You'll need to add your Teak shortlink domains to the associated domains in order for deep
 linking to work properly on iOS. Add the following to your `Unity-iPhone.entitlements`:
 

@@ -15,13 +15,13 @@ Before we begin, ensure that you have the following prerequisites in place to en
 
 === iOS Requirements
 * [x] An https://developer.apple.com/[Apple Developer, window=_blank] account
-* [x] You will need Administrator permissions in order to download your xref:usage:reference:page$apple-apns.adoc[Apple Push Notification Service (APNS) Certificates, window=_blank]
-* [x] https://developer.apple.com/xcode/[XCode, window=_blank] Install
+* [x] Administrator permissions to download  xref:usage:reference:page$apple-apns.adoc[APNS Certificates, window=_blank]
+* [x] https://developer.apple.com/xcode/[XCode, window=_blank] Installed
 
 === Android Requirements
-* [x] A https://firebase.google.com/[Firebase account] and project.
-* [x] You will need Editor or Owner role on the Firebase project in order to xref:usage:reference:page$firebase-gcm.adoc[view/create server keys for Cloud Messaging, window=_blank]
-* [x] Teak SDK 4.2.0 supports `targetSdkVersion` of 33.
+* [x] A https://firebase.google.com/[Firebase account] and project
+* [x] Editor or Owner role to xref:usage:reference:page$firebase-gcm.adoc[view/create server keys, window=_blank]
+* [x] Teak SDK 4.2.0 supports `targetSdkVersion` of 33
 
 == Compatibility
 
