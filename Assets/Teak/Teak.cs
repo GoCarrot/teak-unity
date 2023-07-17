@@ -1144,6 +1144,43 @@ public partial class Teak : MonoBehaviour {
     void OnApplicationQuit() {
         Destroy(this.gameObject);
     }
+
+    public class Utils {
+        public static Dictionary<string, List<string>> ParseErrorsFromReply(Dictionary<string, object> reply)
+        {
+            if(!reply.ContainsKey("errors")) {
+                return null;
+            }
+
+            Dictionary<string, object> inputDictionary = reply["errors"] as Dictionary<string, object>;
+            if(inputDictionary == null) {
+                return null;
+            }
+
+            Dictionary<string, List<string>> outputDictionary = new Dictionary<string, List<string>>();
+
+            foreach (var kvp in inputDictionary)
+            {
+                string key = kvp.Key;
+                List<string> values = new List<string>();
+
+                if (kvp.Value is List<object> stringList)
+                {
+                    foreach(var v in stringList) {
+                        values.Add(v as string);
+                    }
+                }
+                else if (kvp.Value is string stringValue)
+                {
+                    values.Add(stringValue);
+                }
+
+                outputDictionary.Add(key, values);
+            }
+
+            return outputDictionary;
+        }
+    }
     /// @endcond
     #endregion
 }

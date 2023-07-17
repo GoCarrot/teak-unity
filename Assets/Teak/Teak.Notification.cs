@@ -66,6 +66,11 @@ public partial class Teak {
                 get; private set;
             }
 
+            // <summary>A mapping of the argument or cause of the error to an array of strings explaining the errors.</summary>
+            public Dictionary<string, List<string>> Errors {
+                get; private set;
+            }
+
             /// <summary>The notification ids related to this call.</summary>
             public List<string> ScheduleIds {
                 get; private set;
@@ -86,6 +91,7 @@ public partial class Teak {
                 bool error = false;
                 bool.TryParse(json.Opt("error", "false") as string, out error);
                 this.Error = error;
+                this.Errors = Teak.Utils.ParseErrorsFromReply(json);
 
                 if (json.ContainsKey("data")) {
                     this.ScheduleIds = new List<string> { json["data"] as string };
