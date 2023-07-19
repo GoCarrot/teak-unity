@@ -81,7 +81,7 @@ public partial class Teak {
                 }
 
                 if (this.ResultJson != null) {
-                    this.result = Json.TryDeserialize(this.ResultJson) as Dictionary<string, object>;
+                    this.result = Json.Deserialize(this.ResultJson) as Dictionary<string, object>;
                 }
                 return this.result;
             }
