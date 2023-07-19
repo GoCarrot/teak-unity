@@ -21,6 +21,7 @@ extern BOOL TeakRequestPushAuthorizationWithCallback(BOOL includeProvisional, vo
 extern NSString* const TeakNotificationAppLaunch;
 extern NSString* const TeakOnReward;
 extern NSString* const TeakForegroundNotification;
+extern NSString* const TeakConfigurationData;
 extern NSString* const TeakAdditionalData;
 extern NSString* const TeakLaunchedFromLink;
 extern NSString* const TeakPostLaunchSummary;
@@ -299,6 +300,13 @@ static void teak_init()
                                                       queue:nil
                                                  usingBlock:^(NSNotification* notification) {
                                                     teakOnJsonEvent(notification.userInfo, "ForegroundNotification", true);
+                                                 }];
+
+   [[NSNotificationCenter defaultCenter] addObserverForName:TeakConfigurationData
+                                                     object:nil
+                                                      queue:nil
+                                                 usingBlock:^(NSNotification* notification) {
+                                                    teakOnJsonEvent(notification.userInfo, "InConfigurationData", false);
                                                  }];
 
    [[NSNotificationCenter defaultCenter] addObserverForName:TeakAdditionalData

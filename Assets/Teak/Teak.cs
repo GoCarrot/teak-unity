@@ -272,6 +272,19 @@ public partial class Teak : MonoBehaviour {
         }
     }
 
+    public class ConfigurationData {
+        public List<Channel.Category> ChannelCategories { get; private set; }
+
+        public ConfigurationData(Dictionary<string, object> json) {
+            if(json.ContainsKey("channelCategories")) {
+                List<object> categories = json["channelCategories"] as List<object>;
+                if(categories != null) {
+                    this.ChannelCategories = Teak.Utils.ParseChannelCategories(categories);
+                }
+            }
+        }
+    }
+
     /// <summary>
     /// Tell Teak how it should identify the current user.
     /// </summary>
@@ -388,6 +401,11 @@ public partial class Teak : MonoBehaviour {
     /// An event which gets fired when a push notification is received while the app is in the foreground.
     /// </summary>
     public event System.Action<TeakNotification> OnForegroundNotification;
+
+    /// <summary>
+    /// An event which gets fired when Teak remote configuration (e.g. the list of Opt Out Categories) is ready
+    /// </summary>
+    public event System.Action<ConfigurationData> OnConfigurationData;
 
     /// <summary>
     /// An event which is dispatched for each log event from the Teak SDK
@@ -810,6 +828,7 @@ public partial class Teak : MonoBehaviour {
     private static Teak mInstance;
     private Dictionary<string, Action<Dictionary<string, object>>> mDeepLinkRoutes = new Dictionary<string, Action<Dictionary<string, object>>>();
     private Dictionary<string, object> mAppConfiguration = null;
+    private ConfigurationData mConfigurationData = null;
 
 #if UNITY_IPHONE || UNITY_WEBGL
     [DllImport ("__Internal")]
@@ -1024,6 +1043,19 @@ public partial class Teak : MonoBehaviour {
 
         if (OnForegroundNotification != null) {
             OnForegroundNotification(new TeakNotification(json));
+        }
+    }
+
+    void InConfigurationData(string jsonString) {
+        Dictionary<string, object> json = Json.TryDeserialize(jsonString) as Dictionary<string, object>;
+        if (json == null) {
+            return;
+        }
+
+        mConfigurationData = new ConfigurationData(json);
+
+        if (OnConfigurationData != null) {
+            OnConfigurationData(mConfigurationData);
         }
     }
 
