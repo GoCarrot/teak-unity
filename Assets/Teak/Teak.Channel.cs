@@ -168,7 +168,7 @@ public partial class Teak {
                     if (this.Categories == null || !this.Categories.ContainsKey(category)) {
                         return State.Unknown;
                     }
-                    int stateAsInt = StateName.IndexOf(this.Categories[category]);
+                    int stateAsInt = StateToName.IndexOf(this.Categories[category]);
                     if (stateAsInt < 0 || stateAsInt > 4) { stateAsInt = 4; }
                     return (State) stateAsInt;
                 }
@@ -180,9 +180,9 @@ public partial class Teak {
             }
 
             internal Status(Dictionary<string, object> json) {
-                int stateAsInt = StateName.IndexOf(json.Opt("state", "unknown") as string);
-
+                int stateAsInt = StateToName.IndexOf(json.Opt("state", "unknown") as string);
                 if (stateAsInt < 0 || stateAsInt > 4) { stateAsInt = 4; }
+
                 this.State = (State) stateAsInt;
                 this.DeliveryFault = Convert.ToBoolean(json.Opt("delivery_fault", "false"));
 
