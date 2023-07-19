@@ -19,6 +19,65 @@ public partial class Teak {
     /// Teak Marketing Channel Functionality
     /// </summary>
     public partial class Channel {
+        /// <summary>The id, name and description of a Teak marketing channel category</summary>
+        public class Category {
+            public string Id {
+                get; private set;
+            }
+
+            public string Name {
+                get; private set;
+            }
+
+            public string Description {
+                get; private set;
+            }
+
+            public Category(string id, string name, string description) {
+                this.Id = id;
+                this.Name = name;
+                this.Description = description;
+            }
+
+            /// <summary>
+            /// Returns a string that represents the current object.
+            /// </summary>
+            /// <returns>A string that represents the current object.</returns>
+            public override string ToString() {
+                string formatString = "{{ Id = '{0}', Name = '{1}', Description = '{2}' }}";
+                return string.Format(formatString, this.Id, this.Name, this.Description);
+            }
+        }
+
+        private static List<Category> mCategories;
+
+        /// <summary>This can be null until configuration has been received from the server.</summary>
+        public static List<Category> Categories {
+            get {
+                if (mCategories != null) {
+                    return mCategories;
+                }
+#if UNITY_EDITOR
+                string json = null;
+#elif UNITY_ANDROID
+                AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak$Channel");
+                string json = teak.CallStatic<string>("getCategoriesJson");
+#elif UNITY_IPHONE || UNITY_WEBGL
+                string json = TeakNotificationGetCategoriesJson();
+#endif
+                if (json == null) {
+                    return null;
+                }
+
+                List<object> categories = Json.TryDeserialize(json) as List<object>;
+                if (categories == null) {
+                    return null;
+                }
+
+                mCategories = Teak.Utils.ParseChannelCategories(categories);
+                return mCategories;
+            }
+        }
 
         /// <summary>Teak Marketing Channel Type</summary>
         public enum Type : int {
@@ -337,6 +396,11 @@ public partial class Teak {
 
     [DllImport ("__Internal")]
     private static extern IntPtr TeakSetStateForCategory_Retained(string state, string channel, string category);
+#endif
+
+#if UNITY_IOS || UNITY_WEBGL
+    [DllImport ("__Internal")]
+    private static extern string TeakNotificationGetCategoriesJson();
 #endif
     /// @endcond
 }

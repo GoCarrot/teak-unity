@@ -1180,6 +1180,21 @@ public partial class Teak : MonoBehaviour {
 
             return outputDictionary;
         }
+
+        public static List<Channel.Category> ParseChannelCategories(List<object> inCategories) {
+            List<Channel.Category> categories = new List<Channel.Category>();
+            foreach (object cObj in inCategories) {
+                Dictionary<string, object> category = cObj as Dictionary<string, object>;
+                if (category != null) {
+                    categories.Add(new Teak.Channel.Category(
+                                        category["id"] as string,
+                                        category["name"] as string,
+                                        category.ContainsKey("description") ? category["description"] as string : null));
+                }
+            }
+
+            return categories;
+        }
     }
     /// @endcond
     #endregion
