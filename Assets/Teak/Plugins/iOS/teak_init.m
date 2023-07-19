@@ -48,7 +48,7 @@ extern NSObject* TeakNotificationSchedule(const char* creativeId, const char* me
 extern NSObject* TeakNotificationScheduleLongDistance(const char* creativeId, int64_t delay, const char* inUserIds[], int inUserIdCount);
 extern NSObject* TeakNotificationCancel(const char* scheduleId);
 extern NSObject* TeakNotificationCancelAll();
-extern NSArray* TeakNotificationGetCategories();
+extern NSArray* TeakGetChannelCategories();
 
 // TeakNotification v2
 extern NSObject* TeakNotificationSchedulePersonalizationData(const char* creativeId, int64_t delay, const char* personalizationDataJson);
@@ -195,14 +195,14 @@ const char* TeakOperationGetResultJson(NSInvocationOperation* operation) {
 }
 
 const char* TeakNotificationGetCategoriesJson() {
-   NSArray* categories = TeakNotificationGetCategories();
+   NSArray* categories = TeakGetChannelCategories();
    if (categories == nil) {
       return nil;
    }
 
    NSMutableArray* json = [[NSMutableArray alloc] init];
    for (id category in categories) {
-      [json addObject:[category performSelector:@selector(json)]];
+      [json addObject:[category performSelector:@selector(toDictionary)]];
    }
 
    NSError* error = nil;
