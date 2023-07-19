@@ -49,9 +49,7 @@ public partial class Teak {
             internal Reply(Dictionary<string, object> json) {
                 this.Json = json;
 
-                bool error = false;
-                bool.TryParse(json.Opt("error", "false") as string, out error);
-                this.Error = error;
+                this.Error = Convert.ToBoolean(json.Opt("error", "true"));
                 this.Errors = Teak.Utils.ParseErrorsFromReply(json);
 
                 if (json.ContainsKey("data")) {
