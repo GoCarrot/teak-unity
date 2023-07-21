@@ -56,7 +56,7 @@ mergeInto(LibraryManager.library, {
       SendMessage("TeakGameObject", "UserDataEvent", JSON.stringify({
         additionalData: window.teak.additionalData,
         emailStatus: window.teak.optOutStates.email,
-        pushStatus: window.teak.optOutStates.push,
+        pushStatus: window.teak.optOutStates.desktop_push,
         smsStatus: window.teak.optOutStates.sms,
         pushRegistration: {}
       }));
