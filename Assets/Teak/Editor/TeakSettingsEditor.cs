@@ -1,3 +1,5 @@
+#if UNITY_EDITOR 
+
 #region References
 using System;
 using System.IO;
@@ -39,3 +41,5 @@ public class TeakSettingsEditor : Editor {
         TeakSettings.EnableSDK5Behaviors = EditorGUILayout.Toggle(sdk5BehaviorsContent, TeakSettings.EnableSDK5Behaviors);
     }
 }
+
+#endif // UNITY_EDITOR

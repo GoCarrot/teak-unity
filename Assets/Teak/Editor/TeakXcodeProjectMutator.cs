@@ -1,3 +1,4 @@
+#if UNITY_EDITOR 
 #if UNITY_IOS
 
 #region References
@@ -223,3 +224,4 @@ public class TeakXcodeProjectMutator : IPostprocessBuildWithReport {
 }
 
 #endif // UNITY_IOS
+#endif // UNITY_EDITOR

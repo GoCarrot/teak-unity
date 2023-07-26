@@ -1,3 +1,4 @@
+#if UNITY_EDITOR 
 #if UNITY_IOS
 
 #region License
@@ -109,3 +110,4 @@ namespace UnityEditor.iOS.Xcode {
 }
 
 #endif // UNITY_IOS
+#endif // UNITY_EDITOR
