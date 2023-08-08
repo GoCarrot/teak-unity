@@ -230,6 +230,11 @@ public partial class Teak {
                 get; private set;
             }
 
+            // <summary>A mapping of the argument or cause of the error to an array of strings explaining the errors.</summary>
+            public Dictionary<string, List<string>> Errors {
+                get; private set;
+            }
+
             /// <summary>The JSON received from the server.</summary>
             public Dictionary<string, object> Json {
                 get; private set;
@@ -242,7 +247,8 @@ public partial class Teak {
             internal Reply(Dictionary<string, object> json) {
                 this.Json = json;
 
-                this.Error = Convert.ToBoolean(json.Opt("error", "true"));;
+                this.Error = Convert.ToBoolean(json.Opt("error", "true"));
+                this.Errors = Teak.Utils.ParseErrorsFromReply(json);
 
                 int idx = StateToName.IndexOf(json.Opt("state", "unknown").ToString());
                 this.State = (idx > -1) ? (Teak.Channel.State) idx : Teak.Channel.State.Unknown;
