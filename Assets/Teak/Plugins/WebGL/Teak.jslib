@@ -45,9 +45,7 @@ mergeInto(LibraryManager.library, {
     var userId = Pointer_stringify(ptr_userId);
     var configJson = Pointer_stringify(ptr_configJson);
     var config = JSON.parse(configJson);
-    window.teak.identify(userId, null, null, config);
-
-    window.teak.on('udidAvailable', function() {
+    var callback = function() {
       // Teak attribution params
       var attribution = {
         teakScheduleName: window.teak.queryParameters.teak_schedule_name,
@@ -85,7 +83,9 @@ mergeInto(LibraryManager.library, {
         smsStatus: window.teak.optOutStates.sms,
         pushRegistration: {}
       }));
-    });
+    }
+
+    window.teak.identify(userId, null, callback, config);
 
     window.teak.claimReward(function(reply) {
       // The commented-out functionality is handled by the JS SDK.
