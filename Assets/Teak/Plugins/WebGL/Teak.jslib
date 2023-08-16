@@ -7,6 +7,25 @@ mergeInto(LibraryManager.library, {
 
     window.teak.init(appId, apiKey, false, null, enableSdk5BehaviorsInt !== 0);
     window.teak.setIsUnity();
+    window.teak.on("settingsLoaded", function() {
+      console.log("settingsLoaded");
+      var channelCategories = [];
+      Object.keys(window.teak.availableCategories).forEach(function (key) {
+        channelCategories.push({
+          id: key,
+          name: window.teak.availableCategories[key]["name"],
+          description: window.teak.availableCategories[key]["description"],
+        });
+      });
+
+      var configurationData = {
+        channelCategories: channelCategories
+      };
+
+      SendMessage("TeakGameObject", "InConfigurationData", JSON.stringify(configurationData));
+    });
+
+    window.teakUnity = { notifLaunchIds: [], linkLaunchIds: [] };
 
     var doTeakInit = function() {
       (function(){var n=document.createElement("script");n.type="text/javascript";n.async=true;n.src="//sdks.teakcdn.com/teak.min.js";var r=document.getElementsByTagName("script")[0];r.parentNode.insertBefore(n,r)})()
@@ -44,9 +63,15 @@ mergeInto(LibraryManager.library, {
 
       // Notifications have teak_notif_id, reward links have teak_rewardlink_id
       if (window.teak.queryParameters.teak_notif_id) {
-        SendMessage("TeakGameObject", "NotificationLaunch", JSON.stringify(attribution));
+        if(window.teakUnity.notifLaunchIds.indexOf(window.teak.queryParameters.teak_notif_id) === -1) {
+          window.teakUnity.notifLaunchIds.push(window.teak.queryParameters.teak_notify_id);
+          SendMessage("TeakGameObject", "NotificationLaunch", JSON.stringify(attribution));
+        }
       } else if (window.teak.queryParameters.teak_rewardlink_id) {
-        SendMessage("TeakGameObject", "LaunchedFromLink", JSON.stringify(attribution));
+        if(window.teakUnity.linkLaunchIds.indexOf(window.teak.queryParameters.teak_rewardlink_id) === -1) {
+          window.teakUnity.linkLaunchIds.push(window.teak.queryParameters.teak_rewardlink_id);
+          SendMessage("TeakGameObject", "LaunchedFromLink", JSON.stringify(attribution));
+        }
       }
 
       // Always send launch summary
