@@ -1,11 +1,11 @@
 android: ~
 ios: ~
 breaking:
-- Deprecated <<Teak.RegisterForNotifications()>> instead use <<Teak.RegisterForNotifications(System.Action)>>
-- Deprecated <<TeakNotification.ScheduleNotification>> instead use <<Teak.Notification.Schedule>>
+- Deprecated Teak.RegisterForNotifications() instead use Teak.RegisterForNotifications(System.Action)
+- Deprecated TeakNotification.ScheduleNotification instead use Teak.Notification.Schedule
 new:
-- Added <<Teak.RegisterForNotifications(System.Action)>> as a co-routine
-- Added <<Teak.SetCategoryState>>
-- Added <<Teak.Notification>>
+- Added Teak.RegisterForNotifications(System.Action) as a co-routine
+- Added Teak.SetCategoryState
+- Added Teak.Notification
 bug:
-- <<Teak.OnUserData>> will now get sent properly on iOS
+- Teak.OnUserData will now get sent properly on iOS
