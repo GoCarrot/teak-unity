@@ -1,0 +1,25 @@
+= Android FCM Credentials
+:page-pagination:
+
+On Android, Firebase is required for push notifications. 
+
+[IMPORTANT]
+====
+https://firebase.google.com/docs/unity/setup[Firebase Unity SDK, window=_blank] is **required** for Teak to function. If your game does not have Firebase, you will need to add it. 
+
+If you aren't using any other Firebase features, we recommend installing only **`FirebaseMessaging.unitypackage`**.
+
+Instructions are on the Firebase site here: https://firebase.google.com/docs/unity/setup[**Add Firebase to your Unity project**, window=_blank]. 
+====
+
+With Firebase successfully installed, you can proceed to the uncomplicated task of copying keys from their dashboard to ours.
+
+include::usage:reference:firebase-fcm.adoc[leveloffset=+1]
+
+With those values copied over, we're ready to move to Unity to get the Teak SDK installed. 
+
+== Amazon Fire Devices
+
+IMPORTANT: If you are also shipping to Amazon Fire devices, Amazon has it's own push notification credentials setup. You will need to follow our  xref:unity-amazon-fire.adoc[**Amazon Fire Setup**, window=_blank] guide to get push notifications working on Amazon devices.
+
+

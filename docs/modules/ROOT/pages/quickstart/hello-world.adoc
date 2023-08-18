@@ -1,15 +1,7 @@
-= Hello World
+= Hello World (Push Notification)
+:page-pagination:
 
 Putting it all together.
-
-== Seeing Your Active User
-
-If you've followed along so far, you can now go back to your Teak dashboard to see your active user.
-
-image:start/activeuser.png[alt_text]
-
-When you built and opened your game on your device, you got evidence that the game was configured for push notifications. Now, you can see that active user on your Teak dashboard.
-
 
 == Sending Your First Notification
 
@@ -74,13 +66,10 @@ Then, from the message preview in the Teak dashboard, click Send Preview.
 
 image:start/sendpreview.png[alt_text]
 
-The notification should show up on your device!
+== Recieve the Notification
+
+If everything is set up, the notification should show up on your device!
 
 image:start/hello.jpg[alt_text]
 
 Congratulations, you've sent your first push notification using Teak!
-
-
-== Next Steps
-
-From here, you can customize notifications and metrics based on your particular use cases. Check out our other guides and extensive https://docs.teak.io/sdk-reference/index.html[documentation] for more detail on how to make Teak's tracking work for you and your games!

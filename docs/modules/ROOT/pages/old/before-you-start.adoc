@@ -34,4 +34,4 @@ Server Key and Sender ID from your Firebase project.
 You will need Editor or Owner role on the Firebase project in order to view/create
 server keys for Cloud Messaging.
 
-Follow these instructions to get your Server Key and Sender ID (xref:usage:reference:page$firebase-gcm.adoc[Finding your Android Push Credentials on Firebase, window=_blank]).
+Follow these instructions to get your Server Key and Sender ID (xref:usage:reference:page$firebase-fcm.adoc[Finding your Android Push Credentials on Firebase, window=_blank]).

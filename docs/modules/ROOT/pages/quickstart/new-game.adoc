@@ -1,0 +1,38 @@
+= Setting up a New Game
+:page-pagination:
+
+== Create an Account
+
+If you haven't already, sign up with **your work email** at `https://app.teak.io/[, window=_blank]`
+
+If you were invited by a team member, you can follow the link in the email to join. 
+
+== Find or Create Your Game 
+
+Depending on who in your organization signed up first, you may need to create a game project or join an existing one. 
+
+=== Create a new game
+
+.Game list dropdown
+image::usage:ROOT:start/new-game.png[Game List Dropdown, 300, role="related thumb right"]
+
+To create your first game project, click **Add Game** on the Welcome screen.
+
+If you already have a game set up and need to create another one, click on the name of your game in the sidebar to open the **game list dropdown**. Select **New Game**.
+
+Follow the prompts to get your game setup.
+
+=== Join an existing game
+
+If someone else has already set up the game, you will need to be invited to it.
+
+They can invite you by going to menu:Settings[General, Users] and adding your work email. 
+
+image::usage:ROOT:start/invite-users.png[,500,role="thumb"]
+
+Once you've been added, the game will show up in the **game list dropdown** menu in the sidebar. 
+
+== Game Settings
+
+Now that we've created or located our game project on Teak, let's get our credentials set up so Apple and Google will let us send push notifications on iOS and Android.
+

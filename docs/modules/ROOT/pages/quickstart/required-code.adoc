@@ -1,23 +1,23 @@
 = Add Required Code
 :page-pagination:
 
-It's time to tell Teak about your players so you can start logging sessions and gathering metrics.
+Get your code editor ready, we need to do two things: identify the user, and ask for push permissions.
 
 == Identify User
 
-This is where we tell Teak how to identify the current user.
+We tell Teak how to identify the current user by sending the player's ID with `<<IdentifyUser(string,UserConfiguration)>>[IdentifyUser()]`. 
 
-==== What Player ID should we use?
-
-We assume your game uses a user ID to store progress, coin balances, and other useful data. For the sanity of your analytics team, you send us that ID and we'll use it too.
+[TIP]
+.What Player ID should you use?
+====
+Your game probably has a user ID to store progress, coin balances, and other useful data. Use that ID with Teak too.
 
 * [*] It should be uniquely identify the current user.
 * [*] Ideally the same ID that is used in your game's backend.
 * [*] Send it as early as possible in the game's lifecycle.
 
-=== Send your player IDs to Teak
-
-Let's tell Teak about our players using `<<Teak.IdentifyUser(string,UserConfiguration)>>`.
+Having a consistent ID between your game makes customer support easier, and makes life easier for your analytics team.
+====
 
 In our game script, as soon as we know the id for our current player, we'll add our call.
 
@@ -35,10 +35,9 @@ Teak.Instance.IdentifyUser(YOUR_USER_ID, userConfiguration);
 
 This is enough to begin tracking and reporting of a session and tracking a daily active user.
 
-
 === Sending Additional Data
 
-Next we'll add some data to our `<<Teak.UserConfiguration>>[Farts]`.
+Next we'll add some data to our `<<Teak.UserConfiguration>>[UserConfiguration]`.
 
 NOTE: In SDK 5, Teak will no longer automatically collect Facebook Access Tokens or Emails from Facebook, instead you must pass the Facebook User Id in the `UserConfiguration`.
 
@@ -75,9 +74,9 @@ See the <<Teak.UserConfiguration>>[UserConfiguration Docs] for the available opt
 
 On iOS and Android 13 and greater you are required to ask the user if you can send them notifications. Do that with the `<<RegisterForNotifications()>>` call.
 
-Ideally, you would ask for these permissions at a time that makes sense for your game. In the long term, you can increase your notification opt-in rates by being strategic about when you ask for permission.
+In the long term, you can increase your notification opt-in rates by being strategic about when you ask for permission. Ideally, you would ask for these permissions at a time that makes sense for your game. 
 
-But for the purpose of getting up and running fast, let's just put the permissions request right here at game launch.
+But, for the purpose of getting up and running fast, let's just put the permissions request right here at game launch.
 
 [source,cs]
 ----

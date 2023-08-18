@@ -1,0 +1,5 @@
+:page-pagination:
+
+include::usage:reference:apple-apns.adoc[] 
+
+Okay, iOS is done, let's move on to Android.

@@ -1,0 +1,29 @@
+= Building Your Game
+:page-pagination:
+
+Hopefully, your game was building fine before you started this process. 
+
+== iOS
+
+Just make sure the stuff gets signed. 
+
+== Android
+
+=== Initialize Teak in the `AndroidManifest.xml`
+
+Teak uses Firebase's initialization of ContentProviders to auto-initialize.
+This is the easiest way to integrate Teak with your Android target.
+
+.Add this to the main activity in your AndroidManifest.xml
+[source,xml]
+----
+<meta-data android:name="io.teak.sdk.initialize" android:value="true"/>
+----
+
+== Seeing Your Active User
+
+If you've followed along so far, you can now go back to your Teak dashboard to see your active user.
+
+image:start/activeuser.png[alt_text]
+
+There you are on the dashboard, the noble player playing the game. 
