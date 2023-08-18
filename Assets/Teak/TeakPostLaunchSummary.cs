@@ -31,12 +31,15 @@ public class TeakPostLaunchSummary {
     /// <summary>Opaque notification or email identifyer, or ``null``.</summary>
     public string SourceSendId { get; private set; }
 
+    /// <summary>OptOut category for this notificatin, or ``"teak"`` as the default.</summary>
+    public string OptOutCategory { get; private set; }
+
     /// <summary>
     /// Returns a string that represents the current object.
     /// </summary>
     /// <returns>A string that represents the current object.</returns>
     public override string ToString() {
-        string formatString = "{{ LaunchLink = '{0}', ScheduleName = '{1}', ScheduleId = '{2}', CreativeName = '{3}', CreativeId = '{4}', RewardId = '{5}', ChannelName = '{6}', DeepLink = '{7}', SourceSendId = '{8}' }}";
+        string formatString = "{{ LaunchLink = '{0}', ScheduleName = '{1}', ScheduleId = '{2}', CreativeName = '{3}', CreativeId = '{4}', RewardId = '{5}', ChannelName = '{6}', DeepLink = '{7}', SourceSendId = '{8}', OptOutCategory = '{9}' }}";
         return string.Format(formatString,
                              this.LaunchLink,
                              this.ScheduleName,
@@ -46,7 +49,8 @@ public class TeakPostLaunchSummary {
                              this.RewardId,
                              this.ChannelName,
                              this.DeepLink,
-                             this.SourceSendId
+                             this.SourceSendId,
+                             this.OptOutCategory
                             );
     }
 
@@ -61,6 +65,7 @@ public class TeakPostLaunchSummary {
         this.ChannelName = json.ContainsKey("teakChannelName") ? json["teakChannelName"] as string : null;
         this.DeepLink = json.ContainsKey("teakDeepLink") ? json["teakDeepLink"] as string : null;
         this.SourceSendId = json.ContainsKey("teakNotifId") ? json["teakNotifId"] as string : null;
+        this.OptOutCategory = json.ContainsKey("teakOptOutCategory") ? json["teakOptOutCategory"] as string : null;
     }
     /// @endcond
 }

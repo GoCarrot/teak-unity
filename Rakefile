@@ -9,7 +9,25 @@ require 'pathname'
 require 'unitypackage'
 CLEAN.include '**/.DS_Store'
 
+SPECIAL_BUILD_TYPES = %w[alpha beta rc].freeze
+def parse_upm_teak_sdk_version
+  version = `git describe --tags`.strip
+  version_parts = version.split('.')
+  if version_parts.length > 3
+    version_suffix = version_parts[-1]
+    SPECIAL_BUILD_TYPES.each do |build_type|
+      match_data = version_suffix.match(/#{build_type}(?<version>[0-9]+)/)
+      if match_data
+        return "0.#{version_parts[0]}#{version_parts[1]}#{version_parts[2]}.#{match_data[:version]}"
+      end
+    end
+    return version
+  end
+  version
+end
+
 TEAK_SDK_VERSION = `git describe --tags`.strip
+
 NATIVE_CONFIG = YAML.load_file('native.config.yml')
 
 PROJECT_PATH = Rake.application.original_dir
@@ -119,6 +137,7 @@ namespace :build do
         end
 
         sh "unzip -o TeakResources.bundle.zip -d #{File.join(PROJECT_PATH, 'Assets', 'Teak', 'Plugins', 'iOS')}"
+        sh "rm -rf #{File.join(PROJECT_PATH, 'Assets', 'Teak', 'Plugins', 'iOS', 'TeakResources.bundle', '_CodeSignature')}"
       end
     end
 
@@ -181,6 +200,7 @@ namespace :upm do
         dir = File.join(dest, File.dirname(rel_path))
         FileUtils.mkdir_p(dir)
         FileUtils.cp(filename, dir) if File.file?(filename)
+        puts "#{filename} => #{dir}"
       end
     end
 
@@ -189,7 +209,7 @@ namespace :upm do
 
     # package.json
     template = File.read(File.join(PROJECT_PATH, 'Templates', 'package.json.template'))
-    File.write(File.join(UPM_BUILD_TEMP, 'package.json'), Mustache.render(template, TEMPLATE_PARAMETERS))
+    File.write(File.join(UPM_BUILD_TEMP, 'package.json'), Mustache.render(template, TEMPLATE_PARAMETERS.merge(teak_sdk_version: parse_upm_teak_sdk_version)))
   end
 
   task :deploy_versioned do

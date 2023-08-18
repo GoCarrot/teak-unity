@@ -21,6 +21,7 @@ extern BOOL TeakRequestPushAuthorizationWithCallback(BOOL includeProvisional, vo
 extern NSString* const TeakNotificationAppLaunch;
 extern NSString* const TeakOnReward;
 extern NSString* const TeakForegroundNotification;
+extern NSString* const TeakConfigurationData;
 extern NSString* const TeakAdditionalData;
 extern NSString* const TeakLaunchedFromLink;
 extern NSString* const TeakPostLaunchSummary;
@@ -48,6 +49,10 @@ extern NSObject* TeakNotificationSchedule(const char* creativeId, const char* me
 extern NSObject* TeakNotificationScheduleLongDistance(const char* creativeId, int64_t delay, const char* inUserIds[], int inUserIdCount);
 extern NSObject* TeakNotificationCancel(const char* scheduleId);
 extern NSObject* TeakNotificationCancelAll();
+extern NSArray* TeakGetChannelCategories();
+
+// TeakNotification v2
+extern NSObject* TeakNotificationSchedulePersonalizationData(const char* creativeId, int64_t delay, const char* personalizationDataJson);
 
 // Unity
 extern void UnitySendMessage(const char*, const char*, const char*);
@@ -72,6 +77,16 @@ void* TeakNotificationSchedule_Retained(const char* creativeId, const char* mess
    return notif;
 #else
    return [TeakNotificationSchedule(creativeId, message, delay) retain];
+#endif
+}
+
+void* TeakNotificationSchedulePersonalizationData_Retained(const char* creativeId, int64_t delay, const char* personalizationDataJson)
+{
+#if __has_feature(objc_arc)
+   void* notif = (__bridge_retained void*)TeakNotificationSchedulePersonalizationData(creativeId, delay, personalizationDataJson);
+   return notif;
+#else
+   return [TeakNotificationSchedulePersonalizationData(creativeId, delay, personalizationDataJson) retain];
 #endif
 }
 
@@ -180,6 +195,30 @@ const char* TeakOperationGetResultJson(NSInvocationOperation* operation) {
    return strdup([jsonString UTF8String]);
 }
 
+const char* TeakNotificationGetCategoriesJson() {
+   NSArray* categories = TeakGetChannelCategories();
+   if (categories == nil) {
+      return nil;
+   }
+
+   NSMutableArray* json = [[NSMutableArray alloc] init];
+   for (id category in categories) {
+      [json addObject:[category performSelector:@selector(toDictionary)]];
+   }
+
+   NSError* error = nil;
+   NSData* jsonData = [NSJSONSerialization dataWithJSONObject:json
+                                                      options:0
+                                                        error:&error];
+   if (error != nil) {
+      return nil;
+   }
+
+   // When *returning* a marshalled string, it should be heap-allocated; and pinvoke will take
+   // care of the free()
+   return strdup([[[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding] UTF8String]);
+}
+
 void teakOnJsonEvent(NSDictionary* userInfo, const char* eventName, bool sendEmptyOnError)
 {
    NSError* error = nil;
@@ -261,6 +300,13 @@ static void teak_init()
                                                       queue:nil
                                                  usingBlock:^(NSNotification* notification) {
                                                     teakOnJsonEvent(notification.userInfo, "ForegroundNotification", true);
+                                                 }];
+
+   [[NSNotificationCenter defaultCenter] addObserverForName:TeakConfigurationData
+                                                     object:nil
+                                                      queue:nil
+                                                 usingBlock:^(NSNotification* notification) {
+                                                    teakOnJsonEvent(notification.userInfo, "InConfigurationData", false);
                                                  }];
 
    [[NSNotificationCenter defaultCenter] addObserverForName:TeakAdditionalData

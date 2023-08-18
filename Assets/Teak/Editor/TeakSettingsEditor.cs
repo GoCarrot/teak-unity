@@ -1,3 +1,5 @@
+#if UNITY_EDITOR 
+
 #region References
 using System;
 using System.IO;
@@ -21,6 +23,8 @@ public class TeakSettingsEditor : Editor {
     }
 
     public override void OnInspectorGUI() {
+        EditorGUILayout.LabelField("Teak SDK Version: ", TeakVersion.Version);
+        EditorGUILayout.Space();
 
         GUILayout.Label("Settings", EditorStyles.boldLabel);
         TeakSettings.AppId = EditorGUILayout.TextField("Teak App Id", TeakSettings.AppId);
@@ -37,3 +41,5 @@ public class TeakSettingsEditor : Editor {
         TeakSettings.EnableSDK5Behaviors = EditorGUILayout.Toggle(sdk5BehaviorsContent, TeakSettings.EnableSDK5Behaviors);
     }
 }
+
+#endif // UNITY_EDITOR

@@ -254,7 +254,7 @@ public partial class Teak : MonoBehaviour {
         /// <summary>True if the user should be opted out of push key collection.</summary>
         public bool OptOutPushKey { get; set; }
 
-#if UNITY_ANDROID
+#if !UNITY_EDITOR && UNITY_ANDROID
         public AndroidJavaObject ToAndroidJavaObject() {
             return new AndroidJavaObject("io.teak.sdk.Teak$UserConfiguration",
                                          this.Email, this.FacebookId, this.OptOutFacebook, this.OptOutIdfa, this.OptOutPushKey);
@@ -269,6 +269,19 @@ public partial class Teak : MonoBehaviour {
             dict["opt_out_idfa"] = this.OptOutIdfa;
             dict["opt_out_push_key"] = this.OptOutPushKey;
             return dict;
+        }
+    }
+
+    public class ConfigurationData {
+        public List<Channel.Category> ChannelCategories { get; private set; }
+
+        public ConfigurationData(Dictionary<string, object> json) {
+            if(json.ContainsKey("channelCategories")) {
+                List<object> categories = json["channelCategories"] as List<object>;
+                if(categories != null) {
+                    this.ChannelCategories = Teak.Utils.ParseChannelCategories(categories);
+                }
+            }
         }
     }
 
@@ -388,6 +401,11 @@ public partial class Teak : MonoBehaviour {
     /// An event which gets fired when a push notification is received while the app is in the foreground.
     /// </summary>
     public event System.Action<TeakNotification> OnForegroundNotification;
+
+    /// <summary>
+    /// An event which gets fired when Teak remote configuration (e.g. the list of Opt Out Categories) is ready
+    /// </summary>
+    public event System.Action<ConfigurationData> OnConfigurationData;
 
     /// <summary>
     /// An event which is dispatched for each log event from the Teak SDK
@@ -694,7 +712,7 @@ public partial class Teak : MonoBehaviour {
             keepWaiting = false;
         });
         TeakRequestPushAuthorizationUnity(false, callbackId);
-        while(keepWaiting) yield return null;
+        while (keepWaiting) { yield return null; }
 #elif UNITY_ANDROID
         // If we're not on API 33, no action needed.
         using (var buildVersion = new AndroidJavaClass("android.os.Build$VERSION")) {
@@ -739,7 +757,7 @@ public partial class Teak : MonoBehaviour {
             androidCallback.PermissionDeniedAndDontAskAgain += permissionDenied;
 
             UnityEngine.Android.Permission.RequestUserPermission(POST_NOTIFICATIONS, androidCallback);
-            while(keepWaiting) yield return null;
+            while (keepWaiting) { yield return null; }
         } else {
             // Already granted, so tell the callback
             callback(true);
@@ -810,6 +828,7 @@ public partial class Teak : MonoBehaviour {
     private static Teak mInstance;
     private Dictionary<string, Action<Dictionary<string, object>>> mDeepLinkRoutes = new Dictionary<string, Action<Dictionary<string, object>>>();
     private Dictionary<string, object> mAppConfiguration = null;
+    private ConfigurationData mConfigurationData = null;
 
 #if UNITY_IPHONE || UNITY_WEBGL
     [DllImport ("__Internal")]
@@ -1027,6 +1046,19 @@ public partial class Teak : MonoBehaviour {
         }
     }
 
+    void InConfigurationData(string jsonString) {
+        Dictionary<string, object> json = Json.TryDeserialize(jsonString) as Dictionary<string, object>;
+        if (json == null) {
+            return;
+        }
+
+        mConfigurationData = new ConfigurationData(json);
+
+        if (OnConfigurationData != null) {
+            OnConfigurationData(mConfigurationData);
+        }
+    }
+
     void AdditionalData(string jsonString) {
         Dictionary<string, object> json = Json.TryDeserialize(jsonString) as Dictionary<string, object>;
         if (json == null) {
@@ -1078,41 +1110,6 @@ public partial class Teak : MonoBehaviour {
         }
     }
 #endif
-
-    private static Dictionary<string, System.Action<Dictionary<string, object>>> teakOperationCallbackMap = new Dictionary<string, System.Action<Dictionary<string, object>>>();
-    void TeakOperationCallback(string jsonString) {
-        try {
-            Dictionary<string, object> json = Json.TryDeserialize(jsonString) as Dictionary<string, object>;
-            if (json == null || !json.ContainsKey("_callbackId")) {
-                return;
-            }
-
-            string callbackId = json["_callbackId"] as string;
-            json.Remove("_callbackId");
-
-            if (teakOperationCallbackMap.ContainsKey(callbackId)) {
-                System.Action<Dictionary<string, object>> callback = teakOperationCallbackMap[callbackId];
-                teakOperationCallbackMap.Remove(callbackId);
-                callback(json);
-            }
-        } catch (Exception e) {
-            Debug.LogError("[Teak] Error executing callback: " + jsonString + "\n\t" + e.ToString());
-        }
-    }
-
-    public static void SafePerformCallback<T>(string method, System.Action<T> callback, T param) {
-        try {
-            if (callback != null) {
-                callback(param);
-            }
-        } catch (Exception e) {
-            if (param is Dictionary<string, object>) {
-                Teak.Instance.ReportCallbackError(method, e, param as Dictionary<string, object>);
-            } else if (param is IToJson) {
-                Teak.Instance.ReportCallbackError(method, e, (param as IToJson).toJson());
-            }
-        }
-    }
     /// @endcond
     #endregion
 
@@ -1178,6 +1175,58 @@ public partial class Teak : MonoBehaviour {
 
     void OnApplicationQuit() {
         Destroy(this.gameObject);
+    }
+
+    public class Utils {
+        public static Dictionary<string, List<string>> ParseErrorsFromReply(Dictionary<string, object> reply)
+        {
+            if(!reply.ContainsKey("errors")) {
+                return null;
+            }
+
+            Dictionary<string, object> inputDictionary = reply["errors"] as Dictionary<string, object>;
+            if(inputDictionary == null) {
+                return null;
+            }
+
+            Dictionary<string, List<string>> outputDictionary = new Dictionary<string, List<string>>();
+
+            foreach (var kvp in inputDictionary)
+            {
+                string key = kvp.Key;
+                List<string> values = new List<string>();
+
+                if (kvp.Value is List<object> stringList)
+                {
+                    foreach(var v in stringList) {
+                        values.Add(v as string);
+                    }
+                }
+                else if (kvp.Value is string stringValue)
+                {
+                    values.Add(stringValue);
+                }
+
+                outputDictionary.Add(key, values);
+            }
+
+            return outputDictionary;
+        }
+
+        public static List<Channel.Category> ParseChannelCategories(List<object> inCategories) {
+            List<Channel.Category> categories = new List<Channel.Category>();
+            foreach (object cObj in inCategories) {
+                Dictionary<string, object> category = cObj as Dictionary<string, object>;
+                if (category != null) {
+                    categories.Add(new Teak.Channel.Category(
+                                        category["id"] as string,
+                                        category["name"] as string,
+                                        category.ContainsKey("description") ? category["description"] as string : null));
+                }
+            }
+
+            return categories;
+        }
     }
     /// @endcond
     #endregion

@@ -1,3 +1,5 @@
+#if UNITY_EDITOR 
+
 using UnityEditor;
 using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
@@ -57,3 +59,5 @@ public class TeakAndroidAssetLibBuilder : IPreprocessBuildWithReport {
         AssetDatabase.SaveAssets();
     }
 }
+
+#endif // UNITY_EDITOR

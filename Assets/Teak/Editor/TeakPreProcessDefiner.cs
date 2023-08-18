@@ -1,3 +1,5 @@
+#if UNITY_EDITOR 
+
 using UnityEditor;
 using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
@@ -20,7 +22,8 @@ class TeakPreProcessDefiner : IPreprocessBuildWithReport {
         "TEAK_3_4_OR_NEWER",
         "TEAK_4_0_OR_NEWER",
         "TEAK_4_1_OR_NEWER",
-        "TEAK_4_2_OR_NEWER"
+        "TEAK_4_2_OR_NEWER",
+        "TEAK_4_3_OR_NEWER"
     };
 
     public void OnPreprocessBuild(BuildReport report) {
@@ -36,3 +39,5 @@ class TeakPreProcessDefiner : IPreprocessBuildWithReport {
         PlayerSettings.SetScriptingDefineSymbolsForGroup(buildTargetGroup, string.Join(";", defines));
     }
 }
+
+#endif // UNITY_EDITOR
