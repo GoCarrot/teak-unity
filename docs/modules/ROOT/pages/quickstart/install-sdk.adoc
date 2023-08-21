@@ -69,11 +69,14 @@ There's an extra step to intialize Teak on Android.
 <meta-data android:name="io.teak.sdk.initialize" android:value="true"/>
 ----
 +
-This uses Firebase's initialization of ContentProviders to auto-initialize Teak. 
+This uses Firebase's initialization of ContentProviders to auto-initialize Teak. If this step does not work for your game, please see the xref:android-dependencies.adoc#_initialize_teak[additional methods for initialization].
+
+== Code Signing on iOS
+
+[start=7]
+. The `TeakNotificationService` and `TeakNotificationContent` targets will need to be signed on iOS. Xcode should take care of this when you sign the iOS-Unity target, but if you are getting provisionsing profile errors, check to make sure these targets are signed as well. 
 +
-NOTE: If this step does not work for your game, please see the xref:android-dependencies.adoc#_initialize_teak[additional methods for initialization].
+TIP: Setting up your **Signing Team ID** in Unity (menu:Edit[Project Settings, Player, iOS, Other Settings, Identification]) will sign everything automatically when you build for iOS. 
 
 
-
-
-The Teak SDK is now installed, we're ready to add Teak code to our game logic.
+The Teak SDK is now installed, we're ready to add Teak code to your game logic.
