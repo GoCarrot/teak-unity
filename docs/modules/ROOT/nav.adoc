@@ -8,32 +8,28 @@
 ** xref:quickstart/required-code.adoc[Add Required Code]
 ** xref:quickstart/required-code.adoc#_identify_user[#Identify User#]
 ** xref:quickstart/required-code.adoc#_ask_the_player_for_push_permissions[#Request Push Permissions#]
-** xref:quickstart/required-code.adoc#_ask_the_player_for_push_permissions[##]
 // ** xref:unity-webgl.adoc[Setup WebGL -- Call Teak.init()]
 ** xref:quickstart/hello-world.adoc[Hello World (Push Notification)]
 ** xref:quickstart/next.adoc[Next Steps]
 
-* Features
-// ** xref:identify-user.adoc[Identify User]
-** xref:push-notifications.adoc[Push Notifications]
-*** xref:push-permissions.adoc[Requesting Push Permissions]
-*** xref:local-push-notifications.adoc[Local Notifications]
-*** xref:push-notification-badges.adoc[Notification Badges]
-*** xref:push-notification-opt-outs.adoc[Notification Opt-Outs]
-// *** xref:push-notifications-sounds.adoc[Notification Sounds]
-** xref:rewards.adoc[Rewards]
-** xref:deep-links.adoc[Deep Links]
-** xref:post-launch-summary.adoc[Post Launch Summary]
-// ** xref:player-properties.adoc[Player Properties]
-** xref:custom-events.adoc[Custom Events]
-** xref:payment-reporting.adoc[Payment Reporting]
-** xref:limiting-data-collection.adoc[Limiting Data Collection]
-** xref:sdk-logout.adoc[Logout]
+* xref:page$working-with-unity.adoc[Working with Teak in Unity]
 
-// Reserved for future docs
-// ** xref:foobar.adoc[iOS]
-// ** xref:foobar.adoc[Android]
-// ** xref:foobar.adoc[Facebook Canvas]
+// * Features
+// // ** xref:identify-user.adoc[Identify User]
+// ** xref:push-notifications.adoc[Push Notifications]
+// *** xref:push-permissions.adoc[Requesting Push Permissions]
+// *** xref:local-push-notifications.adoc[Local Notifications]
+// *** xref:push-notification-badges.adoc[Notification Badges]
+// *** xref:push-notification-opt-outs.adoc[Notification Opt-Outs]
+// // *** xref:push-notifications-sounds.adoc[Notification Sounds]
+// ** xref:rewards.adoc[Rewards]
+// ** xref:deep-links.adoc[Deep Links]
+// ** xref:post-launch-summary.adoc[Post Launch Summary]
+// // ** xref:player-properties.adoc[Player Properties]
+// ** xref:custom-events.adoc[Custom Events]
+// ** xref:payment-reporting.adoc[Payment Reporting]
+// ** xref:limiting-data-collection.adoc[Limiting Data Collection]
+// ** xref:sdk-logout.adoc[Logout]
 
 * Troubleshooting & FAQs
 ** xref:debugging.adoc[Debugging with Teak]
@@ -49,8 +45,7 @@
 * xref:sdk5.adoc[SDK5 Preview]
 * xref:changelog:page$changelog.adoc[Changelog]
 
-* Retired Docs
-** xref:page$before-you-start.adoc[Before You Start]
-** xref:page$unity-editor.adoc[Unity Editor]
-** xref:page$working-with-unity.adoc[Working with Teak in Unity]
-// ** xref:page$android-permissions.adoc[Android Permissions]
+// * Retired Docs
+// ** xref:page$before-you-start.adoc[Before You Start]
+// ** xref:page$unity-editor.adoc[Unity Editor]
+// // ** xref:page$android-permissions.adoc[Android Permissions]
