@@ -30,3 +30,6 @@ bug:
 - "Android: Resolved race condition that could result in an extra 'play' event when updating player contact information while the game is being backgrounded"
 - "Android: Fixed bug that could result in an extra 'play' event when changing game assigned player id through a new call to Teak.Instance.IdentifyUser()."
 - "WebGL: Ids of local notifications cancelled through `Teak.Instance.CancelAllNotifications()` are now correctly reported."
+known_issue:
+- "The Teak SDK uses methods that are deprecated as of Unity 2023. This will cause warnings when building with Unity 2023. This will be resolved in an upcoming point release."
+- "We have observed that builds made with Unity 2023 and Xcode 14 may crash on iOS 15+ when a foreground notification is received in a session which has had a system alert dialog. This can be resolved by building with the Xcode 15 beta. See https://forum.unity.com/threads/render-loop-stack-overflow-crash-on-ios.1442380/[this Unity forum thread, window=_blank] for more information."
