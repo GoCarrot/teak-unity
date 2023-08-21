@@ -1,7 +1,16 @@
 = Hello World (Push Notification)
 :page-pagination:
 
-Putting it all together.
+Okay, let's do the thing.
+
+== Seeing Your Active User
+
+If you've followed along so far, you can now go back to your Teak dashboard to see your active user.
+
+image:start/activeuser.png[alt_text]
+
+There you are on the dashboard, the noble player playing the game. 
+
 
 == Sending Your First Notification
 

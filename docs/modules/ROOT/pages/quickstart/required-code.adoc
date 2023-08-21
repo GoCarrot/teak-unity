@@ -1,11 +1,16 @@
 = Add Required Code
 :page-pagination:
 
-Get your code editor ready, we need to do two things: identify the user, and ask for push permissions.
+In order to send a push notification, you need to do two things in your game's code: 
+
+* [*] Tell Teak who the player is with `identifyUser`.
+* [*] Ask the player for permission to send them push notifications.
 
 == Identify User
 
-We tell Teak how to identify the current user by sending the player's ID with `<<IdentifyUser(string,UserConfiguration)>>[IdentifyUser()]`. 
+Teak's functionality depends on knowing when a user plays and on what device they play. 
+
+At every game launch, send the player's ID to Teak using `<<IdentifyUser(string,UserConfiguration)>>[IdentifyUser()]`.
 
 [TIP]
 .What Player ID should you use?

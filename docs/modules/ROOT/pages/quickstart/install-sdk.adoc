@@ -57,4 +57,23 @@ WARNING: https://docs.teak.io/usage/links.html[Short Links] are required for htt
 +
 This automates the native iOS and Android integration. If you need to disable this, you will need to manually manage and configure the xref:ios-dependencies.adoc[iOS dependencies] and the Android dependencies.
 
-The Teak SDK is now installed, we're ready to add the required code.
+== Initialize Teak on Android
+
+There's an extra step to intialize Teak on Android.
+
+[start=6]
+. Add this to the **main activity** in your **`AndroidManifest.xml`** file. Firebase should have created an AndroidManifest.xml file, or you can https://docs.unity3d.com/Manual/overriding-android-manifest.html[create one manually]. 
++
+[source,xml]
+----
+<meta-data android:name="io.teak.sdk.initialize" android:value="true"/>
+----
++
+This uses Firebase's initialization of ContentProviders to auto-initialize Teak. 
++
+NOTE: If this step does not work for your game, please see the xref:android-dependencies.adoc#_initialize_teak[additional methods for initialization].
+
+
+
+
+The Teak SDK is now installed, we're ready to add Teak code to our game logic.
