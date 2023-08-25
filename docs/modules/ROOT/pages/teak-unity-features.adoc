@@ -7,6 +7,7 @@
 
 // TODO: Put an identify user section here
 
+`identifyUser` is required for Teak to function. See the xref:quickstart/required-code.adoc[Getting Started] guide for the basic setup.
 
 // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 == Notification Event Listeners
