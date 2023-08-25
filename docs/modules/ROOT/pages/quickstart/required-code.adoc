@@ -81,8 +81,9 @@ On iOS and Android 13 and greater you are required to ask the user if you can se
 
 In the long term, you can increase your notification opt-in rates by being strategic about when you ask for permission. Ideally, you would ask for these permissions at a time that makes sense for your game. 
 
-But, for the purpose of getting up and running fast, let's just put the permissions request right here at game launch.
+For the purpose of getting up and running fast, let's put the permissions request right at game launch, for now.
 
+.Permissions Example
 [source,cs]
 ----
 // ...
@@ -94,13 +95,33 @@ Now your game will ask for push permissions when you launch the game. Make sure 
 
 == Testing Your Teak Installation
 
-If the Teak package is successfully installed and called, you will see the following message in the console.
+To confirm the successful installation of the Teak package, you should observe the following message in the console when Teak is first called.
 
+.Console Output when Teak initializes
 ----
-[Teak] Unity SDK Version: 4.2.1
+[Teak] Unity SDK Version: 4.3
 [Teak] IdentifyUser(): YOUR_PLAYER_ID
 ----
 
-You'll find more logging options in https://docs.teak.io/unity/latest/debugging.html[Troubleshooting] that will help as you build more Teak functionality into your game. But before that, it's time to build your game and get it running on a test device, so we can see your player in the Teak dashboard.
+Note that this will only show up in the Unity Editor if you are running the part of the your game where you call `identifyUser`. 
+
+You'll find more logging options in xref:debugging.adoc[Debugging with Teak] that will help as you incorporate more features. 
+
+=== Build Your Game
+
+At this point, Teak is ready to to be tested on device. 
+
+* Build your game and get it running on your test device.
+* `RegisterForNotifications` will pop an alert asking for push permissions. **Allow notifications**, or you won't be able to receive notifications on your device in the next step. 
+
+=== See Your Active User
+
+* Open the https://app.teak.io[Teak Dashboard] and navigate to your game. 
+** If the Teak integration is working and `identifyUser` is being called, you will see yourself in the **active user** chart on the dashboard. 
+
+.The lone tester, playing the game.
+image::start/activeuser.png[]
+
+If you've got an active user showing here, you are ready to test notification sends. 
 
 

@@ -1,66 +1,76 @@
-= Hello World (Push Notification)
+= Sending Your First Notification
 :page-pagination:
 
-Okay, let's do the thing.
+To make sure everything is set up properly, let's send a test notification to your device. 
 
-== Seeing Your Active User
+A recap of what we've done so far is also the requirements for this section: 
 
-If you've followed along so far, you can now go back to your Teak dashboard to see your active user.
+* [*] You have completed the setup steps for xref:quickstart/apple-apns.adoc[Apple APSN Certificates] or xref:quickstart/firebase-fcm.adoc[CGM Keys].
+* [*] You know where to find the **Player ID** for your test user.
+* [*] The game has Teak integrated and is building on device. 
+* [*] You **Allowed** push notifications on your test device when the game prompted you.
+* [*] You see your test device on the __5 Minute Active Users__ chart on the https://app.teak.io[Teak dashboard, window=_blank].
 
-image:start/activeuser.png[alt_text]
+== Hello World (Push Notification)
 
-There you are on the dashboard, the noble player playing the game. 
-
-
-== Sending Your First Notification
-
-Now let's send our first notification to that user. We'll create a message from the Teak dashboard, select a recipient, and see the notification on our device.
-
+Now let's send our first notification to our test user. We'll create a message from the Teak dashboard, select a test recipient, and see the preview notification on our device.
 
 === Create a Message to Send
 
-In the Teak dashboard for your game, set up your first notification.
+In the Teak dashboard for your game, we will create your first notification.
 
-Click on Notifications, select iOS Push, and then click New Message.
+This tutorial is written for iOS, but the steps are the same for Android, except you will need to click on the Android things instead. 
 
-image:start/dashboard.png[alt_text]
+. Click on **Notifications**, select the **iOS Push** tab, and then click **New Message**.
++
+image::start/dashboard.png[alt_text, 600]
 
-Now set up a modal. Give your message a Name, and select the platforms you want to create content for. (We'll just do iOS for now.) Click Next.
+. **Fill out the form** in the modal. Give your message a **Name**, and **select the platforms** you want to create content for. Click **Next**.
++
+image::start/newmessage.png[alt_text, 600]
++
+If you want to test Android as well, check that box too. 
 
-image:start/newmessage.png[alt_text]
+. Enter your desired **message** content, and click **Next**.
++
+image::start/newmessagecontent.png[alt_text, 600]
++
 
-Enter your desired message, and click Next.
+. Review and **save** your message.
++
+image::start/savemessage.png[alt_text, 600]
++ You'll now see it in the messages list.
 
-image:start/newmessagecontent.png[alt_text]
-
-Review and save your message. You'll now see it in the messages list.
-
-image:start/savemessage.png[alt_text]
-
-Now, we need to send our message to the device. Later, we'll set up Audiences to target groups of players, but for now, we just want to send this message to our device. We'll use Preview for that.
-
+Now, we need to send our message to the device. We'll use Preview for that.
 
 === Add a Preview Recipient
 
-Previews are useful for testing messages. To create a Preview, we need to tell Teak who we want to send to.
+Usually in Teak, we send messages to whole audiences at once using Audiences and Schedules. But, for the purpose of testing, we can use the **Preview** functionality to only send to our test device.
 
-You should see your message in the messages list on the Teak dashboard. Click Preview.
+To send a Preview, we need to tell Teak who we want to send to, and which of their devices to target.
 
-image:start/previewbutton.png[alt_text]
+[start=5]
+. You should see your message in the messages list on the Teak dashboard. Click **Preview**.
++
+image::start/previewbutton.png[alt_text, 600]
 
-Then select Add Recipients.
+. Then select **Add Recipients**.
++
+image::start/previewempty.png[alt_text, 600]
 
-image:start/previewempty.png[alt_text]
+. Enter your **player ID** (or `userIdentifier`) in the **Search by Game User ID** field. 
++
+You can get this from your game on the test device (if it displays the player ID) or from the console log (Teak will output it when Identify User is called).
 
-Enter your player ID (or `userIdentifier`) in the Search by Game User ID field. You can get this from your game on the test device (if it displays the player ID) or from the console log (Teak will output it when Identify User is called).
+. Click **Search**, and then click **Register** when your device is found.
++
+image::start/searchrecipients.png[alt_text, 600]
 
-Click Search, and then click Register when your device is found.
-
-image:start/searchrecipients.png[alt_text]
-
-Add a label so you can keep your test devices straight, and click Save. Other team members you invite to this game will be able to see your test devices, so choose a name that is helpful for the whole team.
-
-image:start/registerrecipients.png[alt_text]
+. **Add a label** so you can keep your test devices straight, and click **Save**. 
++
+Other team members you invite to this game will be able to see your test devices, so choose a name that is helpful for the whole team.
++
+image::start/registerrecipients.png[alt_text, 600]
 
 Your test device is now saved for this game. The next time you want to preview a message, you can just select your device from the list.
 
@@ -69,16 +79,39 @@ Your test device is now saved for this game. The next time you want to preview a
 
 Almost there! Let's send the notification to your device.
 
-First, make sure your game is not open on your device. By default, notifications don't show up if the game is already in the foreground.
+[start=10]
+. First, make sure **your game is not open** on your device. By default, notifications don't show up if the game is already in the foreground.
 
-Then, from the message preview in the Teak dashboard, click Send Preview.
+. Then, from the message preview in the Teak dashboard, click **Send Preview**.
++
+image::start/sendpreview.png[alt_text, 600]
 
-image:start/sendpreview.png[alt_text]
+== Receive the Notification
 
-== Recieve the Notification
+[start=12]
+. If everything is set up properly, **the notification will show up** on your device!
++
+image::start/hello.jpg[alt_text, 600]
 
-If everything is set up, the notification should show up on your device!
+Congratulations, you've sent your first push notification using Teak! Your initial Teak integration is done. 
 
-image:start/hello.jpg[alt_text]
+You _could_ ship this, and your game will start collecting data, and your CRMs can start creating and sending notifications to specific audiences. 
 
-Congratulations, you've sent your first push notification using Teak!
+But, you aren't ready to stop, you are on a roll. So...
+
+== Next Steps
+
+Here are some features you can enable next:
+
+* [ ] Set up Rewarding 
+// (Give your players coins when they tap on notifications.)
+* [ ] Set up Universal Links 
+// (Open your game from a URL.)
+* [ ] Set up Deep Links 
+// (Open your game to a specific screen.)
+* [ ] Set up Local Notifications 
+// (Schedule certain notifications in your game's code.)
+* [ ] Ask for Push Permissions more strategically 
+// (Hint: Use different strategies on iOS and Android.)
+
+Proceed to xref:teak-unity-features.adoc[**Features**] for additional steps. 

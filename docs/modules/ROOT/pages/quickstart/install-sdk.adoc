@@ -1,4 +1,4 @@
-= Install the Teak SDK
+= Install the Teak SDK in Unity
 :page-pagination:
 
 It's time to open your game in the Unity Editor and install the Teak SDK. 
@@ -26,6 +26,9 @@ https://github.com/GoCarrot/upm-package-teak.git
 . Click the btn:[Add] button. 
 
 . When the progress bars finish, the Teak for Unity SDK is installed. You should now see *Teak* in the *Edit* menu of your Unity project. 
++
+[NOTE]
+If you are using **Assembly Definitions** in Unity you will also need to reference Teak's `.asmdef` file from your Assembly Definition Asset. See Unity's doc on https://docs.unity3d.com/Manual/ScriptCompilationAssemblyDefinitionFiles.html#reference-another-assembly[Referencing another assembly, window=_blank]. 
 
 === Installing via Asset Menu
 
@@ -55,7 +58,7 @@ WARNING: https://docs.teak.io/usage/links.html[Short Links] are required for htt
 
 . The checkbox for *"Build Post-Processing"* should be checked.
 +
-This automates the native iOS and Android integration. If you need to disable this, you will need to manually manage and configure the xref:ios-dependencies.adoc[iOS dependencies] and the Android dependencies.
+This automates the native iOS and Android integration. If you need to disable this, you will need to manually manage and configure the xref:ios-dependencies.adoc[iOS dependencies] and the xref:android-dependencies.adoc[Android dependencies].
 
 == Initialize Teak on Android
 

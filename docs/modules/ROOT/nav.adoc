@@ -1,6 +1,6 @@
 
 // * xref:index.adoc[Overview]
-* xref:quickstart/index.adoc[Getting Started]
+* xref:quickstart/index.adoc[Getting Started in Unity]
 ** xref:quickstart/new-game.adoc[Initial Setup]
 *** xref:quickstart/apple-apns.adoc[iOS Push Credentials]
 *** xref:quickstart/firebase-fcm.adoc[Android FCM Credentials]
@@ -8,9 +8,10 @@
 ** xref:quickstart/required-code.adoc[Add Required Code]
 ** xref:quickstart/required-code.adoc#_identify_user[#Identify User#]
 ** xref:quickstart/required-code.adoc#_ask_the_player_for_push_permissions[#Request Push Permissions#]
+** xref:quickstart/required-code.adoc#_testing_your_teak_installation[#Testing#]
 // ** xref:unity-webgl.adoc[Setup WebGL -- Call Teak.init()]
-** xref:quickstart/hello-world.adoc[Hello World (Push Notification)]
-** xref:quickstart/next.adoc[Next Steps]
+** xref:quickstart/hello-world.adoc[Sending Your First Notification]
+// ** xref:quickstart/next.adoc[Next Steps]
 
 * xref:page$working-with-unity.adoc[Working with Teak in Unity]
 
@@ -48,4 +49,4 @@
 // * Retired Docs
 // ** xref:page$before-you-start.adoc[Before You Start]
 // ** xref:page$unity-editor.adoc[Unity Editor]
-// // ** xref:page$android-permissions.adoc[Android Permissions]
+// ** xref:page$android-permissions.adoc[Android Permissions]
