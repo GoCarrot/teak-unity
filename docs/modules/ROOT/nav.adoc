@@ -13,7 +13,24 @@
 ** xref:quickstart/hello-world.adoc[Sending Your First Notification]
 // ** xref:quickstart/next.adoc[Next Steps]
 
-* xref:page$working-with-unity.adoc[Working with Teak in Unity]
+// * xref:working-with-unity.adoc[Working with Teak in Unity]
+
+* xref:teak-unity-features.adoc[Features]
+** xref:identify-user.adoc[Identify User]
+** Push Notifications
+** xref:push-permissions.adoc[#Requesting Permissions#]
+** xref:local-push-notifications.adoc[#Local Notifications#]
+** xref:push-notification-badges.adoc[#Notification Badges#]
+** xref:push-notification-opt-outs.adoc[#Notification Opt-Outs#]
+// ** xref:push-notifications-sounds.adoc[#Notification Sounds#]
+** xref:rewards.adoc[Rewards]
+** xref:deep-links.adoc[Deep Links]
+** xref:post-launch-summary.adoc[Post Launch Summary]
+// ** xref:player-properties.adoc[Player Properties]
+** xref:custom-events.adoc[Custom Events]
+** xref:payment-reporting.adoc[Payment Reporting]
+** xref:limiting-data-collection.adoc[Limiting Data Collection]
+** xref:sdk-logout.adoc[Logout]
 
 // * Features
 // // ** xref:identify-user.adoc[Identify User]

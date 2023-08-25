@@ -1,32 +1,15 @@
 = Working with Teak in Unity
-
-== Requesting Push Notification Permissions
-In order to use push notifications on iOS, you will need to request permissions.
+:page-aliases: working-with-unity.adoc
 
 
-.Requesting Push Notification Permissions Using Unity's NotificationServices
-[source]
-----
-UnityEngine.iOS.NotificationServices.RegisterForNotifications(
-    UnityEngine.iOS.NotificationType.Alert |
-    UnityEngine.iOS.NotificationType.Badge |
-    UnityEngine.iOS.NotificationType.Sound);
-----
+// ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+== Identify User
 
-If you do not wish to use this method, or its Unity Replacement, you can use a Teak method to get push permissions with Alert, Badge and Sound.
+// TODO: Put an identify user section here
 
-.Requesting Push Notification Permissions Using Teak
-[source]
-----
-Teak.Instance.RegisterForNotifications();
-----
 
-This method have no effect on non-iOS builds, and is safe to use on iOS 8+.
-
-NOTE: We suggest that you don't simply ask for push permissions when the app starts.
-We'll be happy to talk with you to figure out what works best for your title.
-
-== Push Notifications and Local Notifications
+// ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+== Notification Event Listeners
 Whenever your game is launched via a push notification, local notification, or email
 link Teak will let you know by sending out an event to all listeners.
 
@@ -58,6 +41,123 @@ void Awake()
 
 See <<TeakNotification>> for more details.
 
+
+// ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+== Working with Local Notifications 
+
+You can use Teak to schedule notifications for the future; delivered either to
+the current user, or other users.
+
+NOTE: You get the full benefit of Teak's analytics, A/B testing, and Content Management System when using local notifications!
+
+[IMPORTANT]
+====
+All notification related methods are coroutines. Unless you want the
+method to block execution, you must use `StartCoroutine`.
+====
+
+=== Scheduling a Local Notification
+To schedule a notification from your game, use:
+
+doxygen2adoc:ScheduleNotification(string,string,long,Reply)[]
+
+NOTE: The maximum delay for a Local Notification is 30 days.
+
+=== Scheduling a Long-Distance Notification
+A notification which is scheduled from code, but delivered to a different player
+beside the current player is called a "long distance notification".
+
+doxygen2adoc:ScheduleNotification(string,long,string[],Reply)[]
+
+NOTE: The maximum delay for a Long-Distance Notification is 30 days.
+
+=== Canceling a Local Notification
+To cancel a previously scheduled notification, use:
+
+doxygen2adoc:CancelScheduledNotification(string,Reply)[]
+
+=== Canceling all Local Notifications
+
+To cancel all previously scheduled local notifications, use:
+
+doxygen2adoc:CancelAllScheduledNotifications(Reply)[]
+
+NOTE: This call is processed asynchronously. If you immediately call
+`TeakNotification.ScheduleNotification()` after calling
+`TeakNotification.CancelAllScheduledNotifications()` it is possible for your
+newly scheduled notification to also be canceled. We recommend waiting until the
+callback has fired before scheduling any new notifications.
+
+
+// ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+== User Notification State 
+
+On both iOS and Android >13, it is required that you request permission to send notifiactions to users.
+
+=== Requesting Push Notification Permissions   
+
+.Requesting Push Notification Permissions Using Teak
+[source]
+----
+Teak.Instance.RegisterForNotifications();
+----
+
+This method have no effect on non-iOS builds, and is safe to use on iOS 8+.
+
+NOTE: We suggest that you don't simply ask for push permissions when the app starts.
+We'll be happy to talk with you to figure out what works best for your title.
+
+You can use Teak to get the state of push notifications for your app.
+
+If notifications are disabled, you can prompt them to re-enable them on the
+settings page for the app, and use Teak to go directly the settings for your app.
+
+=== Determine if User Has Disabled Push Notifications 
+
+To get the state of push notifications, use:
+[source]
+----
+NotificationState PushNotificationState
+----
+
+.NotificationState Values
+[cols="1,2a"]
+|===
+|Value |Description
+|UnableToDetermine |Unable to determine the notification state.
+
+|Enabled |Notifications are enabled, your app can send push notifications.
+
+|Disabled |Notifications are disabled, your app cannot send push notifications.
+
+|Provisional |Provisional notifications are enabled, your app can send notifications but they will only display in the Notification Center (iOS 12+ only).
+
+|NotRequested |The user has not been asked to authorize push notifications (iOS only).
+|===
+
+.Example
+[source]
+----
+if (Teak.Instance.PushNotificationState == Teak.NotificationState.Disabled) {
+    // Show a button that will let users open the settings
+}
+----
+
+=== Opening the Settings for Your App 
+
+If you want to show the settings for your app, use:
+
+doxygen2adoc:OpenSettingsAppToThisAppsSettings()[]
+
+.Example
+[source]
+----
+// ...
+// When a user presses a button indicating they want to change their notification settings
+Teak.Instance.OpenSettingsAppToThisAppsSettings()
+----
+
+// ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 == Rewards
 
 Whenever your game should grant a reward to a user Teak will let you know by sending
@@ -130,180 +230,7 @@ void Awake()
 
 See <<TeakReward>> for more details.
 
-== Working with Notifications
-You can use Teak to schedule notifications for the future; delivered either to
-the current user, or other users.
-
-NOTE: You get the full benefit of Teak's analytics, A/B testing, and Content Management System when using local notifications!
-
-[IMPORTANT]
-====
-All notification related methods are coroutines. Unless you want the
-method to block execution, you must use `StartCoroutine`.
-====
-
-=== Scheduling a Local Notification
-To schedule a notification from your game, use:
-
-doxygen2adoc:ScheduleNotification(string,string,long,Reply)[]
-
-NOTE: The maximum delay for a Local Notification is 30 days.
-
-=== Scheduling a Long-Distance Notification
-A notification which is scheduled from code, but delivered to a different player
-beside the current player is called a "long distance notification".
-
-doxygen2adoc:ScheduleNotification(string,long,string[],Reply)[]
-
-NOTE: The maximum delay for a Long-Distance Notification is 30 days.
-
-=== Canceling a Notification
-To cancel a previously scheduled notification, use:
-
-doxygen2adoc:CancelScheduledNotification(string,Reply)[]
-
-=== Canceling all Local Notifications
-
-To cancel all previously scheduled local notifications, use:
-
-doxygen2adoc:CancelAllScheduledNotifications(Reply)[]
-
-NOTE: This call is processed asynchronously. If you immediately call
-`TeakNotification.ScheduleNotification()` after calling
-`TeakNotification.CancelAllScheduledNotifications()` it is possible for your
-newly scheduled notification to also be canceled. We recommend waiting until the
-callback has fired before scheduling any new notifications.
-
-== Determining if User Has Disabled Push Notifications
-You can use Teak to get the state of push notifications for your app.
-
-If notifications are disabled, you can prompt them to re-enable them on the
-settings page for the app, and use Teak to go directly the settings for your app.
-
-=== Notification State
-
-To get the state of push notifications, use:
-[source]
-----
-NotificationState PushNotificationState
-----
-
-.NotificationState Values
-[cols="1,2a"]
-|===
-|Value |Description
-|UnableToDetermine |Unable to determine the notification state.
-
-|Enabled |Notifications are enabled, your app can send push notifications.
-
-|Disabled |Notifications are disabled, your app cannot send push notifications.
-
-|Provisional |Provisional notifications are enabled, your app can send notifications but they will only display in the Notification Center (iOS 12+ only).
-
-|NotRequested |The user has not been asked to authorize push notifications (iOS only).
-|===
-
-.Example
-[source]
-----
-if (Teak.Instance.PushNotificationState == Teak.NotificationState.Disabled) {
-    // Show a button that will let users open the settings
-}
-----
-
-=== Opening the Settings for Your App
-
-If you want to show the settings for your app, use:
-
-doxygen2adoc:OpenSettingsAppToThisAppsSettings()[]
-
-.Example
-[source]
-----
-// ...
-// When a user presses a button indicating they want to change their notification settings
-Teak.Instance.OpenSettingsAppToThisAppsSettings()
-----
-
-== Post Launch Summary
-
-Each time your game launches, Teak will pass all of the information it has on the launch to you via the ``OnPostLaunchSummary`` event.
-
-See <<TeakPostLaunchSummary>> for more details.
-
-== Player Properties
-
-Teak can store up to 16 numeric, and 16 string properties per player. These
-properties can then be used for targeting.
-
-You do not need to register the property in the Teak Dashboard prior to sending
-them from your game, however you will need to register them in the Teak Dashboard
-before using them in targeting.
-
-=== Numeric Property
-To set a numeric property, use::
-
-doxygen2adoc:SetNumericAttribute(string,double)[]
-
-.Example
-[source]
-----
-Teak.Instance.SetNumericAttribute("coins", new_coin_balance);
-----
-
-=== String Property
-
-To set a string property, use:
-
-doxygen2adoc:SetNumericAttribute(string,string)[]
-
-.Example
-[source]
-----
-Teak.Instance.SetStringAttribute("last_slot", "amazing_slot_name");
-----
-
-== Analytics Events
-
-Teak can be used to track analytics events which can then be used for targeting. These events are automatically batched by the Teak SDK, you do not need to perform your own batching.
-
-=== Event Format
-
-Teak events are a tuple of values, 'action', 'object type' and 'object instance'.
-For example: ['LevelUp', 'Fishing', '13'].
-
-Object instance, and object type are optional, but if you provide an object instance,
-you must also provide an object type, for example ['FishCaught', null, '13'] is not allowed, but ['FishCaught', 'Salmon'] is allowed.
-
-=== Tracking an Event
-
-To track that an event occurred, use:
-
-doxygen2adoc:TrackEvent(string,string,string)[]
-
-.Example
-[source]
-----
-Teak.Instance.TrackEvent("LevelUp", "Fishing", "13");
-----
-
-=== Incrementing Events
-
-Incremented events are used for analytics which grow over time. You cannot provide negative values.
-
-To increment an event, use:
-
-doxygen2adoc:IncrementEvent(string,string,string,long)[]
-
-.Examples
-[source]
-----
-Teak.Instance.IncrementEvent("coin_sink", "slot", "Happy Land Slots", 25000);
-Teak.Instance.IncrementEvent("spin", "slot", "Happy Land Slots", 1);
-// <after the spin happens>
-Teak.Instance.IncrementEvent("coin_source", "slot", "Happy Land Slots", 1000000);
-----
-
+// ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 == Deep Links
 
 Deep Linking with Teak is based on routes, which act like URLs. These routes
@@ -363,12 +290,97 @@ Deep links will get processed the sooner of:
 processed earlier than your call to `IdentifyUser` or so that you can still process
 deep links in the case of a user opting out of tracking.
 
-== Logout
+
+// ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+== Post Launch Summary
+
+Each time your game launches, Teak will pass all of the information it has on the launch to you via the ``OnPostLaunchSummary`` event.
+
+See <<TeakPostLaunchSummary>> for more details.
+
+// ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+== Player Properties 
+
+Teak can store up to 16 numeric, and 16 string properties per player. These
+properties can then be used for targeting.
+
+You do not need to register the property in the Teak Dashboard prior to sending
+them from your game, however you will need to register them in the Teak Dashboard
+before using them in targeting.
+
+=== Numeric Property
+To set a numeric property, use::
+
+doxygen2adoc:SetNumericAttribute(string,double)[]
+
+.Example
+[source]
+----
+Teak.Instance.SetNumericAttribute("coins", new_coin_balance);
+----
+
+=== String Property 
+
+To set a string property, use:
+
+doxygen2adoc:SetNumericAttribute(string,string)[]
+
+.Example
+[source]
+----
+Teak.Instance.SetStringAttribute("last_slot", "amazing_slot_name");
+----
+
+// ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+== Analytics Events
+
+Teak can be used to track analytics events which can then be used for targeting. These events are automatically batched by the Teak SDK, you do not need to perform your own batching.
+
+=== Event Format
+
+Teak events are a tuple of values, 'action', 'object type' and 'object instance'.
+For example: ['LevelUp', 'Fishing', '13'].
+
+Object instance, and object type are optional, but if you provide an object instance,
+you must also provide an object type, for example ['FishCaught', null, '13'] is not allowed, but ['FishCaught', 'Salmon'] is allowed.
+
+=== Tracking an Event
+
+To track that an event occurred, use:
+
+doxygen2adoc:TrackEvent(string,string,string)[]
+
+.Example
+[source]
+----
+Teak.Instance.TrackEvent("LevelUp", "Fishing", "13");
+----
+
+=== Incrementing Events
+
+Incremented events are used for analytics which grow over time. You cannot provide negative values.
+
+To increment an event, use:
+
+doxygen2adoc:IncrementEvent(string,string,string,long)[]
+
+.Examples
+[source]
+----
+Teak.Instance.IncrementEvent("coin_sink", "slot", "Happy Land Slots", 25000);
+Teak.Instance.IncrementEvent("spin", "slot", "Happy Land Slots", 1);
+// <after the spin happens>
+Teak.Instance.IncrementEvent("coin_source", "slot", "Happy Land Slots", 1000000);
+----
+
+// ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+== Logout 
 
 You can log out the current user using `Logout`. If the user is logged out, Teak
 will not process deep links or rewards until a user is logged in, via `IdentifyUser`.
 
-== Reporting Facebook Payments Purchases
+// ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+== Reporting Facebook Payments Purchases 
 
 If you need to report purchases on Facebook Canvas from using any of the `FB.Canvas.Pay` methods, use:
 
@@ -392,7 +404,8 @@ FB.Canvas.PayWithProductId(
 );
 ----
 
-Preprocessor Defines
+// ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+Preprocessor Defines 
 --------------------
 Teak sets some preprocessor defines for your use in ``Teak/Editor/TeakPreProcessDefiner.cs``.
 
