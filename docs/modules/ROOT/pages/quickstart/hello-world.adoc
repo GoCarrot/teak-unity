@@ -93,16 +93,16 @@ image::start/sendpreview.png[alt_text, 600]
 +
 image::start/hello.jpg[alt_text, 600]
 
-Congratulations, you've sent your first push notification using Teak! Your initial Teak integration is done. 
-
-You _could_ ship this, and your game will start collecting data, and your CRMs can start creating and sending notifications to specific audiences. 
-
-But, you aren't ready to stop, you are on a roll. So...
+Congratulations, you've sent your first push notification using Teak! 
 
 == Next Steps
 
-Here are some features you can enable next:
+Your initial Teak integration is done. Teak is setup to collect data which your CRMs will use to xref:usage::page$notifications.adoc[create and send notifications] to specific xref:usage::page$audiences.adoc[audiences]. 
 
+But, there's still more to setup:
+
+* [ ] Ask for Push Permissions more strategically 
+// (Hint: Use different strategies on iOS and Android.)
 * [ ] Set up Rewarding 
 // (Give your players coins when they tap on notifications.)
 * [ ] Set up Universal Links 
@@ -111,7 +111,5 @@ Here are some features you can enable next:
 // (Open your game to a specific screen.)
 * [ ] Set up Local Notifications 
 // (Schedule certain notifications in your game's code.)
-* [ ] Ask for Push Permissions more strategically 
-// (Hint: Use different strategies on iOS and Android.)
 
 Proceed to xref:teak-unity-features.adoc[**Features**] for additional steps. 

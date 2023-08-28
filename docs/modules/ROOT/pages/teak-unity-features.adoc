@@ -1,4 +1,4 @@
-= Working with Teak in Unity
+= Teak Features in Unity
 :page-aliases: working-with-unity.adoc
 
 
@@ -405,37 +405,3 @@ FB.Canvas.PayWithProductId(
 );
 ----
 
-// ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-Preprocessor Defines 
---------------------
-Teak sets some preprocessor defines for your use in ``Teak/Editor/TeakPreProcessDefiner.cs``.
-
-.Teak Preprocessor Defines
-[cols="1,2a"]
-|===
-|Preprocessor Define |Description
-
-|TEAK_2_0_OR_NEWER |The Teak SDK version is at least 2.0
-
-|TEAK_2_1_OR_NEWER |The Teak SDK version is at least 2.1
-
-|TEAK_2_2_OR_NEWER |The Teak SDK version is at least 2.2
-
-|TEAK_2_3_OR_NEWER |The Teak SDK version is at least 2.3
-
-|TEAK_3_0_OR_NEWER |The Teak SDK version is at least 3.0
-
-|TEAK_3_1_OR_NEWER |The Teak SDK version is at least 3.1
-
-|TEAK_3_2_OR_NEWER |The Teak SDK version is at least 3.2
-
-|TEAK_3_3_OR_NEWER |The Teak SDK version is at least 3.3
-
-|TEAK_3_4_OR_NEWER |The Teak SDK version is at least 3.4
-
-|TEAK_4_0_OR_NEWER |The Teak SDK version is at least 4.0
-
-|TEAK_4_1_OR_NEWER |The Teak SDK version is at least 4.1
-
-|TEAK_4_2_OR_NEWER |The Teak SDK version is at least 4.2
-|===
