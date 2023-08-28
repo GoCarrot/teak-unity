@@ -2,92 +2,23 @@
 :page-aliases: working-with-unity.adoc
 
 
+// TODO: Put an intro blurb here.
+
+
 // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 == Identify User
 
-// TODO: Put an identify user section here
-
 `identifyUser` is required for Teak to function. See the xref:quickstart/required-code.adoc[Getting Started] guide for the basic setup.
 
-// ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-== Notification Event Listeners
-Whenever your game is launched via a push notification, local notification, or email
-link Teak will let you know by sending out an event to all listeners.
+// TODO: Put an identify user section here
 
-You can listen for that event during by first writing a listener function.
-
-.Example Notification Listener Function
-[source]
-----
-void MyOnLaunchedFromNotificationListener(TeakNotification notification)
-{
-    Debug.Log("OnLaunchedFromNotification: " +
-        notification.CreativeId + " - " +
-        notification.ScheduleId + " Incentivized? " +
-        notification.Incentivized);
-}
-----
-
-And then adding it to the `Teak.Instance.OnLaunchedFromNotification` event during
-`Awake()` in any `MonoBehaviour`.
-
-.Adding Example Notification Listener
-[source]
-----
-void Awake()
-{
-    Teak.Instance.OnLaunchedFromNotification += MyOnLaunchedFromNotificationListener;
-}
-----
-
-See <<TeakNotification>> for more details.
 
 
 // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-== Working with Local Notifications 
 
-You can use Teak to schedule notifications for the future; delivered either to
-the current user, or other users.
 
-NOTE: You get the full benefit of Teak's analytics, A/B testing, and Content Management System when using local notifications!
-
-[IMPORTANT]
-====
-All notification related methods are coroutines. Unless you want the
-method to block execution, you must use `StartCoroutine`.
-====
-
-=== Scheduling a Local Notification
-To schedule a notification from your game, use:
-
-doxygen2adoc:ScheduleNotification(string,string,long,Reply)[]
-
-NOTE: The maximum delay for a Local Notification is 30 days.
-
-=== Scheduling a Long-Distance Notification
-A notification which is scheduled from code, but delivered to a different player
-beside the current player is called a "long distance notification".
-
-doxygen2adoc:ScheduleNotification(string,long,string[],Reply)[]
-
-NOTE: The maximum delay for a Long-Distance Notification is 30 days.
-
-=== Canceling a Local Notification
-To cancel a previously scheduled notification, use:
-
-doxygen2adoc:CancelScheduledNotification(string,Reply)[]
-
-=== Canceling all Local Notifications
-
-To cancel all previously scheduled local notifications, use:
-
-doxygen2adoc:CancelAllScheduledNotifications(Reply)[]
-
-NOTE: This call is processed asynchronously. If you immediately call
-`TeakNotification.ScheduleNotification()` after calling
-`TeakNotification.CancelAllScheduledNotifications()` it is possible for your
-newly scheduled notification to also be canceled. We recommend waiting until the
-callback has fired before scheduling any new notifications.
+// == Notifications
+// TODO: Put a high level intro to notification types here.
 
 
 // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -157,6 +88,92 @@ doxygen2adoc:OpenSettingsAppToThisAppsSettings()[]
 // When a user presses a button indicating they want to change their notification settings
 Teak.Instance.OpenSettingsAppToThisAppsSettings()
 ----
+
+
+// ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+== Notification Event Listeners
+Whenever your game is launched via a push notification, local notification, or email
+link Teak will let you know by sending out an event to all listeners.
+
+You can listen for that event during by first writing a listener function.
+
+.Example Notification Listener Function
+[source]
+----
+void MyOnLaunchedFromNotificationListener(TeakNotification notification)
+{
+    Debug.Log("OnLaunchedFromNotification: " +
+        notification.CreativeId + " - " +
+        notification.ScheduleId + " Incentivized? " +
+        notification.Incentivized);
+}
+----
+
+And then adding it to the `Teak.Instance.OnLaunchedFromNotification` event during
+`Awake()` in any `MonoBehaviour`.
+
+.Adding Example Notification Listener
+[source]
+----
+void Awake()
+{
+    Teak.Instance.OnLaunchedFromNotification += MyOnLaunchedFromNotificationListener;
+}
+----
+
+See <<TeakNotification>> for more details.
+
+
+// ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+== Local Notifications 
+
+
+// TODO: Add a blurb here about what local notifications are and when to use them.
+
+
+You can use Teak to schedule notifications for the future; delivered either to
+the current user, or other users.
+
+NOTE: You get the full benefit of Teak's analytics, A/B testing, and Content Management System when using local notifications!
+
+[IMPORTANT]
+====
+All notification related methods are coroutines. Unless you want the
+method to block execution, you must use `StartCoroutine`.
+====
+
+=== Scheduling a Local Notification
+To schedule a notification from your game, use:
+
+doxygen2adoc:ScheduleNotification(string,string,long,Reply)[]
+
+NOTE: The maximum delay for a Local Notification is 30 days.
+
+=== Scheduling a Long-Distance Notification
+A notification which is scheduled from code, but delivered to a different player
+beside the current player is called a "long distance notification".
+
+doxygen2adoc:ScheduleNotification(string,long,string[],Reply)[]
+
+NOTE: The maximum delay for a Long-Distance Notification is 30 days.
+
+=== Canceling a Local Notification
+To cancel a previously scheduled notification, use:
+
+doxygen2adoc:CancelScheduledNotification(string,Reply)[]
+
+=== Canceling all Local Notifications
+
+To cancel all previously scheduled local notifications, use:
+
+doxygen2adoc:CancelAllScheduledNotifications(Reply)[]
+
+NOTE: This call is processed asynchronously. If you immediately call
+`TeakNotification.ScheduleNotification()` after calling
+`TeakNotification.CancelAllScheduledNotifications()` it is possible for your
+newly scheduled notification to also be canceled. We recommend waiting until the
+callback has fired before scheduling any new notifications.
+
 
 // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 == Rewards
@@ -375,13 +392,9 @@ Teak.Instance.IncrementEvent("coin_source", "slot", "Happy Land Slots", 1000000)
 ----
 
 // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-== Logout 
-
-You can log out the current user using `Logout`. If the user is logged out, Teak
-will not process deep links or rewards until a user is logged in, via `IdentifyUser`.
-
-// ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 == Reporting Facebook Payments Purchases 
+
+// TODO: Note auto reporting of payments on iOS and Android. 
 
 If you need to report purchases on Facebook Canvas from using any of the `FB.Canvas.Pay` methods, use:
 
@@ -405,3 +418,8 @@ FB.Canvas.PayWithProductId(
 );
 ----
 
+// ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+== Logout 
+
+You can log out the current user using `Logout`. If the user is logged out, Teak
+will not process deep links or rewards until a user is logged in, via `IdentifyUser`.

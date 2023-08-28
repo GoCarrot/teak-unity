@@ -16,21 +16,21 @@
 // * xref:working-with-unity.adoc[Working with Teak in Unity]
 
 * xref:teak-unity-features.adoc[Features]
-** xref:identify-user.adoc[Identify User]
+** xref:teak-unity-features.adoc#_user_notification_state[Identify User]
 ** Push Notifications
-** xref:push-permissions.adoc[#Requesting Permissions#]
-** xref:local-push-notifications.adoc[#Local Notifications#]
-** xref:push-notification-badges.adoc[#Notification Badges#]
-** xref:push-notification-opt-outs.adoc[#Notification Opt-Outs#]
-// ** xref:push-notifications-sounds.adoc[#Notification Sounds#]
-** xref:rewards.adoc[Rewards]
-** xref:deep-links.adoc[Deep Links]
-** xref:post-launch-summary.adoc[Post Launch Summary]
-// ** xref:player-properties.adoc[Player Properties]
-** xref:custom-events.adoc[Custom Events]
-** xref:payment-reporting.adoc[Payment Reporting]
-** xref:limiting-data-collection.adoc[Limiting Data Collection]
-** xref:sdk-logout.adoc[Logout]
+** xref:teak-unity-features.adoc#_user_notification_state[#Requesting Permissions#]
+** xref:teak-unity-features.adoc#_notification_event_listeners[#Notification Event Listeners#]
+** xref:teak-unity-features.adoc#_local_notifications[#Local Notifications#]
+// ** xref:teak-unity-features.adoc#[#Notification Badges#]
+// ** xref:teak-unity-features.adoc#[#Notification Opt-Outs#]
+// ** xref:teak-unity-features.adoc#[#Notification Sounds#]
+** xref:teak-unity-features.adoc#_rewards[Rewards]
+** xref:teak-unity-features.adoc#_deep_links[Deep Links]
+** xref:teak-unity-features.adoc#_post_launch_summary[Post Launch Summary]
+** xref:teak-unity-features.adoc#_player_properties[Player Properties]
+** xref:teak-unity-features.adoc#_analytics_events[Analytics Events]
+** xref:teak-unity-features.adoc#_reporting_facebook_payments_purchases[Payment Reporting]
+** xref:teak-unity-features.adoc#_logout[Logout]
 
 // * Features
 // // ** xref:identify-user.adoc[Identify User]
@@ -51,6 +51,7 @@
 
 * Troubleshooting & FAQs
 ** xref:debugging.adoc[Debugging with Teak]
+** xref:limiting-data-collection.adoc[Limiting Data Collection]
 ** xref:upm.adoc[Unity Package Manager]
 ** xref:unity-amazon-fire.adoc[Amazon Fire Setup]
 ** xref:play-services-resolver.adoc[Android External Dependency Manager for Unity]
