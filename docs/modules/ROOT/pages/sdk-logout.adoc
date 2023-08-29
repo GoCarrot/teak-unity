@@ -1,3 +1,0 @@
-= Logout
-
-You can log out the current user using `Logout`. If the user is logged out, Teak will not process deep links or rewards until a user is logged in, via `IdentifyUser`.
