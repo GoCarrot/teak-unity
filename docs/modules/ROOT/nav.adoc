@@ -29,7 +29,7 @@
 ** xref:teak-unity-features.adoc#_deep_links[Deep Links]
 ** xref:teak-unity-features.adoc#_post_launch_summary[Post Launch Summary]
 ** xref:teak-unity-features.adoc#_player_properties[Player Properties]
-** xref:teak-unity-features.adoc#_analytics_events[Analytics Events]
+** xref:teak-unity-features.adoc#_custom_analytics_events[Custom Analytics Events]
 ** xref:teak-unity-features.adoc#_reporting_facebook_payments_purchases[Payment Reporting]
 ** xref:teak-unity-features.adoc#_logout[Logout]
 

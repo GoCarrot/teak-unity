@@ -370,9 +370,13 @@ Teak.Instance.SetStringAttribute("last_slot", "amazing_slot_name");
 ----
 
 // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-== Analytics Events
+== Custom Analytics Events
 
-Teak can be used to track analytics events which can then be used for targeting. These events are automatically batched by the Teak SDK, you do not need to perform your own batching.
+Teak tracks a number of analytics event by default and nothing extra is needed to track them. 
+
+// TODO: Fill out list of things Teak tracks by default. 
+
+Teak can also track custom analytics events which can then be used for targeting. These events are automatically batched by the Teak SDK, you do not need to perform your own batching.
 
 === Event Format
 
