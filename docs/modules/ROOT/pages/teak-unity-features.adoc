@@ -23,11 +23,11 @@ At the end of the getting started guide, Teak is setup to collect data which you
 
 
 // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-== User Notification State 
+== User Notification State
 
 On both iOS and Android >13, it is required that you request permission to send notifiactions to users.
 
-=== Requesting Push Notification Permissions   
+=== Requesting Push Notification Permissions
 
 .Requesting Push Notification Permissions Using Teak
 [source]
@@ -45,7 +45,7 @@ You can use Teak to get the state of push notifications for your app.
 If notifications are disabled, you can prompt them to re-enable them on the
 settings page for the app, and use Teak to go directly the settings for your app.
 
-=== Determine if User Has Disabled Push Notifications 
+=== Determine if User Has Disabled Push Notifications
 
 To get the state of push notifications, use:
 [source]
@@ -76,7 +76,7 @@ if (Teak.Instance.PushNotificationState == Teak.NotificationState.Disabled) {
 }
 ----
 
-=== Opening the Settings for Your App 
+=== Opening the Settings for Your App
 
 If you want to show the settings for your app, use:
 
@@ -337,7 +337,7 @@ Each time your game launches, Teak will pass all of the information it has on th
 See <<TeakPostLaunchSummary>> for more details.
 
 // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-== Player Properties 
+== Player Properties
 
 Teak can store up to 16 numeric, and 16 string properties per player. These
 properties can then be used for targeting.
@@ -357,7 +357,7 @@ doxygen2adoc:SetNumericAttribute(string,double)[]
 Teak.Instance.SetNumericAttribute("coins", new_coin_balance);
 ----
 
-=== String Property 
+=== String Property
 
 To set a string property, use:
 
@@ -416,9 +416,9 @@ Teak.Instance.IncrementEvent("coin_source", "slot", "Happy Land Slots", 1000000)
 ----
 
 // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-== Reporting Facebook Payments Purchases 
+== Reporting Facebook Payments Purchases
 
-// TODO: Note auto reporting of payments on iOS and Android. 
+// TODO: Note auto reporting of payments on iOS and Android.
 
 If you need to report purchases on Facebook Canvas from using any of the `FB.Canvas.Pay` methods, use:
 
@@ -443,7 +443,7 @@ FB.Canvas.PayWithProductId(
 ----
 
 // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-== Logout 
+== Logout
 
 You can log out the current user using `Logout`. If the user is logged out, Teak
 will not process deep links or rewards until a user is logged in, via `IdentifyUser`.
