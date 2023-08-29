@@ -17,7 +17,7 @@
 
 * xref:teak-unity-features.adoc[Features]
 ** xref:teak-unity-features.adoc#_user_notification_state[Identify User]
-** http://127.0.0.1:8080/unity/latest/teak-unity-features.html#_push_notifications[Push Notifications]
+** xref:teak-unity-features.html#_push_notifications[Push Notifications]
 ** xref:teak-unity-features.adoc#_user_notification_state[#Requesting Permissions#]
 ** xref:teak-unity-features.adoc#_notification_event_listeners[#Notification Event Listeners#]
 ** xref:teak-unity-features.adoc#_local_notifications[#Local Notifications#]
