@@ -25,6 +25,7 @@
 // ** xref:teak-unity-features.adoc#[#Notification Opt-Outs#]
 // ** xref:teak-unity-features.adoc#[#Notification Sounds#]
 ** xref:teak-unity-features.adoc#_rewards[Rewards]
+** xref:teak-unity-features.adoc#_universal_links[Universal Links]
 ** xref:teak-unity-features.adoc#_deep_links[Deep Links]
 ** xref:teak-unity-features.adoc#_post_launch_summary[Post Launch Summary]
 ** xref:teak-unity-features.adoc#_player_properties[Player Properties]

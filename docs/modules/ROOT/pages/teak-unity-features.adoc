@@ -250,6 +250,25 @@ void Awake()
 See <<TeakReward>> for more details.
 
 // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+== Universal Links
+
+Teak's ShortLinks are an implementation of iOS Universal Links and Android App Links. These are links that open your game from a URL. Links can be incentivized with Rewards. 
+
+If the game is not installed on the device, the user will be directed to your game in the app store. On a desktop web browser, the user will be taken to the Desktop URL from your game settings. 
+
+Except for the last item, the setup for Short Links is covered in the getting started guide.
+
+* [*] xref:quickstart/apple-apns.adoc#_enable_push_notifications_and_associated_domains[Associated Domains checkbox] is checked on the Apple Developer Site.
+* [*] ShortLink Domain is setup in menu:Teak Dashboard[Settings, ShortLinks]
+* [*] ShortLink Domain is copied to the xref:quickstart/install-sdk.adoc#_configure_teak_in_the_unity_editor[Teak settings in Unity].
+* [*] Build Post-Processing is on.
+* [ ] Set a **Desktop Game URL** 
+
+To set the Desktop Game URL, open the https://app.teak.io/[Teak Dashboard, window=_blank] for your game, navigate to menu:Settings[Facebook & Desktop Web, Desktop Links] and add the URL you want the browser to open when your links are clicked on desktop computers. 
+
+Once that is saved, you are setup to use Short Links. To confirm, xref:usage::page$links.adoc[create a new link] on the dashboard and click on it on your device. Your game should launch. 
+
+// ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 == Deep Links
 
 Deep Linking with Teak is based on routes, which act like URLs. These routes
