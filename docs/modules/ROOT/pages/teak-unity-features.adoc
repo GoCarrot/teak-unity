@@ -126,16 +126,15 @@ See <<TeakNotification>> for more details.
 
 
 // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-== Local Notifications 
+== Local Notifications
 
+Local Notifications let you schedule push notifications for the current player or other players directly from your game integration. They're recommended
+for when you need deeply personalized content or scheduling and can coordinate with your marketing team on content and details on when a send will be triggered.
+Common use cases include informing players that their hourly bonus is ready, or that a tournament is over.
 
-// TODO: Add a blurb here about what local notifications are and when to use them.
+Before sending a local notification you will need to configure the corresponding xref:usage::scheduling.adoc#_local[Local Schedule, window=_blank] on the Teak Dashboard. By doing so, you get the full benefit of Teak's analytics, A/B testing, and Content Management System when using local notifications. The Name that you give the Schedule should be passed in as the first parameter for any local notification scheduling calls. Your marketing team may already have set up some Local Schedules, be sure to ask them if they have and what names they've given the Local Schedules.
 
-
-You can use Teak to schedule notifications for the future; delivered either to
-the current user, or other users.
-
-NOTE: You get the full benefit of Teak's analytics, A/B testing, and Content Management System when using local notifications!
+Local Notifications should not be used for new player flows/new user experience or lapsing player flows. These are better handled with xref:usage::scheduling.adoc#_triggered[Triggered Schedules, window=_blank] created by your marketing team through the Teak Dashboard.
 
 [IMPORTANT]
 ====
@@ -146,9 +145,11 @@ method to block execution, you must use `StartCoroutine`.
 === Scheduling a Local Notification
 To schedule a notification from your game, use:
 
-doxygen2adoc:ScheduleNotification(string,string,long,Reply)[]
+doxygen2adoc:Teak.Notification.Schedule(string,long,Dictionary<string, object>,Reply)[]
 
-NOTE: The maximum delay for a Local Notification is 30 days.
+``scheduleName`` should be the name of a xref:usage::scheduling.adoc#_local[Local Schedule, window=_blank] on the Teak Dashboard.
+
+The ``personalizationData`` parameter allows you to provide custom data that can be templated into each send using xref:usage::custom-tags.adoc#_local_notification_tags[Local Notification Tags, window=_blank]. Be sure to inform your marketing team what data you send under which keys so that the tags can be properly configured.
 
 === Scheduling a Long-Distance Notification
 A notification which is scheduled from code, but delivered to a different player
