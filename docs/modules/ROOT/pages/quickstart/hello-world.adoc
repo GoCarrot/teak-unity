@@ -5,7 +5,7 @@ To make sure everything is set up properly, let's send a test notification to yo
 
 A recap of what we've done so far is also the requirements for this section: 
 
-* [*] You have completed the setup steps for xref:quickstart/apple-apns.adoc[Apple APSN Certificates] or xref:quickstart/firebase-fcm.adoc[CGM Keys].
+* [*] You have completed the setup steps for xref:quickstart/apple-apns.adoc[iOS Push Certificates] or xref:quickstart/firebase-fcm.adoc[Android FCM Credentials].
 * [*] You know where to find the **Player ID** for your test user.
 * [*] The game has Teak integrated and is building on device. 
 * [*] You **Allowed** push notifications on your test device when the game prompted you.
