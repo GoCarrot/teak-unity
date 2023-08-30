@@ -60,12 +60,16 @@ WARNING: https://docs.teak.io/usage/links.html[Short Links] are required for htt
 +
 This automates the native iOS and Android integration. If you need to disable this, you will need to manually manage and configure the xref:ios-dependencies.adoc[iOS dependencies] and the xref:android-dependencies.adoc[Android dependencies].
 
+. The checkbox for *"Trace Logging"* should be checked during integration and testing.
++
+This enables additional logging from the Teak SDK to the Unity Debug Log allowing you to quickly verify that Teak SDK calls are being made as expected.
+
 == Initialize Teak on Android
 
 There's an extra step to intialize Teak on Android.
 
-[start=6]
-. Add this to the **main activity** in your **`AndroidManifest.xml`** file. Firebase should have created an AndroidManifest.xml file, or you can https://docs.unity3d.com/Manual/overriding-android-manifest.html[create one manually]. 
+[start=7]
+. Add this to the **main activity** in your **`AndroidManifest.xml`** file. Firebase should have created an AndroidManifest.xml file, or you can https://docs.unity3d.com/Manual/overriding-android-manifest.html[create one manually].
 +
 [source,xml]
 ----
@@ -76,10 +80,10 @@ This uses Firebase's initialization of ContentProviders to auto-initialize Teak.
 
 == Code Signing on iOS
 
-[start=7]
-. The `TeakNotificationService` and `TeakNotificationContent` targets will need to be signed on iOS. Xcode should take care of this when you sign the iOS-Unity target, but if you are getting provisionsing profile errors, check to make sure these targets are signed as well. 
+[start=8]
+. The `TeakNotificationService` and `TeakNotificationContent` targets will need to be signed on iOS. Xcode should take care of this when you sign the iOS-Unity target, but if you are getting provisionsing profile errors, check to make sure these targets are signed as well.
 +
-TIP: Setting up your **Signing Team ID** in Unity (menu:Edit[Project Settings, Player, iOS, Other Settings, Identification]) will sign everything automatically when you build for iOS. 
+TIP: Setting up your **Signing Team ID** in Unity (menu:Edit[Project Settings, Player, iOS, Other Settings, Identification]) will sign everything automatically when you build for iOS.
 
 
 The Teak SDK is now installed, we're ready to add Teak code to your game logic.
