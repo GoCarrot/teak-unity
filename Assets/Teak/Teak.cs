@@ -101,7 +101,9 @@ public partial class Teak : MonoBehaviour {
         /// they will only display in the Notification Center (iOS 12+ only).
         /// </summary>
         Provisional         = 2,
-        /// <summary>The user has not been asked to authorize notifications (iOS only).</summary>
+        /// <summary>The user has not been asked to authorize notifications (iOS only).
+        /// On Android the NotificationState will be Disabled if permissions have never
+        /// been requested, due to OS limitations.</summary>
         NotRequested        = 3
     }
 
