@@ -105,7 +105,7 @@ To confirm the successful installation of the Teak package, you should observe t
 
 Note that this will only show up in the Unity Editor if you are running the part of the your game where you call `identifyUser`. 
 
-You'll find more logging options in xref:debugging.adoc[Debugging with Teak] that will help as you incorporate more features. 
+More in depth logging can be enable using xref:teak-unity-features.adoc#_log_events[Log Events]. 
 
 === Build Your Game
 

@@ -28,6 +28,7 @@
 ** xref:teak-unity-features.adoc#_custom_analytics_events[Custom Analytics Events]
 ** xref:teak-unity-features.adoc#_reporting_facebook_payments_purchases[Payment Reporting]
 ** xref:teak-unity-features.adoc#_logout[Logout]
+** xref:teak-unity-features.adoc#_log_events[Log Events]
 
 // * Features
 // // ** xref:identify-user.adoc[Identify User]
@@ -46,8 +47,7 @@
 // ** xref:limiting-data-collection.adoc[Limiting Data Collection]
 // ** xref:sdk-logout.adoc[Logout]
 
-* Troubleshooting & FAQs
-** xref:debugging.adoc[Debugging with Teak]
+* Advanced Setup
 ** xref:push-notification-badges[Notification Badges]
 ** xref:limiting-data-collection.adoc[Limiting Data Collection]
 ** xref:upm.adoc[Unity Package Manager]

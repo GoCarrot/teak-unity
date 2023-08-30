@@ -448,3 +448,30 @@ FB.Canvas.PayWithProductId(
 
 You can log out the current user using `Logout`. If the user is logged out, Teak
 will not process deep links or rewards until a user is logged in, via `IdentifyUser`.
+
+
+// ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+== Log Events
+
+Teak communicates via semi-structured log events. You can view these in the device
+logs, but we also expose an event that you can use to listen for these logs inside
+Unity, as well as a wrapper class to help work with the log messages.
+
+=== Getting Log Events from Teak
+
+Create a handler for log events:
+[source]
+----
+void HandleLogEvent(Dictionary<string, object> logData) {
+    Debug.Log(new TeakLogEvent(logData));
+}
+----
+
+And assign it to ``<<OnLogEvent>>``:
+[source]
+----
+Teak.Instance.OnLogEvent += HandleLogEvent;
+----
+
+See <<TeakLogEvent>> for more details.
+
