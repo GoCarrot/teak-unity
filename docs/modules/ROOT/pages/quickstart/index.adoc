@@ -13,7 +13,6 @@ This guide assumes your game is cross platform, and has instructions for both iO
 Before we begin, ensure that you have the following prerequisites in place to ensure a smooth integration:
 
 === Unity Requirements
-* [x] A Unity game with user authentication
 * [x] Unity 2020 or newer
 
 === iOS Requirements
