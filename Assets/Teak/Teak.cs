@@ -687,7 +687,7 @@ public partial class Teak : MonoBehaviour {
     /// \deprecated Please use <see cref="RegisterForNotifications(System.Action)"/> instead.
     /// <remarks>
     /// This is a compatibility method which simply wraps <see cref="RegisterForNotifications(System.Action)"/> in
-    /// a StartCoRoutine()
+    /// a StartCoroutine()
     /// </remarks>
     [Obsolete("RegisterForNotifications(System.Action) instead.")]
     public void RegisterForNotifications() {
@@ -698,9 +698,10 @@ public partial class Teak : MonoBehaviour {
     /// Register for Push Notifications.
     /// </summary>
     /// <remarks>
-    /// This is a CoRoutine and will not return until complete.
+    /// This is a Coroutine and will not return until the player grants or denies push permissions.
     /// </remarks>
-    /// <param name="callback">A callback that</param>
+    /// <param name="callback">The callback will be called with true if the player granted
+    /// push permissions and false if the player denied push permissions.</param>
     public IEnumerator RegisterForNotifications(System.Action<bool> callback) {
 #if UNITY_EDITOR
         yield return null;
