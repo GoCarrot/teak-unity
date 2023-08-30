@@ -1,12 +1,12 @@
 android: ~
 ios: ~
 new:
-  - Trace logging (<<Teak.Trace>>) is now supported as a setting in the Unity Editor.
-  - Callbacks are now optional for <<TeakNotification>> methods.
-  - Added <<Teak.CanOpenNotificationSettings>> and <<Teak.OpenNotificationSettings>> to allow users to open the settings app directly to the notification settings for their app
-  - Added <<Teak.CanOpenSettingsAppToThisAppsSettings>> for existing <<Teak.OpenNotificationSettings>>.
-  - Added <<Teak.SetChannelState>> to allow users to opt in/out of Teak marketing channels.
-  - Added <<Teak.DeleteEmail>> to allow users to delete the email address associated with a user.
+  - Trace logging (Teak.Trace) is now supported as a setting in the Unity Editor.
+  - Callbacks are now optional for TeakNotification methods.
+  - Added Teak.CanOpenNotificationSettings and Teak.OpenNotificationSettings to allow users to open the settings app directly to the notification settings for their app
+  - Added Teak.CanOpenSettingsAppToThisAppsSettings for existing Teak.OpenNotificationSettings.
+  - Added Teak.SetChannelState to allow users to opt in/out of Teak marketing channels.
+  - Added Teak.DeleteEmail to allow users to delete the email address associated with a user.
 
 breaking:
   - Now requires EventBus 3.3.1 on Android

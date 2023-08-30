@@ -1,11 +1,35 @@
-android: ~
-ios: ~
-breaking:
-- Deprecated <<Teak.RegisterForNotifications()>> instead use <<Teak.RegisterForNotifications(System.Action)>>
-- Deprecated <<TeakNotification.ScheduleNotification>> instead use <<Teak.Notification.Schedule>>
+upgrade_note:
+- Deprecated `Teak.RegisterForNotifications()`. Instead use `Teak.RegisterForNotifications(System.Action)`, which will call the provided action once the user has allowed or denied push notifications.
+- Deprecated `TeakNotification.ScheduleNotification`. Instead use `Teak.Notification.Schedule`. `Teak.Notifiction.Schedule` requires that the local notification be configured on the dashboard ahead of time, and supports per-call personalization.
+- "The menu item to configure Teak settings has been renamed to Edit/Teak Settings..."
+- "\"Build Post-Processing\" is now enabled by default."
 new:
-- Added <<Teak.RegisterForNotifications(System.Action)>> as a co-routine
-- Added <<Teak.SetCategoryState>>
-- Added <<Teak.Notification>>
+- "Local notification personalization: Using `Teak.Notification.Schedule` you can now pass a dictionary of additional data which can be templated into the local notification."
+- "Session time tracking: The Teak SDK now automatically tracks the duration of game sessions and reports this data to the Teak Dashboard and any configured data syncs."
+- "Opt-Out Categories: You can now categorize push notifications and emails into different Opt-Out Categories, and provide players with an in-game communication preferences UI so that your players can manage what kinds of messaging they receive."
+- "Android Notification Channels: On Android Opt-Out Categories automatically map to Notification Channels, which provides players with a familiar UI in Settings to manage the kinds of messaging they receive."
+- "Android Badging: From the Teak Dashboard you can enable an app icon badge when push notifications are delivered. Note that this will only apply to non-default Opt-Out Categories, or the default Opt-Out category on new installs made after integrating Teak SDK 4.3.0."
+- "Android Image+Text Notification Layout: Teak now supports a new Android notification layout which places a square image to the right of the text content of the notification."
+- "Push Opt-Out Tracking: The Teak SDK can now detects and reports when a player has opted out of push notifications through their device settings to the Teak Dashboard for upcoming reports."
+- "Uninstall Tracking: The Teak SDK and Teak Dashboard can now detect and report when a player has uninstalled the game from their device for upcoming reports."
+enhancement:
+- The Teak SDK version is now shown in the Teak Settings editor.
+- "iOS: The Teak SDK now supports using custom `UNUserNotificationCenter` delegates with no additional configuration or code required."
+- "iOS: Standardized prefix on all log messages to `Teak:`"
+- Improved HTTP connection reuse to reduce power and bandwidth consumption on player devices
+- "Android: Improved notification display on Samsung devices running Android 12+."
+- "Teak.Instance.SetChannelState() callback now provides additional error information if the call fails."
 bug:
-- <<Teak.OnUserData>> will now get sent properly on iOS
+- Resolved potential build issues in projects using assembly definitions.
+- "`Teak.OnUserData` will now get sent properly on iOS"
+- Fixed trace logging when changing channel opt out state
+- Resolved several potential race conditions that could prevent updated player contact information from being submitted to the Teak Dashboard
+- "Resolved issue when setting a player's email address back to original value after calling `Teak.Instance.DeleteEmail()`"
+- Resolved several issues with reporting error conditions when changing channel opt out state
+- "Android: Resolved potential failure to initialize the Teak SDK when launching from a link or push notification that deep links to an unknown custom URL scheme"
+- "Android: Resolved race condition that could result in an extra 'play' event when updating player contact information while the game is being backgrounded"
+- "Android: Fixed bug that could result in an extra 'play' event when changing game assigned player id through a new call to Teak.Instance.IdentifyUser()."
+- "WebGL: Ids of local notifications cancelled through `Teak.Instance.CancelAllNotifications()` are now correctly reported."
+known_issue:
+- "The Teak SDK uses methods that are deprecated as of Unity 2023. This will cause warnings when building with Unity 2023. This will be resolved in an upcoming point release."
+- "We have observed that builds made with Unity 2023 and Xcode 14 may crash on iOS 15+ when a foreground notification is received in a session which has had a system alert dialog. This can be resolved by building with the Xcode 15 beta. See https://forum.unity.com/threads/render-loop-stack-overflow-crash-on-ios.1442380/[this Unity forum thread, window=_blank] for more information."
