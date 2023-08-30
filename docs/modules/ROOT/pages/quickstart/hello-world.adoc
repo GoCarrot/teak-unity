@@ -39,7 +39,7 @@ image::start/newmessagecontent.png[alt_text, 600]
 . Review and **save** your message.
 +
 image::start/savemessage.png[alt_text, 600]
-+ You'll now see it in the messages list.
+You'll now see it in the messages list.
 
 Now, we need to send our message to the device. We'll use Preview for that.
 
