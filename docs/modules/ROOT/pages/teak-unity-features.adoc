@@ -8,50 +8,53 @@
 // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 == Identify User
 
-`identifyUser` is required for Teak to function. See the xref:quickstart/required-code.adoc[Getting Started] guide for the basic setup.
+Teak's functionality depends on knowing when a user plays and on what device they play.
 
-// TODO: Put an identify user section here
+At every game launch, send the player's ID to Teak using `<<IdentifyUser(string,UserConfiguration)>>[Teak.Instance.IdentifyUser()]`.
 
+[TIP]
+.What Player ID should you use?
+====
+Your game probably has a user ID to store progress, coin balances, and other useful data. Use that ID with Teak too.
 
+* [*] It should be uniquely identify the current user.
+* [*] Ideally the same ID that is used in your game's backend.
+* [*] Send it as early as possible in the game's lifecycle.
+
+Having a consistent ID between your game makes customer support easier, and makes life easier for your analytics team.
+====
+
+Additional data, such as a player's email address and Facebook ID, can be passed to Teak by setting the appropriate fields on the `<<UserConfiguration>>` object passed to `<<IdentifyUser(string,UserConfiguration)>>[Teak.Instance.IdentifyUser()]`.
+
+If you need to update any of this additional data during a game session, call `<<IdentifyUser(string,UserConfiguration)>>[Teak.Instance.IdentifyUser()]` with an appropriately configured `<<UserConfiguration>>` object. `Teak.Instance.IdentifyUser()` will never clear or remove information about a player, and fields that are not set on the `UserConfiguration` object will be ignored.
+
+If you need to change players during a session, call `Teak.Instance.IdentifyUser()` with the other player's id. Teak will automatically end the current player's session and start a new session for the new player id.
 
 // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-== Push Notifications
+== Requesting Notification Permissions
 
-// TODO: Put a high level intro to notification types here.
+On iOS and Android 13 and greater you are required to ask the user if you can send them notifications. Do that with the `<<RegisterForNotifications(System.Action<bool>)>>[Teak.Instance.RegisterForNotifications()]` call.
 
-At the end of the getting started guide, Teak is setup to collect data which your CRMs will use to xref:usage::page$notifications.adoc[create and send notifications] to specific xref:usage::page$audiences.adoc[audiences].
+.Permissions Example
+[source,cs]
+----
+// ...
+StartCoroutine(Teak.Instance.RegisterForNotifications(granted => {
+  Debug.Log("Player " + granted ? "granted" : "denied" + " notification permissions.");
+});
+----
 
+You can still make this call even if the player cannot be prompted for permissions again. In that case, the callback will be called passing in true if notification permissions are enabled, otherwise false if they are disabled.
+
+NOTE:: `<<Teak.NotificationState>>[Teak.Instance.PushNotificationState]` will not update until the callback is called.
 
 // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-== User Notification State
+== Prompting a Player to Reenable Notifications
 
-On both iOS and Android >13, it is required that you request permission to send notifiactions to users.
-
-=== Requesting Push Notification Permissions
-
-.Requesting Push Notification Permissions Using Teak
-[source]
-----
-Teak.Instance.RegisterForNotifications();
-----
-
-This method have no effect on non-iOS builds, and is safe to use on iOS 8+.
-
-NOTE: We suggest that you don't simply ask for push permissions when the app starts.
-We'll be happy to talk with you to figure out what works best for your title.
-
-You can use Teak to get the state of push notifications for your app.
-
-If notifications are disabled, you can prompt them to re-enable them on the
+If notifications are disabled, you can prompt the player to re-enable them on the
 settings page for the app, and use Teak to go directly the settings for your app.
 
-=== Determine if User Has Disabled Push Notifications
-
-To get the state of push notifications, use:
-[source]
-----
-NotificationState PushNotificationState
-----
+To get the state of push notifications, use ``<<Teak.NotificationState>>[Teak.Instance.PushNotificationState]``
 
 .NotificationState Values
 [cols="1,2a"]
@@ -72,58 +75,17 @@ NotificationState PushNotificationState
 [source]
 ----
 if (Teak.Instance.PushNotificationState == Teak.NotificationState.Disabled) {
-    // Show a button that will let users open the settings
+    if (Teak.Instance.CanOpenNotificationSettings()) {
+        // Show the player a screenshot or guide on how to enable push notifications from notification settings, then...
+        Teak.Instance.OpenNotificationSettings();
+    } else if (Teak.Instance.CanOpenSettingsAppToThisAppsSettings()) {
+        // Show the player a screenshot or guide on how to enable push notifications from settings.
+        // On iOS this will require that the player tap 'Notifications' after the settings app launches.
+        // Then...
+        Teak.Instance.OpenSettingsAppToThisAppsSettings();
+    }
 }
 ----
-
-=== Opening the Settings for Your App
-
-If you want to show the settings for your app, use:
-
-doxygen2adoc:OpenSettingsAppToThisAppsSettings()[]
-
-.Example
-[source]
-----
-// ...
-// When a user presses a button indicating they want to change their notification settings
-Teak.Instance.OpenSettingsAppToThisAppsSettings()
-----
-
-
-// ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-== Notification Event Listeners
-Whenever your game is launched via a push notification, local notification, or email
-link Teak will let you know by sending out an event to all listeners.
-
-You can listen for that event during by first writing a listener function.
-
-.Example Notification Listener Function
-[source]
-----
-void MyOnLaunchedFromNotificationListener(TeakNotification notification)
-{
-    Debug.Log("OnLaunchedFromNotification: " +
-        notification.CreativeId + " - " +
-        notification.ScheduleId + " Incentivized? " +
-        notification.Incentivized);
-}
-----
-
-And then adding it to the `Teak.Instance.OnLaunchedFromNotification` event during
-`Awake()` in any `MonoBehaviour`.
-
-.Adding Example Notification Listener
-[source]
-----
-void Awake()
-{
-    Teak.Instance.OnLaunchedFromNotification += MyOnLaunchedFromNotificationListener;
-}
-----
-
-See <<TeakNotification>> for more details.
-
 
 // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 == Local Notifications
@@ -180,10 +142,14 @@ callback has fired before scheduling any new notifications.
 // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 == Rewards
 
-Whenever your game should grant a reward to a user Teak will let you know by sending
-out an event to all listeners.
+Whenever your game should grant a reward to a player Teak will let you know by sending
+out an event to all listeners added to `<<OnReward>>[Teak.Instance.OnReward]`.
 
-You can listen for that event during by first writing a listener function, for example:
+Teak does not provide any in-game UI to inform a player if they received a reward or not. You should
+add a listener to `<<OnReward>>[Teak.Instance.OnReward]` which detects if the reward was granted or
+denied, and informs the player what happened.
+
+This callback will be concurrent with the xref:server-api::page$rewards/endpoint.adoc[Teak Reward Endpoint, window=_blank] server to server call.
 
 .Example Reward Listener
 [source]
@@ -253,9 +219,9 @@ See <<TeakReward>> for more details.
 // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 == Universal Links
 
-Teak's ShortLinks are an implementation of iOS Universal Links and Android App Links. These are links that open your game from a URL. Links can be incentivized with Rewards. 
+Teak's ShortLinks are an implementation of iOS Universal Links and Android App Links. These are links that open your game from a URL. Links can be incentivized with Rewards.
 
-If the game is not installed on the device, the user will be directed to your game in the app store. On a desktop web browser, the user will be taken to the Desktop URL from your game settings. 
+If the game is not installed on the device, the user will be directed to your game in the app store. On a desktop web browser, the user will be taken to the Desktop URL from your game settings.
 
 Except for the last item, the setup for Short Links is covered in the getting started guide.
 
@@ -263,11 +229,11 @@ Except for the last item, the setup for Short Links is covered in the getting st
 * [*] ShortLink Domain is setup in menu:Teak Dashboard[Settings, ShortLinks]
 * [*] ShortLink Domain is copied to the xref:quickstart/install-sdk.adoc#_configure_teak_in_the_unity_editor[Teak settings in Unity].
 * [*] Build Post-Processing is on.
-* [ ] Set a **Desktop Game URL** 
+* [ ] Set a **Desktop Game URL**
 
-To set the Desktop Game URL, open the https://app.teak.io/[Teak Dashboard, window=_blank] for your game, navigate to menu:Settings[Facebook & Desktop Web, Desktop Links] and add the URL you want the browser to open when your links are clicked on desktop computers. 
+To set the Desktop Game URL, open the https://app.teak.io/[Teak Dashboard, window=_blank] for your game, navigate to menu:Settings[Facebook & Desktop Web, Desktop Links] and add the URL you want the browser to open when your links are clicked on desktop computers.
 
-Once that is saved, you are setup to use Short Links. To confirm, xref:usage::page$links.adoc[create a new link] on the dashboard and click on it on your device. Your game should launch. 
+Once that is saved, you are setup to use Short Links. To confirm, xref:usage::page$links.adoc[create a new link] on the dashboard and click on it on your device. Your game should launch.
 
 // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 == Deep Links
@@ -373,9 +339,9 @@ Teak.Instance.SetStringAttribute("last_slot", "amazing_slot_name");
 // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 == Custom Analytics Events
 
-Teak tracks a number of analytics event by default and nothing extra is needed to track them. 
+Teak tracks a number of analytics event by default and nothing extra is needed to track them.
 
-// TODO: Fill out list of things Teak tracks by default. 
+// TODO: Fill out list of things Teak tracks by default.
 
 Teak can also track custom analytics events which can then be used for targeting. These events are automatically batched by the Teak SDK, you do not need to perform your own batching.
 
@@ -474,4 +440,3 @@ Teak.Instance.OnLogEvent += HandleLogEvent;
 ----
 
 See <<TeakLogEvent>> for more details.
-
