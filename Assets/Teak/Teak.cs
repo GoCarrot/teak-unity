@@ -92,16 +92,16 @@ public partial class Teak : MonoBehaviour {
     public enum NotificationState : int {
         /// <summary>Unable to determine the notification state.</summary>
         UnableToDetermine   = -1,
-        /// <summary>Notifications are enabled, your app can send push notifications.</summary>
+        /// <summary>Notifications are enabled, your app can display notifications.</summary>
         Enabled             = 0,
-        /// <summary>Notifications are disabled, your app cannot send push notifications.</summary>
+        /// <summary>Notifications are disabled, your app cannot display notifications.</summary>
         Disabled            = 1,
         /// <summary>
-        /// Provisional notifications are enabled, your app can send notifications but
+        /// Provisional notifications are enabled, your app can receive notifications but
         /// they will only display in the Notification Center (iOS 12+ only).
         /// </summary>
         Provisional         = 2,
-        /// <summary>The user has not been asked to authorize push notifications (iOS only).</summary>
+        /// <summary>The user has not been asked to authorize notifications (iOS only).</summary>
         NotRequested        = 3
     }
 
