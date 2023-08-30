@@ -60,7 +60,7 @@ image::start/previewempty.png[alt_text, 600]
 
 . Enter your **player ID** (or `userIdentifier`) in the **Search by Game User ID** field. 
 +
-You can get this from your game on the test device (if it displays the player ID) or from the console log (Teak will output it when Identify User is called).
+You can get this from your game on the test device (if it displays the player ID) or from the console log (Teak will output it when Identify User is called if trace logging is enabled).
 
 . Click **Search**, and then click **Register** when your device is found.
 +
