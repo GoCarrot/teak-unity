@@ -1,5 +1,4 @@
 
-// * xref:index.adoc[Overview]
 * xref:quickstart/index.adoc[Getting Started in Unity]
 ** xref:quickstart/new-game.adoc[Initial Setup]
 *** xref:quickstart/apple-apns.adoc[iOS Push Credentials]
@@ -11,9 +10,6 @@
 ** xref:quickstart/required-code.adoc#_testing_your_teak_installation[#Testing#]
 // ** xref:unity-webgl.adoc[Setup WebGL -- Call Teak.init()]
 ** xref:quickstart/hello-world.adoc[Sending Your First Notification]
-// ** xref:quickstart/next.adoc[Next Steps]
-
-// * xref:working-with-unity.adoc[Working with Teak in Unity]
 
 * xref:teak-unity-features.adoc[Features]
 ** xref:teak-unity-features.adoc#_identify_user[Identify User]
@@ -52,10 +48,10 @@
 
 * Troubleshooting & FAQs
 ** xref:debugging.adoc[Debugging with Teak]
-// ** xref:limiting-data-collection.adoc[Limiting Data Collection]
+** xref:push-notification-badges[Notification Badges]
+** xref:limiting-data-collection.adoc[Limiting Data Collection]
 ** xref:upm.adoc[Unity Package Manager]
 ** xref:unity-amazon-fire.adoc[Amazon Fire Setup]
-** xref:play-services-resolver.adoc[Android External Dependency Manager for Unity]
 ** xref:custom-versions.adoc[Custom Version Numbers]
 ** xref:android-dependencies.adoc[Android Dependencies]
 ** xref:ios-dependencies.adoc[iOS Dependencies]
@@ -68,4 +64,5 @@
 // * Retired Docs
 // ** xref:page$before-you-start.adoc[Before You Start]
 // ** xref:page$unity-editor.adoc[Unity Editor]
+// * xref:working-with-unity.adoc[Working with Teak in Unity]
 // ** xref:page$android-permissions.adoc[Android Permissions]
