@@ -10,7 +10,7 @@ In order to send a push notification, you need to do two things in your game's c
 
 Teak's functionality depends on knowing when a user plays and on what device they play. 
 
-At every game launch, send the player's ID to Teak using `<<IdentifyUser(string,UserConfiguration)>>[IdentifyUser()]`.
+At every game launch, send the player's ID to Teak using `<<IdentifyUser(string,UserConfiguration)>>[Teak.Instance.IdentifyUser()]`.
 
 [TIP]
 .What Player ID should you use?
@@ -46,7 +46,7 @@ Next we'll add some data to our `<<Teak.UserConfiguration>>[UserConfiguration]`.
 
 NOTE: In SDK 5, Teak will no longer automatically collect Facebook Access Tokens or Emails from Facebook, instead you must pass the Facebook User Id in the `UserConfiguration`.
 
-Here's how we would add an email address and their Facebook ID. This will enable sending emails and templating personalization into our notification and email content.
+Here's how we would add an email address and their Facebook ID. This will enable sending emails and templating a player's real name into our notification and email content.
 
 .Data Example
 [source,cs]
@@ -59,9 +59,9 @@ Teak.UserConfiguration userConfiguration = new Teak.UserConfiguration {
 Teak.Instance.IdentifyUser(YOUR_PLAYER_ID, userConfiguration);
 ----
 
-* Null and empty strings will be ignored.
-* If you want to update player data during a session, call `IdentifyUser` again with the new data.
-* You can also use `UserConfiguration` to opt-out of some types of data collection.
+* Null and empty strings will be ignored. Any previously set email address or Facebook ID for the player will remain set.
+* If you want to update player data during a session, call `<<IdentifyUser(string,UserConfiguration)>>[IdentifyUser]` again with the new data. This will update player data without starting a new session.
+* You can also use `<<Teak.UserConfiguration>>[UserConfiguration]` to opt-out of some types of data collection.
 
 
 === Opting Out of Tracking
