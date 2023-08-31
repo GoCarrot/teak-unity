@@ -291,7 +291,7 @@ and initializing. Deep links will be processed when your game calls `<<IdentifyU
 A Deep Link route may be added to any notification or email in the xref:usage::page$notifications.adoc#_ios_deep_link["Advanced", window=_blank] section when setting up a Message or Link. We recommend documenting what routes are implemented and how to use them, with examples, for your marketing team to add to notifications, emails, and links.
 
 // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-== Post Launch Summary
+== Session Attribution
 
 Each time your game launches, Teak will pass all of the attribution data it has for the launch, if available, to all listeners added to `<<OnPostLaunchSummary>>[Teak.Instance.OnPostLaunchSummary]`.
 
@@ -309,7 +309,7 @@ void MyPostLaunchSummaryListener(TeakPostLaunchSummary launchSummary)
 
     Debug.Log("Launch attributed to " + launchSummary.ChannelName);
     Debug.Log("Launch came from click on " + launchSummary.CreativeName);
-    Debug.Log("Launch was " + launchSummary.RewardId == null ? "not" : "" + " rewarded");
+    Debug.Log("Launch was " + (launchSummary.RewardId == null ? "not" : "") + " rewarded");
 
     if (launchSummary.DeepLink != null) {
         Debug.Log("Launch requested to link to " + launchSummary.DeepLink);
@@ -329,6 +329,96 @@ void Awake()
 ----
 
 See <<TeakPostLaunchSummary>> for more details.
+// ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+== Player Communication Preferences
+
+We recommend providing players with an in-game UI to manage their communication preferences. By keeping the UI in-game you can reduce the
+number of players who opt-out of all notifications from their device settings and provide a simpler experience for players to reenable
+notifications.
+
+Teak also provides Opt-Out Categories which can be configured on the Dashboard. Each notification or email must be assigned to an Opt-Out
+Category. This allows players to opt-out of specific types of communication while continuing to receive other notifications or emails.
+
+=== Reading Player Communication Preferences
+
+Teak will inform your game of all configured Opt-Out Categories through the `<<OnConfigurationData>>[Teak.Instance.OnConfigurationData]` event.
+
+.Example OnConfigurationData Listener
+[source,csharp]
+----
+void MyConfigurationDataListener(Teak.ConfigurationData configurationData) {
+    foreach(Teak.Channel.Category category in configurationData.ChannelCategories) {
+        Debug.Log("Opt-Out Category - Id: "+ category.Id + ", Player Facing Name: " + category.Name + ", Player Facing Description: " + category.Description);
+    }
+}
+
+void Awake()
+{
+    Teak.Instance.OnConfigurationData += MyConfigurationDataListener;
+}
+----
+
+After the `OnConfigurationData` callback is called Opt-Out Categories will also be accessible through
+`<<Categories>>[Teak.Channel.Categories]`. Before the `OnConfigurationData` callback is called `Teak.Channel.Categories` will be `null`.
+
+Teak will inform your game of the player's current opt-out status through the `<<OnUserData>>[Teak.Instance.OnUserData]` event.
+
+.Example OnUserData Listener
+[source]
+----
+void MyUserDataListener(Teak.UserData userData) {
+    Debug.Log("Player's push channel state is: " + userData.PushStatus.StateName);
+    Debug.Log("Player's email channel state is: " + userData.EmailStatus.StateName);
+    foreach(Teak.Channel.Category category in Teak.Channel.Categories) {
+        Debug.Log("Player is " + (userData.PushStatus[category.Id] == Teak.Channel.State.OptIn ? "opted-in to" : " opted-out of") + category.Name + " for push.");
+        // Note: If the player has no email address then the state will always be Teak.Channel.State.Unknown!
+        Debug.Log("Player is " + (userData.EmailStatus[category.Id] == Teak.Channel.State.OptIn ? "opted-in to" : "opted-out of") + category.Name + " for email.");
+    }
+}
+
+void Awake()
+{
+    Teak.Instance.OnUserData += MyUserDataListener;
+}
+----
+
+NOTE:: Teak guarantees that `OnConfigurationData` will be called before `OnUserData`, and `Teak.Channel.Categories` will be available when `OnUserData` is called.
+
+=== Updating Player Communication Preferences
+
+To change a player's opt-out status for an entire channel, use
+
+doxygen2adoc:SetChannelState(Channel.Type,Channel.State,Channel.Reply)[]
+
+.Example
+[source]
+----
+// Opt out of all push notifications
+StartCoroutine(Teak.Instance.SetChannelState(Teak.Channel.PlatformPush, Teak.Channel.State.OptOut, (Teak.Channel.Reply reply) => {
+    if(reply.Error == false && reply.State == Teak.Channel.State.OptOut) {
+        Debug.Log("Opted player out of push");
+    }
+}));
+----
+
+NOTE:: Changing a player's opt-out status may fail if the player is not reachable by the given channel. In this case `reply.Error` will be true, and `reply.Errors` will be a dictionary containing more information.
+
+To change a player's opt-out status for a single Opt-Out Category, use
+
+doxygen2adoc:SetCategoryState(Channel.Type,string,Channel.State,Channel.Reply)[]
+
+.Example
+[source]
+----
+// Opt a player out of the emails from the 'sales' Opt-Out Category
+// Note: Will only work if there is an Opt-Out Category with the Id 'sales'!
+StartCoroutine(Teak.Instance.SetCategoryState(Teak.Channel.Email, "sales", Teak.Channel.State.OptOut, (TeakChannel.Reply reply) => {
+    if(reply.Error == false && reply.State == Teak.Channel.State.OptOut) {
+        Debug.Log("Opted player out of emails for " + reply.Category);
+    }
+}));
+----
 
 // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 == Player Properties
@@ -366,7 +456,7 @@ Teak.Instance.SetStringAttribute("last_slot", "amazing_slot_name");
 // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 == Custom Analytics Events
 
-Teak tracks a number of analytics event by default and nothing extra is needed to track them.
+Teak tracks a number of analytics event by default, including install, session start, in-app purchases facilitated by the platform app store, notification clicks, link clicks, and session timing, and nothing extra is needed to track them.
 
 // TODO: Fill out list of things Teak tracks by default.
 
@@ -412,9 +502,9 @@ Teak.Instance.IncrementEvent("coin_source", "slot", "Happy Land Slots", 1000000)
 // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 == Reporting Facebook Payments Purchases
 
-// TODO: Note auto reporting of payments on iOS and Android.
+Teak will automatically collect information for in-app purchases made using the platform app store on iOS, Android, and Amazon Fire devices.
 
-If you need to report purchases on Facebook Canvas from using any of the `FB.Canvas.Pay` methods, use:
+On Facebook Canvas, if you are using https://developers.facebook.com/docs/games/acquire/login-for-gaming[Facebook Login for Gaming, window=_blank], you will need to report purchases manually with:
 
 doxygen2adoc:ReportCanvasPurchase(string)[]
 
@@ -436,11 +526,17 @@ FB.Canvas.PayWithProductId(
 );
 ----
 
+NOTE:: Teak will automatically deduplicate reported purchases, including manually reported and automatically collected purchases. It is always safe to manually report Facebook Canvas purchases.
+
 // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 == Logout
 
-You can log out the current user using `Logout`. If the user is logged out, Teak
-will not process deep links or rewards until a user is logged in, via `IdentifyUser`.
+You can log out the current player using `Logout`. If the player is logged out, Teak
+will not process deep links or rewards until a player is logged in, via `<<IdentifyUser(string,UserConfiguration)>>[Teak.Instance.IdentifyUser()]`.
+
+NOTE:: The current device will remain associated with the last player id passed to `IdentifyUser`, and Teak will continue to send
+notifications to the device even if you call `Logout`. In general we do not recommend using `Logout` unless you have very specific
+needs and can handle some players potentially being denied notification or email rewards.
 
 
 // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -460,7 +556,7 @@ void HandleLogEvent(Dictionary<string, object> logData) {
 }
 ----
 
-And assign it to ``<<OnLogEvent>>``:
+And assign it to ``<<OnLogEvent>>[Teak.Instance.OnLogEvent]``:
 [source]
 ----
 Teak.Instance.OnLogEvent += HandleLogEvent;
