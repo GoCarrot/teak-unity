@@ -5,23 +5,11 @@ You can set the badge count on your app's icon using:
 
 doxygen2adoc:SetBadgeCount(int)[]
 
-On Android, this functionality uses the https://github.com/leolin310148/ShortcutBadger[ShortcutBadger library by Leo Sin].
+On Android, this functionality uses the https://github.com/leolin310148/ShortcutBadger[ShortcutBadger library by Leo Sin]. On Android,
+badging may not function as expected depending on device. Not all manufacturers support providing a count with a badge. Additionally,
+on all devices running Android 8+, the game must have a notification with an Opt-Out Category that has badging on Android enabled
+in the device's notification center in order for a badge count to be set or updated.
 
-== Known Issues
-
-[cols="1,2a"]
-|===
-|Date |Issue
-
-|October 11, 2018 |Google Nexus and Pixel devices are not supported, because the
-launcher used does not support badging.
-
-Samsung devices running Android 8+ are not supported (https://github.com/leolin310148/ShortcutBadger/pull/268[GitHub Issue]).
-
-[cols="1,2a"]
-!===
-!Since Version !Status
-
-!All Versions !Can't Fix
-!===
-|===
+On iOS `<<SetBadgeCount(int)>>[Teak.Instance.SetBadgeCount()]` requires that the player have granted notification permissions. If the player
+has granted notification permissions, and has not revoked badging permissions from the Settings app, then `Teak.Instance.SetBadgeCount()` will
+function at all times.
