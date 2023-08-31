@@ -274,9 +274,16 @@ public partial class Teak : MonoBehaviour {
         }
     }
 
+    /// <summary>
+    /// Remote Teak configuration data for the game.
+    /// <summary>
     public class ConfigurationData {
+        /// <summary>
+        /// The list of Opt-Out Categories configured for the game on the Teak Dashboard.
+        /// </summary>
         public List<Channel.Category> ChannelCategories { get; private set; }
 
+        /// @cond hide_from_doxygen
         public ConfigurationData(Dictionary<string, object> json) {
             if(json.ContainsKey("channelCategories")) {
                 List<object> categories = json["channelCategories"] as List<object>;
@@ -285,6 +292,7 @@ public partial class Teak : MonoBehaviour {
                 }
             }
         }
+        /// @endcond
     }
 
     /// <summary>
@@ -405,7 +413,7 @@ public partial class Teak : MonoBehaviour {
     public event System.Action<TeakNotification> OnForegroundNotification;
 
     /// <summary>
-    /// An event which gets fired when Teak remote configuration (e.g. the list of Opt Out Categories) is ready
+    /// An event which gets fired when Teak remote configuration is ready.
     /// </summary>
     public event System.Action<ConfigurationData> OnConfigurationData;
 

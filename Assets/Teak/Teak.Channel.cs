@@ -21,23 +21,38 @@ public partial class Teak {
     public partial class Channel {
         /// <summary>The id, name and description of a Teak marketing channel category</summary>
         public class Category {
+            /// <summary>
+            /// The internal identifier of the Opt-Out Category.
+            /// This is the value that should be provided to <see cref="SetCategoryState"/> when
+            /// updating a player's communication preferences.
+            /// </summary>
             public string Id {
                 get; private set;
             }
 
+            /// <summary>
+            /// The player facing name of the Opt-Out Category. This should be shown to your players
+            /// in an in-game UI.
+            /// </summary>
             public string Name {
                 get; private set;
             }
 
+            /// <summary>
+            /// The player facing description of the Opt-Out Category. This should be shown to your players
+            /// in an in-game UI.
+            /// </summary>
             public string Description {
                 get; private set;
             }
 
+            /// @cond hide_from_doxygen
             public Category(string id, string name, string description) {
                 this.Id = id;
                 this.Name = name;
                 this.Description = description;
             }
+            /// @endcond
 
             /// <summary>
             /// Returns a string that represents the current object.
