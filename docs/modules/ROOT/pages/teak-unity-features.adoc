@@ -355,7 +355,7 @@ Teak.Instance.SetNumericAttribute("coins", new_coin_balance);
 
 To set a string property, use:
 
-doxygen2adoc:SetNumericAttribute(string,string)[]
+doxygen2adoc:SetStringAttribute(string,string)[]
 
 .Example
 [source]
