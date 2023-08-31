@@ -1,10 +1,11 @@
 = Teak SDK 5
 
-Teak SDK 5 will contain many changes, and break many things. We do not have a firm date or timeline for it, however as we integrate systems and make incremental changes that can be previewed.
+Teak SDK 5 will be released in late 2024. As the next major version of the SDK, it will remove all methods currently marked as obsolete, and will also introduce changes to Teak's automatic data collection. To aid in the migration from 4.x to 5 the SDK provides a way to opt-in to new SDK 5 behaviors.
 
 == Previewing SDK 5 Behaviors
 
-Starting in SDK 4.1.0 there is a way to preview SDK 5 behaviors.
+If you are using *"Build Post-Processing"* simply check the box for *"Enable SDK 5 Behaviors [?]"* in the Teak Settings in Unity. Otherwise,
+follow the platform specific directions below.
 
 === iOS
 
