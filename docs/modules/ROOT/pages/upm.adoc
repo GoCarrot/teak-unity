@@ -26,11 +26,9 @@ The latest version is always available at https://github.com/GoCarrot/upm-packag
 
 The Teak SDK uses semantic versioning, which consists of:
 
-    <major>.<minor>.<patch>[-preview.<id>]
+    <major>.<minor>.<patch>
 
-For example:: `4.0.0-preview.0`
-
-Is the first preview release of major version 4, it has no minor version or patch version.
+For example:: `4.3.0`
 
 Major, breaking changes will happen only in major versions.
 
@@ -38,7 +36,7 @@ If new features are added, but no major breaking change has happened, it will be
 
 If only bugs are fixed, or other changes occur in a non-breaking way, it will be a patch version.
 
-For example: if you are using version 4.0.0 then you can update to version 4.0.1 and you should see no issues (except the bugs that got fixed, or performance improvements).
+For example: if you are using version 4.2.0 then you can update to version 4.2.1 and you should see no issues (except the bugs that got fixed, or performance improvements).
 
 The version control structure for the Teak SDK, distributed via UPM, matches this and allows you to use the version that makes the most sense for you.
 
@@ -47,24 +45,24 @@ The version control structure for the Teak SDK, distributed via UPM, matches thi
 ----
 {
   "dependencies": {
-    "io.teak.unity.sdk": "https://github.com/GoCarrot/upm-package-teak.git#4.0.0"
+    "io.teak.unity.sdk": "https://github.com/GoCarrot/upm-package-teak.git#4.3.0"
   }
 }
 ----
 
-You will always use version `4.0.0`, even when new versions come out
+You will always use version `4.3.0`, even when new versions come out
 
 .If you use
 [source, json]
 ----
 {
   "dependencies": {
-    "io.teak.unity.sdk": "https://github.com/GoCarrot/upm-package-teak.git#4.0"
+    "io.teak.unity.sdk": "https://github.com/GoCarrot/upm-package-teak.git#4.3"
   }
 }
 ----
 
-You will use any version of `4.0.x`, so if `4.0.1` comes out, your dependency can be updated.
+You will use any version of `4.3.x`, so if `4.3.1` comes out, your dependency can be updated.
 
 .If you use
 [source, json]
@@ -78,8 +76,14 @@ You will use any version of `4.0.x`, so if `4.0.1` comes out, your dependency ca
 
 Then any version of the `4.x.x` series that releases will be eligible.
 
-This is accomplished via git branches
+.If you use
+[source, json]
+----
+{
+  "dependencies": {
+    "io.teak.unity.sdk": "https://github.com/GoCarrot/upm-package-teak.git"
+  }
+}
+----
 
-There is a branch per major version, then a branch per minor version, and a tag per full version. The HEAD of each major/minor branch is kept updated to match the latest corresponding release.
-
-The HEAD of the `main` branch is kept updated to match the latest release.
+Then any version of the SDK that releases will be eligible, including major version updates.
