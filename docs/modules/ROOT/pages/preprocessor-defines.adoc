@@ -30,4 +30,6 @@ Teak sets some preprocessor defines for your use in ``Teak/Editor/TeakPreProcess
 |TEAK_4_1_OR_NEWER |The Teak SDK version is at least 4.1
 
 |TEAK_4_2_OR_NEWER |The Teak SDK version is at least 4.2
+
+|TEAK_4_3_OR_NEWER |The Teak SDK version is at least 4.3
 |===
