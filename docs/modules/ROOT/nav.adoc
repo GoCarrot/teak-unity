@@ -49,7 +49,7 @@
 // ** xref:sdk-logout.adoc[Logout]
 
 * Advanced Setup
-** xref:push-notification-badges[Notification Badges]
+** xref:push-notification-badges.adoc[Notification Badges]
 ** xref:limiting-data-collection.adoc[Limiting Data Collection]
 ** xref:upm.adoc[Unity Package Manager]
 ** xref:unity-amazon-fire.adoc[Amazon Fire Setup]
