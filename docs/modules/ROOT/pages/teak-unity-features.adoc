@@ -293,7 +293,40 @@ A Deep Link route may be added to any notification or email in the xref:usage::p
 // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 == Post Launch Summary
 
-Each time your game launches, Teak will pass all of the information it has on the launch to you via the ``OnPostLaunchSummary`` event.
+Each time your game launches, Teak will pass all of the attribution data it has for the launch, if available, to all listeners added to `<<OnPostLaunchSummary>>[Teak.Instance.OnPostLaunchSummary]`.
+
+This callback will be called after your game calls `<<IdentifyUser(string,UserConfiguration)>>[Teak.Instance.IdentifyUser()]`, and is primarily intended to assist in reporting session attribution to other analytics systems.
+
+.Example PostLaunchSummary Listener
+[source]
+----
+void MyPostLaunchSummaryListener(TeakPostLaunchSummary launchSummary)
+{
+    if (launchSummary.ChannelName == null) {
+        Debug.Log("Launch not attributed by Teak");
+        return;
+    }
+
+    Debug.Log("Launch attributed to " + launchSummary.ChannelName);
+    Debug.Log("Launch came from click on " + launchSummary.CreativeName);
+    Debug.Log("Launch was " + launchSummary.RewardId == null ? "not" : "" + " rewarded");
+
+    if (launchSummary.DeepLink != null) {
+        Debug.Log("Launch requested to link to " + launchSummary.DeepLink);
+    }
+}
+----
+
+And then adding it to `Teak.Instance.OnPostLaunchSummary` event during `Awake()` in any `MonoBehaviour`:
+
+.Adding Listener to OnPostLaunchSummary Event
+[source]
+----
+void Awake()
+{
+    Teak.Instance.OnPostLaunchSummary += MyPostLaunchSummaryListener;
+}
+----
 
 See <<TeakPostLaunchSummary>> for more details.
 
