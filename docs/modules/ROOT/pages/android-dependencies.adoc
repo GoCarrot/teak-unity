@@ -181,7 +181,7 @@ It means that the `res/values/teak.xml` file was not found. See below...
 
 == Configure Credentials
 
-The Teak credentials are located in `Assets/Plugins/Android/res/values/teak.xml`
+The Teak credentials are located in `Assets/Plugins/Android/teak-values.androidlib/res/values/teak.xml`
 
 IMPORTANT: The Teak Editor scripts for Unity will manage this file for you. If
 you are using the Teak Editor scripts, skip this step.
@@ -210,7 +210,7 @@ This provides Teak with the credentials needed to send information to the Teak S
 == Set Notification Icons for your Game
 
 To specify the icon displayed in the system tray, and at the top of the notification,
-describe these resources in a file called `teak_icons.xml`.
+describe these resources in a file called `Assets/Plugins/Android/teak-values.androidlib/res/values/teak_icons.xml`.
 
 NOTE: You will need two versions of this file. One located in `values` and the other
 located in `values-v21`.

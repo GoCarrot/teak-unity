@@ -63,7 +63,7 @@ If you are having issues, please check to make sure that the following exist in 
 
 https://developer.amazon.com/docs/adm/integrate-your-app.html#store-your-api-key-as-an-asset
 
-NOTE: When this documentation references the `assets` folder, it means `Assets/Plugins/Android/assets`.
+NOTE: When this documentation references the `assets` folder, it means `Assets/Plugins/Android/teak-values.androidlib/assets`.
 
 == Give it a Try
 
