@@ -1,0 +1,55 @@
+= Integrating with other Push SDKs
+
+If your game integrates with other SDKs which send push notifications and require custom notification handling,
+you will need to make some modifications to your integration to ensure that both Teak and your other SDKs function
+as expected.
+
+== iOS
+
+On iOS, Teak will automatically intercept calls to any configured `https://developer.apple.com/documentation/usernotifications/unusernotificationcenterdelegate[UNUserNotificationCenterDelegate]` on `[UNUserNotificationCenter currentNotificationCenter]`. Teak will
+handle the notification, if it was sent by Teak, before invoking your delegate code.
+
+You can confirm that this is working by observing the xref:unity::page$teak-unity-features.adoc#_post_launch_summary[PostLaunchSummary] and
+confirming that the launch is attributed to a notification when launching the game by tapping on a Teak notification.
+
+In the unlikely event that this does not automatically work, you will need to add additional code to your implementation of `https://developer.apple.com/documentation/usernotifications/unusernotificationcenterdelegate/1649501-usernotificationcenter?language=objc[userNotificationCenter:didReceiveNotificationResponse:withCompletetionHandler]`
+
+.Add This
+[source,objc]
+----
+Class teak = NSClassFromString(@"Teak");
+if([teak isTeakNotification:response.notification]) {
+    [teak didReceiveNotificationResponse:response withCompletionHandler:completionHandler];
+    return;
+}
+----
+
+and `https://developer.apple.com/documentation/usernotifications/unusernotificationcenterdelegate/1649518-usernotificationcenter?language=objc[userNotificationCenter:willPresentNotification:withCompletionHandler:]`
+
+.Add This
+[source,objc]
+----
+Class teak = NSClassFromString(@"Teak");
+if([teak isTeakNotification:notification]) {
+    [teak willPresentNotification:response withCompletionHandler:completionHandler];
+    return;
+}
+----
+
+== Android
+
+On Android you will need to implement a https://firebase.google.com/docs/cloud-messaging/android/receive[custom service that extends FirebaseMessagingService, window=_blank] and https://firebase.google.com/docs/cloud-messaging/android/receive#override-onmessagereceived[override `onMessageReceived`].
+
+In your custom `onMessageReceived`
+
+.Add This
+[source,java]
+----
+if (io.teak.sdk.push.FCMPushProvider.isTeakNotification(remoteMessage)) {
+    io.teak.sdk.push.FCMPushProvider.onMessageReceivedExternal(remoteMessage, getApplicationContext());
+    return;
+}
+----
+
+You can confirm that this is working by verifying that notifications sent by all of your providers, including Teak, are correctly displayed on
+a test device.

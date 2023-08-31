@@ -51,6 +51,7 @@
 * Advanced Setup
 ** xref:push-notification-badges.adoc[Notification Badges]
 ** xref:limiting-data-collection.adoc[Limiting Data Collection]
+** xref:other-push-sdks.adoc[Integrating with Other Push Providers]
 ** xref:upm.adoc[Unity Package Manager]
 ** xref:unity-amazon-fire.adoc[Amazon Fire Setup]
 ** xref:custom-versions.adoc[Custom Version Numbers]
