@@ -49,45 +49,6 @@ You can still make this call even if the player cannot be prompted for permissio
 NOTE:: `<<Teak.NotificationState>>[Teak.Instance.PushNotificationState]` will not update until the callback is called.
 
 // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-== Prompting a Player to Reenable Notifications
-
-If notifications are disabled, you can prompt the player to re-enable them on the
-settings page for the app, and use Teak to go directly the settings for your app.
-
-To get the state of push notifications, use ``<<Teak.NotificationState>>[Teak.Instance.PushNotificationState]``
-
-.NotificationState Values
-[cols="1,2a"]
-|===
-|Value |Description
-|UnableToDetermine |Unable to determine the notification state.
-
-|Enabled |Notifications are enabled, your app can send push notifications.
-
-|Disabled |Notifications are disabled, your app cannot send push notifications.
-
-|Provisional |Provisional notifications are enabled, your app can send notifications but they will only display in the Notification Center (iOS 12+ only).
-
-|NotRequested |The user has not been asked to authorize push notifications (iOS only).
-|===
-
-.Example
-[source]
-----
-if (Teak.Instance.PushNotificationState == Teak.NotificationState.Disabled) {
-    if (Teak.Instance.CanOpenNotificationSettings()) {
-        // Show the player a screenshot or guide on how to enable push notifications from notification settings, then...
-        Teak.Instance.OpenNotificationSettings();
-    } else if (Teak.Instance.CanOpenSettingsAppToThisAppsSettings()) {
-        // Show the player a screenshot or guide on how to enable push notifications from settings.
-        // On iOS this will require that the player tap 'Notifications' after the settings app launches.
-        // Then...
-        Teak.Instance.OpenSettingsAppToThisAppsSettings();
-    }
-}
-----
-
-// ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 == Local Notifications
 
 Local Notifications let you schedule push notifications for the current player or other players directly from your game integration. They're recommended
@@ -138,6 +99,46 @@ NOTE: This call is processed asynchronously. If you immediately call
 newly scheduled notification to also be canceled. We recommend waiting until the
 callback has fired before scheduling any new notifications.
 
+
+
+// ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+== Prompting a Player to Reenable Notifications[[_promting_a_player_to_reenable_notifications]]
+
+If notifications are disabled, you can prompt the player to re-enable them on the
+settings page for the app, and use Teak to go directly the settings for your app.
+
+To get the state of push notifications, use ``<<Teak.NotificationState>>[Teak.Instance.PushNotificationState]``
+
+.NotificationState Values
+[cols="1,2a"]
+|===
+|Value |Description
+|UnableToDetermine |Unable to determine the notification state.
+
+|Enabled |Notifications are enabled, your app can send push notifications.
+
+|Disabled |Notifications are disabled, your app cannot send push notifications.
+
+|Provisional |Provisional notifications are enabled, your app can send notifications but they will only display in the Notification Center (iOS 12+ only).
+
+|NotRequested |The user has not been asked to authorize push notifications (iOS only).
+|===
+
+.Example
+[source]
+----
+if (Teak.Instance.PushNotificationState == Teak.NotificationState.Disabled) {
+    if (Teak.Instance.CanOpenNotificationSettings()) {
+        // Show the player a screenshot or guide on how to enable push notifications from notification settings, then...
+        Teak.Instance.OpenNotificationSettings();
+    } else if (Teak.Instance.CanOpenSettingsAppToThisAppsSettings()) {
+        // Show the player a screenshot or guide on how to enable push notifications from settings.
+        // On iOS this will require that the player tap 'Notifications' after the settings app launches.
+        // Then...
+        Teak.Instance.OpenSettingsAppToThisAppsSettings();
+    }
+}
+----
 
 // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 == Rewards
@@ -291,7 +292,7 @@ and initializing. Deep links will be processed when your game calls `<<IdentifyU
 A Deep Link route may be added to any notification or email in the xref:usage::page$notifications.adoc#_ios_deep_link["Advanced", window=_blank] section when setting up a Message or Link. We recommend documenting what routes are implemented and how to use them, with examples, for your marketing team to add to notifications, emails, and links.
 
 // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-== Session Attribution
+== Session Attribution[[_post_launch_summary]]
 
 Each time your game launches, Teak will pass all of the attribution data it has for the launch, if available, to all listeners added to `<<OnPostLaunchSummary>>[Teak.Instance.OnPostLaunchSummary]`.
 
@@ -500,7 +501,7 @@ Teak.Instance.IncrementEvent("coin_source", "slot", "Happy Land Slots", 1000000)
 ----
 
 // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-== Reporting Facebook Payments Purchases
+== Payment Reporting
 
 Teak will automatically collect information for in-app purchases made using the platform app store on iOS, Android, and Amazon Fire devices.
 
