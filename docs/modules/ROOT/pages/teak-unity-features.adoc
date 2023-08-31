@@ -284,17 +284,11 @@ and the value `email` would be assigned to the key `campaign`.
 
 Deep links are passed to an application as part of the launch. The Teak SDK holds
 onto the deep link information and waits until your app has finished launching,
-and initializing.
+and initializing. Deep links will be processed when your game calls `<<IdentifyUser(string,UserConfiguration)>>[Teak.Instance.IdentifyUser()]`
 
-Deep links will get processed the sooner of:
+=== Using Deep Links
 
-* Your app calls `IdentifyUser`
-* Your app calls `ProcessDeepLinks`
-
-`ProcessDeepLinks` is provided so that you can signify that deep links should be
-processed earlier than your call to `IdentifyUser` or so that you can still process
-deep links in the case of a user opting out of tracking.
-
+A Deep Link route may be added to any notification or email in the xref:usage::page$notifications.adoc#_ios_deep_link["Advanced", window=_blank] section when setting up a Message or Link. We recommend documenting what routes are implemented and how to use them, with examples, for your marketing team to add to notifications, emails, and links.
 
 // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 == Post Launch Summary
