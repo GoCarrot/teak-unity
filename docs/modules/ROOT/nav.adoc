@@ -13,9 +13,9 @@
 
 * xref:teak-unity-features.adoc[Features]
 ** xref:teak-unity-features.adoc#_identify_user[Identify User]
-** xref:teak-unity-features.adoc#_requesting_notification_permissions[Requesting Notification Permissions]
+** xref:teak-unity-features.adoc#_request_notification_permissions[Request Notification Permissions]
+** xref:teak-unity-features.adoc#_prompt_a_player_to_reenable_notifications[Prompt to Reenable Notifications]
 ** xref:teak-unity-features.adoc#_local_notifications[Local Notifications]
-** xref:teak-unity-features.adoc#_promting_a_player_to_reenable_notifications[Prompting to Reenable Notifications]
 // ** xref:teak-unity-features.adoc#[#Notification Badges#]
 // ** xref:teak-unity-features.adoc#[#Notification Opt-Outs#]
 // ** xref:teak-unity-features.adoc#[#Notification Sounds#]

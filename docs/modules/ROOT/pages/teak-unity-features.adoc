@@ -31,7 +31,8 @@ If you need to update any of this additional data during a game session, call `<
 If you need to change players during a session, call `Teak.Instance.IdentifyUser()` with the other player's id. Teak will automatically end the current player's session and start a new session for the new player id.
 
 // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-== Requesting Notification Permissions
+
+=== Request Notification Permissions
 
 On iOS and Android 13 and greater you are required to ask the user if you can send them notifications. Do that with the `<<RegisterForNotifications(System.Action<bool>)>>[Teak.Instance.RegisterForNotifications()]` call.
 
@@ -46,7 +47,47 @@ StartCoroutine(Teak.Instance.RegisterForNotifications(granted => {
 
 You can still make this call even if the player cannot be prompted for permissions again. In that case, the callback will be called passing in true if notification permissions are enabled, otherwise false if they are disabled.
 
-NOTE:: `<<Teak.NotificationState>>[Teak.Instance.PushNotificationState]` will not update until the callback is called.
+NOTE: `<<Teak.NotificationState>>[Teak.Instance.PushNotificationState]` will not update until the callback is called.
+
+
+// ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+=== Prompt a Player to Reenable Notifications
+
+If notifications are disabled, you can prompt the player to re-enable them on the
+settings page for the app, and use Teak to go directly the settings for your app.
+
+To get the state of push notifications, use ``<<Teak.NotificationState>>[Teak.Instance.PushNotificationState]``
+
+.NotificationState Values
+[cols="1,2a"]
+|===
+|Value |Description
+|UnableToDetermine |Unable to determine the notification state.
+
+|Enabled |Notifications are enabled, your app can send push notifications.
+
+|Disabled |Notifications are disabled, your app cannot send push notifications.
+
+|Provisional |Provisional notifications are enabled, your app can send notifications but they will only display in the Notification Center (iOS 12+ only).
+
+|NotRequested |The user has not been asked to authorize push notifications (iOS only).
+|===
+
+.Example
+[source]
+----
+if (Teak.Instance.PushNotificationState == Teak.NotificationState.Disabled) {
+    if (Teak.Instance.CanOpenNotificationSettings()) {
+        // Show the player a screenshot or guide on how to enable push notifications from notification settings, then...
+        Teak.Instance.OpenNotificationSettings();
+    } else if (Teak.Instance.CanOpenSettingsAppToThisAppsSettings()) {
+        // Show the player a screenshot or guide on how to enable push notifications from settings.
+        // On iOS this will require that the player tap 'Notifications' after the settings app launches.
+        // Then...
+        Teak.Instance.OpenSettingsAppToThisAppsSettings();
+    }
+}
+----
 
 // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 == Local Notifications
@@ -98,47 +139,6 @@ NOTE: This call is processed asynchronously. If you immediately call
 `TeakNotification.CancelAllScheduledNotifications()` it is possible for your
 newly scheduled notification to also be canceled. We recommend waiting until the
 callback has fired before scheduling any new notifications.
-
-
-
-// ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-== Prompting a Player to Reenable Notifications[[_promting_a_player_to_reenable_notifications]]
-
-If notifications are disabled, you can prompt the player to re-enable them on the
-settings page for the app, and use Teak to go directly the settings for your app.
-
-To get the state of push notifications, use ``<<Teak.NotificationState>>[Teak.Instance.PushNotificationState]``
-
-.NotificationState Values
-[cols="1,2a"]
-|===
-|Value |Description
-|UnableToDetermine |Unable to determine the notification state.
-
-|Enabled |Notifications are enabled, your app can send push notifications.
-
-|Disabled |Notifications are disabled, your app cannot send push notifications.
-
-|Provisional |Provisional notifications are enabled, your app can send notifications but they will only display in the Notification Center (iOS 12+ only).
-
-|NotRequested |The user has not been asked to authorize push notifications (iOS only).
-|===
-
-.Example
-[source]
-----
-if (Teak.Instance.PushNotificationState == Teak.NotificationState.Disabled) {
-    if (Teak.Instance.CanOpenNotificationSettings()) {
-        // Show the player a screenshot or guide on how to enable push notifications from notification settings, then...
-        Teak.Instance.OpenNotificationSettings();
-    } else if (Teak.Instance.CanOpenSettingsAppToThisAppsSettings()) {
-        // Show the player a screenshot or guide on how to enable push notifications from settings.
-        // On iOS this will require that the player tap 'Notifications' after the settings app launches.
-        // Then...
-        Teak.Instance.OpenSettingsAppToThisAppsSettings();
-    }
-}
-----
 
 // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 == Rewards
