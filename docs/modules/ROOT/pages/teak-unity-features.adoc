@@ -92,21 +92,21 @@ if (Teak.Instance.PushNotificationState == Teak.NotificationState.Disabled) {
 // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 == Local Notifications
 
-Local Notifications let you schedule push notifications for the current player or other players directly from your game code. This is different from Standard push notifications, which are scheduled for delivery in the Teak dashboard.
+Local Notifications let you schedule push notifications directly from your game code for the current player or other players. This differs from Standard push notifications, which your marketing team schedules for delivery in the Teak Dashboard.
 
-Local Notifications are recommended when you need deeply personalized content or scheduling. Common use cases include informing players that their hourly bonus is ready or that a tournament is over.
+We suggest using Local Notifications when you need deeply personalized content or scheduling. Common use cases include informing players that their hourly bonus is ready or that a tournament is over.
 
-Local Notifications should not be used for new player flows/new user experience or lapsing player flows. These are better handled with xref:usage::scheduling.adoc#_triggered[Triggered Schedules, window=_blank] created by your marketing team through the Teak Dashboard.
+You should not use Local Notifications for a new player flow/new user experience or lapsing player flow. Instead, your marketing team should create xref:usage::scheduling.adoc#_triggered[Triggered Schedules, window=_blank] through the Teak Dashboard for these use cases.
 
-Optionally, Local Notifications can be sent to a different player using Long Distance notifications. These can be used to notify players of friend activity and achievements.
+Optionally, you can send notifications to a different player using Long Distance notifications. You can use Long Distance notifications to notify players of friend activity and achievements.
 
-Although Local Notifications are scheduled in your game code, you will still coordinate with your marketing team on content and details of when a send will be triggered. This is done on the Teak Dashboard.
+Although you can schedule Local Notifications in your game code, you will still coordinate with your marketing team on content created on the Teak Dashboard. Discuss and document when your game triggers Local Notifications thoroughly so your marketing team can craft the most relevant messaging.
 
 === Setup a Local Notification
 
-Before sending you will configure the corresponding xref:usage::scheduling.adoc#_local[Local Schedule, window=_blank] on the https://app.teak.io/[Teak Dashboard]. By doing so, you get the full benefit of Teak's analytics, A/B testing, and Content Management System when using local notifications.
+Before sending, you must configure the corresponding xref:usage::scheduling.adoc#_local[Local Schedule, window=_blank] on the https://app.teak.io/login[Teak Dashboard, window=_blank]. Doing so gives you the full benefit of Teak’s analytics, A/B testing, and Content Management System when using local notifications.
 
-The `Name` that you give the Schedule should be passed in as the first parameter for any local notification scheduling calls. Your marketing team may already have set up some Local Schedules, be sure to ask them if they have and what names they've given the Local Schedules.
+The `Name` you give the Schedule is the first parameter for any local notification scheduling calls. Your marketing team may already have set up some Local Schedules; be sure to ask them if they have and what names they’ve given the Local Schedules.
 
 === Schedule a Local Notification
 
