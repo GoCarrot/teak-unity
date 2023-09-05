@@ -12,6 +12,16 @@ Teak's functionality depends on knowing when a user plays and on what device the
 
 At every game launch, send the player's ID to Teak using `<<IdentifyUser(string,UserConfiguration)>>[Teak.Instance.IdentifyUser()]`.
 
+.Example
+[source,cs]
+----
+// ...
+Teak.UserConfiguration userConfiguration = new Teak.UserConfiguration {};
+Teak.Instance.IdentifyUser(YOUR_USER_ID, userConfiguration);
+----
+
+Make sure that your user ID is a unique ID for the player in your game.  
+
 [TIP]
 .What Player ID should you use?
 ====
@@ -24,11 +34,13 @@ Your game probably has a user ID to store progress, coin balances, and other use
 Having a consistent ID between your game makes customer support easier, and makes life easier for your analytics team.
 ====
 
+If you need to change players during a session, call `Teak.Instance.IdentifyUser()` with the other player's id. Teak will automatically end the current player's session and start a new session for the new player id.
+
+=== User Configuration
+
 Additional data, such as a player's email address and Facebook ID, can be passed to Teak by setting the appropriate fields on the `<<UserConfiguration>>` object passed to `<<IdentifyUser(string,UserConfiguration)>>[Teak.Instance.IdentifyUser()]`.
 
 If you need to update any of this additional data during a game session, call `<<IdentifyUser(string,UserConfiguration)>>[Teak.Instance.IdentifyUser()]` with an appropriately configured `<<UserConfiguration>>` object. `Teak.Instance.IdentifyUser()` will never clear or remove information about a player, and fields that are not set on the `UserConfiguration` object will be ignored.
-
-If you need to change players during a session, call `Teak.Instance.IdentifyUser()` with the other player's id. Teak will automatically end the current player's session and start a new session for the new player id.
 
 // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -94,11 +106,18 @@ if (Teak.Instance.PushNotificationState == Teak.NotificationState.Disabled) {
 
 Local Notifications let you schedule push notifications directly from your game code for the current player or other players. This differs from Standard push notifications, which your marketing team schedules for delivery in the Teak Dashboard.
 
-We suggest using Local Notifications when you need deeply personalized content or scheduling. Common use cases include informing players that their hourly bonus is ready or that a tournament is over.
+Common use cases include informing players that their hourly bonus is ready or that a tournament is over.
 
-You should not use Local Notifications for a new player flow/new user experience or lapsing player flow. Instead, your marketing team should create xref:usage::scheduling.adoc#_triggered[Triggered Schedules, window=_blank] through the Teak Dashboard for these use cases.
+[TIP]
+====
+Use Local Notifications when you need deeply personalized content or scheduling that the game code is better equipped to determine. 
 
-Optionally, you can send notifications to a different player using Long Distance notifications. You can use Long Distance notifications to notify players of friend activity and achievements.
+For example, an hourly bonus should be a local notification scheduled by the game, since the game will know when the hourly bonus was last claimed, and when the next bonus will be ready.
+
+A daily bonus should be setup using a standard notification scheduled in the dashboard, since the timing is not specific to the game logic.
+====
+
+You should not use Local Notifications for a new player flow/new user experience or lapsing player flow. Instead, your marketing team should create xref:usage::scheduling.adoc#_triggered[Triggered Schedules, window=_blank] for these use cases.
 
 Although you can schedule Local Notifications in your game code, you will still coordinate with your marketing team on content created on the Teak Dashboard. Discuss and document when your game triggers Local Notifications thoroughly so your marketing team can craft the most relevant messaging.
 
@@ -143,6 +162,10 @@ StartCoroutine(
 === Scheduling a Long-Distance Notification
 A notification which is scheduled from code, but delivered to a different player
 beside the current player is called a "long distance notification".
+
+Common use cases include notifing players of friend activity and achievements.
+
+To schedule a long-distance notification from your game, use:
 
 doxygen2adoc:ScheduleNotification(string,long,string[],Reply)[]
 
@@ -264,12 +287,19 @@ Once that is saved, you are setup to use Short Links. To confirm, xref:usage::pa
 // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 == Deep Links
 
-Deep Linking with Teak is based on routes, which act like URLs. These routes
-allow you to specify variables
+Deep Links are a way to link to specific screens in your game that will open when the game is launched from a notification or Universal Link. 
 
-You can add routes using:
+These are useful for promoting new content or linking directly to sale content in the game.
+
+TIP: For the marketing team to use Deep Links, they will have to xref:usage::page$notifications.adoc#_ios_deep_link["add the URL to their notifications", window=_blank] in the dashboard. So, keep a master list of active deep links that can be shared with your team, so everyone knows what is available for use.
+
+Deep Linking with Teak is based on routes, which act like URLs. Route patterns may include named parameters, allowing you to pass in additional data. 
+
+Add routes using:
 
 doxygen2adoc:RegisterRoute(string,string,string,Action<Dictionary<string, object>>)[]
+
+IMPORTANT: You need to register your deep link routes before you call `IdentifyUser`.
 
 .Example
 [source]
@@ -282,8 +312,6 @@ void Awake()
     });
 }
 ----
-
-IMPORTANT: You need to register your deep link routes before you call `IdentifyUser`.
 
 === How Routes Work
 
@@ -409,7 +437,7 @@ void Awake()
 }
 ----
 
-NOTE:: Teak guarantees that `OnConfigurationData` will be called before `OnUserData`, and `Teak.Channel.Categories` will be available when `OnUserData` is called.
+NOTE: Teak guarantees that `OnConfigurationData` will be called before `OnUserData`, and `Teak.Channel.Categories` will be available when `OnUserData` is called.
 
 === Updating Player Opt-Out Preferences
 
@@ -428,7 +456,7 @@ StartCoroutine(Teak.Instance.SetChannelState(Teak.Channel.PlatformPush, Teak.Cha
 }));
 ----
 
-NOTE:: Changing a player's opt-out status may fail if the player is not reachable by the given channel. In this case `reply.Error` will be true, and `reply.Errors` will be a dictionary containing more information.
+NOTE: Changing a player's opt-out status may fail if the player is not reachable by the given channel. In this case `reply.Error` will be true, and `reply.Errors` will be a dictionary containing more information.
 
 To change a player's opt-out status for a single Opt-Out Category, use
 
@@ -552,7 +580,7 @@ FB.Canvas.PayWithProductId(
 );
 ----
 
-NOTE:: Teak will automatically deduplicate reported purchases, including manually reported and automatically collected purchases. It is always safe to manually report Facebook Canvas purchases.
+NOTE: Teak will automatically deduplicate reported purchases, including manually reported and automatically collected purchases. It is always safe to manually report Facebook Canvas purchases.
 
 // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 == Logout
@@ -560,7 +588,7 @@ NOTE:: Teak will automatically deduplicate reported purchases, including manuall
 You can log out the current player using `Logout`. If the player is logged out, Teak
 will not process deep links or rewards until a player is logged in, via `<<IdentifyUser(string,UserConfiguration)>>[Teak.Instance.IdentifyUser()]`.
 
-NOTE:: The current device will remain associated with the last player id passed to `IdentifyUser`, and Teak will continue to send
+NOTE: The current device will remain associated with the last player id passed to `IdentifyUser`, and Teak will continue to send
 notifications to the device even if you call `Logout`. In general we do not recommend using `Logout` unless you have very specific
 needs and can handle some players potentially being denied notification or email rewards.
 
