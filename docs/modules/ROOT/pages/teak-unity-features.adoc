@@ -32,7 +32,7 @@ If you need to change players during a session, call `Teak.Instance.IdentifyUser
 
 // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-=== Request Notification Permissions
+== Request Notification Permissions
 
 On iOS and Android 13 and greater you are required to ask the user if you can send them notifications. Do that with the `<<RegisterForNotifications(System.Action<bool>)>>[Teak.Instance.RegisterForNotifications()]` call.
 
