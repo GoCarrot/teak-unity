@@ -127,7 +127,7 @@ The ``personalizationData`` parameter allows you to provide custom data that can
 .Example Local Notification Scheduling
 [source]
 ----
-// Requires a Local Schedule on the Teak Dashboard with the Name "hourly_bonus!"
+// Requires a Local Schedule on the Teak Dashboard with the Name "hourly_bonus"!
 StartCoroutine(
     Teak.Notification.Schedule(
         "hourly_bonus", 3600, new Dictionary<string, object> { {"coins", 100000} },
