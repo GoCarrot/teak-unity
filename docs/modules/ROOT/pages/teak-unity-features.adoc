@@ -357,16 +357,16 @@ void Awake()
 See <<TeakPostLaunchSummary>> for more details.
 // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-== Player Communication Preferences
+== Player Opt-Out Preferences
 
-We recommend providing players with an in-game UI to manage their communication preferences. By keeping the UI in-game you can reduce the
+We recommend providing players with an in-game UI to manage their opt-out preferences. By keeping the UI in-game you can reduce the
 number of players who opt-out of all notifications from their device settings and provide a simpler experience for players to reenable
 notifications.
 
 Teak also provides Opt-Out Categories which can be configured on the Dashboard. Each notification or email must be assigned to an Opt-Out
-Category. This allows players to opt-out of specific types of communication while continuing to receive other notifications or emails.
+Category. This allows players to opt-out of specific types of messaging while continuing to receive other notifications or emails.
 
-=== Reading Player Communication Preferences
+=== Reading Player Opt-Out Preferences
 
 Teak will inform your game of all configured Opt-Out Categories through the `<<OnConfigurationData>>[Teak.Instance.OnConfigurationData]` event.
 
@@ -411,7 +411,7 @@ void Awake()
 
 NOTE:: Teak guarantees that `OnConfigurationData` will be called before `OnUserData`, and `Teak.Channel.Categories` will be available when `OnUserData` is called.
 
-=== Updating Player Communication Preferences
+=== Updating Player Opt-Out Preferences
 
 To change a player's opt-out status for an entire channel, use
 
