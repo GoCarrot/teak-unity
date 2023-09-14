@@ -20,7 +20,7 @@ public class TeakSettings : ScriptableObject {
     static TeakSettings Instance {
         get {
             if (mInstance == null) {
-                mInstance = Resources.Load(teakSettingsAssetName) as TeakSettings;
+                mInstance = Resources.Load<TeakSettings>(teakSettingsAssetName);
                 if (mInstance == null) {
                     // If not found, autocreate the asset object.
                     mInstance = CreateInstance<TeakSettings>();
