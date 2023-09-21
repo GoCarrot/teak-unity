@@ -685,7 +685,7 @@ public partial class Teak : MonoBehaviour {
     /// <returns>true if the device was an iOS 12+ device</returns>
     public bool RegisterForProvisionalNotifications() {
 #if !UNITY_EDITOR && UNITY_IPHONE
-        return TeakRequestPushAuthorizationUnity(true, null);
+        return TeakRequestPushAuthorizationUnity(true, "nocallback");
 #else
         return false;
 #endif
