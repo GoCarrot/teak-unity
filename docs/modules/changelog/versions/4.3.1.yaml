@@ -1,0 +1,3 @@
+bug:
+  - Resolved crash when calling `Teak.Instance.RegisterForProvisionalNotifications()` on iOS
+  - Resolved intermittent issue that could reset disabling Build Post-Processing Scripts
