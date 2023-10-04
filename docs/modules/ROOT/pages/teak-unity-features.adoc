@@ -291,7 +291,7 @@ Deep Links are a way to link to specific screens in your game that will open whe
 
 These are useful for promoting new content or linking directly to sale content in the game.
 
-TIP: For the marketing team to use Deep Links, they will have to xref:usage::page$notifications.adoc#_ios_deep_link["add the URL to their notifications", window=_blank] in the dashboard. So, keep a master list of active deep links that can be shared with your team, so everyone knows what is available for use.
+TIP: For the marketing team to use Deep Links, they will have to xref:usage::page$notifications.adoc#_link_destination["add the URL to their notifications", window=_blank] in the dashboard. So, keep a master list of active deep links that can be shared with your team, so everyone knows what is available for use.
 
 Deep Linking with Teak is based on routes, which act like URLs. Route patterns may include named parameters, allowing you to pass in additional data. 
 
@@ -342,7 +342,7 @@ and initializing. Deep links will be processed when your game calls `<<IdentifyU
 
 === Using Deep Links
 
-A Deep Link route may be added to any notification or email in the xref:usage::page$notifications.adoc#_ios_deep_link["Advanced", window=_blank] section when setting up a Message or Link. We recommend documenting what routes are implemented and how to use them, with examples, for your marketing team to add to notifications, emails, and links.
+A Deep Link route may be added to any notification or email in the xref:usage::page$notifications.adoc#_link_destination["Advanced", window=_blank] section when setting up a Message or Link. We recommend documenting what routes are implemented and how to use them, with examples, for your marketing team to add to notifications, emails, and links.
 
 // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 == Session Attribution[[_post_launch_summary]]
