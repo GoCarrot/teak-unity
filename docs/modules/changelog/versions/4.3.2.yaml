@@ -1,0 +1,8 @@
+enhancement:
+  - Resolved all deprecation warnings when building with Unity 2023
+bug:
+  - Resolved issue on iOS which resulted in failing to track clicks and claim rewards when tapping on a foreground notification.
+  - Resolved issue which prevented game from launching when player tapped on notification buttons on Android >= 11
+  - "Resolved issue on Android which could result in failing to track clicks in sessions starting from a notification or link with a non-hierarchical out of game link, such as mailto:example@example.com"
+  - Resolved issue on Android that could result in an extra unattributed 'play' event when returning to the game from a push notification or link after two minutes of backgrounding
+  - Resolved iOS build warnings on Xcode 14+ when using Build Post-Processing Scripts
