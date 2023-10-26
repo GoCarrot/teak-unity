@@ -27,8 +27,13 @@ class TeakPreProcessDefiner : IPreprocessBuildWithReport {
     };
 
     public void OnPreprocessBuild(BuildReport report) {
+#if UNITY_2022_2_OR_NEWER
+        NamedBuildTarget buildTargetGroup = NamedBuildTarget.FromBuildTargetGroup(report.summary.platformGroup);
+        string[] existingDefines = PlayerSettings.GetScriptingDefineSymbols(buildTargetGroup).Split(';');
+#else
         BuildTargetGroup buildTargetGroup = report.summary.platformGroup;
         string[] existingDefines = PlayerSettings.GetScriptingDefineSymbolsForGroup(buildTargetGroup).Split(';');
+#endif
 
         HashSet<string> updatedDefines = new HashSet<string>(existingDefines);
         updatedDefines.RemoveWhere(define => define.StartsWith("TEAK_") && define.EndsWith("_OR_NEWER"));
@@ -36,7 +41,11 @@ class TeakPreProcessDefiner : IPreprocessBuildWithReport {
 
         string[] defines = new string[updatedDefines.Count];
         updatedDefines.CopyTo(defines);
+#if UNITY_2022_2_OR_NEWER
+        PlayerSettings.SetScriptingDefineSymbols(buildTargetGroup, string.Join(";", defines));
+#else
         PlayerSettings.SetScriptingDefineSymbolsForGroup(buildTargetGroup, string.Join(";", defines));
+#endif
     }
 }
 

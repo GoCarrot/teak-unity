@@ -165,6 +165,12 @@ public class TeakXcodeProjectMutator : IPostprocessBuildWithReport {
             return extensionTarget;
         }
 
+#if UNITY_2022_2_OR_NEWER
+        string applicationIdentifier = PlayerSettings.GetApplicationIdentifier(NamedBuildTarget.iOS);
+#else
+        string applicationIdentifier = PlayerSettings.GetApplicationIdentifier(BuildTargetGroup.iOS);
+#endif
+
         /////
         // Create app extension target
         extensionTarget = project.AddAppExtension(target, name,

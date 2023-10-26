@@ -765,7 +765,10 @@ public partial class Teak : MonoBehaviour {
             var androidCallback = new UnityEngine.Android.PermissionCallbacks();
             androidCallback.PermissionGranted += permissionGranted;
             androidCallback.PermissionDenied += permissionDenied;
+#if UNITY_2023_1_OR_NEWER
+#else
             androidCallback.PermissionDeniedAndDontAskAgain += permissionDenied;
+#endif
 
             UnityEngine.Android.Permission.RequestUserPermission(POST_NOTIFICATIONS, androidCallback);
             while (keepWaiting) { yield return null; }
