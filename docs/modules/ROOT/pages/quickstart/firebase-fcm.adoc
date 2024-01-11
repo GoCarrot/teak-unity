@@ -16,7 +16,7 @@ With Firebase successfully installed, you can proceed to the uncomplicated task 
 
 include::usage:reference:firebase-fcm.adoc[leveloffset=+1]
 
-With those values copied over, we're ready to move to Unity to get the Teak SDK installed. 
+With that setup complete, we're ready to move to Unity to get the Teak SDK installed. 
 
 == Amazon Fire Devices
 
