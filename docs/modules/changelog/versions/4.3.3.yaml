@@ -1,0 +1,4 @@
+bug:
+  - Resolved build failure on Unity 2020, 2020.3.44 and lower
+  - Resolved build failure on Unity 2021, 2021.3.17 and lower
+  - Resolved build failure on Unity 2022, 2022.2.4 and lower
