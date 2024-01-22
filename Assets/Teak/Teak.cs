@@ -36,7 +36,11 @@ public partial class Teak : MonoBehaviour {
     /// simply use Teak.Instance (which calls this method).
     public static Teak Init() {
         if (mInstance == null) {
+#if UNITY_2023_1_OR_NEWER
             mInstance = FindFirstObjectByType(typeof(Teak)) as Teak;
+#else
+            mInstance = FindObjectOfType(typeof(Teak)) as Teak;
+#endif
 
             if (mInstance == null) {
                 GameObject teakGameObject = GameObject.Find("TeakGameObject");
