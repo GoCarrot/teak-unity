@@ -20,7 +20,7 @@ Teak.UserConfiguration userConfiguration = new Teak.UserConfiguration {};
 Teak.Instance.IdentifyUser(YOUR_USER_ID, userConfiguration);
 ----
 
-Make sure that your user ID is a unique ID for the player in your game.  
+Make sure that your user ID is a unique ID for the player in your game.
 
 [TIP]
 .What Player ID should you use?
@@ -53,7 +53,7 @@ On iOS and Android 13 and greater you are required to ask the user if you can se
 ----
 // ...
 StartCoroutine(Teak.Instance.RegisterForNotifications(granted => {
-  Debug.Log("Player " + granted ? "granted" : "denied" + " notification permissions.");
+  Debug.Log("Player " + (granted ? "granted" : "denied") + " notification permissions.");
 });
 ----
 
@@ -110,7 +110,7 @@ Common use cases include informing players that their hourly bonus is ready or t
 
 [TIP]
 ====
-Use Local Notifications when you need deeply personalized content or scheduling that the game code is better equipped to determine. 
+Use Local Notifications when you need deeply personalized content or scheduling that the game code is better equipped to determine.
 
 For example, an hourly bonus should be a local notification scheduled by the game, since the game will know when the hourly bonus was last claimed, and when the next bonus will be ready.
 
@@ -275,40 +275,40 @@ If the game is not installed on the device, the user will be directed to your ga
 Most of the setup for Links is covered in the getting started guide.
 
 * [*] xref:quickstart/apple-apns.adoc#_enable_push_notifications_and_associated_domains[Associated Domains checkbox] is checked on the Apple Developer Site.
-* [*] ShortLink Domain is setup in the **ShortLinks** section of menu:Teak Dashboard[Settings, General] 
+* [*] ShortLink Domain is setup in the **ShortLinks** section of menu:Teak Dashboard[Settings, General]
 * [*] ShortLink Domain is copied to the xref:quickstart/install-sdk.adoc#_configure_teak_in_the_unity_editor[Teak settings in Unity].
 * [*] Build Post-Processing is on.
 
 The remaining items to-do are:
 
-. Set a **Desktop Game URL** 
+. Set a **Desktop Game URL**
 +
-Go to menu:Teak Dashboard[Settings, Facebook & Desktop Web] and add the URL that should be opened when game links are clicked on desktop computers. 
+Go to menu:Teak Dashboard[Settings, Facebook & Desktop Web] and add the URL that should be opened when game links are clicked on desktop computers.
 
-. Set a **iTunes Product ID** 
-+ 
+. Set a **iTunes Product ID**
++
 Used to link to the game in the App Store on devices where the game is not installed. Set this in menu:Teak Dashboard[Settings, iOS]
 
 . Set a **Android Package Name**
-+ 
++
 Used to link to the game in the Play Store page on devices where the game is not installed. Set this in menu:Teak Dashboard[Settings, Android] in the **Android App Links** section.
 
-. Add **Android Certificate Fingerprints** 
+. Add **Android Certificate Fingerprints**
 +
-Required for the optimal user experience on Android devices. Go to menu:Teak Dashboard[Settings, Android] and click the **Add Android Certificate Fingerprints** and follow the directions in the modal. 
+Required for the optimal user experience on Android devices. Go to menu:Teak Dashboard[Settings, Android] and click the **Add Android Certificate Fingerprints** and follow the directions in the modal.
 
 Once those are added, your game is setup to use Links. To confirm, xref:usage::page$links.adoc[create a new link] on the dashboard and click on it on your devices. Your game should launch.
 
 // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 == Deep Links
 
-Deep Links are a way to link to specific screens in your game that will open when the game is launched from a notification or Universal Link. 
+Deep Links are a way to link to specific screens in your game that will open when the game is launched from a notification or Universal Link.
 
 These are useful for promoting new content or linking directly to sale content in the game.
 
 TIP: For the marketing team to use Deep Links, they will have to xref:usage::page$notifications.adoc#_link_destination["add the URL to their notifications", window=_blank] in the dashboard. So, keep a master list of active deep links that can be shared with your team, so everyone knows what is available for use.
 
-Deep Linking with Teak is based on routes, which act like URLs. Route patterns may include named parameters, allowing you to pass in additional data. 
+Deep Linking with Teak is based on routes, which act like URLs. Route patterns may include named parameters, allowing you to pass in additional data.
 
 Add routes using:
 
