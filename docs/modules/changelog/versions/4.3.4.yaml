@@ -1,0 +1,2 @@
+bug:
+  - Resolved issue on Android which resulted in failing to schedule local notifications with ``Teak.Notification.Schedule`` while being backgrounded.
