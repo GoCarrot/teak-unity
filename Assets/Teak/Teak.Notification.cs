@@ -106,7 +106,7 @@ public partial class Teak {
         /// <param name="callback">The callback to be called after the notification is scheduled.</param>
         public static IEnumerator Schedule(string scheduleName, long delayInSeconds, Dictionary<string, object> personalizationData, System.Action<Reply> callback) {
             if (Teak.Instance.Trace) {
-                Debug.Log("[Teak.Notification] Schedule(" + scheduleName + ", " + delayInSeconds + ", " + personalizationData == null ? "{}" : MiniJSON.Teak.Json.Serialize(personalizationData) + ")");
+                Debug.Log("[Teak.Notification] Schedule(" + scheduleName + ", " + delayInSeconds + ", " + (personalizationData == null ? "{}" : MiniJSON.Teak.Json.Serialize(personalizationData)) + ")");
             }
 
             Reply reply = Reply.UndeterminedUnityError;
