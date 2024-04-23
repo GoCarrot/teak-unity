@@ -177,6 +177,13 @@ public class TeakXcodeProjectMutator : IPostprocessBuildWithReport {
                           applicationIdentifier + "." + displayName,
                           projectPathInfo.GetRelativePathTo(new FileInfo(extensionSrcPath + "/Info.plist")));
         string buildPhaseId = project.AddSourcesBuildPhase(extensionTarget);
+        string copyFilesPhaseId = project.AddResourcesBuildPhase(extensionTarget);
+        FileInfo privacyInfoFileName = new FileInfo(extensionSrcPath + "/PrivacyInfo.xcprivacy");
+        project.AddFileToBuildSection(
+            extensionTarget,
+            copyFilesPhaseId,
+            project.AddFile(projectPathInfo.GetRelativePathTo(privacyInfoFileName), name + "/PrivacyInfo.xcprivacy")
+        );
 
         /////
         // Disable Bitcode
