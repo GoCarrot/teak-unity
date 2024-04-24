@@ -4,7 +4,7 @@
 
 These are the dependencies that the build post-process scripts in the Teak Unity SDK will take care of for you. If your build process is incompatable with Teak's build scripts, you will need to do the steps here manually.
 
-IMPORTANT: If you are using the 'xref:quickstart/install-sdk.adoc#_build_post_processing[Build Post-Process]' option, you can skip all of these steps. The build post-process scripts in the Teak Unity SDK will manage all of this for you.
+IMPORTANT: If you are using the 'xref:quickstart/install-sdk.adoc#_configure_teak_in_the_unity_editor[Build Post-Processing,window=_blank]' option, you can skip all of these steps. The build post-process scripts in the Teak Unity SDK will manage all of this for you.
 
 == Add Dependencies
 If you do not use the the post-process scripts, the following frameworks are required by Teak:

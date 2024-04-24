@@ -1,6 +1,15 @@
 = iOS Notification Extensions
 
-Do you want Playable Notifications? Buttons in your notifications? Well rest easy... Teak's post-processing scripts will take care of all of this for you, automatically!
+Teak uses link:https://developer.apple.com/documentation/usernotifications/modifying-content-in-newly-delivered-notifications?language=objc[iOS Notification Extensions,window=_blank] to
+
+* Display rich media such as images, video, and custom thumbnails in iOS push notifications
+* Track confirmed receipts of iOS push notifications
+* Track impressions of rich media content
+* Display action buttons on expanded iOS push notifications
+
+We recommend all games integrate Teak's iOS Notification Extensions for maximum functionality.
+
+If you have xref:quickstart/install-sdk.adoc#_configure_teak_in_the_unity_editor[Build Post-Processing,window=_blank] enabled then the Teak SDK's included Build Post-Processing scripts will add the Teak iOS Notification Extensions to your Xcode project and build automatically. You're done and can stop reading this page :)
 
 [NOTE]
 ====
@@ -9,9 +18,9 @@ Teak uses ``PlayerSettings.iOS.appleDeveloperTeamID`` to get the Team ID for the
 If your build process changes this at a later time, you'll need to change it for the extensions as well.
 ====
 
-== What if I Don't Use Teak's Post-processing Scripts?
+== Manual Integration
 
-You need to do these things!
+If you are not using Teak's Build Post-Processing scripts then you will need to manually add the Teak iOS Notification Extensions to your project. We recommend updating your own build scripts to manage this process.
 
 NOTE: This document assumes that you have a working Xcode project for a game with Teak.
 
@@ -82,6 +91,10 @@ Change the code in `TeakNotificationService/NotificationService.m` to look like 
 }
 @end
 ----
+
+==== PrivacyInfo.xcprivacy
+
+The Teak SDK includes a PrivacyInfo.xcprivacy suitable for the notification service extension in `Assets/Teak/Editor/iOS/TeakNotificationService/PrivacyInfo.xcprivacy`. This file or a similar one should be added to the `Copy Bundle Resources` build phase of the `TeakNotificationService` target.
 
 === Notification Content Extension
 
@@ -221,6 +234,10 @@ Open `TeakNotificationContent/Info.plist` *with a text editor* and replace the c
 </dict>
 </plist>
 ----
+
+==== PrivacyInfo.xcprivacy
+
+The Teak SDK includes a PrivacyInfo.xcprivacy suitable for the notification service extension in `Assets/Teak/Editor/iOS/TeakNotificationContent/PrivacyInfo.xcprivacy`. This file or a similar one should be added to the `Copy Bundle Resources` build phase of the `TeakNotificationContent` target.
 
 == Testing
 
