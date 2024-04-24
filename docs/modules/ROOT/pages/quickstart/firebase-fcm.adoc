@@ -11,7 +11,7 @@ If you aren't using any other Firebase features, we recommend installing only **
 
 Instructions are on the Firebase site here: https://firebase.google.com/docs/unity/setup[**Add Firebase to your Unity project**, window=_blank].
 
-You may need to update your link:https://docs.unity3d.com/Manual/overriding-android-manifest.html#creating-a-template-android-manifest-file[Custom Main Manifest] to xref:usage:reference:android-push-broken.adoc[remove an entry added by the Firebase Unity SDK].
+You may need to update your link:https://docs.unity3d.com/Manual/overriding-android-manifest.html#creating-a-template-android-manifest-file[Custom Main Manifest] to xref:android-push-broken.adoc[remove an entry added by the Firebase Unity SDK].
 ====
 
 With Firebase successfully installed, you can proceed to the uncomplicated task of copying keys from their dashboard to ours.

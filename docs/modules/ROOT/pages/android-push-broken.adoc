@@ -1,0 +1,35 @@
+= Troubleshooting Push Notifications on Android
+
+If a notification does not display on your device after previewing it, your game may have conflicting services for push notifications. This most frequently occurs when Teak and the Firebase Messaging SDK are included in the same project.
+
+The Firebase Messaging SDK adds two separate push notification services to your AndroidManifest.xml. One has a priority correctly set, however the other service has no priority and Android can choose to use it instead of the Teak SDK service. When this occurs your game cannot display push notifications sent by Teak.
+
+== Identifying the Firebase service
+
+To identify if your game incorrectly includes the Firebase Messaging SDK service you will need to inspect the AndroidManifest.xml from your final build. We recommend using link:https://apktool.org/[apktool,window=_blank] to extract the AndroidManifest.xml from your build using the `link:https://apktool.org/docs/the-basics/decoding[apktool d]` command.
+
+If your AndroidManifest.xml contains an entry that looks like
+
+```[source,xml]
+<service android:exported="false" android:name="com.google.firebase.messaging.cpp.ListenerService">
+  <intent-filter>
+    <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+  </intent-filter>
+</service>
+```
+
+then your game incorrectly includes the Firebase service and it will need to be removed.
+
+== Removing the Firebase service
+
+The Teak SDK will attempt to remove the Firebase service automatically using the Android manifest merger. However we have observed that in Unity 2022+ Teak's manifest merge step is sometimes processed before the Firebase Messaging SDK manifest merge step. When this happens, the service added by the Firebase Messaging SDK will remain in the AndroidManifest.xml and prevent Teak from displaying push notifications.
+
+If you do not have an existing link:https://docs.unity3d.com/Manual/overriding-android-manifest.html#creating-a-template-android-manifest-file[Custom Main Manifest] file, first create one.
+
+In your Custom Main Manfiest file add
+
+```[source.xml]
+<service android:name="com.google.firebase.messaging.cpp.ListenerService" tools:node="remove" />
+```
+
+inside the `<application>` tag. This directs the manifest merger to remove the Firebase messaging service, which will allow Teak to handle and display push notifications.
