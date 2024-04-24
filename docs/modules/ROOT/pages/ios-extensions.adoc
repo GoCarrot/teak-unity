@@ -92,7 +92,7 @@ Change the code in `TeakNotificationService/NotificationService.m` to look like 
 @end
 ----
 
-==== PrivacyInfo.xcprivacy
+=== PrivacyInfo.xcprivacy
 
 The Teak SDK includes a PrivacyInfo.xcprivacy suitable for the notification service extension in `Assets/Teak/Editor/iOS/TeakNotificationService/PrivacyInfo.xcprivacy`. This file or a similar one should be added to the `Copy Bundle Resources` build phase of the `TeakNotificationService` target.
 
@@ -235,7 +235,7 @@ Open `TeakNotificationContent/Info.plist` *with a text editor* and replace the c
 </plist>
 ----
 
-==== PrivacyInfo.xcprivacy
+=== PrivacyInfo.xcprivacy
 
 The Teak SDK includes a PrivacyInfo.xcprivacy suitable for the notification service extension in `Assets/Teak/Editor/iOS/TeakNotificationContent/PrivacyInfo.xcprivacy`. This file or a similar one should be added to the `Copy Bundle Resources` build phase of the `TeakNotificationContent` target.
 
