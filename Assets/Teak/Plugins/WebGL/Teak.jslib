@@ -31,15 +31,7 @@ mergeInto(LibraryManager.library, {
       (function(){var n=document.createElement("script");n.type="text/javascript";n.async=true;n.src="//sdks.teakcdn.com/teak.min.js";var r=document.getElementsByTagName("script")[0];r.parentNode.insertBefore(n,r)})()
     };
 
-    // Load jQuery, if it's not already loaded
-    if (window.jQuery === undefined) {
-      var s = document.createElement('script');
-      s.src = "//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.js";
-      s.onload = doTeakInit;
-      document.head.appendChild(s);
-    } else {
-      doTeakInit();
-    }
+    doTeakInit();
   },
   TeakIdentifyUser: function(ptr_userId, ptr_configJson) {
     var userId = Pointer_stringify(ptr_userId);
