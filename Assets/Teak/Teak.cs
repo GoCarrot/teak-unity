@@ -586,7 +586,6 @@ public partial class Teak : MonoBehaviour {
         AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
         teak.CallStatic("deleteEmail");
 #elif UNITY_IPHONE || UNITY_WEBGL
-        // TODO: WebGL impl.
         TeakDeleteEmail();
 #endif
     }

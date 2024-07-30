@@ -8,7 +8,6 @@ mergeInto(LibraryManager.library, {
     window.teak.init(appId, apiKey, false, null, enableSdk5BehaviorsInt !== 0);
     window.teak.setIsUnity();
     window.teak.on("settingsLoaded", function() {
-      console.log("settingsLoaded");
       var channelCategories = [];
       Object.keys(window.teak.availableCategories).forEach(function (key) {
         channelCategories.push({
