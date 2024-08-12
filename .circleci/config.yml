@@ -101,6 +101,12 @@ jobs:
           key: v0-{{ checksum "Gemfile.lock" }}
       - attach_workspace:
           at: .
+      - buildomat/aws-oidc-assume
+      - run:
+          name: Upload SDK to S3
+          command: |
+            aws s3 cp build/Teak.unitypackage s3://teak-build-artifacts/unity/Teak-$(git describe --tags --always).unitypackage --acl public-read
+            aws s3 cp build/Teak.unitypackage.sha512 s3://teak-build-artifacts/unity/Teak-$(git describe --tags --always).unitypackage.sha512 --acl public-read
       - run:
           name: Deploy UPM to Git Repo
           command: UPM_BUILD_TEMP=upm-build UPM_PACKAGE_REPO=upm-package-teak bundle exec rake upm:deploy_versioned
@@ -109,12 +115,6 @@ jobs:
           paths:
             - build/*
             - upm-package-teak/*
-      - buildomat/aws-oidc-assume
-      - run:
-          name: Upload SDK to S3
-          command: |
-            aws s3 cp build/Teak.unitypackage s3://teak-build-artifacts/unity/Teak-$(git describe --tags --always).unitypackage --acl public-read
-            aws s3 cp build/Teak.unitypackage.sha512 s3://teak-build-artifacts/unity/Teak-$(git describe --tags --always).unitypackage.sha512 --acl public-read
 
   deploy_latest:
     docker:
