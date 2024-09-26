@@ -492,12 +492,17 @@ StartCoroutine(Teak.Instance.SetCategoryState(Teak.Channel.Email, "sales", Teak.
 // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 == Player Properties
 
-Teak can store up to 16 numeric, and 16 string properties per player. These
-properties can then be used for targeting.
+xref:usage::player-properties.adoc[Player Properties, window=_blank] are strings or numbers associated with each player of your game in Teak. Player Properties have several uses, including
+
+* Targeting players for a send by using the player properties xref:usage::audiences.adoc#_player_properties[Audience rule, window=_blank]
+* Personalizing push notification content using xref:usage::custom-tags.adoc[custom tags, window=_blank]
+* Personalizing email content using custom tags
+* Personalizing deep links from Links, push notifications, and emails to take players to a meaningful location in your game
 
 You do not need to register the property in the Teak Dashboard prior to sending
 them from your game, however you will need to register them in the Teak Dashboard
-before using them in targeting.
+before using them in targeting. Only Player Properties set to permit client updates can be updated through the SDK. Player Properties set to permit server updates may only be updated
+through the xref:server-api::other/v2_player_properties.adoc[Server API, window=_blank].
 
 === Numeric Property
 To set a numeric property, use::
@@ -510,6 +515,8 @@ doxygen2adoc:SetNumericAttribute(string,double)[]
 Teak.Instance.SetNumericAttribute("coins", new_coin_balance);
 ----
 
+Number Player Properties can store values between -999999999999999999999999999.999999999 and 999999999999999999999999999.999999999.
+
 === String Property
 
 To set a string property, use:
@@ -521,6 +528,8 @@ doxygen2adoc:SetStringAttribute(string,string)[]
 ----
 Teak.Instance.SetStringAttribute("last_slot", "amazing_slot_name");
 ----
+
+String Player Properties can store up to 16,384 unicode characters (including emoji).
 
 // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 == Custom Analytics Events
