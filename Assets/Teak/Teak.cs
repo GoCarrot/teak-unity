@@ -118,12 +118,10 @@ public partial class Teak : MonoBehaviour {
         get {
 #if UNITY_EDITOR
             return NotificationState.UnableToDetermine;
-#elif UNITY_WEBGL
-            return NotificationState.Enabled;
 #elif UNITY_ANDROID
             AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
             return (NotificationState) teak.CallStatic<int>("getNotificationStatus");
-#elif UNITY_IPHONE
+#elif UNITY_IPHONE || UNITY_WEBGL
             return (NotificationState) TeakGetNotificationState();
 #else
             return NotificationState.UnableToDetermine;
@@ -503,12 +501,12 @@ public partial class Teak : MonoBehaviour {
     /// </summary>
     public bool CanOpenSettingsAppToThisAppsSettings {
         get {
-#if UNITY_EDITOR || UNITY_WEBGL
+#if UNITY_EDITOR
             return false;
 #elif UNITY_ANDROID
             AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
             return teak.CallStatic<bool>("canOpenSettingsAppToThisAppsSettings");
-#elif UNITY_IPHONE
+#elif UNITY_IPHONE || UNITY_WEBGL
             return TeakCanOpenSettingsAppToThisAppsSettings();
 #else
             return false;
@@ -525,12 +523,12 @@ public partial class Teak : MonoBehaviour {
             Debug.Log("[Teak] OpenSettingsAppToThisAppsSettings()");
         }
 
-#if UNITY_EDITOR || UNITY_WEBGL
+#if UNITY_EDITOR
         return false;
 #elif UNITY_ANDROID
         AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
         return !teak.CallStatic<bool>("openSettingsAppToThisAppsSettings");
-#elif UNITY_IPHONE
+#elif UNITY_IPHONE || UNITY_WEBGL
         return TeakOpenSettingsAppToThisAppsSettings();
 #else
         return false;
@@ -542,12 +540,12 @@ public partial class Teak : MonoBehaviour {
     /// </summary>
     public bool CanOpenNotificationSettings {
         get {
-#if UNITY_EDITOR || UNITY_WEBGL
+#if UNITY_EDITOR
             return false;
 #elif UNITY_ANDROID
             AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
             return teak.CallStatic<bool>("canOpenNotificationSettings");
-#elif UNITY_IPHONE
+#elif UNITY_IPHONE || UNITY_WEBGL
             return TeakCanOpenNotificationSettings();
 #else
             return false;
@@ -564,12 +562,12 @@ public partial class Teak : MonoBehaviour {
             Debug.Log("[Teak] OpenNotificationSettings()");
         }
 
-#if UNITY_EDITOR || UNITY_WEBGL
+#if UNITY_EDITOR
         return false;
 #elif UNITY_ANDROID
         AndroidJavaClass teak = new AndroidJavaClass("io.teak.sdk.Teak");
         return teak.CallStatic<bool>("openNotificationSettings");
-#elif UNITY_IPHONE
+#elif UNITY_IPHONE || UNITY_WEBGL
         return TeakOpenNotificationSettings();
 #else
         return false;
@@ -718,7 +716,7 @@ public partial class Teak : MonoBehaviour {
     public IEnumerator RegisterForNotifications(System.Action<bool> callback) {
 #if UNITY_EDITOR
         yield return null;
-#elif UNITY_IPHONE
+#elif UNITY_IPHONE || UNITY_WEBGL
         bool keepWaiting = true;
         string callbackId = DateTime.Now.Ticks.ToString();
         teakOperationCallbackMap.Add(callbackId, json => {
@@ -861,6 +859,21 @@ public partial class Teak : MonoBehaviour {
     private static extern void TeakUnityRegisterRoute(string route, string name, string description);
 
     [DllImport ("__Internal")]
+    private static extern bool TeakCanOpenNotificationSettings();
+
+    [DllImport ("__Internal")]
+    private static extern bool TeakOpenSettingsAppToThisAppsSettings();
+
+    [DllImport ("__Internal")]
+    private static extern bool TeakOpenNotificationSettings();
+
+    [DllImport ("__Internal")]
+    private static extern int TeakGetNotificationState();
+
+    [DllImport ("__Internal")]
+    private static extern bool TeakRequestPushAuthorizationUnity(bool includeProvisional, string callbackId);
+
+    [DllImport ("__Internal")]
     private static extern void TeakSetBadgeCount(int count);
 
     [DllImport ("__Internal")]
@@ -878,40 +891,11 @@ public partial class Teak : MonoBehaviour {
 
 #if UNITY_IPHONE
     [DllImport ("__Internal")]
-    private static extern int TeakGetNotificationState();
-
-    [DllImport ("__Internal")]
-    private static extern bool TeakCanOpenSettingsAppToThisAppsSettings();
-
-    [DllImport ("__Internal")]
-    private static extern bool TeakCanOpenNotificationSettings();
-
-    [DllImport ("__Internal")]
-    private static extern bool TeakOpenSettingsAppToThisAppsSettings();
-
-    [DllImport ("__Internal")]
-    private static extern bool TeakOpenNotificationSettings();
-
-    [DllImport ("__Internal")]
-    private static extern bool TeakRequestPushAuthorizationUnity(bool includeProvisional, string callbackId);
-
-    [DllImport ("__Internal")]
     private static extern void TeakProcessDeepLinks();
 
     [DllImport ("__Internal")]
     private static extern void TeakLogout();
-#endif
 
-#if UNITY_WEBGL
-    [DllImport ("__Internal")]
-    private static extern string TeakInitWebGL(string appId, string apiKey, int enableSdk5Behaviors);
-
-    [DllImport ("__Internal")]
-    private static extern void TeakUnityReadyForDeepLinks();
-
-    [DllImport ("__Internal")]
-    private static extern void TeakUnityReportCanvasPurchase(string payload);
-#elif UNITY_IPHONE
     [DllImport ("__Internal")]
     private static extern IntPtr TeakGetAppConfiguration();
 
@@ -924,6 +908,18 @@ public partial class Teak : MonoBehaviour {
     [DllImport ("__Internal")]
     private static extern void TeakRelease(IntPtr obj);
 #endif
+
+#if UNITY_WEBGL
+    [DllImport ("__Internal")]
+    private static extern string TeakInitWebGL(string appId, string apiKey, int enableSdk5Behaviors);
+
+    [DllImport ("__Internal")]
+    private static extern void TeakUnityReadyForDeepLinks();
+
+    [DllImport ("__Internal")]
+    private static extern void TeakUnityReportCanvasPurchase(string payload);
+#endif
+
     /// @endcond
 
     #region UnitySendMessage

@@ -3,7 +3,7 @@ mergeInto(LibraryManager.library, {
     var appId = Pointer_stringify(ptr_appId);
     var apiKey = Pointer_stringify(ptr_apiKey);
 
-    (function(){window.teak=window.teak||[];window.teak.methods=["init","on","asyncInit","identify","trackEvent","postAction","postAchievement","postHighScore","canMakeFeedPost","popupFeedPost","reportNotificationClick","reportFeedClick","sendRequest","acceptRequest","loadInboxData", "claimReward", "setIsUnity", "scheduleNotification", "cancelNotification", "cancelAllNotifications", "setStringAttribute", "setNumberAttribute", "scheduleLongDistanceNotification", "reportUnityCanvasPurchase", "deleteEmail", "setChannelState","setCategoryState", "scheduleNotificationWithPersonalization"];window.teak.factory=function(e){return function(){var t=Array.prototype.slice.call(arguments);t.unshift(e);window.teak.push(t);return window.teak}};for(var e=0;e<window.teak.methods.length;e++){var t=window.teak.methods[e];if(!window.teak[t]){window.teak[t]=window.teak.factory(t)}}})()
+    (function(){window.teak=window.teak||[];window.teak.methods=["init","on","asyncInit","identify","trackEvent","postAction","postAchievement","postHighScore","canMakeFeedPost","popupFeedPost","reportNotificationClick","reportFeedClick","sendRequest","acceptRequest","loadInboxData", "claimReward", "setIsUnity", "scheduleNotification", "cancelNotification", "cancelAllNotifications", "setStringAttribute", "setNumberAttribute", "scheduleLongDistanceNotification", "reportUnityCanvasPurchase", "deleteEmail", "setChannelState","setCategoryState", "scheduleNotificationWithPersonalization","canOpenNotificationSettings","openSettingsAppToThisAppsSettings","openNotificationSettings","getNotificationState","registerForNotifications","setBadgeCount"];window.teak.factory=function(e){return function(){var t=Array.prototype.slice.call(arguments);t.unshift(e);window.teak.push(t);return window.teak}};for(var e=0;e<window.teak.methods.length;e++){var t=window.teak.methods[e];if(!window.teak[t]){window.teak[t]=window.teak.factory(t)}}})()
 
     window.teak.init(appId, apiKey, false, null, enableSdk5BehaviorsInt !== 0);
     window.teak.setIsUnity();
@@ -137,6 +137,28 @@ mergeInto(LibraryManager.library, {
       description: description
     };
   },
+  TeakCanOpenNotificationSettings: function() {
+    return window.teak.canOpenNotificationSettings();
+  },
+  TeakOpenSettingsAppToThisAppsSettings: function() {
+    return window.teak.openSettingsAppToThisAppsSettings();
+  },
+  TeakOpenNotificationSettings: function() {
+    return window.teak.openNotificationSettings();
+  },
+  TeakGetNotificationState: function() {
+    return window.teak.getNotificationState();
+  },
+  TeakRequestPushAuthorizationUnity: function(_ptr_provisional, ptr_callbackId) {
+    var callbackId = Pointer_stringify(ptr_callbackId);
+
+    window.teak.registerForNotifications();
+
+    var reply = {
+      _callbackId: callbackId
+    };
+    SendMessage("TeakGameObject", "TeakOperationCallback", replyAsString);
+  },
   TeakUnityReadyForDeepLinks__deps: ['TeakHandleDeepLink_Internal'],
   TeakUnityReadyForDeepLinks: function() {
     window.teak.on('udidAvailable', function() {
@@ -146,7 +168,7 @@ mergeInto(LibraryManager.library, {
     });
   },
   TeakSetBadgeCount: function(count) {
-
+    window.teak.setBadgeCount(count)
   },
   TeakHandleDeepLinkPath__deps: ['TeakHandleDeepLink_Internal'],
   TeakHandleDeepLinkPath: function(ptr_url) {
