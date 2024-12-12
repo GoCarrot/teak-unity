@@ -1,13 +1,13 @@
 = Sending Your First Notification
 :page-pagination:
 
-To make sure everything is set up properly, let's send a test notification to your device. 
+To make sure everything is set up properly, let's send a test notification to your device.
 
-A recap of what we've done so far is also the requirements for this section: 
+A recap of what we've done so far is also the requirements for this section:
 
 * [*] You have completed the setup steps for xref:quickstart/apple-apns.adoc[iOS Push Certificates] or xref:quickstart/firebase-fcm.adoc[Android FCM Credentials].
 * [*] You know where to find the **Player ID** for your test user.
-* [*] The game has Teak integrated and is building on device. 
+* [*] The game has Teak integrated and is building on device.
 * [*] You **Allowed** push notifications on your test device when the game prompted you.
 * [*] You see your test device on the __5 Minute Active Users__ chart on the https://app.teak.io[Teak dashboard, window=_blank].
 
@@ -19,7 +19,7 @@ Now let's send our first notification to our test user. We'll create a message f
 
 In the Teak dashboard for your game, we will create your first notification.
 
-This tutorial is written for iOS, but the steps are the same for Android, except you will need to click on the Android things instead. 
+This tutorial is written for iOS, but the steps are the same for Android, except you will need to click on the Android things instead.
 
 . Click on **Notifications**, select the **iOS Push** tab, and then click **New Message**.
 +
@@ -29,7 +29,7 @@ image::start/dashboard.png[alt_text, 600]
 +
 image::start/newmessage.png[alt_text, 600]
 +
-If you want to test Android as well, check that box too. 
+If you want to test Android as well, check that box too.
 
 . Enter your desired **message** content, and click **Next**.
 +
@@ -58,7 +58,7 @@ image::start/previewbutton.png[alt_text, 600]
 +
 image::start/previewempty.png[alt_text, 600]
 
-. Enter your **player ID** (or `userIdentifier`) in the **Search by Game User ID** field. 
+. Enter your **player ID** (or `userIdentifier`) in the **Search by Game User ID** field.
 +
 You can get this from your game on the test device (if it displays the player ID) or from the console log (Teak will output it when Identify User is called if trace logging is enabled).
 
@@ -66,7 +66,7 @@ You can get this from your game on the test device (if it displays the player ID
 +
 image::start/searchrecipients.png[alt_text, 600]
 
-. **Add a label** so you can keep your test devices straight, and click **Save**. 
+. **Add a label** so you can keep your test devices straight, and click **Save**.
 +
 Other team members you invite to this game will be able to see your test devices, so choose a name that is helpful for the whole team.
 +
@@ -93,23 +93,23 @@ image::start/sendpreview.png[alt_text, 600]
 +
 image::start/hello.jpg[alt_text, 600]
 
-Congratulations, you've sent your first push notification using Teak! 
+Congratulations, you've sent your first push notification using Teak!
 
 == Next Steps
 
-Your initial Teak integration is done. Teak is setup to collect data which your CRMs will use to xref:usage::page$notifications.adoc[create and send notifications] to specific xref:usage::page$audiences.adoc[audiences]. 
+Your initial Teak integration is done. Teak is setup to collect data which your CRMs will use to xref:user-guide::page$notifications.adoc[create and send notifications] to specific xref:user-guide::page$audiences.adoc[audiences].
 
 But, there's still more to setup:
 
-* [ ] Ask for Push Permissions more strategically 
+* [ ] Ask for Push Permissions more strategically
 // (Hint: Use different strategies on iOS and Android.)
-* [ ] Set up Rewarding 
+* [ ] Set up Rewarding
 // (Give your players coins when they tap on notifications.)
-* [ ] Set up Universal Links 
+* [ ] Set up Universal Links
 // (Open your game from a URL.)
-* [ ] Set up Deep Links 
+* [ ] Set up Deep Links
 // (Open your game to a specific screen.)
-* [ ] Set up Local Notifications 
+* [ ] Set up Local Notifications
 // (Schedule certain notifications in your game's code.)
 
-Proceed to xref:teak-unity-features.adoc[**Features**] for additional steps. 
+Proceed to xref:teak-unity-features.adoc[**Features**] for additional steps.
