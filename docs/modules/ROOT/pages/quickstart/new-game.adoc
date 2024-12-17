@@ -14,7 +14,7 @@ Depending on who in your organization signed up first, you may need to create a 
 === Create a new game
 
 .Game list dropdown
-image::usage:ROOT:start/new-game.png[Game List Dropdown, 300, role="related thumb right"]
+image:ROOT:user-guide:start/new-game.png[Game List Dropdown, 300, role="related thumb right"]
 
 To create your first game project, click **Add Game** on the Welcome screen.
 
@@ -28,7 +28,7 @@ If someone else has already set up the game, you will need to be invited to it.
 
 They can invite you by going to menu:Settings[General, Users] and adding your work email.
 
-image::usage:ROOT:start/invite-users.png[,500,role="thumb"]
+image:ROOT:user-guide:start/invite-users.png[,500,role="thumb"]
 
 Once you've been added, the game will show up in the **game list dropdown** menu in the sidebar.
 

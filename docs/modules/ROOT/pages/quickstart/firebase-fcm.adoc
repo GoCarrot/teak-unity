@@ -16,7 +16,7 @@ You may need to update your link:https://docs.unity3d.com/Manual/overriding-andr
 
 With Firebase successfully installed, you can proceed to the uncomplicated task of copying keys from their dashboard to ours.
 
-include::usage:reference:firebase-fcm.adoc[leveloffset=+1]
+include::ROOT:integrations:firebase-fcm.adoc[leveloffset=+1]
 
 With that setup complete, we're ready to move to Unity to get the Teak SDK installed.
 

@@ -18,7 +18,7 @@ Don't hesitate to contact us if you are confused by any of these steps.
 
 On Amazon you will need an account on the https://developer.amazon.com/home.html[Amazon Developer Console, window=_blank] with access to your game.
 
-Follow these instructions to get the credentials for sending push notifications on Amazon devices xref:user-guide:reference:page$amazon-device-messaging.adoc[Finding your Amazon Device Messaging Credentials].
+Follow these instructions to get the credentials for sending push notifications on Amazon devices xref:ROOT:integrations:page$amazon-device-messaging.adoc[Finding your Amazon Device Messaging Credentials].
 
 == Check Your AndroidManifest.xml
 
