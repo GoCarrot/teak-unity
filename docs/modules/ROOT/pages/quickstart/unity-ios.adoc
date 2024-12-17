@@ -3,7 +3,7 @@
 
 To get our Unity Game up and running on an iOS device we need to make sure we check all the boxes to make Apple happy. Be prepared for a whirlwind tour of the weird corners of the Apple Developer portal.
 
-=== You will need
+**You will need:**
 
 * [*] Apple Developer Account with Admin Permissions
 * [*] A Mac w/ Xcode installed
@@ -43,6 +43,3 @@ Once your new app is on your iOS device, opening it should pop up a dialog box a
 
 
 Congrats, if everything is set up right, you should be able to log into the Teak dashboard and see 1 active user.
-
-
-
