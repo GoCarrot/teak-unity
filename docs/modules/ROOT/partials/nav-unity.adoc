@@ -28,6 +28,7 @@
 **** xref:unity::push-notification-badges.adoc[Notification Badges]
 **** xref:unity::limiting-data-collection.adoc[Limiting Data Collection]
 **** xref:unity::other-push-sdks.adoc[Integrating with Other Push Providers]
+**** xref:unity::android-push-broken.adoc[Troubleshooting Android Push Notifications]
 **** xref:unity::upm.adoc[Unity Package Manager]
 **** xref:unity::unity-amazon-fire.adoc[Amazon Fire Setup]
 **** xref:unity::custom-versions.adoc[Custom Version Numbers]
