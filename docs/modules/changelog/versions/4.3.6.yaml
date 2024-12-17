@@ -1,0 +1,2 @@
+bug:
+  - Resolved crash on Android when initial launch of app is with an intent containing a non-hierarchical URI scheme.
