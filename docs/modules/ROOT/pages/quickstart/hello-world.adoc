@@ -97,7 +97,7 @@ Congratulations, you've sent your first push notification using Teak!
 
 == Next Steps
 
-Your initial Teak integration is done. Teak is setup to collect data which your CRMs will use to xref:user-guide::page$notifications.adoc[create and send notifications] to specific xref:user-guide::page$audiences.adoc[audiences].
+Your initial Teak integration is done. Teak is setup to collect data which your CRMs will use to xref:ROOT:user-guide:page$notifications.adoc[create and send notifications] to specific xref:ROOT:user-guide:page$audiences.adoc[audiences].
 
 But, there's still more to setup:
 

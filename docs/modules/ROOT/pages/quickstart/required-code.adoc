@@ -30,8 +30,8 @@ In our game script, as soon as we know the id for our current player, we'll add 
 [source,cs]
 ----
 // ...
-Teak.UserConfiguration userConfiguration = new Teak.UserConfiguration {};
-Teak.Instance.IdentifyUser(YOUR_USER_ID, userConfiguration);
+Teak.UserConfiguration userConfiguration = new Teak.UserConfiguration {}; <1>
+Teak.Instance.IdentifyUser(YOUR_USER_ID, userConfiguration); <2>
 ----
 
 <1> We create an empty `userConfiguration` object for now. We'll add data to that in the next step.

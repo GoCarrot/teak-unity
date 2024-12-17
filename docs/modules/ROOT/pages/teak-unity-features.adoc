@@ -117,13 +117,13 @@ For example, an hourly bonus should be a local notification scheduled by the gam
 A daily bonus should be setup using a standard notification scheduled in the dashboard, since the timing is not specific to the game logic.
 ====
 
-You should not use Local Notifications for a new player flow/new user experience or lapsing player flow. Instead, your marketing team should create xref:user-guide::scheduling.adoc#_triggered[Triggered Schedules, window=_blank] for these use cases.
+You should not use Local Notifications for a new player flow/new user experience or lapsing player flow. Instead, your marketing team should create xref:ROOT:user-guide:scheduling.adoc#_triggered[Triggered Schedules, window=_blank] for these use cases.
 
 Although you can schedule Local Notifications in your game code, you will still coordinate with your marketing team on content created on the Teak Dashboard. Discuss and document when your game triggers Local Notifications thoroughly so your marketing team can craft the most relevant messaging.
 
 === Setup a Local Notification
 
-Before sending, you must configure the corresponding xref:user-guide::scheduling.adoc#_local[Local Schedule, window=_blank] on the https://app.teak.io/login[Teak Dashboard, window=_blank]. Doing so gives you the full benefit of Teak’s analytics, A/B testing, and Content Management System when using local notifications.
+Before sending, you must configure the corresponding xref:ROOT:user-guide:scheduling.adoc#_local[Local Schedule, window=_blank] on the https://app.teak.io/login[Teak Dashboard, window=_blank]. Doing so gives you the full benefit of Teak’s analytics, A/B testing, and Content Management System when using local notifications.
 
 The `Name` you give the Schedule is the first parameter for any local notification scheduling calls. Your marketing team may already have set up some Local Schedules; be sure to ask them if they have and what names they’ve given the Local Schedules.
 
@@ -139,9 +139,9 @@ To schedule a notification from your game, use:
 
 doxygen2adoc:Teak.Notification.Schedule(string,long,Dictionary<string, object>,Reply)[]
 
-``scheduleName`` should be the name of a xref:user-guide::scheduling.adoc#_local[Local Schedule, window=_blank] on the Teak Dashboard.
+``scheduleName`` should be the name of a xref:ROOT:user-guide:scheduling.adoc#_local[Local Schedule, window=_blank] on the Teak Dashboard.
 
-The ``personalizationData`` parameter allows you to provide custom data that can be templated into each send using xref:user-guide::custom-tags.adoc#_local_notification_tags[Local Notification Tags, window=_blank]. Be sure to inform your marketing team what data you send under which keys so that the tags can be properly configured.
+The ``personalizationData`` parameter allows you to provide custom data that can be templated into each send using xref:ROOT:user-guide:custom-tags.adoc#_local_notification_tags[Local Notification Tags, window=_blank]. Be sure to inform your marketing team what data you send under which keys so that the tags can be properly configured.
 
 .Example Local Notification Scheduling
 [source]
@@ -297,7 +297,7 @@ Used to link to the game in the Play Store page on devices where the game is not
 +
 Required for the optimal user experience on Android devices. Go to menu:Teak Dashboard[Settings, Android] and click the **Add Android Certificate Fingerprints** and follow the directions in the modal.
 
-Once those are added, your game is setup to use Links. To confirm, xref:user-guide::page$links.adoc[create a new link] on the dashboard and click on it on your devices. Your game should launch.
+Once those are added, your game is setup to use Links. To confirm, xref:ROOT:user-guide:page$links.adoc[create a new link] on the dashboard and click on it on your devices. Your game should launch.
 
 // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 == Deep Links
@@ -306,7 +306,7 @@ Deep Links are a way to link to specific screens in your game that will open whe
 
 These are useful for promoting new content or linking directly to sale content in the game.
 
-TIP: For the marketing team to use Deep Links, they will have to xref:user-guide::page$notifications.adoc#_link_destination["add the URL to their notifications", window=_blank] in the dashboard. So, keep a master list of active deep links that can be shared with your team, so everyone knows what is available for use.
+TIP: For the marketing team to use Deep Links, they will have to xref:ROOT:user-guide:page$notifications.adoc#_link_destination["add the URL to their notifications", window=_blank] in the dashboard. So, keep a master list of active deep links that can be shared with your team, so everyone knows what is available for use.
 
 Deep Linking with Teak is based on routes, which act like URLs. Route patterns may include named parameters, allowing you to pass in additional data.
 
@@ -357,7 +357,7 @@ and initializing. Deep links will be processed when your game calls `<<IdentifyU
 
 === Using Deep Links
 
-A Deep Link route may be added to any notification or email in the xref:user-guide::page$notifications.adoc#_link_destination["Advanced", window=_blank] section when setting up a Message or Link. We recommend documenting what routes are implemented and how to use them, with examples, for your marketing team to add to notifications, emails, and links.
+A Deep Link route may be added to any notification or email in the xref:ROOT:user-guide:page$notifications.adoc#_link_destination["Advanced", window=_blank] section when setting up a Message or Link. We recommend documenting what routes are implemented and how to use them, with examples, for your marketing team to add to notifications, emails, and links.
 
 // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 == Session Attribution[[_post_launch_summary]]
@@ -492,10 +492,10 @@ StartCoroutine(Teak.Instance.SetCategoryState(Teak.Channel.Email, "sales", Teak.
 // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 == Player Properties
 
-xref:user-guide::player-properties.adoc[Player Properties, window=_blank] are strings or numbers associated with each player of your game in Teak. Player Properties have several uses, including
+xref:ROOT:user-guide:page$player-properties.adoc[Player Properties, window=_blank] are strings or numbers associated with each player of your game in Teak. Player Properties have several uses, including
 
-* Targeting players for a send by using the player properties xref:user-guide::audiences.adoc#_player_properties[Audience rule, window=_blank]
-* Personalizing push notification content using xref:user-guide::custom-tags.adoc[custom tags, window=_blank]
+* Targeting players for a send by using the player properties xref:ROOT:user-guide:page$audiences.adoc#_player_properties[Audience rule, window=_blank]
+* Personalizing push notification content using xref:ROOT:user-guide:page$custom-tags.adoc[custom tags, window=_blank]
 * Personalizing email content using custom tags
 * Personalizing deep links from Links, push notifications, and emails to take players to a meaningful location in your game
 
