@@ -1,9 +1,9 @@
 
-** xref:unity::quickstart/index.adoc[Unity SDK]
+** xref:unity::index.adoc[Unity SDK]
 *** xref:unity::quickstart/index.adoc[Getting Started in Unity]
 **** xref:unity::quickstart/new-game.adoc[Initial Setup]
-***** xref:unity::quickstart/apple-apns.adoc[iOS Push Credentials]
-***** xref:unity::quickstart/firebase-fcm.adoc[Android FCM Credentials]
+**** xref:unity::quickstart/apple-apns.adoc[#iOS Push Credentials#]
+**** xref:unity::quickstart/firebase-fcm.adoc[#Android FCM Credentials#]
 **** xref:unity::quickstart/install-sdk.adoc[Install the Teak SDK]
 **** xref:unity::quickstart/required-code.adoc[Add Required Code]
 **** xref:unity::quickstart/required-code.adoc#_identify_user[#Identify User#]
