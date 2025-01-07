@@ -24,6 +24,8 @@ Before we begin, ensure that you have the following prerequisites in place to en
 * [x] https://firebase.google.com/docs/unity/setup[Firebase Unity SDK, window=_blank] installed.
 * [x] External Dependency Manager for Unity (Installed with Firebase)
 
+&nbsp;
+
 NOTE: If your game already includes any Firebase product from a .unitypackage, it should be compatible with Teak. However, if you don't have any Firebase products installed yet, we suggest installing only the **FirebaseMessaging.unitypackage** to ensure compatibility with Teak.
 
 NOTE: Teak SDK 4.3.0 supports a maximum `targetSdkVersion` of 34. +
