@@ -11,6 +11,9 @@ JAVADOC_AUTOBRIEF      = NO
 # Stop the automatic ref generation (for the word Teak for example)
 AUTOLINK_SUPPORT       = NO
 
+# Let's say we're never case sensitive
+CASE_SENSE_NAMES = NO
+
 # Project-specific configuration
 INPUT                  = Assets/Teak
 FILE_PATTERNS          = *.cs
