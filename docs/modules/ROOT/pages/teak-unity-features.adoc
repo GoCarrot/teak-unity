@@ -27,9 +27,9 @@ Make sure that your user ID is a unique ID for the player in your game.
 ====
 Your game probably has a user ID to store progress, coin balances, and other useful data. Use that ID with Teak too.
 
-* [*] It should be uniquely identify the current user.
-* [*] Ideally the same ID that is used in your game's backend.
-* [*] Send it as early as possible in the game's lifecycle.
+* [x] It should be uniquely identify the current user.
+* [x] Ideally the same ID that is used in your game's backend.
+* [x] Send it as early as possible in the game's lifecycle.
 
 Having a consistent ID between your game makes customer support easier, and makes life easier for your analytics team.
 ====
