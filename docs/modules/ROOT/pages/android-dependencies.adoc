@@ -109,7 +109,7 @@ initialization calls into your custom activity.
 [source, java]
 ----
 import io.teak.sdk.Teak;
-import io.teak.sdk.wrapper.unity;
+import io.teak.sdk.wrapper.unity.TeakUnity;
 ----
 
 ==== Initialize Teak
