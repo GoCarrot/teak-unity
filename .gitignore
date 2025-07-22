@@ -35,3 +35,4 @@ temp-upm-build
 _doxygen
 yarn-error.log
 node_modules
+.yarn/install-state.gz

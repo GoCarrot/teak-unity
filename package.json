@@ -4,5 +4,6 @@
   },
   "dependencies": {
     "doxygen2adoc": "https://github.com/GoCarrot/doxygen2adoc"
-  }
+  },
+  "packageManager": "yarn@4.9.2"
 }
