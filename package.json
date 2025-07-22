@@ -3,7 +3,7 @@
     "docs": "doxygen && doxygen2adoc --config .doxygen2adoc.yml build --clean"
   },
   "dependencies": {
-    "doxygen2adoc": "https://github.com/GoCarrot/doxygen2adoc"
+    "doxygen2adoc": "https://github.com/GoCarrot/doxygen2adoc.git#commit=5dd8531cf009c61a42afc2622f6de6ee3d7a573f"
   },
   "packageManager": "yarn@4.9.2"
 }

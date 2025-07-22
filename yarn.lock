@@ -55,9 +55,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"doxygen2adoc@https://github.com/GoCarrot/doxygen2adoc":
+"doxygen2adoc@https://github.com/GoCarrot/doxygen2adoc.git#commit=5dd8531cf009c61a42afc2622f6de6ee3d7a573f":
   version: 1.0.0
-  resolution: "doxygen2adoc@https://github.com/GoCarrot/doxygen2adoc.git#commit=f6d3109df40c57c0cd36fbcc7ddc2252adf2d43e"
+  resolution: "doxygen2adoc@https://github.com/GoCarrot/doxygen2adoc.git#commit=5dd8531cf009c61a42afc2622f6de6ee3d7a573f"
   dependencies:
     compare-versions: "npm:^4.1.3"
     fast-xml-parser: "npm:^4.0.1"
@@ -66,7 +66,7 @@ __metadata:
     yargs: "npm:^17.3.1"
   bin:
     doxygen2adoc: ./bin/doxygen2adoc.js
-  checksum: 10c0/674c9ad93e973bd8e83fac08e3bcfb4c59b61f7fc9678dface4b980ebd9c9084aec07c849f46f95fc0c5b109c6a12706618da79ebc049b43adc94fc6592ec5de
+  checksum: 10c0/2ed267331ce6d2993d87b13e0919f168c6358750e7538c35e1e451ab60590fd4200fda1a9adb50262891b87b4561828c41a4e8825f7e427d9813c05e16eaf065
   languageName: node
   linkType: hard
 
@@ -152,7 +152,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "root-workspace-0b6124@workspace:."
   dependencies:
-    doxygen2adoc: "https://github.com/GoCarrot/doxygen2adoc"
+    doxygen2adoc: "https://github.com/GoCarrot/doxygen2adoc.git#commit=5dd8531cf009c61a42afc2622f6de6ee3d7a573f"
   languageName: unknown
   linkType: soft
 
