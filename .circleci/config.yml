@@ -21,6 +21,7 @@ jobs:
       - run:
           name: Ruby and Ruby Gems
           command: |
+            brew upgrade ruby-build
             rbenv install
             gem update bundler
             bundle check || bundle install --path vendor/bundle
