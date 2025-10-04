@@ -3,6 +3,10 @@ version: 2.1
 references:
   RUBY_IMAGE: &RUBY_IMAGE
     cimg/ruby:3.3.9
+  MACOS_CACHE_KEY: &MACOS_CACHE_KEY
+    v1-{{ checksum "setup" }}-{{ checksum "Gemfile.lock" }}
+  RUBY_CACHE_KEY: &RUBY_CACHE_KEY
+    v0-{{ checksum "Gemfile.lock" }}
 
 orbs:
   teak: teak/sdk-utils@1
@@ -18,7 +22,7 @@ jobs:
       - checkout
       - run: git fetch --tags
       - restore_cache:
-          key: v1-{{ checksum "setup" }}-{{ checksum "Gemfile.lock" }}
+          key: *MACOS_CACHE_KEY
       - run:
           name: Update HomeBrew
           command: |
@@ -37,7 +41,7 @@ jobs:
           paths:
             - ~/Library/Caches/Homebrew
             - vendor/bundle
-          key: v1-{{ checksum "setup" }}-{{ checksum "Gemfile.lock" }}
+          key: *MACOS_CACHE_KEY
       - run:
           name: Build Teak SDK
           command: |
@@ -68,11 +72,10 @@ jobs:
       - checkout
       - run: git fetch --tags
       - restore_cache:
-          key: v0-{{ checksum "Gemfile.lock" }}
+          key: *RUBY_CACHE_KEY
       - run:
           name: Ruby Gems
           command: |
-            gem update bundler
             bundle check || bundle install --path vendor/bundle
       - run:
           name: Install AWS CLI
@@ -82,7 +85,7 @@ jobs:
       - save_cache:
           paths:
             - vendor/bundle
-          key: v0-{{ checksum "Gemfile.lock" }}
+          key: *RUBY_CACHE_KEY
       - attach_workspace:
           at: .
       - teak/tag-promote
@@ -94,11 +97,10 @@ jobs:
       - checkout
       - run: git fetch --tags
       - restore_cache:
-          key: v0-{{ checksum "Gemfile.lock" }}
+          key: *RUBY_CACHE_KEY
       - run:
           name: Ruby Gems
           command: |
-            gem update bundler
             bundle check || bundle install --path vendor/bundle
       - run:
           name: Install AWS CLI
@@ -108,7 +110,7 @@ jobs:
       - save_cache:
           paths:
             - vendor/bundle
-          key: v0-{{ checksum "Gemfile.lock" }}
+          key: *RUBY_CACHE_KEY
       - attach_workspace:
           at: .
       - run:
@@ -133,7 +135,7 @@ jobs:
       - checkout
       - run: git fetch --tags
       - restore_cache:
-          key: v0-{{ checksum "Gemfile.lock" }}
+          key: *RUBY_CACHE_KEY
       - run:
           name: Ruby Gems
           command: bundle check || bundle install --path vendor/bundle
@@ -145,7 +147,7 @@ jobs:
       - save_cache:
           paths:
             - vendor/bundle
-          key: v0-{{ checksum "Gemfile.lock" }}
+          key: *RUBY_CACHE_KEY
       - attach_workspace:
           at: .
       - run:
@@ -159,7 +161,6 @@ jobs:
             aws s3 cp build/Teak.unitypackage s3://teak-build-artifacts/unity/Teak.unitypackage --acl public-read
             aws s3 cp build/Teak.unitypackage.sha512 s3://teak-build-artifacts/unity/Teak.unitypackage.sha512 --acl public-read
 workflows:
-  version: 2
   un-tagged-build:
     jobs:
       - build:
