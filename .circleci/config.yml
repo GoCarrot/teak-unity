@@ -15,7 +15,7 @@ orbs:
 jobs:
   build:
     macos:
-      xcode: "13.4.1"
+      xcode: "16.4.0"
     resource_class: m4pro.medium
     shell: /bin/bash --login -eo pipefail
     steps:
