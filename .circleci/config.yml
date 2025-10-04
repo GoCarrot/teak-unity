@@ -20,7 +20,7 @@ jobs:
       - restore_cache:
           key: v1-{{ checksum "setup" }}-{{ checksum "Gemfile.lock" }}
       - run:
-          name: Homebrew Depenendcies
+          name: Homebrew Dependencies
           command: HOMEBREW_NO_AUTO_UPDATE=1 ./setup
       - run:
           name: Ruby and Ruby Gems
