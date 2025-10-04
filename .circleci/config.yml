@@ -12,7 +12,7 @@ jobs:
   build:
     macos:
       xcode: "13.4.1"
-    resource_class: macos.m1.medium.gen1
+    resource_class: m4pro.medium
     shell: /bin/bash --login -eo pipefail
     steps:
       - checkout
