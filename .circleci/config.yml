@@ -7,6 +7,8 @@ references:
     v1-{{ checksum "setup" }}-{{ checksum "Gemfile.lock" }}
   RUBY_CACHE_KEY: &RUBY_CACHE_KEY
     v0-{{ checksum "Gemfile.lock" }}
+  XCODE_VERSION: &XCODE_VERSION
+    14.3.1
 
 orbs:
   teak: teak/sdk-utils@1
@@ -15,7 +17,7 @@ orbs:
 jobs:
   build:
     macos:
-      xcode: "16.4.0"
+      xcode: *XCODE_VERSION
     resource_class: m4pro.medium
     shell: /bin/bash --login -eo pipefail
     steps:
