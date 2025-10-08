@@ -28,7 +28,7 @@ jobs:
       - run:
           name: Update HomeBrew
           command: |
-            brew untap homebrew/homebrew-cask-versions
+            brew untap --force homebrew/homebrew-cask-versions
             HOMEBREW_NO_UPDATE_REPORT_NEW=1 brew update
       - run:
           name: Update ruby-build
