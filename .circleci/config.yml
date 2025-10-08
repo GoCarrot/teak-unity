@@ -164,7 +164,6 @@ jobs:
             aws s3 cp build/Teak.unitypackage s3://teak-build-artifacts/unity/Teak.unitypackage --acl public-read
             aws s3 cp build/Teak.unitypackage.sha512 s3://teak-build-artifacts/unity/Teak.unitypackage.sha512 --acl public-read
 workflows:
-  version: 2
   un-tagged-build:
     jobs:
       - build:
