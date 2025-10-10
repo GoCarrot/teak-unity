@@ -7,7 +7,7 @@ orbs:
 jobs:
   build:
     macos:
-      xcode: "13.4.1"
+      xcode: "14.3.1"
     resource_class: macos.m1.medium.gen1
     shell: /bin/bash --login -eo pipefail
     steps:
@@ -21,7 +21,15 @@ jobs:
       - run:
           name: Ruby and Ruby Gems
           command: |
-            brew upgrade ruby-build
+            function run_brew_upgrade_deal_with_nonsense() {
+              local exit_code
+              brew upgrade ruby-build || exit_code=$?
+              if (( exit_code == 1 )) ; then
+                echo "brew upgrade exited with status 1. Suppressing."
+              fi
+              return $(( exit_code == 1 ? 0 : exit_code))
+            }
+            run_brew_upgrade_deal_with_nonsense
             rbenv install
             gem update bundler
             bundle check || bundle install --path vendor/bundle
