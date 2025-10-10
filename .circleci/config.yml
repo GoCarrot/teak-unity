@@ -16,9 +16,6 @@ jobs:
       - restore_cache:
           key: v1-{{ checksum "setup" }}-{{ checksum "Gemfile.lock" }}
       - run:
-          name: Homebrew Depenendcies
-          command: HOMEBREW_NO_AUTO_UPDATE=1 ./setup
-      - run:
           name: Ruby and Ruby Gems
           command: |
             function run_brew_upgrade_deal_with_nonsense() {
