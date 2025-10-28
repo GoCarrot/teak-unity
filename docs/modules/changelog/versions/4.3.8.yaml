@@ -1,0 +1,4 @@
+bug:
+  - Resolved Android issue where a single notification could create a notification group
+  - Resolved Android issue with customizing notification group minimum size from server
+  - Resolved Android issue with customizing notification group id from server
