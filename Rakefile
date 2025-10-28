@@ -108,7 +108,7 @@ namespace :build do
       if build_local?
         cp "#{PROJECT_PATH}/../teak-android/build/outputs/aar/teak-#{BUILD_TYPE.downcase}.aar", 'teak.aar'
       else
-        sh "curl -o teak.aar https://sdks.teakcdn.com/android/teak-#{NATIVE_CONFIG['version']['android']}.aar"
+        sh "curl --fail -o teak.aar https://sdks.teakcdn.com/android/teak-#{NATIVE_CONFIG['version']['android']}.aar"
       end
     end
   end
@@ -120,7 +120,7 @@ namespace :build do
     else
       Dir.mktmpdir do |dir|
         Dir.chdir(dir) do
-          sh "curl -o Teak.framework.zip https://sdks.teakcdn.com/ios/Teak-#{NATIVE_CONFIG['version']['ios']}.framework.zip"
+          sh "curl --fail -o Teak.framework.zip https://sdks.teakcdn.com/ios/Teak-#{NATIVE_CONFIG['version']['ios']}.framework.zip"
           sh 'unzip Teak.framework.zip'
           cp 'Teak.framework/Teak', File.join(PROJECT_PATH, 'Assets', 'Teak', 'Plugins', 'iOS', 'libTeak.a')
         end
@@ -133,7 +133,7 @@ namespace :build do
         if build_local?
           cp "#{PROJECT_PATH}/../teak-ios/build/#{BUILD_TYPE}-iphoneos/TeakResources.bundle.zip", 'TeakResources.bundle.zip'
         else
-          sh "curl -o TeakResources.bundle.zip https://sdks.teakcdn.com/ios/TeakResources-#{NATIVE_CONFIG['version']['ios']}.bundle.zip"
+          sh "curl --fail -o TeakResources.bundle.zip https://sdks.teakcdn.com/ios/TeakResources-#{NATIVE_CONFIG['version']['ios']}.bundle.zip"
         end
 
         sh "unzip -o TeakResources.bundle.zip -d #{File.join(PROJECT_PATH, 'Assets', 'Teak', 'Plugins', 'iOS')}"
