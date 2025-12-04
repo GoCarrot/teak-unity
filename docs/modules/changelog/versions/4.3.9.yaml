@@ -1,0 +1,2 @@
+bug:
+  - Resolved WebGL build issue with Unity 6.2+
