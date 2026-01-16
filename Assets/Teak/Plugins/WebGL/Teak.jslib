@@ -1,7 +1,7 @@
 mergeInto(LibraryManager.library, {
   TeakInitWebGL: function(ptr_appId, ptr_apiKey, enableSdk5BehaviorsInt) {
-    var appId = Pointer_stringify(ptr_appId);
-    var apiKey = Pointer_stringify(ptr_apiKey);
+    var appId = UTF8ToString(ptr_appId);
+    var apiKey = UTF8ToString(ptr_apiKey);
 
     (function(){window.teak=window.teak||[];window.teak.methods=["init","on","asyncInit","identify","trackEvent","postAction","postAchievement","postHighScore","canMakeFeedPost","popupFeedPost","reportNotificationClick","reportFeedClick","sendRequest","acceptRequest","loadInboxData", "claimReward", "setIsUnity", "scheduleNotification", "cancelNotification", "cancelAllNotifications", "setStringAttribute", "setNumberAttribute", "scheduleLongDistanceNotification", "reportUnityCanvasPurchase", "deleteEmail", "setChannelState","setCategoryState", "scheduleNotificationWithPersonalization"];window.teak.factory=function(e){return function(){var t=Array.prototype.slice.call(arguments);t.unshift(e);window.teak.push(t);return window.teak}};for(var e=0;e<window.teak.methods.length;e++){var t=window.teak.methods[e];if(!window.teak[t]){window.teak[t]=window.teak.factory(t)}}})()
 
@@ -33,8 +33,8 @@ mergeInto(LibraryManager.library, {
     doTeakInit();
   },
   TeakIdentifyUser: function(ptr_userId, ptr_configJson) {
-    var userId = Pointer_stringify(ptr_userId);
-    var configJson = Pointer_stringify(ptr_configJson);
+    var userId = UTF8ToString(ptr_userId);
+    var configJson = UTF8ToString(ptr_configJson);
     var config = JSON.parse(configJson);
     var callback = function() {
       // Teak attribution params
@@ -91,9 +91,9 @@ mergeInto(LibraryManager.library, {
     });
   },
   TeakTrackEvent: function(ptr_actionId, ptr_objectTypeId, ptr_objectInstanceId) {
-    var actionId = Pointer_stringify(ptr_actionId).trim();
-    var objectTypeId = Pointer_stringify(ptr_objectTypeId).trim();
-    var objectInstanceId = Pointer_stringify(ptr_objectInstanceId).trim();
+    var actionId = UTF8ToString(ptr_actionId).trim();
+    var objectTypeId = UTF8ToString(ptr_objectTypeId).trim();
+    var objectInstanceId = UTF8ToString(ptr_objectInstanceId).trim();
 
     objectTypeId = objectTypeId.length === 0 ? undefined : objectTypeId;
     objectInstanceId = objectInstanceId.length === 0 ? undefined : objectInstanceId;
@@ -101,9 +101,9 @@ mergeInto(LibraryManager.library, {
     window.teak.trackEvent(actionId, objectTypeId, objectInstanceId);
   },
   TeakIncrementEvent: function(ptr_actionId, ptr_objectTypeId, ptr_objectInstanceId, count) {
-    var actionId = Pointer_stringify(ptr_actionId).trim();
-    var objectTypeId = Pointer_stringify(ptr_objectTypeId).trim();
-    var objectInstanceId = Pointer_stringify(ptr_objectInstanceId).trim();
+    var actionId = UTF8ToString(ptr_actionId).trim();
+    var objectTypeId = UTF8ToString(ptr_objectTypeId).trim();
+    var objectInstanceId = UTF8ToString(ptr_objectInstanceId).trim();
 
     objectTypeId = objectTypeId.length === 0 ? undefined : objectTypeId;
     objectInstanceId = objectInstanceId.length === 0 ? undefined : objectInstanceId;
@@ -113,9 +113,9 @@ mergeInto(LibraryManager.library, {
   TeakDeepLinkTableInternal: {},
   TeakUnityRegisterRoute__deps: ['TeakDeepLinkTableInternal'],
   TeakUnityRegisterRoute: function(ptr_route, ptr_name, ptr_description) {
-    var route = Pointer_stringify(ptr_route);
-    var name = Pointer_stringify(ptr_name);
-    var description = Pointer_stringify(ptr_description);
+    var route = UTF8ToString(ptr_route);
+    var name = UTF8ToString(ptr_name);
+    var description = UTF8ToString(ptr_description);
 
     // Escape some characters
     var escapedRoute = route.replace(/[\?\%\\\/\*]/g, function(match) {
@@ -150,7 +150,7 @@ mergeInto(LibraryManager.library, {
   },
   TeakHandleDeepLinkPath__deps: ['TeakHandleDeepLink_Internal'],
   TeakHandleDeepLinkPath: function(ptr_url) {
-    var url = Pointer_stringify(ptr_url);
+    var url = UTF8ToString(ptr_url);
     return _TeakHandleDeepLink_Internal(url);
   },
   TeakHandleDeepLink_Internal__deps: ['TeakDeepLinkTableInternal'],
@@ -179,9 +179,9 @@ mergeInto(LibraryManager.library, {
     return false;
   },
   TeakNotificationSchedule: function(ptr_callbackId, ptr_creativeId, ptr_defaultMessage, delayInSeconds) {
-    var creativeId = Pointer_stringify(ptr_creativeId);
-    var defaultMessage = Pointer_stringify(ptr_defaultMessage);
-    var callbackId = Pointer_stringify(ptr_callbackId);
+    var creativeId = UTF8ToString(ptr_creativeId);
+    var defaultMessage = UTF8ToString(ptr_defaultMessage);
+    var callbackId = UTF8ToString(ptr_callbackId);
 
     window.teak.scheduleNotification(creativeId, defaultMessage, delayInSeconds, function(reply) {
       reply.creativeId = creativeId;
@@ -191,12 +191,12 @@ mergeInto(LibraryManager.library, {
     });
   },
   TeakNotificationScheduleWithPersonalization: function(ptr_callbackId, ptr_creativeId, delayInSeconds, ptr_personalizationData) {
-    var creativeId = Pointer_stringify(ptr_creativeId);
+    var creativeId = UTF8ToString(ptr_creativeId);
     var personalizationData = null;
     try {
-      ptr_personalizationData === null ? null : JSON.parse(Pointer_stringify(ptr_personalizationData));
+      ptr_personalizationData === null ? null : JSON.parse(UTF8ToString(ptr_personalizationData));
     } catch(ignored) {}
-    var callbackId = Pointer_stringify(ptr_callbackId);
+    var callbackId = UTF8ToString(ptr_callbackId);
 
     window.teak.scheduleNotificationWithPersonalization(creativeId, delayInSeconds, personalizationData, function(reply) {
       reply._callbackId = callbackId;
@@ -205,9 +205,9 @@ mergeInto(LibraryManager.library, {
     });
   },
   TeakNotificationScheduleLongDistance: function(ptr_callbackId, ptr_creativeId, ptr_jsonUserIds, delayInSeconds) {
-    var creativeId = Pointer_stringify(ptr_creativeId);
-    var callbackId = Pointer_stringify(ptr_callbackId);
-    var userIds = JSON.parse(Pointer_stringify(ptr_jsonUserIds));
+    var creativeId = UTF8ToString(ptr_creativeId);
+    var callbackId = UTF8ToString(ptr_callbackId);
+    var userIds = JSON.parse(UTF8ToString(ptr_jsonUserIds));
 
     window.teak.scheduleLongDistanceNotification(creativeId, delayInSeconds, userIds, function(reply) {
       reply.creativeId = creativeId;
@@ -217,8 +217,8 @@ mergeInto(LibraryManager.library, {
     });
   },
   TeakNotificationCancel: function(ptr_callbackId, ptr_creativeId) {
-    var creativeId = Pointer_stringify(ptr_creativeId);
-    var callbackId = Pointer_stringify(ptr_callbackId);
+    var creativeId = UTF8ToString(ptr_creativeId);
+    var callbackId = UTF8ToString(ptr_callbackId);
 
     window.teak.cancelNotification(creativeId, function(reply) {
       reply.callbackId = callbackId;
@@ -227,7 +227,7 @@ mergeInto(LibraryManager.library, {
     });
   },
   TeakNotificationCancelAll: function(ptr_callbackId) {
-    var callbackId = Pointer_stringify(ptr_callbackId);
+    var callbackId = UTF8ToString(ptr_callbackId);
 
     window.teak.cancelAllNotifications(function(reply) {
       reply.callbackId = callbackId;
@@ -236,25 +236,25 @@ mergeInto(LibraryManager.library, {
     });
   },
   TeakSetNumericAttribute: function(ptr_key, value) {
-    var key = Pointer_stringify(ptr_key);
+    var key = UTF8ToString(ptr_key);
     window.teak.setNumberAttribute(key, value);
   },
   TeakSetStringAttribute: function(ptr_key, ptr_value) {
-    var key = Pointer_stringify(ptr_key);
-    var value = Pointer_stringify(ptr_value);
+    var key = UTF8ToString(ptr_key);
+    var value = UTF8ToString(ptr_value);
     window.teak.setStringAttribute(key, value);
   },
   TeakUnityReportCanvasPurchase: function(ptr_payload) {
-    var payload = Pointer_stringify(ptr_payload);
+    var payload = UTF8ToString(ptr_payload);
     window.teak.reportUnityCanvasPurchase(payload);
   },
   TeakDeleteEmail: function() {
     window.teak.deleteEmail();
   },
   TeakSetStateForChannel_CallbackId: function(ptr_state, ptr_channel, ptr_callbackId) {
-    var state = Pointer_stringify(ptr_state);
-    var channel = Pointer_stringify(ptr_channel);
-    var callbackId = Pointer_stringify(ptr_callbackId);
+    var state = UTF8ToString(ptr_state);
+    var channel = UTF8ToString(ptr_channel);
+    var callbackId = UTF8ToString(ptr_callbackId);
 
     if (channel === 'platform_push') {
       channel = 'desktop_push';
@@ -267,10 +267,10 @@ mergeInto(LibraryManager.library, {
     });
   },
   TeakSetCategoryForChannel_CallbackId: function(ptr_state, ptr_channel, ptr_category, ptr_callbackId) {
-    var state = Pointer_stringify(ptr_state);
-    var channel = Pointer_stringify(ptr_channel);
-    var category = Pointer_stringify(ptr_category);
-    var callbackId = Pointer_stringify(ptr_callbackId);
+    var state = UTF8ToString(ptr_state);
+    var channel = UTF8ToString(ptr_channel);
+    var category = UTF8ToString(ptr_category);
+    var callbackId = UTF8ToString(ptr_callbackId);
 
     if (channel === 'platform_push') {
       channel = 'desktop_push';
