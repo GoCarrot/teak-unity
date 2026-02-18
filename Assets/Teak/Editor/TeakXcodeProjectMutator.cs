@@ -17,7 +17,7 @@ using System.Diagnostics;
 #endregion
 
 public class TeakXcodeProjectMutator : IPostprocessBuildWithReport {
-    public int callbackOrder { get { return 100; } }
+    public int callbackOrder { get { return TeakSettings.iOSBuildPostProcessorCallbackOrder; } }
 
     public void OnPostprocessBuild(BuildReport report) {
         if (TeakSettings.JustShutUpIKnowWhatImDoing) { return; }
