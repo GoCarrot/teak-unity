@@ -94,7 +94,53 @@ CircleCI on macOS (Xcode 14.3.1). Two workflows:
 - **un-tagged-build:** Builds package, optionally promotes to tagged release.
 - **tagged-build:** Builds, deploys versioned UPM package to `GoCarrot/upm-package-teak`, uploads `.unitypackage` to S3 (`teak-build-artifacts` bucket). `deploy_latest` requires manual approval.
 
+## Documentation & Changelog
+
+Public documentation is built with **Antora** and lives under `docs/`. API docs are generated via doxygen (`yarn docs`).
+
+### Changelog System
+
+The changelog is published to the documentation site. Source of truth is YAML files in `docs/modules/changelog/versions/`. AsciiDoc partials and the main changelog page are **generated** by `doxygen2adoc` (via `yarn docs`) and gitignored — never edit `.adoc` files under `docs/modules/changelog/`.
+
+- **Adding entries:** Edit `docs/modules/changelog/unreleased.yaml`. When a user-facing change is made, add a line under the appropriate category.
+- **Important:** `unreleased.yaml` lives in `docs/modules/changelog/`, NOT in `versions/`. The `versions/` directory is read by `doxygen2adoc` which requires valid semver filenames — `unreleased.yaml` in that directory will break `yarn docs`.
+- **At release time:** Move `unreleased.yaml` into `versions/<version>.yaml` and create a fresh `unreleased.yaml`.
+- **YAML categories:** `new`, `bug`, `enhancement`, `breaking`, `deprecation`, `upgrade_note`, `known_issue`, `android` (native version), `ios` (native version)
+- **Format:** Each category is a list of strings. Use backticks for code references (doubled in YAML: ` `` `).
+
 ## Branching
 
 - `develop` — active development (default PR target)
 - `X.Y-stable` — maintenance branches (e.g. `4.3-stable`)
+
+## Commit Message Format
+
+Every commit must include a full human-Claude interaction log. Placeholders
+below are in angle brackets — replace them with actual content, do not include
+the brackets. The interaction log only covers prompts since the previous commit,
+not the entire session.
+
+```
+Brief description of what was done
+
+Technical description of changes made
+
+## Human-Claude Interaction Log
+
+### Human prompts (VERBATIM - include typos, informal language, COMPLETE text):
+**Include EVERY prompt since last commit - even short ones, corrections, clarifications**
+1. "<copy-paste ENTIRE first prompt since last commit>"
+   → Claude: <what Claude did in response>
+
+2. "<copy-paste ENTIRE second prompt>"
+   → Claude: <how Claude adjusted>
+
+<continue numbering ALL prompts - don't skip any or judge importance>
+
+### Key decisions made:
+- Human guided: <specific guidance provided>
+- Claude discovered: <patterns found>
+
+🤖 Generated with Claude Code
+Co-Authored-By: Claude <noreply@anthropic.com>
+```
