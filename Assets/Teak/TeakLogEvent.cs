@@ -82,7 +82,7 @@ public class TeakLogEvent {
     /// </summary>
     /// <returns>A string that represents the current object.</returns>
     public override string ToString() {
-        string formatString = "{{ RunId = '{0}', EventId = '{1}', TimeStamp = '{2}', EventType = '{3}', LogLevel = '{4}'{5} }}";
+        string formatString = "{{ RunId = '{0}', EventId = '{1}', TimeStamp = '{2}', EventType = '{3}', LogLevel = '{4}', DeviceId = '{5}', AppId = '{6}', BundleId = '{7}', SdkVersion = '{8}', ClientAppVersion = '{9}', ClientAppVersionName = '{10}'{11} }}";
         string eventDataString = "";
         return string.Format(formatString,
                              this.RunId,
@@ -90,6 +90,12 @@ public class TeakLogEvent {
                              this.TimeStamp,
                              this.EventType,
                              this.LogLevel,
+                             this.DeviceId,
+                             this.AppId,
+                             this.BundleId,
+                             this.SdkVersion,
+                             this.ClientAppVersion,
+                             this.ClientAppVersionName,
                              eventDataString
                             );
     }
