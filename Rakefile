@@ -51,7 +51,29 @@ def build_local?
   ENV.fetch('BUILD_LOCAL', false).to_s == 'true'
 end
 
+UNITY_HOME = ENV.fetch('UNITY_HOME', Dir.glob('/Applications/Unity/Hub/Editor/*').last)
+UNITY = File.join(UNITY_HOME, 'Unity.app', 'Contents', 'MacOS', 'Unity')
+
 task default: ['build:android', 'build:ios', 'build:package']
+
+task :test do
+  log_file = File.join(PROJECT_PATH, 'unity.test.log')
+  FileUtils.rm_f(log_file)
+
+  success = system(UNITY, '-batchmode', '-nographics', '-quit',
+                   '-logFile', log_file,
+                   '-projectPath', PROJECT_PATH,
+                   '-executeMethod', 'TeakTestRunner.RunAll')
+
+  # Surface test output from the log
+  if File.exist?(log_file)
+    File.readlines(log_file).each do |line|
+      puts line if line.include?('[TeakTest]')
+    end
+  end
+
+  fail 'Tests failed' unless success
+end
 
 task :format do
   sh 'astyle --project --recursive Assets/*.cs --exclude=Assets/Teak/Editor/iOS/Xcode'
