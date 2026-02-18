@@ -101,22 +101,42 @@ public static class TeakTestRunner {
                     continue;
                 }
 
+                // Collect test methods once
+                var testMethods = new List<MethodInfo>();
+                foreach (var method in type.GetMethods(BindingFlags.Public | BindingFlags.Instance)) {
+                    if (method.GetCustomAttribute<TeakTestAttribute>() != null) {
+                        testMethods.Add(method);
+                    }
+                }
+
                 // Run [TeakSetUp] if present
+                bool setupFailed = false;
                 foreach (var method in type.GetMethods(BindingFlags.Public | BindingFlags.Instance)) {
                     if (method.GetCustomAttribute<TeakSetUpAttribute>() != null) {
                         try {
                             method.Invoke(instance, null);
                         } catch (Exception e) {
+                            setupFailed = true;
                             var inner = e.InnerException ?? e;
                             Debug.LogError(string.Format("{0}   FAIL SetUp: {1}", PREFIX, inner.Message));
+                            failures.Add(fixtureName + ".SetUp: " + inner.Message);
                         }
                     }
                 }
 
-                // Run [TeakTest] methods
-                foreach (var method in type.GetMethods(BindingFlags.Public | BindingFlags.Instance)) {
-                    if (method.GetCustomAttribute<TeakTestAttribute>() == null) continue;
+                // If SetUp failed, skip all tests — running them would produce
+                // confusing cascading failures.
+                if (setupFailed) {
+                    foreach (var method in testMethods) {
+                        totalFailed++;
+                        Debug.LogError(string.Format("{0}   SKIP {1} (SetUp failed)", PREFIX, method.Name));
+                        failures.Add(fixtureName + "." + method.Name + ": skipped (SetUp failed)");
+                    }
+                    continue;
+                }
 
+                // Run tests
+                foreach (var method in testMethods) {
                     string testName = fixtureName + "." + method.Name;
                     try {
                         method.Invoke(instance, null);
