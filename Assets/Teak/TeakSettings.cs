@@ -114,6 +114,18 @@ public class TeakSettings : ScriptableObject {
 #endif
     }
 
+    public static int iOSBuildPostProcessorCallbackOrder {
+        get { return Instance.miOSBuildPostProcessorCallbackOrder; }
+#if UNITY_EDITOR
+        set {
+            if (value != Instance.miOSBuildPostProcessorCallbackOrder) {
+                Instance.miOSBuildPostProcessorCallbackOrder = value;
+                DirtyEditor();
+            }
+        }
+#endif
+    }
+
 #if UNITY_EDITOR
     [MenuItem("Edit/Teak Settings...")]
     public static void Edit() {
@@ -137,6 +149,8 @@ public class TeakSettings : ScriptableObject {
     private bool mEnableSDK5Behaviors = true;
     [SerializeField]
     private bool mTraceLogging = false;
+    [SerializeField]
+    private int miOSBuildPostProcessorCallbackOrder = 100;
 
     private static TeakSettings mInstance;
 }
