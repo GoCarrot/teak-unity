@@ -2,3 +2,6 @@ new:
   - The iOS build post-processor callback order is now configurable in Teak Settings, allowing resolution of ordering conflicts with other post-processors such as Crashlytics.
 enhancement:
   - "``TeakLogEvent`` now exposes ``DeviceId``, ``AppId``, ``BundleId``, ``SdkVersion``, ``ClientAppVersion``, and ``ClientAppVersionName`` properties from the native log payload"
+  - "``RegisterForProvisionalNotifications`` now has a coroutine overload that accepts a callback, matching the ``RegisterForNotifications`` pattern"
+deprecation:
+  - "``RegisterForProvisionalNotifications()`` (no-arg form) is deprecated in favor of ``RegisterForProvisionalNotifications(System.Action<bool>)``"
