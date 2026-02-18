@@ -682,9 +682,9 @@ public partial class Teak : MonoBehaviour {
     /// <summary>
     /// Register for Provisional Push Notifications.
     /// </summary>
-    /// \deprecated Please use <see cref="RegisterForProvisionalNotifications(System.Action)"/> instead.
+    /// \deprecated Please use <see cref="RegisterForProvisionalNotifications(System.Action{bool})"/> instead.
     /// <remarks>
-    /// This is a compatibility method which simply wraps <see cref="RegisterForProvisionalNotifications(System.Action)"/> in
+    /// This is a compatibility method which simply wraps <see cref="RegisterForProvisionalNotifications(System.Action{bool})"/> in
     /// a StartCoroutine()
     /// </remarks>
     /// <returns>true if the device was an iOS 12+ device</returns>
@@ -754,7 +754,9 @@ public partial class Teak : MonoBehaviour {
         bool keepWaiting = true;
         string callbackId = DateTime.Now.Ticks.ToString();
         teakOperationCallbackMap.Add(callbackId, json => {
-            callback(json.ContainsKey("permissionGranted") && json["permissionGranted"] is bool && (bool)json["permissionGranted"]);
+            if (callback != null) {
+                callback(json.ContainsKey("permissionGranted") && json["permissionGranted"] is bool && (bool)json["permissionGranted"]);
+            }
             keepWaiting = false;
         });
         TeakRequestPushAuthorizationUnity(false, callbackId);
