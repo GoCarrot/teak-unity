@@ -51,16 +51,19 @@ def build_local?
   ENV.fetch('BUILD_LOCAL', false).to_s == 'true'
 end
 
-UNITY_HOME = ENV.fetch('UNITY_HOME', Dir.glob('/Applications/Unity/Hub/Editor/*').last)
-UNITY = File.join(UNITY_HOME, 'Unity.app', 'Contents', 'MacOS', 'Unity')
-
 task default: ['build:android', 'build:ios', 'build:package']
+
+def unity_path
+  home = ENV.fetch('UNITY_HOME') { Dir.glob('/Applications/Unity/Hub/Editor/*').last }
+  fail 'Unity not found. Set UNITY_HOME or install Unity via Unity Hub.' if home.nil?
+  File.join(home, 'Unity.app', 'Contents', 'MacOS', 'Unity')
+end
 
 task :test do
   log_file = File.join(PROJECT_PATH, 'unity.test.log')
   FileUtils.rm_f(log_file)
 
-  success = system(UNITY, '-batchmode', '-nographics', '-quit',
+  success = system(unity_path, '-batchmode', '-nographics', '-quit',
                    '-logFile', log_file,
                    '-projectPath', PROJECT_PATH,
                    '-executeMethod', 'TeakTestRunner.RunAll')
