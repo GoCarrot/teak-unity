@@ -1,0 +1,2 @@
+enhancement:
+  - "``TeakLogEvent`` now exposes ``DeviceId``, ``AppId``, ``BundleId``, ``SdkVersion``, ``ClientAppVersion``, and ``ClientAppVersionName`` properties from the native log payload"
