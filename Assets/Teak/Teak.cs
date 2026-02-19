@@ -682,15 +682,47 @@ public partial class Teak : MonoBehaviour {
     /// <summary>
     /// Register for Provisional Push Notifications.
     /// </summary>
+    /// \deprecated Please use <see cref="RegisterForProvisionalNotifications(System.Action{bool})"/> instead.
     /// <remarks>
-    /// This method only has any effect on iOS devices running iOS 12 or higher.
+    /// This is a compatibility method which simply wraps <see cref="RegisterForProvisionalNotifications(System.Action{bool})"/> in
+    /// a StartCoroutine()
     /// </remarks>
     /// <returns>true if the device was an iOS 12+ device</returns>
+    [Obsolete("Use RegisterForProvisionalNotifications(System.Action<bool>) instead.")]
     public bool RegisterForProvisionalNotifications() {
 #if !UNITY_EDITOR && UNITY_IPHONE
-        return TeakRequestPushAuthorizationUnity(true, "nocallback");
+        StartCoroutine(this.RegisterForProvisionalNotifications(null));
+        return true;
 #else
         return false;
+#endif
+    }
+
+    /// <summary>
+    /// Register for Provisional Push Notifications.
+    /// </summary>
+    /// <remarks>
+    /// This is a Coroutine and will not return until the player grants or denies push permissions.
+    /// This method only has any effect on iOS devices running iOS 12 or higher.
+    /// </remarks>
+    /// <param name="callback">The callback will be called with true if the player granted
+    /// push permissions and false if the player denied push permissions.</param>
+    public IEnumerator RegisterForProvisionalNotifications(System.Action<bool> callback) {
+#if UNITY_EDITOR
+        yield return null;
+#elif UNITY_IPHONE
+        bool keepWaiting = true;
+        string callbackId = DateTime.Now.Ticks.ToString();
+        teakOperationCallbackMap.Add(callbackId, json => {
+            if (callback != null) {
+                callback(json.ContainsKey("permissionGranted") && json["permissionGranted"] is bool && (bool)json["permissionGranted"]);
+            }
+            keepWaiting = false;
+        });
+        TeakRequestPushAuthorizationUnity(true, callbackId);
+        while (keepWaiting) { yield return null; }
+#else
+        yield return null;
 #endif
     }
 
@@ -722,7 +754,9 @@ public partial class Teak : MonoBehaviour {
         bool keepWaiting = true;
         string callbackId = DateTime.Now.Ticks.ToString();
         teakOperationCallbackMap.Add(callbackId, json => {
-            callback(json.ContainsKey("permissionGranted") && json["permissionGranted"] is bool && (bool)json["permissionGranted"]);
+            if (callback != null) {
+                callback(json.ContainsKey("permissionGranted") && json["permissionGranted"] is bool && (bool)json["permissionGranted"]);
+            }
             keepWaiting = false;
         });
         TeakRequestPushAuthorizationUnity(false, callbackId);
