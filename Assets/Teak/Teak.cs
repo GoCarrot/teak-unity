@@ -287,6 +287,9 @@ public partial class Teak : MonoBehaviour {
         /// </summary>
         public List<Channel.Category> ChannelCategories { get; private set; }
 
+        /// <summary>The device's persistent random identifier.</summary>
+        public string DeviceId { get; private set; }
+
         /// @cond hide_from_doxygen
         public ConfigurationData(Dictionary<string, object> json) {
             if(json.ContainsKey("channelCategories")) {
@@ -295,6 +298,7 @@ public partial class Teak : MonoBehaviour {
                     this.ChannelCategories = Teak.Utils.ParseChannelCategories(categories);
                 }
             }
+            this.DeviceId = json.ContainsKey("deviceId") ? json["deviceId"] as string : null;
         }
         /// @endcond
     }
