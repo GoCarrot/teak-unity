@@ -27,11 +27,7 @@ public class TeakXcodeProjectMutator : IPostprocessBuildWithReport {
         PBXProject project = new PBXProject();
         project.ReadFromFile(projectPath);
 
-#if UNITY_2019_3_OR_NEWER
         string unityTarget = project.GetUnityMainTargetGuid();
-#else
-        string unityTarget = project.TargetGuidByName(PBXProject.GetUnityTargetName());
-#endif
 
         /////
         // Add Frameworks to Unity target
@@ -165,11 +161,7 @@ public class TeakXcodeProjectMutator : IPostprocessBuildWithReport {
             return extensionTarget;
         }
 
-#if UNITY_2022_2_OR_NEWER
         string applicationIdentifier = PlayerSettings.GetApplicationIdentifier(NamedBuildTarget.iOS);
-#else
-        string applicationIdentifier = PlayerSettings.GetApplicationIdentifier(BuildTargetGroup.iOS);
-#endif
 
         /////
         // Create app extension target
