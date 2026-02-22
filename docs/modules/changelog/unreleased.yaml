@@ -3,5 +3,7 @@ new:
 enhancement:
   - "``TeakLogEvent`` now exposes ``DeviceId``, ``AppId``, ``BundleId``, ``SdkVersion``, ``ClientAppVersion``, and ``ClientAppVersionName`` properties from the native log payload"
   - "``RegisterForProvisionalNotifications`` now has a coroutine overload that accepts a callback, matching the ``RegisterForNotifications`` pattern"
+breaking:
+  - "Minimum Unity version is now 2022.3 (previously 2018.3)"
 deprecation:
   - "``RegisterForProvisionalNotifications()`` (no-arg form) is deprecated in favor of ``RegisterForProvisionalNotifications(System.Action<bool>)``"
