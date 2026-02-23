@@ -2,11 +2,11 @@ version: 2.1
 
 references:
   RUBY_IMAGE: &RUBY_IMAGE
-    cimg/ruby:3.1.6
+    cimg/ruby:3.2.2
   MACOS_CACHE_KEY: &MACOS_CACHE_KEY
-    v2-{{ checksum "setup" }}-{{ checksum ".ruby-version" }}-{{ checksum "Gemfile.lock" }}
+    v3-{{ checksum "setup" }}-{{ checksum "Gemfile.lock" }}
   RUBY_CACHE_KEY: &RUBY_CACHE_KEY
-    v0-{{ checksum "Gemfile.lock" }}
+    v1-{{ checksum "Gemfile.lock" }}
 
 orbs:
   teak: teak/sdk-utils@1
@@ -24,25 +24,14 @@ jobs:
       - restore_cache:
           key: *MACOS_CACHE_KEY
       - run:
-          name: Ruby and Ruby Gems
+          name: Ruby Gems
           command: |
-            function run_brew_upgrade_deal_with_nonsense() {
-              local exit_code
-              brew upgrade ruby-build || exit_code=$?
-              if (( exit_code == 1 )) ; then
-                echo "brew upgrade exited with status 1. Suppressing."
-              fi
-              return $(( exit_code == 1 ? 0 : exit_code))
-            }
-            run_brew_upgrade_deal_with_nonsense
-            rbenv install
-            gem update bundler
-            bundle check || bundle install --path vendor/bundle
+            bundle config set --local path vendor/bundle
+            bundle check || bundle install
       - save_cache:
           paths:
             - ~/Library/Caches/Homebrew
             - vendor/bundle
-            - ~/.rbenv/versions
           key: *MACOS_CACHE_KEY
       - run:
           name: Build Teak SDK
@@ -78,8 +67,8 @@ jobs:
       - run:
           name: Ruby Gems
           command: |
-            gem update bundler
-            bundle check || bundle install --path vendor/bundle
+            bundle config set --local path vendor/bundle
+            bundle check || bundle install
       - run:
           name: Install AWS CLI
           command: |
@@ -104,8 +93,8 @@ jobs:
       - run:
           name: Ruby Gems
           command: |
-            gem update bundler
-            bundle check || bundle install --path vendor/bundle
+            bundle config set --local path vendor/bundle
+            bundle check || bundle install
       - run:
           name: Install AWS CLI
           command: |
@@ -142,7 +131,9 @@ jobs:
           key: *RUBY_CACHE_KEY
       - run:
           name: Ruby Gems
-          command: bundle check || bundle install --path vendor/bundle
+          command: |
+            bundle config set --local path vendor/bundle
+            bundle check || bundle install
       - run:
           name: Install AWS CLI
           command: |
