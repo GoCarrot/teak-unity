@@ -51,6 +51,42 @@ def build_local?
   ENV.fetch('BUILD_LOCAL', false).to_s == 'true'
 end
 
+require 'securerandom'
+
+def generate_meta_files(dir)
+  Dir.glob(File.join(dir, '**', '*')).each do |entry|
+    meta_path = "#{entry}.meta"
+    next if entry.end_with?('.meta')
+    next if File.exist?(meta_path)
+
+    guid = SecureRandom.hex(16)
+    is_dir = File.directory?(entry)
+    content = if is_dir
+                <<~META
+                  fileFormatVersion: 2
+                  guid: #{guid}
+                  folderAsset: yes
+                  DefaultImporter:
+                    externalObjects: {}
+                    userData:
+                    assetBundleName:
+                    assetBundleVariant:
+                META
+              else
+                <<~META
+                  fileFormatVersion: 2
+                  guid: #{guid}
+                  DefaultImporter:
+                    externalObjects: {}
+                    userData:
+                    assetBundleName:
+                    assetBundleVariant:
+                META
+              end
+    File.write(meta_path, content)
+  end
+end
+
 task default: ['build:android', 'build:ios', 'build:package']
 
 def unity_path
@@ -155,6 +191,9 @@ namespace :build do
         end
       end
     end
+
+    # Generate .meta files for xcframework contents (required by UnityPackage)
+    generate_meta_files(xcframework_dest)
 
     # Download or copy Teak SDK Resources bundle
     Dir.mktmpdir do |dir|
