@@ -49,7 +49,7 @@ public class TeakXcodeProjectMutator : IPostprocessBuildWithReport {
 
         /////
         // Add Teak app extensions
-        string[] teakExtensionCommonFrameworks = new string[] {"AdSupport", "AVFoundation", "CoreGraphics", "ImageIO", "CoreServices", "StoreKit", "SystemConfiguration", "UIKit", "UserNotifications"};
+        string[] teakExtensionCommonFrameworks = new string[] {"AVFoundation", "CoreGraphics", "CoreServices", "ImageIO", "SystemConfiguration", "UIKit", "UserNotifications"};
 
         AddTeakExtensionToProjectTarget("TeakNotificationService", "TeakNotificationService",
                                         teakExtensionCommonFrameworks,
