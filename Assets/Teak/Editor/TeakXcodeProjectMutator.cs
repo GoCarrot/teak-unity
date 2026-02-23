@@ -215,7 +215,7 @@ public class TeakXcodeProjectMutator : IPostprocessBuildWithReport {
         string xcframeworkProjectPath = "Libraries/" + relativeTeakPath + "/Plugins/iOS/Teak.xcframework";
         string xcframeworkGuid = project.FindFileGuidByProjectPath(xcframeworkProjectPath);
         if (string.IsNullOrEmpty(xcframeworkGuid)) {
-            xcframeworkGuid = project.AddFile(xcframeworkProjectPath, name + "/Teak.xcframework");
+            xcframeworkGuid = project.AddFile(xcframeworkProjectPath, xcframeworkProjectPath);
         }
         project.AddFileToBuild(extensionTarget, xcframeworkGuid);
 
