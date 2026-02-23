@@ -204,7 +204,7 @@ public class TeakXcodeProjectMutator : IPostprocessBuildWithReport {
         project.AddFrameworksToTarget(extensionTarget, frameworks);
 
         /////
-        // Add libTeak.a
+        // Link Teak.xcframework
 
         // If the 'Runtime' directory exists, this is coming from a UPM package
         string pathToCheck = Path.GetDirectoryName(Path.GetDirectoryName(__FILE__));
@@ -212,9 +212,12 @@ public class TeakXcodeProjectMutator : IPostprocessBuildWithReport {
         if (Directory.Exists(pathToCheck + "/Runtime")) {
             relativeTeakPath = "io.teak.unity.sdk/Runtime";
         }
-        project.AddFileToBuild(extensionTarget, project.AddFile("libTeak.a", name + "/libTeak.a"));
-        project.AddBuildProperty(extensionTarget, "LIBRARY_SEARCH_PATHS", "$(SRCROOT)/Libraries/" + relativeTeakPath + "/Plugins/iOS");
-        project.AddBuildProperty(extensionTarget, "ALWAYS_SEARCH_USER_PATHS", "NO");
+        string xcframeworkProjectPath = "Libraries/" + relativeTeakPath + "/Plugins/iOS/Teak.xcframework";
+        string xcframeworkGuid = project.FindFileGuidByProjectPath(xcframeworkProjectPath);
+        if (string.IsNullOrEmpty(xcframeworkGuid)) {
+            xcframeworkGuid = project.AddFile(xcframeworkProjectPath, name + "/Teak.xcframework");
+        }
+        project.AddFileToBuild(extensionTarget, xcframeworkGuid);
 
         /////
         // Build properties
