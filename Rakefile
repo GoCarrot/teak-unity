@@ -97,7 +97,7 @@ namespace :version do
     )
     bucket = s3.bucket('teak-build-artifacts')
 
-    fail "Teak iOS version #{args.v} does not exist" unless bucket.object("ios/Teak-#{args.v}.framework.zip").exists?
+    fail "Teak iOS version #{args.v} does not exist" unless bucket.object("ios/Teak-#{args.v}.xcframework.zip").exists?
 
     NATIVE_CONFIG['version']['ios'] = args.v
     File.write('native.config.yml', NATIVE_CONFIG.to_yaml)
@@ -139,15 +139,19 @@ namespace :build do
   end
 
   task :ios do
-    # Download or copy Teak SDK
+    ios_plugin_dir = File.join(PROJECT_PATH, 'Assets', 'Teak', 'Plugins', 'iOS')
+    xcframework_dest = File.join(ios_plugin_dir, 'Teak.xcframework')
+
+    # Download or copy Teak SDK xcframework
+    FileUtils.rm_rf(xcframework_dest)
     if build_local?
-      cp "#{PROJECT_PATH}/../teak-ios/build/#{BUILD_TYPE}-iphoneos/libTeak.a", File.join(PROJECT_PATH, 'Assets', 'Teak', 'Plugins', 'iOS', 'libTeak.a')
+      FileUtils.cp_r("#{PROJECT_PATH}/../teak-ios/TeakFramework/Teak.xcframework", xcframework_dest)
     else
       Dir.mktmpdir do |dir|
         Dir.chdir(dir) do
-          sh "curl --fail -o Teak.framework.zip https://sdks.teakcdn.com/ios/Teak-#{NATIVE_CONFIG['version']['ios']}.framework.zip"
-          sh 'unzip Teak.framework.zip'
-          cp 'Teak.framework/Teak', File.join(PROJECT_PATH, 'Assets', 'Teak', 'Plugins', 'iOS', 'libTeak.a')
+          sh "curl --fail -o Teak.xcframework.zip https://sdks.teakcdn.com/ios/Teak-#{NATIVE_CONFIG['version']['ios']}.xcframework.zip"
+          sh 'unzip Teak.xcframework.zip'
+          FileUtils.cp_r('Teak.xcframework', xcframework_dest)
         end
       end
     end
