@@ -23,6 +23,7 @@ Assets/Teak/Plugins/Android/Version.java
 # Teak binaries
 Assets/Teak/Plugins/Android/teak.aar
 Assets/Teak/Plugins/iOS/Teak.xcframework/
+Assets/Teak/Plugins/iOS/TeakExtension.xcframework/
 
 # Teak resources
 Assets/Teak/Plugins/iOS/TeakResources.bundle
