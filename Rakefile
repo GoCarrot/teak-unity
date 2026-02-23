@@ -195,6 +195,24 @@ namespace :build do
     # Generate .meta files for xcframework contents (required by UnityPackage)
     generate_meta_files(xcframework_dest)
 
+    # Download or copy TeakExtension xcframework (for notification extensions)
+    ext_xcframework_dest = File.join(ios_plugin_dir, 'TeakExtension.xcframework')
+    FileUtils.rm_rf(ext_xcframework_dest)
+    if build_local?
+      FileUtils.cp_r("#{PROJECT_PATH}/../teak-ios/TeakFramework/TeakExtension.xcframework", ext_xcframework_dest)
+    else
+      Dir.mktmpdir do |dir|
+        Dir.chdir(dir) do
+          sh "curl --fail -o TeakExtension.xcframework.zip https://sdks.teakcdn.com/ios/TeakExtension-#{NATIVE_CONFIG['version']['ios']}.xcframework.zip"
+          sh 'unzip TeakExtension.xcframework.zip'
+          FileUtils.cp_r('TeakExtension.xcframework', ext_xcframework_dest)
+        end
+      end
+    end
+
+    # Generate .meta files for extension xcframework contents
+    generate_meta_files(ext_xcframework_dest)
+
     # Download or copy Teak SDK Resources bundle
     Dir.mktmpdir do |dir|
       Dir.chdir(dir) do
