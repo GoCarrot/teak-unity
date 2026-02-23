@@ -40,7 +40,16 @@ bundle exec rake format
 yarn docs
 ```
 
-There is no automated test suite in this repository.
+**Running tests:**
+```bash
+# Via Unity CLI (project version: see ProjectSettings/ProjectVersion.txt)
+/Applications/Unity/Hub/Editor/<VERSION>/Unity.app/Contents/MacOS/Unity \
+  -executeMethod TeakTestRunner.RunAll \
+  -logFile unity.test.log -quit -nographics -batchmode \
+  -projectPath .
+```
+
+Tests use a custom runner (`Assets/Tests/Editor/TeakTestRunner.cs`) with `[TeakTestFixture]` / `[TeakTest]` attributes and `TeakAssert` helpers. Test files live in `Assets/Tests/Editor/`. Since there are no `.asmdef` files, all Editor scripts (including build post-processors) compile into `Assembly-CSharp-Editor`, so tests can access `internal` members directly.
 
 ## Architecture
 
