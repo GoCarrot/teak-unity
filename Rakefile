@@ -51,6 +51,43 @@ def build_local?
   ENV.fetch('BUILD_LOCAL', false).to_s == 'true'
 end
 
+require 'securerandom'
+
+def generate_meta_files(dir)
+  Dir.glob(File.join(dir, '**', '*')).each do |entry|
+    meta_path = "#{entry}.meta"
+    next if entry.end_with?('.meta') || File.exist?(meta_path)
+
+    guid = SecureRandom.hex(16)
+    folder_line = File.directory?(entry) ? "folderAsset: yes\n" : ''
+    File.write(meta_path, <<~META)
+      fileFormatVersion: 2
+      guid: #{guid}
+      #{folder_line}DefaultImporter:
+        externalObjects: {}
+        userData:
+        assetBundleName:
+        assetBundleVariant:
+    META
+  end
+end
+
+def fetch_xcframework(name, dest)
+  FileUtils.rm_rf(dest)
+  if build_local?
+    FileUtils.cp_r("#{PROJECT_PATH}/../teak-ios/TeakFramework/#{name}", dest)
+  else
+    Dir.mktmpdir do |dir|
+      Dir.chdir(dir) do
+        sh "curl --fail -o #{name}.zip https://sdks.teakcdn.com/ios/#{name.sub('.xcframework', '')}-#{NATIVE_CONFIG['version']['ios']}.xcframework.zip"
+        sh "unzip #{name}.zip"
+        FileUtils.cp_r(name, dest)
+      end
+    end
+  end
+  generate_meta_files(dest)
+end
+
 task default: ['build:android', 'build:ios', 'build:package']
 
 def unity_path
@@ -97,7 +134,7 @@ namespace :version do
     )
     bucket = s3.bucket('teak-build-artifacts')
 
-    fail "Teak iOS version #{args.v} does not exist" unless bucket.object("ios/Teak-#{args.v}.framework.zip").exists?
+    fail "Teak iOS version #{args.v} does not exist" unless bucket.object("ios/Teak-#{args.v}.xcframework.zip").exists?
 
     NATIVE_CONFIG['version']['ios'] = args.v
     File.write('native.config.yml', NATIVE_CONFIG.to_yaml)
@@ -139,18 +176,10 @@ namespace :build do
   end
 
   task :ios do
-    # Download or copy Teak SDK
-    if build_local?
-      cp "#{PROJECT_PATH}/../teak-ios/build/#{BUILD_TYPE}-iphoneos/libTeak.a", File.join(PROJECT_PATH, 'Assets', 'Teak', 'Plugins', 'iOS', 'libTeak.a')
-    else
-      Dir.mktmpdir do |dir|
-        Dir.chdir(dir) do
-          sh "curl --fail -o Teak.framework.zip https://sdks.teakcdn.com/ios/Teak-#{NATIVE_CONFIG['version']['ios']}.framework.zip"
-          sh 'unzip Teak.framework.zip'
-          cp 'Teak.framework/Teak', File.join(PROJECT_PATH, 'Assets', 'Teak', 'Plugins', 'iOS', 'libTeak.a')
-        end
-      end
-    end
+    ios_plugin_dir = File.join(PROJECT_PATH, 'Assets', 'Teak', 'Plugins', 'iOS')
+
+    fetch_xcframework('Teak.xcframework', File.join(ios_plugin_dir, 'Teak.xcframework'))
+    fetch_xcframework('TeakExtension.xcframework', File.join(ios_plugin_dir, 'TeakExtension.xcframework'))
 
     # Download or copy Teak SDK Resources bundle
     Dir.mktmpdir do |dir|

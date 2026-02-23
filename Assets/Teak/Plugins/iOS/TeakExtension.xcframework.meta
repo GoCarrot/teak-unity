@@ -1,5 +1,6 @@
 fileFormatVersion: 2
-guid: 25ea50116633044f5b3b51bebff0d0b1
+guid: c33a9bf949084e288d8060ad142a8f7a
+folderAsset: yes
 PluginImporter:
   externalObjects: {}
   serializedVersion: 2
@@ -35,7 +36,7 @@ PluginImporter:
       settings:
         CPU: ARMv7
   - first:
-      Any: 
+      Any:
     second:
       enabled: 0
       settings: {}
@@ -117,7 +118,8 @@ PluginImporter:
     second:
       enabled: 1
       settings:
-        FrameworkDependencies: AdSupport;AVFoundation;CoreServices;StoreKit;UserNotifications;ImageIO;CoreGraphics;UIKit;SystemConfiguration
-  userData: 
-  assetBundleName: 
-  assetBundleVariant: 
+        AddToEmbeddedBinaries: true
+        FrameworkDependencies: AVFoundation;CoreGraphics;CoreServices;ImageIO;SystemConfiguration;UIKit;UserNotifications
+  userData:
+  assetBundleName:
+  assetBundleVariant:
