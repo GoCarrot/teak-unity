@@ -56,35 +56,36 @@ require 'securerandom'
 def generate_meta_files(dir)
   Dir.glob(File.join(dir, '**', '*')).each do |entry|
     meta_path = "#{entry}.meta"
-    next if entry.end_with?('.meta')
-    next if File.exist?(meta_path)
+    next if entry.end_with?('.meta') || File.exist?(meta_path)
 
     guid = SecureRandom.hex(16)
-    is_dir = File.directory?(entry)
-    content = if is_dir
-                <<~META
-                  fileFormatVersion: 2
-                  guid: #{guid}
-                  folderAsset: yes
-                  DefaultImporter:
-                    externalObjects: {}
-                    userData:
-                    assetBundleName:
-                    assetBundleVariant:
-                META
-              else
-                <<~META
-                  fileFormatVersion: 2
-                  guid: #{guid}
-                  DefaultImporter:
-                    externalObjects: {}
-                    userData:
-                    assetBundleName:
-                    assetBundleVariant:
-                META
-              end
-    File.write(meta_path, content)
+    folder_line = File.directory?(entry) ? "folderAsset: yes\n" : ''
+    File.write(meta_path, <<~META)
+      fileFormatVersion: 2
+      guid: #{guid}
+      #{folder_line}DefaultImporter:
+        externalObjects: {}
+        userData:
+        assetBundleName:
+        assetBundleVariant:
+    META
   end
+end
+
+def fetch_xcframework(name, dest)
+  FileUtils.rm_rf(dest)
+  if build_local?
+    FileUtils.cp_r("#{PROJECT_PATH}/../teak-ios/TeakFramework/#{name}", dest)
+  else
+    Dir.mktmpdir do |dir|
+      Dir.chdir(dir) do
+        sh "curl --fail -o #{name}.zip https://sdks.teakcdn.com/ios/#{name.sub('.xcframework', '')}-#{NATIVE_CONFIG['version']['ios']}.xcframework.zip"
+        sh "unzip #{name}.zip"
+        FileUtils.cp_r(name, dest)
+      end
+    end
+  end
+  generate_meta_files(dest)
 end
 
 task default: ['build:android', 'build:ios', 'build:package']
@@ -176,42 +177,9 @@ namespace :build do
 
   task :ios do
     ios_plugin_dir = File.join(PROJECT_PATH, 'Assets', 'Teak', 'Plugins', 'iOS')
-    xcframework_dest = File.join(ios_plugin_dir, 'Teak.xcframework')
 
-    # Download or copy Teak SDK xcframework
-    FileUtils.rm_rf(xcframework_dest)
-    if build_local?
-      FileUtils.cp_r("#{PROJECT_PATH}/../teak-ios/TeakFramework/Teak.xcframework", xcframework_dest)
-    else
-      Dir.mktmpdir do |dir|
-        Dir.chdir(dir) do
-          sh "curl --fail -o Teak.xcframework.zip https://sdks.teakcdn.com/ios/Teak-#{NATIVE_CONFIG['version']['ios']}.xcframework.zip"
-          sh 'unzip Teak.xcframework.zip'
-          FileUtils.cp_r('Teak.xcframework', xcframework_dest)
-        end
-      end
-    end
-
-    # Generate .meta files for xcframework contents (required by UnityPackage)
-    generate_meta_files(xcframework_dest)
-
-    # Download or copy TeakExtension xcframework (for notification extensions)
-    ext_xcframework_dest = File.join(ios_plugin_dir, 'TeakExtension.xcframework')
-    FileUtils.rm_rf(ext_xcframework_dest)
-    if build_local?
-      FileUtils.cp_r("#{PROJECT_PATH}/../teak-ios/TeakFramework/TeakExtension.xcframework", ext_xcframework_dest)
-    else
-      Dir.mktmpdir do |dir|
-        Dir.chdir(dir) do
-          sh "curl --fail -o TeakExtension.xcframework.zip https://sdks.teakcdn.com/ios/TeakExtension-#{NATIVE_CONFIG['version']['ios']}.xcframework.zip"
-          sh 'unzip TeakExtension.xcframework.zip'
-          FileUtils.cp_r('TeakExtension.xcframework', ext_xcframework_dest)
-        end
-      end
-    end
-
-    # Generate .meta files for extension xcframework contents
-    generate_meta_files(ext_xcframework_dest)
+    fetch_xcframework('Teak.xcframework', File.join(ios_plugin_dir, 'Teak.xcframework'))
+    fetch_xcframework('TeakExtension.xcframework', File.join(ios_plugin_dir, 'TeakExtension.xcframework'))
 
     # Download or copy Teak SDK Resources bundle
     Dir.mktmpdir do |dir|
