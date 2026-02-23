@@ -90,6 +90,9 @@ public class TeakXcodeProjectMutator : IPostprocessBuildWithReport {
         // SDK5 Behaviors
         plist.root.SetBoolean("TeakSDK5Behaviors", TeakSettings.EnableSDK5Behaviors);
 
+        // Force debug output
+        plist.root.SetBoolean("TeakForceDebugOutput", TeakSettings.ForceDebugOutput || UnityEngine.Debug.isDebugBuild);
+
         return plist.WriteToString();
     }
 

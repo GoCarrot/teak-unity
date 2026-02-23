@@ -40,6 +40,9 @@ public class TeakSettingsEditor : Editor {
         GUIContent sdk5BehaviorsContent = new GUIContent("Enable SDK 5 Behaviors [?]",  "When enabled, the Teak SDK will no longer automatically collect the Facebook Access Token from signed-in users.");
         TeakSettings.EnableSDK5Behaviors = EditorGUILayout.Toggle(sdk5BehaviorsContent, TeakSettings.EnableSDK5Behaviors);
 
+        GUIContent forceDebugOutputContent = new GUIContent("Force Debug Output [?]", "When enabled (or in Development Builds), forces verbose Teak SDK logging on-device regardless of server configuration. Useful for QA/staging builds.");
+        TeakSettings.ForceDebugOutput = EditorGUILayout.Toggle(forceDebugOutputContent, TeakSettings.ForceDebugOutput);
+
         GUIContent iOSCallbackOrderContent = new GUIContent("iOS Post-Processor Order [?]", "The callbackOrder for the iOS build post-processor. Change this to control when Teak's Xcode project modifications run relative to other post-processors. Default is 100.");
         TeakSettings.iOSBuildPostProcessorCallbackOrder = EditorGUILayout.IntField(iOSCallbackOrderContent, TeakSettings.iOSBuildPostProcessorCallbackOrder);
     }

@@ -31,12 +31,8 @@ public class TeakAndroidAssetLibBuilder : IPreprocessBuildWithReport {
         Directory.CreateDirectory(Path.Combine(Application.dataPath, androidLibPath, "res/values"));
 
         // res/values/teak.xml
-        XDocument doc = new XDocument(
-            new XElement("resources",
-                         new XElement("string", TeakSettings.AppId, new XAttribute("name", "io_teak_app_id")),
-                         new XElement("string", TeakSettings.APIKey, new XAttribute("name", "io_teak_api_key"))
-                        )
-        );
+        bool forceDebugOutput = TeakSettings.ForceDebugOutput || UnityEngine.Debug.isDebugBuild;
+        XDocument doc = BuildTeakResourcesXml(TeakSettings.AppId, TeakSettings.APIKey, forceDebugOutput);
         doc.Save(Path.Combine(Application.dataPath, androidLibPath, "res/values/teak.xml"));
 
         // project.properties
@@ -57,6 +53,19 @@ public class TeakAndroidAssetLibBuilder : IPreprocessBuildWithReport {
         AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
         AssetDatabase.Refresh(ImportAssetOptions.ImportRecursive);
         AssetDatabase.SaveAssets();
+    }
+
+    internal static XDocument BuildTeakResourcesXml(string appId, string apiKey, bool forceDebugOutput) {
+        XElement resources = new XElement("resources",
+            new XElement("string", appId, new XAttribute("name", "io_teak_app_id")),
+            new XElement("string", apiKey, new XAttribute("name", "io_teak_api_key"))
+        );
+
+        if (forceDebugOutput) {
+            resources.Add(new XElement("bool", "true", new XAttribute("name", "io_teak_force_debug_output")));
+        }
+
+        return new XDocument(resources);
     }
 }
 
