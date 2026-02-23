@@ -4,7 +4,7 @@ references:
   RUBY_IMAGE: &RUBY_IMAGE
     cimg/ruby:3.1.6
   MACOS_CACHE_KEY: &MACOS_CACHE_KEY
-    v1-{{ checksum "setup" }}-{{ checksum "Gemfile.lock" }}
+    v2-{{ checksum "setup" }}-{{ checksum ".ruby-version" }}-{{ checksum "Gemfile.lock" }}
   RUBY_CACHE_KEY: &RUBY_CACHE_KEY
     v0-{{ checksum "Gemfile.lock" }}
 
@@ -42,6 +42,7 @@ jobs:
           paths:
             - ~/Library/Caches/Homebrew
             - vendor/bundle
+            - ~/.rbenv/versions
           key: *MACOS_CACHE_KEY
       - run:
           name: Build Teak SDK
