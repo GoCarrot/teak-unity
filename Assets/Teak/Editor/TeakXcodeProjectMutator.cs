@@ -215,7 +215,8 @@ public class TeakXcodeProjectMutator : IPostprocessBuildWithReport {
         if (Directory.Exists(pathToCheck + "/Runtime")) {
             relativeTeakPath = "io.teak.unity.sdk/Runtime";
         }
-        string xcframeworkProjectPath = "Libraries/" + relativeTeakPath + "/Plugins/iOS/TeakExtension.xcframework";
+        // Unity places xcframeworks under Frameworks/
+        string xcframeworkProjectPath = "Frameworks/" + relativeTeakPath.TrimEnd(Path.DirectorySeparatorChar, '/') + "/Plugins/iOS/TeakExtension.xcframework";
         string xcframeworkGuid = project.FindFileGuidByProjectPath(xcframeworkProjectPath);
         if (string.IsNullOrEmpty(xcframeworkGuid)) {
             xcframeworkGuid = project.AddFile(xcframeworkProjectPath, xcframeworkProjectPath);
