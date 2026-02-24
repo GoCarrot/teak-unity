@@ -23,6 +23,8 @@ public class TeakXcodeProjectMutator : IPostprocessBuildWithReport {
         if (TeakSettings.JustShutUpIKnowWhatImDoing) { return; }
         if (report.summary.platformGroup != BuildTargetGroup.iOS) { return; }
 
+        bool isDevelopmentBuild = (report.summary.options & BuildOptions.Development) != 0;
+
         string projectPath = PBXProject.GetPBXProjectPath(report.summary.outputPath);
         PBXProject project = new PBXProject();
         project.ReadFromFile(projectPath);
@@ -45,7 +47,7 @@ public class TeakXcodeProjectMutator : IPostprocessBuildWithReport {
         /////
         // Modify plist
         string plistPath = report.summary.outputPath + "/Info.plist";
-        File.WriteAllText(plistPath, AddTeakEntriesToPlist(File.ReadAllText(plistPath)));
+        File.WriteAllText(plistPath, AddTeakEntriesToPlist(File.ReadAllText(plistPath), isDevelopmentBuild));
 
         /////
         // Add Teak app extensions
@@ -68,12 +70,12 @@ public class TeakXcodeProjectMutator : IPostprocessBuildWithReport {
         string unityTargetName = "Unity-iPhone";
         string entitlementsFileName = unityTargetName + ".entitlements";
         ProjectCapabilityManager capabilityManager = new ProjectCapabilityManager(projectPath, entitlementsFileName, unityTargetName);
-        capabilityManager.AddPushNotifications(UnityEngine.Debug.isDebugBuild);
+        capabilityManager.AddPushNotifications(isDevelopmentBuild);
         capabilityManager.AddAssociatedDomains(new string[] {"applinks:" + TeakSettings.ShortlinkDomain});
         capabilityManager.WriteToFile();
     }
 
-    private static string AddTeakEntriesToPlist(string inputPlist) {
+    private static string AddTeakEntriesToPlist(string inputPlist, bool isDevelopmentBuild) {
         PlistDocument plist = new PlistDocument();
         plist.ReadFromString(inputPlist);
 
@@ -91,7 +93,7 @@ public class TeakXcodeProjectMutator : IPostprocessBuildWithReport {
         plist.root.SetBoolean("TeakSDK5Behaviors", TeakSettings.EnableSDK5Behaviors);
 
         // Force debug output
-        plist.root.SetBoolean("TeakForceDebugOutput", TeakSettings.ForceDebugOutput || UnityEngine.Debug.isDebugBuild);
+        plist.root.SetBoolean("TeakForceDebugOutput", TeakSettings.ForceDebugOutput || isDevelopmentBuild);
 
         return plist.WriteToString();
     }

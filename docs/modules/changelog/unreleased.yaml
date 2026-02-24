@@ -2,6 +2,8 @@ new:
   - The iOS build post-processor callback order is now configurable in Teak Settings, allowing resolution of ordering conflicts with other post-processors such as Crashlytics.
   - "``ConfigurationData.DeviceId`` and ``UserData.DeviceId`` expose the device's persistent random identifier for device-targeted notifications"
   - "Added Force Debug Output toggle to Teak Settings. When enabled (or in Development Builds), forces verbose SDK logging on-device regardless of server configuration."
+bug:
+  - "``TeakForceDebugOutput`` and push notification entitlement in iOS builds now correctly reflect the Development Build setting instead of always being enabled"
 enhancement:
   - "``TeakLogEvent`` now exposes ``DeviceId``, ``AppId``, ``BundleId``, ``SdkVersion``, ``ClientAppVersion``, and ``ClientAppVersionName`` properties from the native log payload"
   - "``RegisterForProvisionalNotifications`` now has a coroutine overload that accepts a callback, matching the ``RegisterForNotifications`` pattern"
