@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using MiniJSON.Teak;
 
 /// <summary>
 /// Describes a semi-structured log event that is reported from the native Teak SDK.
@@ -50,8 +51,8 @@ public class TeakLogEvent {
     /// <summary>The application bundle identifier, if present in the log payload.</summary>
     public string BundleId { get; private set; }
 
-    /// <summary>The native Teak SDK version, if present in the log payload.</summary>
-    public string SdkVersion { get; private set; }
+    /// <summary>The Teak SDK version info, keyed by platform (e.g. "ios", "android", "unity").</summary>
+    public Dictionary<string, object> SdkVersion { get; private set; }
 
     /// <summary>The client application version code, if present in the log payload.</summary>
     public string ClientAppVersion { get; private set; }
@@ -71,7 +72,7 @@ public class TeakLogEvent {
         this.DeviceId = logData.ContainsKey("device_id") ? logData["device_id"] as string : null;
         this.AppId = logData.ContainsKey("app_id") ? logData["app_id"] as string : null;
         this.BundleId = logData.ContainsKey("bundle_id") ? logData["bundle_id"] as string : null;
-        this.SdkVersion = logData.ContainsKey("sdk_version") ? logData["sdk_version"] as string : null;
+        this.SdkVersion = logData.ContainsKey("sdk_version") ? logData["sdk_version"] as Dictionary<string, object> : null;
         this.ClientAppVersion = logData.ContainsKey("client_app_version") ? logData["client_app_version"] as string : null;
         this.ClientAppVersionName = logData.ContainsKey("client_app_version_name") ? logData["client_app_version_name"] as string : null;
     }
@@ -93,7 +94,7 @@ public class TeakLogEvent {
                              this.DeviceId,
                              this.AppId,
                              this.BundleId,
-                             this.SdkVersion,
+                             this.SdkVersion != null ? Json.Serialize(this.SdkVersion) : "null",
                              this.ClientAppVersion,
                              this.ClientAppVersionName,
                              eventDataString
