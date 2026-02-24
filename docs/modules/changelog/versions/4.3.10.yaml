@@ -1,0 +1,18 @@
+new:
+  - The iOS build post-processor callback order is now configurable in Teak Settings, allowing resolution of ordering conflicts with other post-processors such as Crashlytics.
+  - "``ConfigurationData.DeviceId`` and ``UserData.DeviceId`` expose the device's persistent random identifier for device-targeted notifications"
+  - "Added Force Debug Output toggle to Teak Settings. When enabled (or in Development Builds), forces verbose SDK logging on-device regardless of server configuration."
+bug:
+  - "``TeakForceDebugOutput`` and push notification entitlement in iOS builds now correctly reflect the Development Build setting instead of always being enabled"
+  - "``io_teak_force_debug_output`` in Android builds now correctly reflects the Development Build setting instead of always being enabled"
+  - Resolved issue on iOS where server response could override local Force Debug Output setting
+  - Resolved issue on Android where server response could override local Force Debug Output setting
+  - Resolved issue on Android with double-decoding of query parameters in deep link URI processing
+enhancement:
+  - "``TeakLogEvent`` now exposes ``DeviceId``, ``AppId``, ``BundleId``, ``SdkVersion``, ``ClientAppVersion``, and ``ClientAppVersionName`` properties from the native log payload"
+  - "``RegisterForProvisionalNotifications`` now has a coroutine overload that accepts a callback, matching the ``RegisterForNotifications`` pattern"
+  - "``canOpenNotificationSettings`` on iOS now returns false when notification permissions have not yet been requested"
+breaking:
+  - "Minimum Unity version is now 2022.3 (previously 2018.3)"
+deprecation:
+  - "``RegisterForProvisionalNotifications()`` (no-arg form) is deprecated in favor of ``RegisterForProvisionalNotifications(System.Action<bool>)``"

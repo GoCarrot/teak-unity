@@ -85,9 +85,29 @@ All platform-specific code uses `#if UNITY_EDITOR / UNITY_ANDROID / UNITY_IPHONE
 
 ### Version Management
 
-- `VERSION` file at repo root contains the Unity SDK version.
+- `VERSION` file at repo root contains the Unity SDK version (e.g. `4.3.10`). Updated at release time, not during development.
 - `native.config.yml` specifies native SDK versions for iOS and Android.
 - Template files in `Templates/` are rendered by Mustache during `rake` build to generate `TeakVersion.cs`, `Version.java`, and `teak_version.m`. Do not edit these generated files directly.
+- **Tagging**: The `teak/tag-promote` CI orb parses the HEAD commit message for `Promote to: X.Y.Z` and creates + pushes a git tag.
+
+### Release Flow
+
+```
+# 1. Update VERSION file to new version (e.g. 4.3.10)
+# 2. Move docs/modules/changelog/unreleased.yaml → versions/X.Y.Z.yaml
+# 3. Create fresh unreleased.yaml
+# 4. Add native SDK versions to changelog (ios/android categories)
+git commit -m "Promote to: X.Y.Z.rc0"
+git push
+# CI: orb detects commit message → tags X.Y.Z.rc0 → tagged-build workflow → deploy to S3
+```
+
+RC → final release flow:
+- **rc0**: Promotes with current native SDK versions (may be betas). Used for integration testing.
+- **rc1+**: Update `native.config.yml` to finalized native SDK versions, rebuild, promote again.
+- **Final**: When an RC passes testing, promote with the final version number (`Promote to: X.Y.Z`).
+
+**Version numbers are immutable.** Once a promote commit is pushed and CI tags it, that version is permanently consumed. Tags cannot be moved or reused. When promoting, always check recent commit messages (`git log --oneline`) to determine the next available version number.
 
 ## Code Style
 
