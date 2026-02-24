@@ -45,10 +45,16 @@ public class TeakLogEventTests {
 
     [TeakTest]
     public void SdkVersionParsedFromLogData() {
+        var sdkVersion = new Dictionary<string, object> {
+            {"unity", "4.3.9"},
+            {"ios", "4.3.10"}
+        };
         var evt = new TeakLogEvent(MakeLogData(new Dictionary<string, object> {
-            {"sdk_version", "4.3.9"}
+            {"sdk_version", sdkVersion}
         }));
-        TeakAssert.AreEqual("4.3.9", evt.SdkVersion);
+        TeakAssert.IsNotNull(evt.SdkVersion);
+        TeakAssert.AreEqual("4.3.9", evt.SdkVersion["unity"]);
+        TeakAssert.AreEqual("4.3.10", evt.SdkVersion["ios"]);
     }
 
     [TeakTest]
