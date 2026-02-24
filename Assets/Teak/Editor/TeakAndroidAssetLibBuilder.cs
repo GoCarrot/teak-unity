@@ -19,6 +19,8 @@ public class TeakAndroidAssetLibBuilder : IPreprocessBuildWithReport {
         if (TeakSettings.JustShutUpIKnowWhatImDoing) { return; }
         if (report.summary.platformGroup != BuildTargetGroup.Android) { return; }
 
+        bool isDevelopmentBuild = (report.summary.options & BuildOptions.Development) != 0;
+
         if (string.IsNullOrEmpty(TeakSettings.AppId)) {
             Debug.LogError("Teak App Id needs to be assigned in the Edit/Teak menu.");
         }
@@ -31,7 +33,7 @@ public class TeakAndroidAssetLibBuilder : IPreprocessBuildWithReport {
         Directory.CreateDirectory(Path.Combine(Application.dataPath, androidLibPath, "res/values"));
 
         // res/values/teak.xml
-        bool forceDebugOutput = TeakSettings.ForceDebugOutput || UnityEngine.Debug.isDebugBuild;
+        bool forceDebugOutput = TeakSettings.ForceDebugOutput || isDevelopmentBuild;
         XDocument doc = BuildTeakResourcesXml(TeakSettings.AppId, TeakSettings.APIKey, forceDebugOutput);
         doc.Save(Path.Combine(Application.dataPath, androidLibPath, "res/values/teak.xml"));
 
