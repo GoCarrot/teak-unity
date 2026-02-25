@@ -47,11 +47,11 @@ image::service-extension-group.png[]
 * `SystemConfiguration.framework`
 * `UIKit.framework`
 * `UserNotifications.framework`
-* `libTeak.a`
+* `TeakExtension.xcframework`
 
 image::service-extension-link.png[]
 
-NOTE: You can find `libTeak.a` in `Libraries/Teak/Plugins/iOS` in the Xcode project
+NOTE: You can find `TeakExtension.xcframework` in `Frameworks/Teak/Plugins/iOS` in the Xcode project
 structure, and drag it into the 'Link Binary with Libraries' step.
 
 ==== Code
@@ -64,8 +64,8 @@ Change the code in `TeakNotificationService/NotificationService.h` to look like 
 #import <UserNotifications/UserNotifications.h>
 
 // This is the declaration of `TeakNotificationServiceCore`, the implementation
-// is in 'libTeak.a'. It is done this way so you do not need to fight with
-// include paths.
+// is in 'TeakExtension.xcframework'. It is done this way so you do not need to
+// fight with include paths.
 @interface TeakNotificationServiceCore : UNNotificationServiceExtension
 - (void)serviceExtensionTimeWillExpire;
 @end
@@ -76,7 +76,7 @@ Change the code in `TeakNotificationService/NotificationService.h` to look like 
 ----
 
 This declares `TeakNotificationServiceCore` and inherits from it, which will pull
-in the functionality from `libTeak.a` which will take care of everything else.
+in the functionality from `TeakExtension.xcframework` which will take care of everything else.
 
 Change the code in `TeakNotificationService/NotificationService.m` to look like this:
 
@@ -121,11 +121,11 @@ image::content-extension-group.png
 * `UIKit.framework`
 * `UserNotifications.framework`
 * `UserNotificationsUI.framework`
-* `libTeak.a`
+* `TeakExtension.xcframework`
 
 image::content-extension-link.png
 
-NOTE: You can find `libTeak.a` in `Libraries/Teak/Plugins/iOS` in the Xcode
+NOTE: You can find `TeakExtension.xcframework` in `Frameworks/Teak/Plugins/iOS` in the Xcode
 project structure, and drag it into the 'Link Binary with Libraries' step.
 
 ==== Code
@@ -138,8 +138,8 @@ Change the code in `TeakNotificationContent/NotificationViewController.h` to loo
 #import <UIKit/UIKit.h>
 
 // This is the declaration of `TeakNotificationViewControllerCore`, the implementation
-// is in 'libTeak.a'. It is done this way so you do not need to fight with
-// include paths.
+// is in 'TeakExtension.xcframework'. It is done this way so you do not need to
+// fight with include paths.
 @interface TeakNotificationViewControllerCore : UIViewController
 - (void)viewDidLoad;
 @end

@@ -13,7 +13,7 @@ This guide assumes your game is cross platform, and has instructions for both iO
 Before we begin, ensure that you have the following prerequisites in place to ensure a smooth integration:
 
 === Unity Requirements
-* [x] Unity 2020 or newer
+* [x] Unity 2022.3 or newer
 
 === iOS Requirements
 * [x] An https://developer.apple.com/[Apple Developer, window=_blank] account with administrator permissions.

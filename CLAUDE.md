@@ -96,7 +96,7 @@ All platform-specific code uses `#if UNITY_EDITOR / UNITY_ANDROID / UNITY_IPHONE
 # 1. Update VERSION file to new version (e.g. 4.3.10)
 # 2. Move docs/modules/changelog/unreleased.yaml → versions/X.Y.Z.yaml
 # 3. Create fresh unreleased.yaml
-# 4. Add native SDK versions to changelog (ios/android categories)
+# 4. Inline relevant native SDK changes as regular bug/enhancement/new entries
 git commit -m "Promote to: X.Y.Z.rc0"
 git push
 # CI: orb detects commit message → tags X.Y.Z.rc0 → tagged-build workflow → deploy to S3

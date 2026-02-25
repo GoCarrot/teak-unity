@@ -19,7 +19,7 @@ If you do not use the the post-process scripts, the following frameworks are req
 * `UIKit.framework`
 * `SystemConfiguration.framework`
 
-NOTE: These should be present as dependencies on libTeak.a (as specified in libTeak.a.meta),
+NOTE: These should be present as dependencies on Teak.xcframework (as specified in Teak.xcframework.meta),
 this is only in case you run into problems.
 
 .Dependencies as compiler flags

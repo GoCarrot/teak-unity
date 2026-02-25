@@ -3,7 +3,7 @@
 
 It's time to open your game in the Unity Editor and install the Teak SDK. 
 
-* [x] Teak supports `Unity 2020` or newer.
+* [x] Teak supports `Unity 2022.3` or newer.
 * [x] On Android, Teak requires the __External Dependency Manager for Unity__, which is installed with the xref:/quickstart/firebase-fcm.adoc[Firebase Unity SDK].
 
 == Add the Teak SDK in the Unity Editor
@@ -23,7 +23,7 @@ image:start/addpackage.png[Add package to Unity from git,width=256,role="related
 https://github.com/GoCarrot/upm-package-teak.git
 ----
 +
-TIP: For reproducible builds, pin to a specific version by appending `#<version>` to the URL, e.g. `\https://github.com/GoCarrot/upm-package-teak.git#4.3.9`. See xref:upm.adoc[Unity Package Manager] for all version pinning options.
+TIP: For reproducible builds, pin to a specific version by appending `#<version>` to the URL, e.g. `\https://github.com/GoCarrot/upm-package-teak.git#4.3.10`. See xref:upm.adoc[Unity Package Manager] for all version pinning options.
 
 . Click the btn:[Add] button.
 
