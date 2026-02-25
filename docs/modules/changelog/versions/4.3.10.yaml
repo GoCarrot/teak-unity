@@ -2,6 +2,7 @@ new:
   - The iOS build post-processor callback order is now configurable in Teak Settings, allowing resolution of ordering conflicts with other post-processors such as Crashlytics.
   - "``ConfigurationData.DeviceId`` and ``UserData.DeviceId`` expose the device's persistent random identifier for device-targeted notifications"
   - "Added Force Debug Output toggle to Teak Settings. When enabled (or in Development Builds), forces verbose SDK logging on-device regardless of server configuration."
+  - The iOS Simulator is now supported
 bug:
   - "``TeakForceDebugOutput`` and push notification entitlement in iOS builds now correctly reflect the Development Build setting instead of always being enabled"
   - "``io_teak_force_debug_output`` in Android builds now correctly reflects the Development Build setting instead of always being enabled"
@@ -14,5 +15,7 @@ enhancement:
   - "``canOpenNotificationSettings`` on iOS now returns false when notification permissions have not yet been requested"
 breaking:
   - "Minimum Unity version is now 2022.3 (previously 2018.3)"
+  - Minimum Android SDK version is now 21 (Android 5+), previously 19 (Android 4.4+)
+  - If these changes impact you please contact team@teak.io to discuss an LTS strategy for your game
 deprecation:
   - "``RegisterForProvisionalNotifications()`` (no-arg form) is deprecated in favor of ``RegisterForProvisionalNotifications(System.Action<bool>)``"
