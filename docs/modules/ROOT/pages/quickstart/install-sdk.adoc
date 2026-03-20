@@ -3,9 +3,9 @@
 
 It's time to open your game in the Unity Editor and install the Teak SDK. 
 
-* [x] Teak supports `Unity 2022.3` or newer.
-* [x] On iOS, Teak requires iOS 11.0+ and Xcode 12+.
-* [x] On Android, Teak requires Android 5.0 (API level 21) or newer.
+* [x] Teak supports `Unity {min-unity}` or newer.
+* [x] On iOS, Teak requires iOS {min-ios}+ and Xcode {min-xcode}+.
+* [x] On Android, Teak requires Android {min-android-name} (API level {min-android-sdk}) or newer.
 * [x] On Android, Teak requires the __External Dependency Manager for Unity__, which is installed with the xref:/quickstart/firebase-fcm.adoc[Firebase Unity SDK].
 
 == Add the Teak SDK in the Unity Editor
