@@ -19,7 +19,9 @@ public partial class Teak {
     /// </summary>
     /// <remarks>
     /// Live Activities are an iOS-only feature. All methods on this class no-op on non-iOS
-    /// platforms and on iOS versions earlier than 16.1.
+    /// platforms. On iOS the native SDK enforces the iOS 16.1 availability requirement
+    /// (<c>@available(iOS 16.1, *)</c>); calling these methods on older iOS versions returns
+    /// an error <see cref="Reply"/> from the native side without crashing.
     ///
     /// Activity-resumption attribution (taps on a Live Activity that launch the app) flows
     /// through the existing session-attribution path on the native iOS SDK: when the app is
@@ -111,24 +113,19 @@ public partial class Teak {
         /// Call this when a live activity starts and receives its push-to-update token, and
         /// again whenever the token rotates during the activity's lifetime.
         ///
-        /// No-op on non-iOS platforms and on iOS versions earlier than 16.1.
+        /// No-op on non-iOS platforms.
         /// </remarks>
         /// <param name="activityId">A stable, game-chosen string naming the kind of live activity (e.g. "chest_timer").</param>
         /// <param name="pushToken">The push-to-update token bytes from ActivityKit's <c>Activity.pushTokenUpdates</c>.</param>
         /// <param name="systemActivityId">The OS-level per-instance activity identifier, from <c>Activity.id</c>.</param>
         /// <param name="callback">A callback invoked with the result of the call.</param>
-        public IEnumerator StartedLiveActivity(string activityId, byte[] pushToken, string systemActivityId, System.Action<Reply> callback) {
+        public static IEnumerator StartedLiveActivity(string activityId, byte[] pushToken, string systemActivityId, System.Action<Reply> callback) {
             if (Teak.Instance.Trace) {
                 int tokenLen = pushToken == null ? 0 : pushToken.Length;
                 Debug.Log("[Teak.LiveActivity] StartedLiveActivity(" + activityId + ", <" + tokenLen + " bytes>, " + systemActivityId + ")");
             }
 
 #if !UNITY_EDITOR && UNITY_IPHONE
-            if (!IsIOS161OrNewer()) {
-                NoOpCallback(callback);
-                yield break;
-            }
-
             Teak.Operation operation = new Teak.Operation(() => {
                 return TeakStartedLiveActivity_Retained(activityId, pushToken, pushToken == null ? 0 : pushToken.Length, systemActivityId);
             });
@@ -160,7 +157,7 @@ public partial class Teak {
         /// <param name="pushTokenHex">The push-to-update token as a hex-encoded string.</param>
         /// <param name="systemActivityId">The OS-level per-instance activity identifier.</param>
         /// <param name="callback">A callback invoked with the result of the call.</param>
-        public IEnumerator StartedLiveActivity(string activityId, string pushTokenHex, string systemActivityId, System.Action<Reply> callback) {
+        public static IEnumerator StartedLiveActivity(string activityId, string pushTokenHex, string systemActivityId, System.Action<Reply> callback) {
             byte[] tokenBytes = null;
             Exception conversionError = null;
             try {
@@ -174,7 +171,7 @@ public partial class Teak {
                 yield break;
             }
 
-            IEnumerator inner = this.StartedLiveActivity(activityId, tokenBytes, systemActivityId, callback);
+            IEnumerator inner = StartedLiveActivity(activityId, tokenBytes, systemActivityId, callback);
             while (inner.MoveNext()) { yield return inner.Current; }
         }
 
@@ -187,14 +184,14 @@ public partial class Teak {
         /// <c>content-state</c>; <paramref name="systemData"/> carries Apple system fields
         /// (<c>event</c>, <c>stale-date</c>, <c>dismissal-date</c>).
         ///
-        /// No-op on non-iOS platforms and on iOS versions earlier than 16.1.
+        /// No-op on non-iOS platforms.
         /// </remarks>
         /// <param name="activityId">A stable, game-chosen string naming the kind of live activity.</param>
         /// <param name="offset">Delay from server-now, in seconds, at which the update should be delivered.</param>
         /// <param name="customData">Game-defined content-state payload. Must contain only JSON-serializable values. Required.</param>
         /// <param name="systemData">Optional Apple system fields. May be null.</param>
         /// <param name="callback">A callback invoked with the result of the call.</param>
-        public IEnumerator ScheduleLiveActivityUpdate(string activityId, long offset, Dictionary<string, object> customData, Dictionary<string, object> systemData, System.Action<Reply> callback) {
+        public static IEnumerator ScheduleLiveActivityUpdate(string activityId, long offset, Dictionary<string, object> customData, Dictionary<string, object> systemData, System.Action<Reply> callback) {
             if (Teak.Instance.Trace) {
                 Debug.Log("[Teak.LiveActivity] ScheduleLiveActivityUpdate(" + activityId + ", " + offset + ", " +
                           (customData == null ? "null" : "<customData>") + ", " +
@@ -216,11 +213,6 @@ public partial class Teak {
             }
 
 #if !UNITY_EDITOR && UNITY_IPHONE
-            if (!IsIOS161OrNewer()) {
-                NoOpCallback(callback);
-                yield break;
-            }
-
             Teak.Operation operation = new Teak.Operation(() => {
                 return TeakScheduleLiveActivityUpdate_Retained(activityId, offset, customDataJson, systemDataJson);
             });
@@ -250,21 +242,16 @@ public partial class Teak {
         /// The reply's <see cref="Reply.CanceledCount"/> carries the number of updates canceled
         /// by the server on success.
         ///
-        /// No-op on non-iOS platforms and on iOS versions earlier than 16.1.
+        /// No-op on non-iOS platforms.
         /// </remarks>
         /// <param name="activityId">A stable, game-chosen string naming the kind of live activity whose pending updates should be canceled.</param>
         /// <param name="callback">A callback invoked with the result of the call.</param>
-        public IEnumerator CancelLiveActivityUpdates(string activityId, System.Action<Reply> callback) {
+        public static IEnumerator CancelLiveActivityUpdates(string activityId, System.Action<Reply> callback) {
             if (Teak.Instance.Trace) {
                 Debug.Log("[Teak.LiveActivity] CancelLiveActivityUpdates(" + activityId + ")");
             }
 
 #if !UNITY_EDITOR && UNITY_IPHONE
-            if (!IsIOS161OrNewer()) {
-                NoOpCallback(callback);
-                yield break;
-            }
-
             Teak.Operation operation = new Teak.Operation(() => {
                 return TeakCancelLiveActivityUpdates_Retained(activityId);
             });
@@ -285,13 +272,34 @@ public partial class Teak {
         }
 
         /// @cond hide_from_doxygen
-        internal LiveActivity() { }
-
         private static void NoOpCallback(System.Action<Reply> callback) {
             Teak.SafePerformCallback("teak.liveactivity.noop", callback, new Reply(new Dictionary<string, object> {
                 {"status", "ok"},
                 {"noop", true}
             }));
+        }
+
+        // System.Convert.FromHexString landed in .NET 5; Unity 2022.3's .NET Standard 2.1
+        // target does not include it, so we ship a minimal decoder.
+        private static byte[] HexStringToBytes(string hex) {
+            if (hex == null) {
+                throw new ArgumentNullException("hex");
+            }
+            if (hex.Length % 2 != 0) {
+                throw new ArgumentException("Hex string must have even length", "hex");
+            }
+            byte[] bytes = new byte[hex.Length / 2];
+            for (int i = 0; i < bytes.Length; i++) {
+                bytes[i] = (byte)((HexCharToInt(hex[i * 2]) << 4) | HexCharToInt(hex[i * 2 + 1]));
+            }
+            return bytes;
+        }
+
+        private static int HexCharToInt(char c) {
+            if (c >= '0' && c <= '9') { return c - '0'; }
+            if (c >= 'a' && c <= 'f') { return c - 'a' + 10; }
+            if (c >= 'A' && c <= 'F') { return c - 'A' + 10; }
+            throw new ArgumentException("Invalid hex character: " + c);
         }
 
         private static Reply BuildFieldError(string field, string message) {
@@ -304,52 +312,6 @@ public partial class Teak {
                 }
             });
         }
-
-        /// <summary>
-        /// Decode a hex-encoded string into its byte representation.
-        /// </summary>
-        /// <remarks>
-        /// Accepts upper- or lower-case hex; rejects odd-length strings, non-hex characters,
-        /// and null input.
-        /// </remarks>
-        public static byte[] HexStringToBytes(string hex) {
-            if (hex == null) {
-                throw new ArgumentNullException("hex");
-            }
-            if (hex.Length % 2 != 0) {
-                throw new ArgumentException("Hex string must have even length", "hex");
-            }
-            byte[] bytes = new byte[hex.Length / 2];
-            for (int i = 0; i < bytes.Length; i++) {
-                int hi = HexCharToInt(hex[i * 2]);
-                int lo = HexCharToInt(hex[i * 2 + 1]);
-                bytes[i] = (byte)((hi << 4) | lo);
-            }
-            return bytes;
-        }
-
-        private static int HexCharToInt(char c) {
-            if (c >= '0' && c <= '9') { return c - '0'; }
-            if (c >= 'a' && c <= 'f') { return c - 'a' + 10; }
-            if (c >= 'A' && c <= 'F') { return c - 'A' + 10; }
-            throw new ArgumentException("Invalid hex character: " + c);
-        }
-
-#if !UNITY_EDITOR && UNITY_IPHONE
-        private static bool IsIOS161OrNewer() {
-            string version = UnityEngine.iOS.Device.systemVersion;
-            if (string.IsNullOrEmpty(version)) { return false; }
-
-            string[] parts = version.Split('.');
-            int major = 0, minor = 0;
-            int.TryParse(parts[0], out major);
-            if (parts.Length > 1) { int.TryParse(parts[1], out minor); }
-
-            if (major > 16) { return true; }
-            if (major == 16 && minor >= 1) { return true; }
-            return false;
-        }
-#endif
 
 #if UNITY_IPHONE
         [DllImport ("__Internal")]
@@ -370,22 +332,5 @@ public partial class Teak {
         private static extern IntPtr TeakCancelLiveActivityUpdates_Retained(string activityId);
 #endif
         /// @endcond
-    }
-
-    private LiveActivity mLiveActivity;
-
-    /// <summary>
-    /// Teak Live Activity functionality (iOS 16.1+).
-    /// </summary>
-    /// <remarks>
-    /// No-op on non-iOS platforms and on iOS versions earlier than 16.1.
-    /// </remarks>
-    public LiveActivity LiveActivities {
-        get {
-            if (this.mLiveActivity == null) {
-                this.mLiveActivity = new LiveActivity();
-            }
-            return this.mLiveActivity;
-        }
     }
 }

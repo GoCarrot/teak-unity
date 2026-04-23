@@ -1,3 +1,3 @@
 new:
-  - "Live Activities (iOS 16.1+): Added ``Teak.Instance.LiveActivities.StartedLiveActivity``, ``Teak.Instance.LiveActivities.ScheduleLiveActivityUpdate``, and ``Teak.Instance.LiveActivities.CancelLiveActivityUpdates`` for reporting push-to-update tokens, scheduling server-driven updates, and canceling pending updates. All three are no-ops on non-iOS platforms and on iOS versions earlier than 16.1."
+  - "Live Activities (iOS 16.1+): Added ``Teak.LiveActivity.StartedLiveActivity``, ``Teak.LiveActivity.ScheduleLiveActivityUpdate``, and ``Teak.LiveActivity.CancelLiveActivityUpdates`` for reporting push-to-update tokens, scheduling server-driven updates, and canceling pending updates. No-op on non-iOS platforms."
   - "Live Activity tap attribution: When a player taps a Live Activity to resume the app, the ``system_activity_id`` is surfaced as ``teak_live_activity_id`` on ``Teak.OnPostLaunchSummary``."
