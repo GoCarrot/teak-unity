@@ -197,8 +197,22 @@ public partial class Teak {
         public IEnumerator ScheduleLiveActivityUpdate(string activityId, long offset, Dictionary<string, object> customData, Dictionary<string, object> systemData, System.Action<Reply> callback) {
             if (Teak.Instance.Trace) {
                 Debug.Log("[Teak.LiveActivity] ScheduleLiveActivityUpdate(" + activityId + ", " + offset + ", " +
-                          (customData == null ? "null" : Json.Serialize(customData)) + ", " +
-                          (systemData == null ? "null" : Json.Serialize(systemData)) + ")");
+                          (customData == null ? "null" : "<customData>") + ", " +
+                          (systemData == null ? "null" : "<systemData>") + ")");
+            }
+
+            if (customData == null) {
+                Teak.SafePerformCallback("teak.liveactivity.schedule", callback, BuildFieldError("customData", "customData cannot be null"));
+                yield break;
+            }
+
+            string customDataJson, systemDataJson;
+            try {
+                customDataJson = Json.Serialize(customData);
+                systemDataJson = systemData == null ? null : Json.Serialize(systemData);
+            } catch (Exception e) {
+                Teak.SafePerformCallback("teak.liveactivity.schedule", callback, Reply.ReplyWithErrorForException(e));
+                yield break;
             }
 
 #if !UNITY_EDITOR && UNITY_IPHONE
@@ -207,8 +221,6 @@ public partial class Teak {
                 yield break;
             }
 
-            string customDataJson = customData == null ? null : Json.Serialize(customData);
-            string systemDataJson = systemData == null ? null : Json.Serialize(systemData);
             Teak.Operation operation = new Teak.Operation(() => {
                 return TeakScheduleLiveActivityUpdate_Retained(activityId, offset, customDataJson, systemDataJson);
             });
@@ -282,6 +294,17 @@ public partial class Teak {
             }));
         }
 
+        private static Reply BuildFieldError(string field, string message) {
+            return new Reply(new Dictionary<string, object> {
+                {"status", "error"},
+                {
+                    "errors", new Dictionary<string, object> {
+                        {field, new string[] { message }}
+                    }
+                }
+            });
+        }
+
         /// <summary>
         /// Decode a hex-encoded string into its byte representation.
         /// </summary>
@@ -312,7 +335,7 @@ public partial class Teak {
             throw new ArgumentException("Invalid hex character: " + c);
         }
 
-#if UNITY_IPHONE
+#if !UNITY_EDITOR && UNITY_IPHONE
         private static bool IsIOS161OrNewer() {
             string version = UnityEngine.iOS.Device.systemVersion;
             if (string.IsNullOrEmpty(version)) { return false; }
@@ -326,7 +349,9 @@ public partial class Teak {
             if (major == 16 && minor >= 1) { return true; }
             return false;
         }
+#endif
 
+#if UNITY_IPHONE
         [DllImport ("__Internal")]
         private static extern IntPtr TeakStartedLiveActivity_Retained(
             string activityId,

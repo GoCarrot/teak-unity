@@ -122,4 +122,43 @@ public class TeakLiveActivityTests {
         }
         TeakAssert.IsTrue(threw, "expected ArgumentNullException for null");
     }
+
+    // Drains a coroutine synchronously for editor-mode tests — all Teak coroutines finish
+    // in a single step on editor/non-iOS platforms because the native path is skipped.
+    static void DrainCoroutine(System.Collections.IEnumerator co) {
+        while (co.MoveNext()) { }
+    }
+
+    [TeakTest]
+    public void StartedLiveActivityHexOverloadInvokesErrorCallbackOnInvalidHex() {
+        Teak.LiveActivity.Reply captured = null;
+        var teak = new UnityEngine.GameObject("TeakForTest").AddComponent<Teak>();
+        try {
+            DrainCoroutine(teak.LiveActivities.StartedLiveActivity(
+                "chest_timer", "zz", "sys-1", r => { captured = r; }));
+            TeakAssert.IsNotNull(captured, "callback must fire even on bad hex");
+            TeakAssert.IsTrue(captured.Error, "reply must be error for invalid hex");
+            TeakAssert.IsNotNull(captured.Errors);
+            TeakAssert.IsTrue(captured.Errors.ContainsKey("unity"));
+        } finally {
+            UnityEngine.Object.DestroyImmediate(teak.gameObject);
+        }
+    }
+
+    [TeakTest]
+    public void ScheduleLiveActivityUpdateInvokesErrorCallbackOnNullCustomData() {
+        Teak.LiveActivity.Reply captured = null;
+        var teak = new UnityEngine.GameObject("TeakForTest").AddComponent<Teak>();
+        try {
+            DrainCoroutine(teak.LiveActivities.ScheduleLiveActivityUpdate(
+                "chest_timer", 60, null, null, r => { captured = r; }));
+            TeakAssert.IsNotNull(captured, "callback must fire when customData is null");
+            TeakAssert.IsTrue(captured.Error, "reply must be error for null customData");
+            TeakAssert.IsNotNull(captured.Errors);
+            TeakAssert.IsTrue(captured.Errors.ContainsKey("customData"));
+        } finally {
+            UnityEngine.Object.DestroyImmediate(teak.gameObject);
+        }
+    }
+
 }
