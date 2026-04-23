@@ -8,6 +8,15 @@ Teak Unity SDK — a cross-platform Unity plugin providing push notifications, d
 
 ## Build Commands
 
+**Spin up a worktree:**
+```bash
+# Create a sibling worktree with nvm, bundle, and yarn deps installed
+script/worktree feat/my-feature                         # branch off HEAD
+script/worktree feat/my-feature --from 4.3-stable       # fetch + fast-forward 4.3-stable first
+script/worktree feat/my-feature --from develop ~/path   # custom path
+```
+Default path is `../teak-unity-<branch-with-slashes-as-dashes>`. Use `script/worktree` to create worktrees — do NOT use the `EnterWorktree` tool.
+
 The build system uses **Ruby Rake** (Ruby 3.1.6 via rbenv).
 
 ```bash
