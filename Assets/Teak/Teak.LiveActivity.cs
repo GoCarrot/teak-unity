@@ -18,9 +18,10 @@ public partial class Teak {
     /// Teak Live Activity functionality.
     /// </summary>
     /// <remarks>
-    /// Taps on a Live Activity that launch the app are tracked as clicks; the activity is
-    /// surfaced via <see cref="Teak.OnPostLaunchSummary"/> — look for
-    /// <c>teak_live_activity_id</c>.
+    /// Taps on a Live Activity that launch the app are tracked as clicks; the launching
+    /// activity's <c>Activity.id</c> is surfaced as
+    /// <see cref="TeakPostLaunchSummary.SystemActivityId"/> on
+    /// <see cref="Teak.OnPostLaunchSummary"/>.
     /// </remarks>
     public partial class LiveActivity {
 

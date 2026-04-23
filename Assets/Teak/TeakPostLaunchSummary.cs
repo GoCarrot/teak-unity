@@ -39,12 +39,17 @@ public class TeakPostLaunchSummary {
     /// <summary>OptOut category for this notification, or ``"teak"`` as the default.</summary>
     public string OptOutCategory { get; private set; }
 
+    /// <summary>The OS-level per-instance live activity identifier (ActivityKit's
+    /// ``Activity.id``) of the live activity whose tap launched this session, or
+    /// ``null`` if this launch was not from a live activity tap.</summary>
+    public string SystemActivityId { get; private set; }
+
     /// <summary>
     /// Returns a string that represents the current object.
     /// </summary>
     /// <returns>A string that represents the current object.</returns>
     public override string ToString() {
-        string formatString = "{{ LaunchLink = '{0}', ScheduleName = '{1}', ScheduleId = '{2}', CreativeName = '{3}', CreativeId = '{4}', RewardId = '{5}', ChannelName = '{6}', DeepLink = '{7}', SourceSendId = '{8}', OptOutCategory = '{9}' }}";
+        string formatString = "{{ LaunchLink = '{0}', ScheduleName = '{1}', ScheduleId = '{2}', CreativeName = '{3}', CreativeId = '{4}', RewardId = '{5}', ChannelName = '{6}', DeepLink = '{7}', SourceSendId = '{8}', OptOutCategory = '{9}', SystemActivityId = '{10}' }}";
         return string.Format(formatString,
                              this.LaunchLink,
                              this.ScheduleName,
@@ -55,7 +60,8 @@ public class TeakPostLaunchSummary {
                              this.ChannelName,
                              this.DeepLink,
                              this.SourceSendId,
-                             this.OptOutCategory
+                             this.OptOutCategory,
+                             this.SystemActivityId
                             );
     }
 
@@ -71,6 +77,7 @@ public class TeakPostLaunchSummary {
         this.DeepLink = json.ContainsKey("teakDeepLink") ? json["teakDeepLink"] as string : null;
         this.SourceSendId = json.ContainsKey("teakNotifId") ? json["teakNotifId"] as string : null;
         this.OptOutCategory = json.ContainsKey("teakOptOutCategory") ? json["teakOptOutCategory"] as string : null;
+        this.SystemActivityId = json.ContainsKey("teakSystemActivityId") ? json["teakSystemActivityId"] as string : null;
     }
     /// @endcond
 }

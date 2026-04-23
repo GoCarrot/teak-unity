@@ -1,3 +1,3 @@
 new:
   - "Live Activities: Added ``Teak.LiveActivity.StartedLiveActivity``, ``Teak.LiveActivity.ScheduleLiveActivityUpdate``, and ``Teak.LiveActivity.CancelLiveActivityUpdates`` for reporting push-to-update tokens, scheduling server-driven updates, and canceling pending updates."
-  - "Live Activity tap attribution: Taps on a Live Activity that launch the app surface ``teak_live_activity_id`` on ``Teak.OnPostLaunchSummary``."
+  - "Live Activity tap attribution: Taps on a Live Activity that launch the app surface the launching activity's ``Activity.id`` as ``TeakPostLaunchSummary.SystemActivityId`` on ``Teak.OnPostLaunchSummary``."
