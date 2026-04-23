@@ -13,13 +13,16 @@ This guide assumes your game is cross platform, and has instructions for both iO
 Before we begin, ensure that you have the following prerequisites in place to ensure a smooth integration:
 
 === Unity Requirements
-* [x] Unity 2022.3 or newer
+* [x] Unity {min-unity} or newer
 
 === iOS Requirements
+* [x] iOS {min-ios} or newer
+* [x] Xcode {min-xcode} or newer
 * [x] An https://developer.apple.com/[Apple Developer, window=_blank] account with administrator permissions.
 * [x] A Mac with https://developer.apple.com/xcode/[XCode, window=_blank] installed.
 
 === Android Requirements
+* [x] Android {min-android-name} (API level {min-android-sdk}) or newer
 * [x] A https://firebase.google.com/[Firebase project] with an Editor or Owner role.
 * [x] https://firebase.google.com/docs/unity/setup[Firebase Unity SDK, window=_blank] installed.
 * [x] External Dependency Manager for Unity (Installed with Firebase)
@@ -27,11 +30,6 @@ Before we begin, ensure that you have the following prerequisites in place to en
 &nbsp;
 
 NOTE: If your game already includes any Firebase product from a .unitypackage, it should be compatible with Teak. However, if you don't have any Firebase products installed yet, we suggest installing only the **FirebaseMessaging.unitypackage** to ensure compatibility with Teak.
-
-NOTE: Teak SDK 4.3.0 supports a maximum `targetSdkVersion` of 34. +
-Teak SDK 4.2.0 supports a maximum `targetSdkVersion` of 33. +
-Teak SDK 4.1.0 supports a maximum `targetSdkVersion` of 31. +
-Teak SDK 4.0.0 supports a maximum `targetSdkVersion` of 30.
 
 With the requirements out of the way, let's get started.
 
