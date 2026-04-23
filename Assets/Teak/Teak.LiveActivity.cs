@@ -15,20 +15,12 @@ using TeakExtensions;
 public partial class Teak {
 
     /// <summary>
-    /// Teak Live Activity functionality (iOS 16.1+).
+    /// Teak Live Activity functionality.
     /// </summary>
     /// <remarks>
-    /// Live Activities are an iOS-only feature. All methods on this class no-op on non-iOS
-    /// platforms. On iOS the native SDK enforces the iOS 16.1 availability requirement
-    /// (<c>@available(iOS 16.1, *)</c>); calling these methods on older iOS versions returns
-    /// an error <see cref="Reply"/> from the native side without crashing.
-    ///
-    /// Activity-resumption attribution (taps on a Live Activity that launch the app) flows
-    /// through the existing session-attribution path on the native iOS SDK: when the app is
-    /// launched via activity resumption, the native SDK constructs a <c>TeakLiveActivityLaunchData</c>
-    /// whose session attribution carries <c>teak_live_activity_id</c>. This surfaces on the
-    /// Unity side via <see cref="Teak.OnPostLaunchSummary"/>; no explicit Unity-side API is
-    /// required to receive it.
+    /// Taps on a Live Activity that launch the app are tracked as clicks; the activity is
+    /// surfaced via <see cref="Teak.OnPostLaunchSummary"/> — look for
+    /// <c>teak_live_activity_id</c>.
     /// </remarks>
     public partial class LiveActivity {
 
@@ -113,21 +105,21 @@ public partial class Teak {
         /// Call this when a live activity starts and receives its push-to-update token, and
         /// again whenever the token rotates during the activity's lifetime.
         ///
-        /// No-op on non-iOS platforms.
         /// </remarks>
         /// <param name="activityId">A stable, game-chosen string naming the kind of live activity (e.g. "chest_timer").</param>
         /// <param name="pushToken">The push-to-update token bytes from ActivityKit's <c>Activity.pushTokenUpdates</c>.</param>
         /// <param name="systemActivityId">The OS-level per-instance activity identifier, from <c>Activity.id</c>.</param>
         /// <param name="callback">A callback invoked with the result of the call.</param>
         public static IEnumerator StartedLiveActivity(string activityId, byte[] pushToken, string systemActivityId, System.Action<Reply> callback) {
+            int tokenLength = pushToken == null ? 0 : pushToken.Length;
+
             if (Teak.Instance.Trace) {
-                int tokenLen = pushToken == null ? 0 : pushToken.Length;
-                Debug.Log("[Teak.LiveActivity] StartedLiveActivity(" + activityId + ", <" + tokenLen + " bytes>, " + systemActivityId + ")");
+                Debug.Log("[Teak.LiveActivity] StartedLiveActivity(" + activityId + ", <" + tokenLength + " bytes>, " + systemActivityId + ")");
             }
 
 #if !UNITY_EDITOR && UNITY_IPHONE
             Teak.Operation operation = new Teak.Operation(() => {
-                return TeakStartedLiveActivity_Retained(activityId, pushToken, pushToken == null ? 0 : pushToken.Length, systemActivityId);
+                return TeakStartedLiveActivity_Retained(activityId, pushToken, tokenLength, systemActivityId);
             });
             operation.OnDone += (result, exception) => {
                 Reply reply;
@@ -184,7 +176,6 @@ public partial class Teak {
         /// <c>content-state</c>; <paramref name="systemData"/> carries Apple system fields
         /// (<c>event</c>, <c>stale-date</c>, <c>dismissal-date</c>).
         ///
-        /// No-op on non-iOS platforms.
         /// </remarks>
         /// <param name="activityId">A stable, game-chosen string naming the kind of live activity.</param>
         /// <param name="offset">Delay from server-now, in seconds, at which the update should be delivered.</param>
@@ -242,7 +233,6 @@ public partial class Teak {
         /// The reply's <see cref="Reply.CanceledCount"/> carries the number of updates canceled
         /// by the server on success.
         ///
-        /// No-op on non-iOS platforms.
         /// </remarks>
         /// <param name="activityId">A stable, game-chosen string naming the kind of live activity whose pending updates should be canceled.</param>
         /// <param name="callback">A callback invoked with the result of the call.</param>
