@@ -54,6 +54,11 @@ extern NSArray* TeakGetChannelCategories();
 // TeakNotification v2
 extern NSObject* TeakNotificationSchedulePersonalizationData(const char* creativeId, int64_t delay, const char* personalizationDataJson);
 
+// Live Activities (iOS 16.1+)
+extern NSObject* TeakStartedLiveActivity(const char* activityId, const void* pushTokenBytes, int pushTokenLength, const char* systemActivityId);
+extern NSObject* TeakScheduleLiveActivityUpdate(const char* activityId, int64_t offset, const char* customDataJson, const char* systemDataJson);
+extern NSObject* TeakCancelLiveActivityUpdates(const char* activityId);
+
 // Unity
 extern void UnitySendMessage(const char*, const char*, const char*);
 
@@ -137,6 +142,36 @@ void* TeakSetStateForCategory_Retained(const char* stateCstr, const char* channe
    return operation;
 #else
    return [TeakSetStateForCategory(stateCstr, channelCstr, categoryCstr)() retain];
+#endif
+}
+
+void* TeakStartedLiveActivity_Retained(const char* activityId, const void* pushTokenBytes, int pushTokenLength, const char* systemActivityId)
+{
+#if __has_feature(objc_arc)
+   void* operation = (__bridge_retained void*)TeakStartedLiveActivity(activityId, pushTokenBytes, pushTokenLength, systemActivityId);
+   return operation;
+#else
+   return [TeakStartedLiveActivity(activityId, pushTokenBytes, pushTokenLength, systemActivityId) retain];
+#endif
+}
+
+void* TeakScheduleLiveActivityUpdate_Retained(const char* activityId, int64_t offset, const char* customDataJson, const char* systemDataJson)
+{
+#if __has_feature(objc_arc)
+   void* operation = (__bridge_retained void*)TeakScheduleLiveActivityUpdate(activityId, offset, customDataJson, systemDataJson);
+   return operation;
+#else
+   return [TeakScheduleLiveActivityUpdate(activityId, offset, customDataJson, systemDataJson) retain];
+#endif
+}
+
+void* TeakCancelLiveActivityUpdates_Retained(const char* activityId)
+{
+#if __has_feature(objc_arc)
+   void* operation = (__bridge_retained void*)TeakCancelLiveActivityUpdates(activityId);
+   return operation;
+#else
+   return [TeakCancelLiveActivityUpdates(activityId) retain];
 #endif
 }
 

@@ -1,0 +1,366 @@
+#region References
+/// @cond hide_from_doxygen
+using UnityEngine;
+
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Runtime.InteropServices;
+
+using MiniJSON.Teak;
+using TeakExtensions;
+/// @endcond
+#endregion
+
+public partial class Teak {
+
+    /// <summary>
+    /// Teak Live Activity functionality (iOS 16.1+).
+    /// </summary>
+    /// <remarks>
+    /// Live Activities are an iOS-only feature. All methods on this class no-op on non-iOS
+    /// platforms and on iOS versions earlier than 16.1.
+    ///
+    /// Activity-resumption attribution (taps on a Live Activity that launch the app) flows
+    /// through the existing session-attribution path on the native iOS SDK: when the app is
+    /// launched via activity resumption, the native SDK constructs a <c>TeakLiveActivityLaunchData</c>
+    /// whose session attribution carries <c>teak_live_activity_id</c>. This surfaces on the
+    /// Unity side via <see cref="Teak.OnPostLaunchSummary"/>; no explicit Unity-side API is
+    /// required to receive it.
+    /// </remarks>
+    public partial class LiveActivity {
+
+        /// <summary>Result of a call to a Live Activity API.</summary>
+        public class Reply : IToJson {
+            /// <summary>True if the call resulted in an error.</summary>
+            public bool Error {
+                get; private set;
+            }
+
+            /// <summary>A mapping of the argument or cause of the error to an array of strings explaining the errors.</summary>
+            public Dictionary<string, List<string>> Errors {
+                get; private set;
+            }
+
+            /// <summary>The number of pending updates canceled by <see cref="LiveActivity.CancelLiveActivityUpdates"/>, or null for other calls.</summary>
+            public int? CanceledCount {
+                get; private set;
+            }
+
+            /// <summary>The JSON received from the server.</summary>
+            public Dictionary<string, object> Json {
+                get; private set;
+            }
+
+            public Dictionary<string, object> toJson() {
+                return this.Json;
+            }
+
+            /// @cond hide_from_doxygen
+            public Reply(Dictionary<string, object> json) {
+                this.Json = json;
+
+                string status = json.Opt("status", "error") as string;
+                this.Error = !"ok".Equals(status);
+                this.Errors = Teak.Utils.ParseErrorsFromReply(json);
+
+                if (json.ContainsKey("canceled")) {
+                    try {
+                        this.CanceledCount = Convert.ToInt32(json["canceled"]);
+                    } catch (Exception) {
+                        this.CanceledCount = null;
+                    }
+                }
+            }
+
+            /// <summary>
+            /// Returns a string that represents the current object.
+            /// </summary>
+            /// <returns>A string that represents the current object.</returns>
+            public override string ToString() {
+                return MiniJSON.Teak.Json.Serialize(this.Json);
+            }
+
+            public static Reply ReplyWithErrorForException(Exception e) {
+                return new Reply(new Dictionary<string, object> {
+                    {"status", "error"},
+                    {
+                        "errors", new Dictionary<string, object> {
+                            {"unity", new string[] { e.ToString() }}
+                        }
+                    }
+                });
+            }
+            /// @endcond
+
+            /// <summary>Unknown Unity-related error</summary>
+            public static Reply UndeterminedUnityError = new Reply(new Dictionary<string, object> {
+                {"status", "error"},
+                {
+                    "errors", new Dictionary<string, object> {
+                        {"unity", new string[] {"Undetermined error"}}
+                    }
+                }
+            });
+        }
+
+        /// <summary>
+        /// Report a Live Activity push-to-update token to Teak.
+        /// </summary>
+        /// <remarks>
+        /// Call this when a live activity starts and receives its push-to-update token, and
+        /// again whenever the token rotates during the activity's lifetime.
+        ///
+        /// No-op on non-iOS platforms and on iOS versions earlier than 16.1.
+        /// </remarks>
+        /// <param name="activityId">A stable, game-chosen string naming the kind of live activity (e.g. "chest_timer").</param>
+        /// <param name="pushToken">The push-to-update token bytes from ActivityKit's <c>Activity.pushTokenUpdates</c>.</param>
+        /// <param name="systemActivityId">The OS-level per-instance activity identifier, from <c>Activity.id</c>.</param>
+        /// <param name="callback">A callback invoked with the result of the call.</param>
+        public IEnumerator StartedLiveActivity(string activityId, byte[] pushToken, string systemActivityId, System.Action<Reply> callback) {
+            if (Teak.Instance.Trace) {
+                int tokenLen = pushToken == null ? 0 : pushToken.Length;
+                Debug.Log("[Teak.LiveActivity] StartedLiveActivity(" + activityId + ", <" + tokenLen + " bytes>, " + systemActivityId + ")");
+            }
+
+#if !UNITY_EDITOR && UNITY_IPHONE
+            if (!IsIOS161OrNewer()) {
+                NoOpCallback(callback);
+                yield break;
+            }
+
+            Teak.Operation operation = new Teak.Operation(() => {
+                return TeakStartedLiveActivity_Retained(activityId, pushToken, pushToken == null ? 0 : pushToken.Length, systemActivityId);
+            });
+            operation.OnDone += (result, exception) => {
+                Reply reply;
+                if (exception != null) {
+                    reply = Reply.ReplyWithErrorForException(exception);
+                } else {
+                    reply = new Reply(result);
+                }
+                Teak.SafePerformCallback("teak.liveactivity.started", callback, reply);
+            };
+            while (!operation.IsDone) { yield return null; }
+#else
+            NoOpCallback(callback);
+            yield break;
+#endif
+        }
+
+        /// <summary>
+        /// Report a Live Activity push-to-update token to Teak, using a hex-encoded token string.
+        /// </summary>
+        /// <remarks>
+        /// Convenience overload for callers who already hold the token as a hex string
+        /// (for example, persisted via <c>PlayerPrefs</c>). Decodes to bytes and delegates to
+        /// <see cref="StartedLiveActivity(string, byte[], string, System.Action{Reply})"/>.
+        /// </remarks>
+        /// <param name="activityId">A stable, game-chosen string naming the kind of live activity.</param>
+        /// <param name="pushTokenHex">The push-to-update token as a hex-encoded string.</param>
+        /// <param name="systemActivityId">The OS-level per-instance activity identifier.</param>
+        /// <param name="callback">A callback invoked with the result of the call.</param>
+        public IEnumerator StartedLiveActivity(string activityId, string pushTokenHex, string systemActivityId, System.Action<Reply> callback) {
+            byte[] tokenBytes = null;
+            Exception conversionError = null;
+            try {
+                tokenBytes = HexStringToBytes(pushTokenHex);
+            } catch (Exception e) {
+                conversionError = e;
+            }
+
+            if (conversionError != null) {
+                Teak.SafePerformCallback("teak.liveactivity.started", callback, Reply.ReplyWithErrorForException(conversionError));
+                yield break;
+            }
+
+            IEnumerator inner = this.StartedLiveActivity(activityId, tokenBytes, systemActivityId, callback);
+            while (inner.MoveNext()) { yield return inner.Current; }
+        }
+
+        /// <summary>
+        /// Schedule a single update to be delivered to a live activity at a future time.
+        /// </summary>
+        /// <remarks>
+        /// Call between <see cref="StartedLiveActivity(string, byte[], string, System.Action{Reply})"/>
+        /// and the activity ending. <paramref name="customData"/> is delivered as APNs
+        /// <c>content-state</c>; <paramref name="systemData"/> carries Apple system fields
+        /// (<c>event</c>, <c>stale-date</c>, <c>dismissal-date</c>).
+        ///
+        /// No-op on non-iOS platforms and on iOS versions earlier than 16.1.
+        /// </remarks>
+        /// <param name="activityId">A stable, game-chosen string naming the kind of live activity.</param>
+        /// <param name="offset">Delay from server-now, in seconds, at which the update should be delivered.</param>
+        /// <param name="customData">Game-defined content-state payload. Must contain only JSON-serializable values. Required.</param>
+        /// <param name="systemData">Optional Apple system fields. May be null.</param>
+        /// <param name="callback">A callback invoked with the result of the call.</param>
+        public IEnumerator ScheduleLiveActivityUpdate(string activityId, long offset, Dictionary<string, object> customData, Dictionary<string, object> systemData, System.Action<Reply> callback) {
+            if (Teak.Instance.Trace) {
+                Debug.Log("[Teak.LiveActivity] ScheduleLiveActivityUpdate(" + activityId + ", " + offset + ", " +
+                          (customData == null ? "null" : Json.Serialize(customData)) + ", " +
+                          (systemData == null ? "null" : Json.Serialize(systemData)) + ")");
+            }
+
+#if !UNITY_EDITOR && UNITY_IPHONE
+            if (!IsIOS161OrNewer()) {
+                NoOpCallback(callback);
+                yield break;
+            }
+
+            string customDataJson = customData == null ? null : Json.Serialize(customData);
+            string systemDataJson = systemData == null ? null : Json.Serialize(systemData);
+            Teak.Operation operation = new Teak.Operation(() => {
+                return TeakScheduleLiveActivityUpdate_Retained(activityId, offset, customDataJson, systemDataJson);
+            });
+            operation.OnDone += (result, exception) => {
+                Reply reply;
+                if (exception != null) {
+                    reply = Reply.ReplyWithErrorForException(exception);
+                } else {
+                    reply = new Reply(result);
+                }
+                Teak.SafePerformCallback("teak.liveactivity.schedule", callback, reply);
+            };
+            while (!operation.IsDone) { yield return null; }
+#else
+            NoOpCallback(callback);
+            yield break;
+#endif
+        }
+
+        /// <summary>
+        /// Cancel all pending scheduled updates for a live activity.
+        /// </summary>
+        /// <remarks>
+        /// Scopes to the current user's updates for <paramref name="activityId"/>; updates
+        /// scheduled for other users or other activity kinds are unaffected.
+        ///
+        /// The reply's <see cref="Reply.CanceledCount"/> carries the number of updates canceled
+        /// by the server on success.
+        ///
+        /// No-op on non-iOS platforms and on iOS versions earlier than 16.1.
+        /// </remarks>
+        /// <param name="activityId">A stable, game-chosen string naming the kind of live activity whose pending updates should be canceled.</param>
+        /// <param name="callback">A callback invoked with the result of the call.</param>
+        public IEnumerator CancelLiveActivityUpdates(string activityId, System.Action<Reply> callback) {
+            if (Teak.Instance.Trace) {
+                Debug.Log("[Teak.LiveActivity] CancelLiveActivityUpdates(" + activityId + ")");
+            }
+
+#if !UNITY_EDITOR && UNITY_IPHONE
+            if (!IsIOS161OrNewer()) {
+                NoOpCallback(callback);
+                yield break;
+            }
+
+            Teak.Operation operation = new Teak.Operation(() => {
+                return TeakCancelLiveActivityUpdates_Retained(activityId);
+            });
+            operation.OnDone += (result, exception) => {
+                Reply reply;
+                if (exception != null) {
+                    reply = Reply.ReplyWithErrorForException(exception);
+                } else {
+                    reply = new Reply(result);
+                }
+                Teak.SafePerformCallback("teak.liveactivity.cancel", callback, reply);
+            };
+            while (!operation.IsDone) { yield return null; }
+#else
+            NoOpCallback(callback);
+            yield break;
+#endif
+        }
+
+        /// @cond hide_from_doxygen
+        internal LiveActivity() { }
+
+        private static void NoOpCallback(System.Action<Reply> callback) {
+            Teak.SafePerformCallback("teak.liveactivity.noop", callback, new Reply(new Dictionary<string, object> {
+                {"status", "ok"},
+                {"noop", true}
+            }));
+        }
+
+        /// <summary>
+        /// Decode a hex-encoded string into its byte representation.
+        /// </summary>
+        /// <remarks>
+        /// Accepts upper- or lower-case hex; rejects odd-length strings, non-hex characters,
+        /// and null input.
+        /// </remarks>
+        public static byte[] HexStringToBytes(string hex) {
+            if (hex == null) {
+                throw new ArgumentNullException("hex");
+            }
+            if (hex.Length % 2 != 0) {
+                throw new ArgumentException("Hex string must have even length", "hex");
+            }
+            byte[] bytes = new byte[hex.Length / 2];
+            for (int i = 0; i < bytes.Length; i++) {
+                int hi = HexCharToInt(hex[i * 2]);
+                int lo = HexCharToInt(hex[i * 2 + 1]);
+                bytes[i] = (byte)((hi << 4) | lo);
+            }
+            return bytes;
+        }
+
+        private static int HexCharToInt(char c) {
+            if (c >= '0' && c <= '9') { return c - '0'; }
+            if (c >= 'a' && c <= 'f') { return c - 'a' + 10; }
+            if (c >= 'A' && c <= 'F') { return c - 'A' + 10; }
+            throw new ArgumentException("Invalid hex character: " + c);
+        }
+
+#if UNITY_IPHONE
+        private static bool IsIOS161OrNewer() {
+            string version = UnityEngine.iOS.Device.systemVersion;
+            if (string.IsNullOrEmpty(version)) { return false; }
+
+            string[] parts = version.Split('.');
+            int major = 0, minor = 0;
+            int.TryParse(parts[0], out major);
+            if (parts.Length > 1) { int.TryParse(parts[1], out minor); }
+
+            if (major > 16) { return true; }
+            if (major == 16 && minor >= 1) { return true; }
+            return false;
+        }
+
+        [DllImport ("__Internal")]
+        private static extern IntPtr TeakStartedLiveActivity_Retained(
+            string activityId,
+            [MarshalAs(UnmanagedType.LPArray)] byte[] pushToken,
+            int pushTokenLength,
+            string systemActivityId);
+
+        [DllImport ("__Internal")]
+        private static extern IntPtr TeakScheduleLiveActivityUpdate_Retained(
+            string activityId,
+            long offset,
+            string customDataJson,
+            string systemDataJson);
+
+        [DllImport ("__Internal")]
+        private static extern IntPtr TeakCancelLiveActivityUpdates_Retained(string activityId);
+#endif
+        /// @endcond
+    }
+
+    private LiveActivity mLiveActivity;
+
+    /// <summary>
+    /// Teak Live Activity functionality (iOS 16.1+).
+    /// </summary>
+    /// <remarks>
+    /// No-op on non-iOS platforms and on iOS versions earlier than 16.1.
+    /// </remarks>
+    public LiveActivity LiveActivities {
+        get {
+            if (this.mLiveActivity == null) {
+                this.mLiveActivity = new LiveActivity();
+            }
+            return this.mLiveActivity;
+        }
+    }
+}
