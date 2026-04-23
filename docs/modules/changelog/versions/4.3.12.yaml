@@ -1,0 +1,7 @@
+new:
+  - "Live Activities: Added ``Teak.LiveActivity.StartedLiveActivity``, ``Teak.LiveActivity.ScheduleLiveActivityUpdate``, and ``Teak.LiveActivity.CancelLiveActivityUpdates`` for reporting push-to-update tokens, scheduling server-driven updates, and canceling pending updates."
+  - "Live Activity tap attribution: Taps on a Live Activity that launch the app surface the launching activity's ``Activity.id`` as ``TeakPostLaunchSummary.SystemActivityId`` on ``Teak.OnPostLaunchSummary``."
+  - "Live Activity scope: 4.3.12 drives updates for Live Activities your app develops and starts itself; starting an activity from a push-to-start payload will come in a later release."
+bug:
+  - "Server-enriched ``teak_schedule_id`` / ``teak_creative_id`` / ``teak_reward_id`` fields now land on the launch data and in the ``TeakPostLaunchSummary`` payload for launches that started without attribution. Previously the enrichment merge was a no-op in that case."
+  - "iOS: Non-JSON error responses no longer raise ``NSInvalidArgumentException`` while parsing request replies."
