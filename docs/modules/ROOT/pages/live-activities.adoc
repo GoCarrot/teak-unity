@@ -1,0 +1,126 @@
+= Live Activities
+
+Teak can schedule server-driven updates to iOS Live Activities your app starts itself, and attribute taps on those activities back to the Teak campaign that drove them.
+
+NOTE: Live Activity APIs require Teak SDK 4.3.12 or newer, and iOS 16.2 or newer on the device. Guard usage with `#if UNITY_IOS && TEAK_4_3_OR_NEWER` at compile time and check the runtime OS before calling.
+
+NOTE: Teak drives updates for Live Activities your app develops and starts itself. Starting an activity from a push-to-start payload will come in a later release.
+
+== Integration overview
+
+Unity does not expose ActivityKit directly, so the integration has two halves:
+
+. **A Swift bridge in your Xcode project** that owns the `ActivityAttributes` type, starts the `Activity<T>`, and observes `activity.pushTokenUpdates`. You forward each token value and the `activity.id` back into Unity — via `UnitySendMessage`, a C# callback, or your preferred interop pattern.
+. **C# calls into `Teak.LiveActivity`** from your Unity code: report the received token with `StartedLiveActivity`, schedule updates with `ScheduleLiveActivityUpdate`, and cancel pending updates with `CancelLiveActivityUpdates`.
+
+The widget extension that provides the Live Activity UI is a standard Xcode target — see link:https://developer.apple.com/documentation/activitykit/displaying-live-data-with-live-activities[Apple's Live Activities documentation, window=_blank] for the layout, `ActivityConfiguration`, and widget-bundle basics.
+
+== What Teak needs from you
+
+Three values, all from the Live Activity APIs Apple already gives you:
+
+* **Push-to-update token** — one per *instance*, issued when the activity starts. Observe `activity.pushTokenUpdates` in Swift for each activity you start and forward every value into Unity.
+* **System activity id** — `activity.id`, the per-instance identifier iOS assigns. Pass it alongside the push-to-update token so Teak can attribute taps back to the right instance.
+* **Your `activityId` string** — a stable game-chosen string (for example, `"chest_timer"`) that Teak uses as the schedule key. It must be unique *per concurrent instance* — if a player can have three chest timers running at once, give them distinct ids like `"chest_timer_0"`, `"chest_timer_1"`, `"chest_timer_2"`. Reusing the same `activityId` across two live instances will collide on the server side.
+
+== Report the push-to-update token
+
+Once your Swift bridge has received the token bytes and the system activity id, hand them to Teak from C#:
+
+[source,csharp]
+----
+#if UNITY_IOS && TEAK_4_3_OR_NEWER
+// From your bridge callback: pushToken is a byte[], systemActivityId is a string.
+StartCoroutine(Teak.LiveActivity.StartedLiveActivity(
+    "chest_timer",
+    pushToken,
+    systemActivityId,
+    (Teak.LiveActivity.Reply reply) => {
+        if (reply.Error) {
+            Debug.LogWarning("Teak LiveActivity registration failed: " + reply);
+        }
+    }));
+#endif
+----
+
+An overload accepting a hex-encoded token string is available for callers that already hold the token as a string (for example, persisted via `PlayerPrefs`):
+
+[source,csharp]
+----
+StartCoroutine(Teak.LiveActivity.StartedLiveActivity(
+    "chest_timer",
+    pushTokenHex,           // lowercase hex, even length
+    systemActivityId,
+    reply => { /* ... */ }));
+----
+
+Call this every time `pushTokenUpdates` yields a new value. Tokens rotate.
+
+== Schedule an update
+
+[source,csharp]
+----
+#if UNITY_IOS && TEAK_4_3_OR_NEWER
+Dictionary<string, object> customData = new Dictionary<string, object> {
+    { "remaining", 0 },
+    { "status", "ready" }
+};
+Dictionary<string, object> systemData = new Dictionary<string, object> {
+    { "event", "update" }
+};
+StartCoroutine(Teak.LiveActivity.ScheduleLiveActivityUpdate(
+    "chest_timer",
+    60,                     // offset in seconds from server-now
+    customData,
+    systemData,             // optional — pass null if you don't need system fields
+    reply => {
+        if (reply.Error) {
+            Debug.LogWarning("Schedule failed: " + reply);
+        }
+    }));
+#endif
+----
+
+* `offset` is seconds from server-now. The server resolves the absolute delivery time, so device clock skew doesn't matter.
+* `customData` becomes the APNs `content-state`. Values must be JSON-serializable; pre-encode any dates per Apple's content-state conventions. It is required — pass a non-null dictionary.
+* `systemData` is optional and carries Apple system fields (`event`, `stale-date`, `dismissal-date`). Pass `null` if you don't need it.
+
+== Cancel pending updates
+
+[source,csharp]
+----
+#if UNITY_IOS && TEAK_4_3_OR_NEWER
+StartCoroutine(Teak.LiveActivity.CancelLiveActivityUpdates(
+    "chest_timer",
+    reply => {
+        if (!reply.Error && reply.CanceledCount.HasValue) {
+            Debug.Log("Canceled " + reply.CanceledCount.Value + " pending update(s).");
+        }
+    }));
+#endif
+----
+
+Cancellation is scoped to the current user and the given `activityId`. The reply's `CanceledCount` carries the number of updates the server dropped.
+
+NOTE: Because `activityId` is the cancellation scope, this is another reason to give concurrent instances distinct ids — cancelling `"chest_timer_0"` won't touch pending updates for `"chest_timer_1"`.
+
+== Attribute taps
+
+When a player taps a Live Activity and resumes your app, Teak routes the launch through its normal attribution pipeline. Observe `Teak.OnPostLaunchSummary` as usual — for a Live Activity tap, `TeakPostLaunchSummary` carries:
+
+* `SystemActivityId` — the `activity.id` of the tapped activity
+* `ScheduleId` and `ScheduleName` — the Teak schedule that drove the activity, once the session's server response enriches the launch
+
+[source,csharp]
+----
+Teak.Instance.OnPostLaunchSummary += summary => {
+    if (!string.IsNullOrEmpty(summary.SystemActivityId)) {
+        Debug.Log("Launched from Live Activity " + summary.SystemActivityId +
+                  " (schedule " + summary.ScheduleName + ")");
+    }
+};
+----
+
+No extra wiring required beyond an observer for `OnPostLaunchSummary`.
+
+NOTE: Live Activity taps currently surface only the schedule id and name. Creative and reward attribution is available for push and deep-link launches but is not yet sent down for Live Activity clicks.

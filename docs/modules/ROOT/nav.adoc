@@ -58,6 +58,7 @@
 ** xref:ios-dependencies.adoc[iOS Dependencies]
 ** xref:ios-extensions.adoc[iOS Extensions]
 ** xref:ios-custom-app-delegate.adoc[iOS Custom App Delegate]
+** xref:live-activities.adoc[iOS Live Activities]
 ** xref:preprocessor-defines.adoc[Preprocessor Defines]
 * xref:sdk5.adoc[SDK5 Preview]
 * xref:changelog:page$changelog.adoc[Changelog]
