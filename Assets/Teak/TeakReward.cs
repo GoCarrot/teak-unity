@@ -36,6 +36,15 @@ public class TeakReward {
         /// <summary>Teak does not recognize this reward id.</summary>
         InvalidPost,
 
+        /// <summary>The player is not eligible for this reward (e.g. targeting rules excluded them).</summary>
+        PlayerIneligible,
+
+        /// <summary>No reward is currently available for this campaign.</summary>
+        NoRewardAvailable,
+
+        /// <summary>The configured ``claim_mode`` is not in the game's ``supported_claim_modes``.</summary>
+        ClaimModeUnsupported,
+
         /// <summary>Another error occurred that prevented the Reward from being processed.</summary>
         InternalError
     }
@@ -152,6 +161,24 @@ public class TeakReward {
             case "invalid_post": {
                 // Teak does not recognize this reward id
                 this.Status = RewardStatus.InvalidPost;
+            }
+            break;
+
+            case "player_ineligible": {
+                // The player is not eligible for this reward
+                this.Status = RewardStatus.PlayerIneligible;
+            }
+            break;
+
+            case "no_reward_available": {
+                // No reward is currently available for this campaign
+                this.Status = RewardStatus.NoRewardAvailable;
+            }
+            break;
+
+            case "claim_mode_unsupported": {
+                // The configured claim_mode is not in the game's supported_claim_modes
+                this.Status = RewardStatus.ClaimModeUnsupported;
             }
             break;
         }

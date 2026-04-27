@@ -32,6 +32,9 @@ public class TeakSettingsEditor : Editor {
         TeakSettings.ShortlinkDomain = EditorGUILayout.TextField("ShortLink Domain", TeakSettings.ShortlinkDomain);
         TeakSettings.TraceLogging = EditorGUILayout.Toggle("Trace Logging", TeakSettings.TraceLogging);
 
+        GUIContent claimModeContent = new GUIContent("Reward Claim Mode [?]", "Selects how the SDK declares reward claims to the Teak server. 'Legacy' is the existing server-reconciliation behavior. 'ClientJwt' and 'ServerJwt' enable JWT-signed claims. Must be one of the values declared in supported_claim_modes for your game.");
+        TeakSettings.ClaimMode = (TeakClaimMode) EditorGUILayout.EnumPopup(claimModeContent, TeakSettings.ClaimMode);
+
         EditorGUILayout.Space();
         GUILayout.Label("Build Settings", EditorStyles.boldLabel);
         GUIContent justShutUpIKnowWhatImDoingContent = new GUIContent("Build Post-Processing [?]",  "When enabled, Teak will post-proces the Unity build and add dependencies, generate plist, XML, etc.");

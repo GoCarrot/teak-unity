@@ -1,1 +1,3 @@
-
+new:
+  - "Added a Reward Claim Mode dropdown to TeakSettings (``Legacy``, ``ClientJwt``, ``ServerJwt``). Build post-processors write the configured value to ``TeakRewardClaimMode`` in iOS Info.plist and to the ``io_teak_reward_claim_mode`` Android string resource. Defaults to ``Legacy``."
+  - "Added ``TeakReward.RewardStatus`` values ``PlayerIneligible``, ``NoRewardAvailable``, and ``ClaimModeUnsupported`` to mirror the new native reward statuses."
