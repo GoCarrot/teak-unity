@@ -34,7 +34,7 @@ public class TeakAndroidAssetLibBuilder : IPreprocessBuildWithReport {
 
         // res/values/teak.xml
         bool forceDebugOutput = TeakSettings.ForceDebugOutput || isDevelopmentBuild;
-        XDocument doc = BuildTeakResourcesXml(TeakSettings.AppId, TeakSettings.APIKey, forceDebugOutput);
+        XDocument doc = BuildTeakResourcesXml(TeakSettings.AppId, TeakSettings.APIKey, forceDebugOutput, TeakSettings.ClaimModeNativeString);
         doc.Save(Path.Combine(Application.dataPath, androidLibPath, "res/values/teak.xml"));
 
         // project.properties
@@ -57,10 +57,11 @@ public class TeakAndroidAssetLibBuilder : IPreprocessBuildWithReport {
         AssetDatabase.SaveAssets();
     }
 
-    internal static XDocument BuildTeakResourcesXml(string appId, string apiKey, bool forceDebugOutput) {
+    internal static XDocument BuildTeakResourcesXml(string appId, string apiKey, bool forceDebugOutput, string claimMode) {
         XElement resources = new XElement("resources",
             new XElement("string", appId, new XAttribute("name", "io_teak_app_id")),
-            new XElement("string", apiKey, new XAttribute("name", "io_teak_api_key"))
+            new XElement("string", apiKey, new XAttribute("name", "io_teak_api_key")),
+            new XElement("string", claimMode, new XAttribute("name", "io_teak_reward_claim_mode"))
         );
 
         if (forceDebugOutput) {

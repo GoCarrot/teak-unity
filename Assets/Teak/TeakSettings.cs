@@ -9,6 +9,16 @@ using UnityEditor;
 #endif
 #endregion
 
+/// <summary>The reward claim mode the SDK declares to the Teak server on every click.</summary>
+public enum TeakClaimMode {
+    /// <summary>Server reconciles clicks against rewards (current behavior, default).</summary>
+    Legacy,
+    /// <summary>Client claims rewards using a JWT signed by Teak.</summary>
+    ClientJwt,
+    /// <summary>Server-to-server claim using a JWT signed by Teak.</summary>
+    ServerJwt
+}
+
 #if UNITY_EDITOR
 [InitializeOnLoad]
 #endif
@@ -126,6 +136,32 @@ public class TeakSettings : ScriptableObject {
 #endif
     }
 
+    public static TeakClaimMode ClaimMode {
+        get { return Instance.mClaimMode; }
+#if UNITY_EDITOR
+        set {
+            if (value != Instance.mClaimMode) {
+                Instance.mClaimMode = value;
+                DirtyEditor();
+            }
+        }
+#endif
+    }
+
+    /// <summary>The native-SDK string for the configured claim mode (e.g. ``legacy``, ``client_jwt``, ``server_jwt``).</summary>
+    public static string ClaimModeNativeString {
+        get { return ClaimModeToNativeString(Instance.mClaimMode); }
+    }
+
+    public static string ClaimModeToNativeString(TeakClaimMode mode) {
+        switch (mode) {
+            case TeakClaimMode.ClientJwt: return "client_jwt";
+            case TeakClaimMode.ServerJwt: return "server_jwt";
+            case TeakClaimMode.Legacy:
+            default: return "legacy";
+        }
+    }
+
     public static int iOSBuildPostProcessorCallbackOrder {
         get { return Instance.miOSBuildPostProcessorCallbackOrder; }
 #if UNITY_EDITOR
@@ -165,6 +201,8 @@ public class TeakSettings : ScriptableObject {
     private bool mForceDebugOutput = false;
     [SerializeField]
     private int miOSBuildPostProcessorCallbackOrder = 100;
+    [SerializeField]
+    private TeakClaimMode mClaimMode = TeakClaimMode.Legacy;
 
     private static TeakSettings mInstance;
 }

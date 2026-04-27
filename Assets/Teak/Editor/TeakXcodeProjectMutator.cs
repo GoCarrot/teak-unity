@@ -95,6 +95,9 @@ public class TeakXcodeProjectMutator : IPostprocessBuildWithReport {
         // Force debug output
         plist.root.SetBoolean("TeakForceDebugOutput", TeakSettings.ForceDebugOutput || isDevelopmentBuild);
 
+        // Reward claim mode
+        plist.root.SetString("TeakRewardClaimMode", TeakSettings.ClaimModeNativeString);
+
         return plist.WriteToString();
     }
 
