@@ -195,14 +195,6 @@ namespace :build do
       end
     end
 
-    # Download the latest Info.plist for TeakNotificationContent
-    content_plist = File.join('Assets', 'Teak', 'Editor', 'iOS', 'TeakNotificationContent', 'Info.plist')
-    if build_local?
-      cp "#{PROJECT_PATH}/../teak-ios/TeakExtensions/TeakNotificationContent/Info.plist", content_plist
-    else
-      sh "curl --fail -o #{content_plist} https://sdks.teakcdn.com/ios/Info-#{NATIVE_CONFIG['version']['ios']}.plist"
-    end
-
     # Write Unity SDK version information to 'Assets/Teak/Plugins/iOS/teak_version.m'
     template = File.read(File.join(PROJECT_PATH, 'Templates', 'teak_version.m.template'))
     File.write(File.join(PROJECT_PATH, 'Assets', 'Teak', 'Plugins', 'iOS', 'teak_version.m'), Mustache.render(template, TEMPLATE_PARAMETERS))
