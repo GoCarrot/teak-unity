@@ -248,6 +248,17 @@ public class TeakXcodeProjectMutator : IPostprocessBuildWithReport {
         // armv7 and armv7s do not support Notification Content Extensions
         project.AddBuildProperty(extensionTarget, "ARCHS", "arm64");
 
+        // Copy version settings from main target so Info.plist variables resolve correctly.
+        // Newer Unity versions set these at the target level rather than project level, so
+        // extension targets don't inherit them automatically.
+        string[] versionSettings = new string[] { "CURRENT_PROJECT_VERSION", "MARKETING_VERSION" };
+        foreach (string setting in versionSettings) {
+            string value = project.GetBuildProperty(target, setting);
+            if (!string.IsNullOrEmpty(value)) {
+                project.SetBuildProperty(extensionTarget, setting, value);
+            }
+        }
+
         return extensionTarget;
     }
 }
