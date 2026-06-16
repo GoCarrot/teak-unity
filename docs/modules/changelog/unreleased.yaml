@@ -1,1 +1,2 @@
-
+bug:
+  - "Fix crash when scheduling multiple WebGL notifications in the same frame (callback IDs now use a monotonic counter instead of `DateTime.Now.Ticks`)."
