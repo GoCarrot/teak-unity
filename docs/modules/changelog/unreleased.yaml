@@ -1,2 +1,4 @@
+new:
+  - "Add ``Teak.LiveActivity.RegisterPushToStartToken`` to report a Live Activity push-to-start token to Teak."
 bug:
   - "Fix crash when scheduling multiple WebGL notifications in the same frame (callback IDs now use a monotonic counter instead of `DateTime.Now.Ticks`)."

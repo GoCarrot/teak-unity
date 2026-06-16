@@ -77,6 +77,26 @@ public class TeakLiveActivityTests {
     }
 
     [TeakTest]
+    public void RegisterPushToStartTokenHexOverloadDoesNotThrowOnInvalidHex() {
+        var teak = new UnityEngine.GameObject("TeakForTest").AddComponent<Teak>();
+        try {
+            Teak.LiveActivity.RegisterPushToStartToken("zz");
+        } finally {
+            UnityEngine.Object.DestroyImmediate(teak.gameObject);
+        }
+    }
+
+    [TeakTest]
+    public void RegisterPushToStartTokenHexOverloadDoesNotThrowOnNull() {
+        var teak = new UnityEngine.GameObject("TeakForTest").AddComponent<Teak>();
+        try {
+            Teak.LiveActivity.RegisterPushToStartToken((string)null);
+        } finally {
+            UnityEngine.Object.DestroyImmediate(teak.gameObject);
+        }
+    }
+
+    [TeakTest]
     public void StartedLiveActivityHexOverloadInvokesErrorCallbackOnInvalidHex() {
         Teak.LiveActivity.Reply captured = null;
         var teak = new UnityEngine.GameObject("TeakForTest").AddComponent<Teak>();
