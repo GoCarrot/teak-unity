@@ -716,7 +716,7 @@ public partial class Teak : MonoBehaviour {
         yield return null;
 #elif UNITY_IPHONE
         bool keepWaiting = true;
-        string callbackId = (++_nextCallbackId).ToString();
+        string callbackId = NextCallbackID();
         teakOperationCallbackMap.Add(callbackId, json => {
             if (callback != null) {
                 callback(json.ContainsKey("permissionGranted") && json["permissionGranted"] is bool && (bool)json["permissionGranted"]);
@@ -756,7 +756,7 @@ public partial class Teak : MonoBehaviour {
         yield return null;
 #elif UNITY_IPHONE
         bool keepWaiting = true;
-        string callbackId = (++_nextCallbackId).ToString();
+        string callbackId = NextCallbackID();
         teakOperationCallbackMap.Add(callbackId, json => {
             if (callback != null) {
                 callback(json.ContainsKey("permissionGranted") && json["permissionGranted"] is bool && (bool)json["permissionGranted"]);
