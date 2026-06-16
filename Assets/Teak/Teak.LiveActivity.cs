@@ -225,6 +225,48 @@ public partial class Teak {
         }
 
         /// <summary>
+        /// Report a Live Activity push-to-start token to Teak.
+        /// </summary>
+        /// <remarks>
+        /// Call this from any location where your app observes
+        /// <c>Activity&lt;Attributes&gt;.pushToStartTokenUpdates</c> — typically at launch and
+        /// again whenever the OS emits a rotated token.
+        ///
+        /// </remarks>
+        /// <param name="pushToken">The push-to-start token bytes from ActivityKit's <c>Activity.pushToStartTokenUpdates</c>.</param>
+        public static void RegisterPushToStartToken(byte[] pushToken) {
+            int tokenLength = pushToken == null ? 0 : pushToken.Length;
+
+            if (Teak.Instance.Trace) {
+                Debug.Log("[Teak.LiveActivity] RegisterPushToStartToken(<" + tokenLength + " bytes>)");
+            }
+
+#if !UNITY_EDITOR && UNITY_IPHONE
+            TeakRegisterPushToStartToken(pushToken, tokenLength);
+#endif
+        }
+
+        /// <summary>
+        /// Report a Live Activity push-to-start token to Teak, using a hex-encoded token string.
+        /// </summary>
+        /// <remarks>
+        /// Convenience overload for callers who already hold the token as a hex string
+        /// (for example, persisted via <c>PlayerPrefs</c>). Decodes to bytes and delegates to
+        /// <see cref="RegisterPushToStartToken(byte[])"/>.
+        /// </remarks>
+        /// <param name="pushTokenHex">The push-to-start token as a hex-encoded string.</param>
+        public static void RegisterPushToStartToken(string pushTokenHex) {
+            byte[] tokenBytes = null;
+            try {
+                tokenBytes = HexStringToBytes(pushTokenHex);
+            } catch (Exception e) {
+                Debug.LogError("[Teak.LiveActivity] RegisterPushToStartToken: failed to parse hex token: " + e.Message);
+                return;
+            }
+            RegisterPushToStartToken(tokenBytes);
+        }
+
+        /// <summary>
         /// Cancel all pending scheduled updates for a live activity.
         /// </summary>
         /// <remarks>
@@ -321,6 +363,11 @@ public partial class Teak {
 
         [DllImport ("__Internal")]
         private static extern IntPtr TeakCancelLiveActivityUpdates_Retained(string activityId);
+
+        [DllImport ("__Internal")]
+        private static extern void TeakRegisterPushToStartToken(
+            [MarshalAs(UnmanagedType.LPArray)] byte[] pushToken,
+            int pushTokenLength);
 #endif
         /// @endcond
     }
