@@ -765,6 +765,17 @@ public partial class Teak : MonoBehaviour {
         });
         TeakRequestPushAuthorizationUnity(false, callbackId);
         while (keepWaiting) { yield return null; }
+#elif UNITY_WEBGL
+        bool keepWaiting = true;
+        string callbackId = NextCallbackID();
+        teakOperationCallbackMap.Add(callbackId, json => {
+            if (callback != null) {
+                callback(json.ContainsKey("permissionGranted") && json["permissionGranted"] is bool && (bool)json["permissionGranted"]);
+            }
+            keepWaiting = false;
+        });
+        TeakRegisterForWebPush(callbackId);
+        while (keepWaiting) { yield return null; }
 #elif UNITY_ANDROID
         // If we're not on API 33, no action needed.
         using (var buildVersion = new AndroidJavaClass("android.os.Build$VERSION")) {
@@ -949,6 +960,9 @@ public partial class Teak : MonoBehaviour {
 
     [DllImport ("__Internal")]
     private static extern void TeakUnityReportCanvasPurchase(string payload);
+
+    [DllImport ("__Internal")]
+    private static extern void TeakRegisterForWebPush(string callbackId);
 #elif UNITY_IPHONE
     [DllImport ("__Internal")]
     private static extern IntPtr TeakGetAppConfiguration();
