@@ -132,6 +132,11 @@ public partial class Teak {
     private static long _nextCallbackId = 0L;
     internal static string NextCallbackID() => (++_nextCallbackId).ToString();
     internal static Dictionary<string, System.Action<Dictionary<string, object>>> teakOperationCallbackMap = new Dictionary<string, System.Action<Dictionary<string, object>>>();
+    // Fail-closed: missing or non-bool permissionGranted returns false rather than throwing,
+    // so a malformed reply doesn't hang the callback coroutine waiting on keepWaiting.
+    internal static bool ParsePermissionGranted(Dictionary<string, object> json) {
+        return json.ContainsKey("permissionGranted") && json["permissionGranted"] is bool && (bool)json["permissionGranted"];
+    }
     void TeakOperationCallback(string jsonString) {
         try {
             Dictionary<string, object> json = Json.TryDeserialize(jsonString) as Dictionary<string, object>;
