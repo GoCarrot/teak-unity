@@ -719,7 +719,7 @@ public partial class Teak : MonoBehaviour {
         string callbackId = NextCallbackID();
         teakOperationCallbackMap.Add(callbackId, json => {
             if (callback != null) {
-                callback(json.ContainsKey("permissionGranted") && json["permissionGranted"] is bool && (bool)json["permissionGranted"]);
+                callback(ParsePermissionGranted(json));
             }
             keepWaiting = false;
         });
@@ -759,7 +759,7 @@ public partial class Teak : MonoBehaviour {
         string callbackId = NextCallbackID();
         teakOperationCallbackMap.Add(callbackId, json => {
             if (callback != null) {
-                callback(json.ContainsKey("permissionGranted") && json["permissionGranted"] is bool && (bool)json["permissionGranted"]);
+                callback(ParsePermissionGranted(json));
             }
             keepWaiting = false;
         });
@@ -770,7 +770,7 @@ public partial class Teak : MonoBehaviour {
         string callbackId = NextCallbackID();
         teakOperationCallbackMap.Add(callbackId, json => {
             if (callback != null) {
-                callback(json.ContainsKey("permissionGranted") && json["permissionGranted"] is bool && (bool)json["permissionGranted"]);
+                callback(ParsePermissionGranted(json));
             }
             keepWaiting = false;
         });
