@@ -301,6 +301,9 @@ mergeInto(LibraryManager.library, {
   TeakRegisterForWebPush: function(ptr_callbackId) {
     var callbackId = UTF8ToString(ptr_callbackId);
 
+    // switchVendor=true: if the user is already subscribed to a different webpush vendor,
+    // unsubscribe them and register with Teak. Without this, existing AlternateVendor
+    // subscribers would always receive false and never get Teak push.
     window.teak.registerForNotifications(true, function(notificationState) {
       // teak-js passes a bare string (Teak.NotificationState enum):
       //   "Enabled", "Disabled", "NotRequested", "Provisional",
