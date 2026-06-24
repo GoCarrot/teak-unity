@@ -2,7 +2,7 @@ new:
   - "Add ``Teak.LiveActivity.RegisterPushToStartToken`` to report a Live Activity push-to-start token to Teak."
   - "Add web push registration for WebGL via ``RegisterForNotifications`` — host page must register ``/sw.js`` as the service worker."
 bug:
-  - "Fix crash when scheduling multiple WebGL notifications in the same frame (callback IDs now use a monotonic counter instead of `DateTime.Now.Ticks`)."
+  - "Fix crash when scheduling multiple WebGL notifications in the same frame (callback IDs now use a monotonic counter instead of ``DateTime.Now.Ticks``)."
   - "iOS: Fixed the Teak rich-push notification extensions (``TeakNotificationService`` / ``TeakNotificationContent``) inheriting the wrong ``CFBundleVersion`` / ``CFBundleShortVersionString``; they now resolve from the host app, preventing App Store upload rejections from mismatched extension versions."
   - "iOS: Fixed a rare multi-threaded crash (``EXC_BAD_ACCESS`` in ``+[TeakSession whenUserIdIsReadyRun:]``) where a deferred callback could retain a session that was being replaced on another thread."
   - "Android: Fixed a crash (NPE) when claiming a reward if the server response was empty or had an unexpected shape."
