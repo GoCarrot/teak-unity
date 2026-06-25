@@ -47,7 +47,17 @@ public class TeakXcodeProjectMutator : IPostprocessBuildWithReport {
         /////
         // Modify plist
         string plistPath = report.summary.outputPath + "/Info.plist";
-        File.WriteAllText(plistPath, AddTeakEntriesToPlist(File.ReadAllText(plistPath), isDevelopmentBuild));
+        string modifiedPlist = AddTeakEntriesToPlist(File.ReadAllText(plistPath), isDevelopmentBuild);
+        File.WriteAllText(plistPath, modifiedPlist);
+
+        // Read version values from the main app plist — Unity bakes these in directly
+        // rather than setting Xcode build settings, so extension targets need them explicitly.
+        PlistDocument mainPlist = new PlistDocument();
+        mainPlist.ReadFromString(modifiedPlist);
+        string mainBundleVersion = mainPlist.root.values.ContainsKey("CFBundleVersion")
+            ? mainPlist.root["CFBundleVersion"].AsString() : null;
+        string mainMarketingVersion = mainPlist.root.values.ContainsKey("CFBundleShortVersionString")
+            ? mainPlist.root["CFBundleShortVersionString"].AsString() : null;
 
         /////
         // Add Teak app extensions
@@ -55,11 +65,13 @@ public class TeakXcodeProjectMutator : IPostprocessBuildWithReport {
 
         AddTeakExtensionToProjectTarget("TeakNotificationService", "TeakNotificationService",
                                         teakExtensionCommonFrameworks,
-                                        project, unityTarget, projectPath);
+                                        project, unityTarget, projectPath,
+                                        mainBundleVersion, mainMarketingVersion);
 
         AddTeakExtensionToProjectTarget("TeakNotificationContent", "TeakNotificationContent",
                                         new string[] {"UserNotificationsUI"}.Concat(teakExtensionCommonFrameworks).ToArray(),
-                                        project, unityTarget, projectPath);
+                                        project, unityTarget, projectPath,
+                                        mainBundleVersion, mainMarketingVersion);
 
         /////
         // Write out modified project
@@ -155,7 +167,7 @@ public class TeakXcodeProjectMutator : IPostprocessBuildWithReport {
         return plistArray;
     }
 
-    private static string AddTeakExtensionToProjectTarget(string name, string displayName, string[] frameworks, PBXProject project, string target, string projectPath) {
+    private static string AddTeakExtensionToProjectTarget(string name, string displayName, string[] frameworks, PBXProject project, string target, string projectPath, string bundleVersion = null, string marketingVersion = null) {
         string __FILE__ = new StackTrace(new StackFrame(true)).GetFrame(0).GetFileName();
         string teakEditorIosPath = Path.GetDirectoryName(__FILE__) + "/iOS";
         string extensionSrcPath = teakEditorIosPath + "/" + name;
@@ -247,6 +259,16 @@ public class TeakXcodeProjectMutator : IPostprocessBuildWithReport {
 
         // armv7 and armv7s do not support Notification Content Extensions
         project.AddBuildProperty(extensionTarget, "ARCHS", "arm64");
+
+        // Set version build settings explicitly from main app Info.plist values.
+        // Unity bakes version info into Info.plist rather than Xcode build settings,
+        // so extension targets need these set directly.
+        if (!string.IsNullOrEmpty(bundleVersion)) {
+            project.SetBuildProperty(extensionTarget, "CURRENT_PROJECT_VERSION", bundleVersion);
+        }
+        if (!string.IsNullOrEmpty(marketingVersion)) {
+            project.SetBuildProperty(extensionTarget, "MARKETING_VERSION", marketingVersion);
+        }
 
         return extensionTarget;
     }

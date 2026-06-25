@@ -98,7 +98,7 @@ public partial class Teak {
         }
 #elif UNITY_WEBGL
         public Operation(Action<string> init) {
-            string callbackId = DateTime.Now.Ticks.ToString();
+            string callbackId = NextCallbackID();
             teakOperationCallbackMap.Add(callbackId, json => {
                 this.result = json;
                 this.markDoneOnNextCheck = true;
@@ -129,7 +129,14 @@ public partial class Teak {
     }
 
     /// @cond hide_from_doxygen
+    private static long _nextCallbackId = 0L;
+    internal static string NextCallbackID() => (++_nextCallbackId).ToString();
     internal static Dictionary<string, System.Action<Dictionary<string, object>>> teakOperationCallbackMap = new Dictionary<string, System.Action<Dictionary<string, object>>>();
+    // Fail-closed: missing or non-bool permissionGranted returns false rather than throwing,
+    // so a malformed reply doesn't hang the callback coroutine waiting on keepWaiting.
+    internal static bool ParsePermissionGranted(Dictionary<string, object> json) {
+        return json.ContainsKey("permissionGranted") && json["permissionGranted"] is bool && (bool)json["permissionGranted"];
+    }
     void TeakOperationCallback(string jsonString) {
         try {
             Dictionary<string, object> json = Json.TryDeserialize(jsonString) as Dictionary<string, object>;

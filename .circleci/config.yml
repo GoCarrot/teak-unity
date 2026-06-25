@@ -58,28 +58,9 @@ jobs:
 
   tag_build:
     docker:
-      - image: *RUBY_IMAGE
+      - image: cimg/base:current
     steps:
       - checkout
-      - run: git fetch --tags
-      - restore_cache:
-          key: *RUBY_CACHE_KEY
-      - run:
-          name: Ruby Gems
-          command: |
-            bundle config set --local path vendor/bundle
-            bundle check || bundle install
-      - run:
-          name: Install AWS CLI
-          command: |
-            sudo apt-get update
-            sudo apt-get -y -qq install awscli
-      - save_cache:
-          paths:
-            - vendor/bundle
-          key: *RUBY_CACHE_KEY
-      - attach_workspace:
-          at: .
       - teak/tag-promote
 
   deploy_versioned:

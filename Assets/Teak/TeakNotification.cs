@@ -206,7 +206,7 @@ public partial class TeakNotification {
 
         SafePerformCallback("schedule_notification.local", callback, data, status, scheduleName);
 #elif UNITY_WEBGL
-        string callbackId = DateTime.Now.Ticks.ToString();
+        string callbackId = Teak.NextCallbackID();
         webGlCallbackMap.Add(callbackId, callback);
         TeakNotificationSchedule(callbackId, scheduleName, defaultMessage, delayInSeconds);
         yield return null;
@@ -269,7 +269,7 @@ public partial class TeakNotification {
 
         SafePerformCallback("schedule_notification.long_distance", callback, data, status, scheduleName);
 #elif UNITY_WEBGL
-        string callbackId = DateTime.Now.Ticks.ToString();
+        string callbackId = Teak.NextCallbackID();
         webGlCallbackMap.Add(callbackId, callback);
         TeakNotificationScheduleLongDistance(callbackId, scheduleName, Json.Serialize(userIds), delayInSeconds);
         yield return null;
@@ -324,7 +324,7 @@ public partial class TeakNotification {
 
         SafePerformCallback("cancel_notification", callback, data, status, null);
 #elif UNITY_WEBGL
-        string callbackId = DateTime.Now.Ticks.ToString();
+        string callbackId = Teak.NextCallbackID();
         webGlCallbackMap.Add(callbackId, callback);
         TeakNotificationCancel(callbackId, scheduleId);
         yield return null;
@@ -378,7 +378,7 @@ public partial class TeakNotification {
 
         SafePerformCallback("cancel_all_notifications", callback, data, status, null);
 #elif UNITY_WEBGL
-        string callbackId = DateTime.Now.Ticks.ToString();
+        string callbackId = Teak.NextCallbackID();
         webGlCallbackMap.Add(callbackId, callback);
         TeakNotificationCancelAll(callbackId);
         yield return null;

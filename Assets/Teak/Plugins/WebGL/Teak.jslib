@@ -3,7 +3,7 @@ mergeInto(LibraryManager.library, {
     var appId = UTF8ToString(ptr_appId);
     var apiKey = UTF8ToString(ptr_apiKey);
 
-    (function(){window.teak=window.teak||[];window.teak.methods=["init","on","asyncInit","identify","trackEvent","postAction","postAchievement","postHighScore","canMakeFeedPost","popupFeedPost","reportNotificationClick","reportFeedClick","sendRequest","acceptRequest","loadInboxData", "claimReward", "setIsUnity", "scheduleNotification", "cancelNotification", "cancelAllNotifications", "setStringAttribute", "setNumberAttribute", "scheduleLongDistanceNotification", "reportUnityCanvasPurchase", "deleteEmail", "setChannelState","setCategoryState", "scheduleNotificationWithPersonalization"];window.teak.factory=function(e){return function(){var t=Array.prototype.slice.call(arguments);t.unshift(e);window.teak.push(t);return window.teak}};for(var e=0;e<window.teak.methods.length;e++){var t=window.teak.methods[e];if(!window.teak[t]){window.teak[t]=window.teak.factory(t)}}})()
+    (function(){window.teak=window.teak||[];window.teak.methods=["init","on","asyncInit","identify","trackEvent","postAction","postAchievement","postHighScore","canMakeFeedPost","popupFeedPost","reportNotificationClick","reportFeedClick","sendRequest","acceptRequest","loadInboxData", "claimReward", "setIsUnity", "scheduleNotification", "cancelNotification", "cancelAllNotifications", "setStringAttribute", "setNumberAttribute", "scheduleLongDistanceNotification", "reportUnityCanvasPurchase", "deleteEmail", "setChannelState","setCategoryState", "scheduleNotificationWithPersonalization", "registerForNotifications"];window.teak.factory=function(e){return function(){var t=Array.prototype.slice.call(arguments);t.unshift(e);window.teak.push(t);return window.teak}};for(var e=0;e<window.teak.methods.length;e++){var t=window.teak.methods[e];if(!window.teak[t]){window.teak[t]=window.teak.factory(t)}}})()
 
     window.teak.init(appId, apiKey, false, null, enableSdk5BehaviorsInt !== 0);
     window.teak.setIsUnity();
@@ -297,5 +297,23 @@ mergeInto(LibraryManager.library, {
     var buffer = _malloc(bufferSize);
     stringToUTF8(retAsJson, buffer, bufferSize);
     return buffer;
+  },
+  TeakRegisterForWebPush: function(ptr_callbackId) {
+    var callbackId = UTF8ToString(ptr_callbackId);
+
+    // switchVendor=true: if the user is already subscribed to a different webpush vendor,
+    // unsubscribe them and register with Teak. Without this, existing AlternateVendor
+    // subscribers would always receive false and never get Teak push.
+    window.teak.registerForNotifications(true, function(notificationState) {
+      // teak-js passes a bare string (Teak.NotificationState enum):
+      //   "Enabled", "Disabled", "NotRequested", "Provisional",
+      //   "ServiceWorkerNotRegistered", "NotSupported", "AlternateVendor", "UnableToDetermine"
+      // Only "Enabled" means Teak can deliver push to this user — everything else is false.
+      // Matches iOS RegisterForNotifications (includeProvisional=false): provisional does not count as granted.
+      SendMessage("TeakGameObject", "TeakOperationCallback", JSON.stringify({
+        _callbackId: callbackId,
+        permissionGranted: notificationState === "Enabled"
+      }));
+    });
   }
 });
