@@ -32,7 +32,7 @@ TIP: For reproducible builds, pin to a specific version by appending `#<version>
 . When the progress bars finish, the Teak for Unity SDK is installed. You should now see *Teak* in the *Edit* menu of your Unity project. 
 +
 [NOTE]
-If you are using **Assembly Definitions** in Unity you will also need to reference Teak's `.asmdef` file from your Assembly Definition Asset. See Unity's doc on https://docs.unity3d.com/Manual/ScriptCompilationAssemblyDefinitionFiles.html#reference-another-assembly[Referencing another assembly, window=_blank]. 
+If your project's scripts live in their own **Assembly Definition** files, add a reference to the `Teak` assembly (and `Teak.Editor` if your editor scripts call Teak's editor APIs) from each assembly definition that uses Teak — otherwise you'll hit `The type or namespace name 'Teak' could not be found` compile errors. See xref:upm.adoc#_assembly_definitions[Assembly Definitions] for the Inspector and `.asmdef` steps.
 
 === Installing via Asset Menu
 
