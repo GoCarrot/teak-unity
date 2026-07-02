@@ -27,6 +27,9 @@ mergeInto(LibraryManager.library, {
     window.teakUnity = { notifLaunchIds: [], linkLaunchIds: [] };
 
     var doTeakInit = function() {
+      // Load teak.min.js from the CloudFront distribution behind sdks.teakcdn.com. The raw
+      // distribution domain is required because Facebook Instant Games' CSP allows
+      // *.cloudfront.net but blocks sdks.teakcdn.com on script-src.
       (function(){var n=document.createElement("script");n.type="text/javascript";n.async=true;n.src="//d1v456k1azyoej.cloudfront.net/teak.min.js";var r=document.getElementsByTagName("script")[0];r.parentNode.insertBefore(n,r)})()
     };
 
