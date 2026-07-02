@@ -27,7 +27,7 @@ mergeInto(LibraryManager.library, {
     window.teakUnity = { notifLaunchIds: [], linkLaunchIds: [] };
 
     var doTeakInit = function() {
-      (function(){var n=document.createElement("script");n.type="text/javascript";n.async=true;n.src="//sdks.teakcdn.com/teak.min.js";var r=document.getElementsByTagName("script")[0];r.parentNode.insertBefore(n,r)})()
+      (function(){var n=document.createElement("script");n.type="text/javascript";n.async=true;n.src="//d1v456k1azyoej.cloudfront.net/teak.min.js";var r=document.getElementsByTagName("script")[0];r.parentNode.insertBefore(n,r)})()
     };
 
     doTeakInit();
