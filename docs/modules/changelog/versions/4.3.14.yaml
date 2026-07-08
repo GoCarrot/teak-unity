@@ -2,7 +2,6 @@ bug:
   - "Fixed compile errors in projects that use Assembly Definition (``.asmdef``) files — editor-only scripts are no longer included in player builds."
   - "iOS: Fixed purchase and event timestamps being rejected by the server on devices set to certain non-Western locales (e.g. Arabic)."
   - "iOS: Fixed reward attribution being dropped when a Teak link resolved without an iOS path, or when link resolution failed."
-  - "iOS: Network requests are now retried when the OS drops an idle connection, instead of failing silently."
   - "iOS: Thread-safety hardening — fixed a class of rare multi-threaded crashes, a potential deadlock, and dropped analytics and reward events under concurrent access."
   - "Android: FCM registration no longer omits the sender ID on the first push token after a fresh install."
   - "Android: The FCM push provider is no longer selected on devices without Google Play Services (e.g. Amazon Fire); ADM remains preferred on Amazon."
