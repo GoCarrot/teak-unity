@@ -1,2 +1,0 @@
-bug:
-  - "WebGL: The Teak loader now loads ``teak.min.js`` from the CloudFront distribution domain instead of ``sdks.teakcdn.com``, so it works under Facebook Instant Games' Content Security Policy."

@@ -87,3 +87,37 @@ Then any version of the `4.x.x` series that releases will be eligible.
 ----
 
 Then any version of the SDK that releases will be eligible, including major version updates.
+
+== Assembly Definitions
+
+If your project keeps its scripts in their own https://docs.unity3d.com/Manual/assembly-definition-files.html[Assembly Definition, window=_blank] (`.asmdef`) files, you may hit a compile error like:
+
+----
+error CS0246: The type or namespace name 'Teak' could not be found (are you missing a using directive or an assembly reference?)
+----
+
+Teak ships as its own assembly named `Teak`. Unity's predefined assemblies (`Assembly-CSharp`) reference it automatically, but your own assembly definitions do not — and a shipped package can't add that reference for you. Reference the `Teak` assembly from any of your assembly definitions that call into the Teak SDK.
+
+=== Add the reference in the Inspector
+
+. Select your assembly definition asset (`.asmdef`) so its properties show in the Inspector.
+. Under *Assembly Definition References*, click btn:[+] and assign the `Teak` assembly.
+. Click btn:[Apply].
+
+See Unity's https://docs.unity3d.com/Manual/assembly-definitions-referencing.html[Referencing assemblies, window=_blank] for details.
+
+=== Or edit the `.asmdef` directly
+
+Add `Teak` to the `references` array:
+
+[source,json]
+----
+{
+  "name": "YourGameAssembly",
+  "references": [
+    "Teak"
+  ]
+}
+----
+
+If your *editor* scripts call Teak's editor APIs, also reference the `Teak.Editor` assembly from your editor assembly definition.
