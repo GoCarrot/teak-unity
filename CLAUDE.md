@@ -58,7 +58,7 @@ yarn docs
   -projectPath .
 ```
 
-Tests use a custom runner (`Assets/Tests/Editor/TeakTestRunner.cs`) with `[TeakTestFixture]` / `[TeakTest]` attributes and `TeakAssert` helpers. Test files live in `Assets/Tests/Editor/`. Since there are no `.asmdef` files, all Editor scripts (including build post-processors) compile into `Assembly-CSharp-Editor`, so tests can access `internal` members directly.
+Tests use a custom runner (`Assets/Tests/Editor/TeakTestRunner.cs`) with `[TeakTestFixture]` / `[TeakTest]` attributes and `TeakAssert` helpers. Test files live in `Assets/Tests/Editor/` and compile into the predefined `Assembly-CSharp-Editor` assembly. Teak runtime code is in `Teak.asmdef`; editor-only build tools are in `Teak.Editor.asmdef` (`includePlatforms: ["Editor"]`). `Teak.Editor` declares `[assembly: InternalsVisibleTo("Assembly-CSharp-Editor")]` (in `TeakEditorAssemblyInfo.cs`) so tests can still access `internal` members like `TeakAndroidAssetLibBuilder.BuildTeakResourcesXml`.
 
 ## Architecture
 
@@ -100,6 +100,11 @@ All platform-specific code uses `#if UNITY_EDITOR / UNITY_ANDROID / UNITY_IPHONE
 - **Tagging**: The `teak/tag-promote` CI orb parses the HEAD commit message for `Promote to: X.Y.Z` and creates + pushes a git tag.
 
 ### Release Flow
+
+> **Cutting a release?** teak-unity is the *last* repo in a cross-repo sequence
+> (natives ship to the CDN first, then Unity consumes them). The end-to-end runbook
+> is [`RELEASING.md`](RELEASING.md) at this repo's root. The steps below are only the
+> teak-unity-local mechanics.
 
 ```
 # 1. Update VERSION file to new version (e.g. 4.3.10)
