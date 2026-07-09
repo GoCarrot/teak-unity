@@ -6,5 +6,6 @@ bug:
   - "Android: FCM registration no longer omits the sender ID on the first push token after a fresh install."
   - "Android: The FCM push provider is no longer selected on devices without Google Play Services (e.g. Amazon Fire); ADM remains preferred on Amazon."
   - "Android: A missing or invalid Firebase configuration now raises an integration error only when push is in use, not for apps that intentionally ship without push."
+  - "WebGL: The Teak loader now loads ``teak.min.js`` from the CloudFront distribution domain instead of ``sdks.teakcdn.com``, so it works under Facebook Instant Games' Content Security Policy."
 enhancement:
   - "Uncaught exceptions now emit an ``exception`` log event to registered log listeners."
