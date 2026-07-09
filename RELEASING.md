@@ -1,8 +1,13 @@
-# Releasing the Teak SDK suite (4.3.x maintenance line)
+# Releasing the Teak SDK suite
 
-How to cut a coordinated `4.3.x` release across the three SDK repos
-(`teak-ios`, `teak-android`, `teak-unity`). The natives ship first, Unity
-consumes them, and a human approves the final "latest" promotion.
+How to cut a coordinated release across the three SDK repos (`teak-ios`,
+`teak-android`, `teak-unity`). The natives ship first, Unity consumes them, and a
+human approves the final "latest" promotion.
+
+Every release is cut against its **stable branch** — `X.Y-stable` (e.g.
+`4.3-stable`, `4.4-stable`). A new minor/major starts by cutting that `X.Y-stable`
+branch on all repos; a patch reuses the existing one. Below, `<stable>` is that
+branch and `<ver>` is the version you're shipping.
 
 > **Per-repo mechanics** (tag orb, CI workflows, S3 paths) live in each repo's
 > own `CLAUDE.md` "Release Flow" / "Version Management" section. This doc is the
@@ -33,7 +38,7 @@ downloads `Teak-<ver>.xcframework.zip` / `teak-<ver>.aar` by the versions in
 
 ## Preconditions
 
-- Every fix intended for this release is merged to `4.3-stable` on all three repos.
+- Every fix intended for this release is merged to `<stable>` on all three repos.
 - The beta/rc line has been validated (integration-tested).
 - You know the next version. **Versions are immutable** — once a `Promote to:`
   commit is pushed and CI tags it, that version is permanently consumed. Check
@@ -41,18 +46,19 @@ downloads `Teak-<ver>.xcframework.zip` / `teak-<ver>.aar` by the versions in
 
 ## Work in isolated worktrees, never the live checkout
 
-`4.3-stable` is checked out in the human's primary checkout (may have WIP / a
+`<stable>` is checked out in the human's primary checkout (may have WIP / a
 running Unity). Cut from a fresh **detached** worktree so nothing collides:
 
 ```bash
 git -C <repo> fetch origin
-git -C <repo> worktree add --detach <repo>-cut-<ver> origin/4.3-stable
+git -C <repo> worktree add --detach <repo>-cut-<ver> origin/<stable>
 # ...build commits...
-git -C <repo>-cut-<ver> push origin HEAD:4.3-stable
+git -C <repo>-cut-<ver> push origin HEAD:<stable>
 ```
 
-Promote commits go **directly** to `4.3-stable` (not via PR) — matches how the
-betas were cut. Changelog finalization is also lead-owned, so it commits directly too.
+Promote commits go **directly** to `<stable>` (not via PR) — a promote is a
+mechanical version bump, not reviewable work. Changelog finalization is also
+lead-owned, so it commits directly too.
 
 ## Step 1 — Changelog finalization (per repo)   ⚠️ ESCALATE curation to lead
 
@@ -64,7 +70,7 @@ Each repo keeps `docs/modules/changelog/unreleased.yaml` (working entries) and
   `versions/` — `doxygen2adoc` requires semver filenames and will break.)
 - **ESCALATE to lead**: whether an entry belongs in this release at all, and
   cross-platform parity — if iOS and Android shipped the *same* fix, they should
-  read consistently (e.g. 4.3.14: iOS carried no separate line for the
+  read consistently (e.g. in 4.3.14, iOS carried no separate line for a shared
   LogListener-throws guard, so the identical Android line was dropped, not rolled in).
 - Docs-only commits since the last beta do **not** need changelog entries.
 - Commit the roll on its own (clear subject explaining it). Editorial rules:
@@ -76,7 +82,7 @@ Native version comes from git tags, so the promote commit is **empty**:
 
 ```bash
 git -C <native>-cut-<ver> commit --allow-empty -m "Promote to: <ver>"
-git -C <native>-cut-<ver> push origin HEAD:4.3-stable   # immutable — ack first
+git -C <native>-cut-<ver> push origin HEAD:<stable>   # immutable — ack first
 ```
 
 (If a repo also has a changelog-finalization commit, it sits *before* the
@@ -113,7 +119,7 @@ Unity carries its version in files, not tags. In the unity worktree:
 2. `native.config.yml`: bump `ios` + `android` to `<ver>` (the finalized natives).
 3. Changelog roll (Step 1) if any unreleased entries remain.
 4. Commit `Promote to: <ver>` (VERSION + native.config; changelog roll is a
-   separate preceding commit). Push to `4.3-stable`.
+   separate preceding commit). Push to `<stable>`.
 
 CI tags `<ver>` → tagged-build downloads the now-live natives, builds the
 `.unitypackage` + UPM package, `deploy_versioned` to S3.
@@ -127,5 +133,6 @@ CocoaPods trunk publish). This is the only human touchpoint.
 ## After the cut
 
 - Close the release's tracking issue (Linear auto-closes if the promote branch
-  name carries the id; the cut here is a direct push, so close it manually).
+  name carries the id; a direct-push promote has no such branch, so close it
+  manually).
 - Postmortem + any learnings as usual.
