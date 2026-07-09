@@ -101,6 +101,11 @@ All platform-specific code uses `#if UNITY_EDITOR / UNITY_ANDROID / UNITY_IPHONE
 
 ### Release Flow
 
+> **Cutting a release?** teak-unity is the *last* repo in a cross-repo sequence
+> (natives ship to the CDN first, then Unity consumes them). The end-to-end runbook
+> is [`RELEASING.md`](RELEASING.md) at this repo's root. The steps below are only the
+> teak-unity-local mechanics.
+
 ```
 # 1. Update VERSION file to new version (e.g. 4.3.10)
 # 2. Move docs/modules/changelog/unreleased.yaml → versions/X.Y.Z.yaml
