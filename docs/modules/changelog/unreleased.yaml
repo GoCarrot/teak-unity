@@ -1,2 +1,0 @@
-bug:
-  - "Fixed the UPM package shipping duplicate assembly definition files, which broke Unity compilation for Package Manager installs."
