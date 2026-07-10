@@ -43,6 +43,11 @@ downloads `Teak-<ver>.xcframework.zip` / `teak-<ver>.aar` by the versions in
 - You know the next version. **Versions are immutable** — once a `Promote to:`
   commit is pushed and CI tags it, that version is permanently consumed. Check
   existing tags first: `git ls-remote --tags origin '<version>'`.
+- **teak-unity-cleanroom builds via both consumption paths**: `.unitypackage`
+  (`package:download package:import`) and UPM (Package Manager resolve of
+  `#<major>.<minor>`, no `Teak.unitypackage` present). The two paths are
+  independent — a packaging change to one can silently break only the other —
+  so neither build alone clears this gate.
 
 ## Work in isolated worktrees, never the live checkout
 
