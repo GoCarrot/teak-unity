@@ -232,9 +232,11 @@ namespace :upm do
 
     `git clone git@github.com:GoCarrot/upm-package-teak.git #{UPM_BUILD_TEMP}` if build_local?
 
-    editor_glob = Dir.glob('Assets/Teak/Editor/**/*')
+    asmdef_glob = Dir.glob('Assets/Teak/**/*.asmdef') + Dir.glob('Assets/Teak/**/*.asmdef.meta')
 
-    runtime_exclude = Dir.glob('Assets/Teak/LICENSE*') + Dir.glob('Assets/Teak/Editor*') + editor_glob
+    editor_glob = Dir.glob('Assets/Teak/Editor/**/*') - asmdef_glob
+
+    runtime_exclude = Dir.glob('Assets/Teak/LICENSE*') + Dir.glob('Assets/Teak/Editor*') + editor_glob + asmdef_glob
     runtime_glob = Dir.glob('Assets/Teak/**/*') - runtime_exclude
 
     def copy_glob_to(glob, dest, hax_path)
