@@ -43,6 +43,23 @@ downloads `Teak-<ver>.xcframework.zip` / `teak-<ver>.aar` by the versions in
 - You know the next version. **Versions are immutable** — once a `Promote to:`
   commit is pushed and CI tags it, that version is permanently consumed. Check
   existing tags first: `git ls-remote --tags origin '<version>'`.
+- **teak-unity-cleanroom builds via both consumption paths**: `.unitypackage`
+  and UPM (Package Manager resolve of `#<major>.<minor>`, no `Teak.unitypackage`
+  present). The two paths are independent — a packaging change to one can
+  silently break only the other — so neither build alone clears this gate.
+
+  ```bash
+  # .unitypackage — point at the cut worktree, not the live checkout
+  FL_TEAK_SDK_SOURCE=<cut-worktree>/ USE_FACEBOOK=false \
+    bundle exec rake package:copy package:import config:all build:android:local
+
+  # UPM — resolves the published package, so test against an rc promote
+  USE_FACEBOOK=false bundle exec rake package:upm package:import config:all build:android:local
+  ```
+
+  UPM resolves `upm-package-teak`, which only carries published versions — so
+  promote an rc first (`Promote to: <ver>.rc0`) and gate on that. That's what the
+  rc line is for; going straight to a final promote leaves the UPM path untested.
 
 ## Work in isolated worktrees, never the live checkout
 
