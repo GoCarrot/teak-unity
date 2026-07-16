@@ -48,31 +48,18 @@ downloads `Teak-<ver>.xcframework.zip` / `teak-<ver>.aar` by the versions in
   present). The two paths are independent — a packaging change to one can
   silently break only the other — so neither build alone clears this gate.
 
-  ⚠️ **Both paths build the wrong SDK by default, and neither fails when they
-  do.** A green build is not evidence until you confirm *which* SDK it built.
+  ```bash
+  # .unitypackage — point at the cut worktree, not the live checkout
+  FL_TEAK_SDK_SOURCE=<cut-worktree>/ USE_FACEBOOK=false \
+    bundle exec rake package:copy package:import config:all build:android:local
 
-  - `.unitypackage` — runs **pre-promote**, against the cut worktree.
-    `rake package:copy` **ignores `FL_TEAK_SDK_SOURCE`**: the Rakefile hardcodes
-    it (`fastlane 'sdk', env: { FL_TEAK_SDK_SOURCE: ".../../teak-unity/" }`), so
-    it copies whatever stale `Teak.unitypackage` is sitting in the live checkout
-    — which may be months old. Bypass the hardcoded env:
+  # UPM — resolves the published package, so test against an rc promote
+  USE_FACEBOOK=false bundle exec rake package:upm package:import config:all build:android:local
+  ```
 
-    ```bash
-    cd teak-unity-cleanroom
-    bundle exec rake clean
-    FL_TEAK_SDK_SOURCE=<cut-worktree>/ bundle exec fastlane sdk   # not rake package:copy
-    USE_FACEBOOK=false bundle exec rake package:import config:all build:android:local
-    ```
-
-  - UPM — resolves `upm-package-teak.git#<major>.<minor>`, a **separate repo**
-    written only by `upm:deploy_versioned`. It therefore **cannot** test an
-    unpromoted version: run it *after* the unity promote's `deploy_versioned`,
-    *before* approving `deploy_latest` (Step 5). Run pre-promote, it silently
-    resolves the *previous* release and passes.
-
-  Confirm the SDK under test on each run — `TEAK_VERSION`, the bundled AAR's
-  `BuildConfig` version, and the built APK's dex should all name the version you
-  are shipping.
+  UPM resolves `upm-package-teak`, which only carries published versions — so
+  promote an rc first (`Promote to: <ver>.rc0`) and gate on that. That's what the
+  rc line is for; going straight to a final promote leaves the UPM path untested.
 
 ## Work in isolated worktrees, never the live checkout
 
@@ -159,11 +146,6 @@ CI tags `<ver>` → tagged-build downloads the now-live natives, builds the
 Each repo's `tagged-build` holds at a manual approval gate after
 `deploy_versioned`. The human approves `deploy_latest` (and, for iOS, the
 CocoaPods trunk publish). This is the only human touchpoint.
-
-That hold is also the window for the **UPM half of the cleanroom gate**
-(Preconditions): `deploy_versioned` has published the new version to
-`upm-package-teak`, so a UPM cleanroom build now resolves what you are actually
-shipping. Run it before approving.
 
 ## After the cut
 
