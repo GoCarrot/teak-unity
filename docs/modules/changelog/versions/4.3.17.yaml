@@ -1,0 +1,2 @@
+bug:
+  - "Android: Purchase tracking no longer fails on Google Play Billing Library 8.0+."
