@@ -9,7 +9,7 @@ public class TeakPostLaunchSummary {
     /// or ``null`` if this launch was not from a notification.</summary>
     public string ScheduleName { get; private set; }
 
-    /// <summary>The id of the schedule in the Teak CMS, or ``null`` if this launch was not from a notification.</summary>
+    /// <summary>The id of the schedule in the Teak dashboard, or ``null`` if this launch was not from a notification.</summary>
     public string ScheduleId { get; private set; }
 
     /// <summary>The name of the link or notification on the Teak Dashboard,
