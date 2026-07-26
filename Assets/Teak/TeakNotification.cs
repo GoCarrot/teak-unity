@@ -25,13 +25,13 @@ public partial class TeakNotification {
     /// <summary>``true`` if the notification was incentivized, ``false`` otherwise.</summary>
     public bool Incentivized { get; set; }
 
-    /// <summary>The name of the schedule for the notification on the Teak Dashboard, or ``null`` if it was not a scheduled notification.</summary>
+    /// <summary>The name of the schedule for the notification on the Teak dashboard, or ``null`` if it was not a scheduled notification.</summary>
     public string ScheduleName { get; set; }
 
     /// <summary>The id of the schedule in the Teak dashboard, or ``null`` if it was not a scheduled notification.</summary>
     public ulong ScheduleId { get; set; }
 
-    /// <summary>The name of the notification on the Teak Dashboard.</summary>
+    /// <summary>The name of the notification on the Teak dashboard.</summary>
     public string CreativeName { get; set; }
 
     /// <summary>The id of the notification in the Teak dashboard.</summary>
@@ -102,7 +102,7 @@ public partial class TeakNotification {
             /// </summary>
             /// <remarks>
             /// This can either be that the user has not granted push permissions on iOS, or that the
-            /// Teak Dashboard does not have sending credentials suitable for the current device
+            /// Teak dashboard does not have sending credentials suitable for the current device
             /// (i.e. Teak has not been provided with an FCM Sender ID/API Key, APNS certificate,
             /// or ADM Client ID/Client Secret).
             /// </remarks>

@@ -283,7 +283,7 @@ public partial class Teak : MonoBehaviour {
     /// <summary>
     public class ConfigurationData {
         /// <summary>
-        /// The list of Opt-Out Categories configured for the game on the Teak Dashboard.
+        /// The list of Opt-Out Categories configured for the game on the Teak dashboard.
         /// </summary>
         public List<Channel.Category> ChannelCategories { get; private set; }
 

@@ -5,18 +5,18 @@ public class TeakPostLaunchSummary {
     /// <summary>The link used to launch the game, or ``null``.</summary>
     public string LaunchLink { get; private set; }
 
-    /// <summary>The name of the schedule for the notification on the Teak Dashboard,
+    /// <summary>The name of the schedule for the notification on the Teak dashboard,
     /// or ``null`` if this launch was not from a notification.</summary>
     public string ScheduleName { get; private set; }
 
     /// <summary>The id of the schedule in the Teak dashboard, or ``null`` if this launch was not from a notification.</summary>
     public string ScheduleId { get; private set; }
 
-    /// <summary>The name of the link or notification on the Teak Dashboard,
+    /// <summary>The name of the link or notification on the Teak dashboard,
     /// or ``null`` if this launch was not from a notification or link.</summary>
     public string CreativeName { get; private set; }
 
-    /// <summary>The id of the link or notification in the Teak Dashboard,
+    /// <summary>The id of the link or notification in the Teak dashboard,
     /// or ``null`` if this launch was not from a notification or link.</summary>
     public string CreativeId { get; private set; }
 
