@@ -100,7 +100,7 @@ public partial class Teak {
         /// <remarks>
         /// \note The maximum delay for scheduling a notification is 30 days.
         /// </remarks>
-        /// <param name="scheduleName">A value used to identify the message creative in the Teak CMS e.g. "daily_bonus", this must already exist.</param>
+        /// <param name="scheduleName">A value used to identify the message creative (e.g. "daily_bonus") in the Teak CMS, this must already exist.</param>
         /// <param name="delayInSeconds">The number of seconds from the current time before the notification should be sent.</param>
         /// <param name="personalizationData">Optional information which can be used for templating on the server; or null.</param>
         /// <param name="callback">The callback to be called after the notification is scheduled.</param>
