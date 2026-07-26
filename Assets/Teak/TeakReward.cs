@@ -49,13 +49,13 @@ public class TeakReward {
     /// <summary>The name of the schedule for the notification on the Teak Dashboard, or ``null`` if it was not a scheduled notification.</summary>
     public string ScheduleName { get; set; }
 
-    /// <summary>The id of the schedule in the Teak CMS, or ``null`` if it was not a scheduled notification.</summary>
+    /// <summary>The id of the schedule in the Teak dashboard, or ``null`` if it was not a scheduled notification.</summary>
     public ulong ScheduleId { get; set; }
 
     /// <summary>The name of the link or notification on the Teak Dashboard.</summary>
     public string CreativeName { get; set; }
 
-    /// <summary>The id of the link or notification in the Teak CMS.</summary>
+    /// <summary>The id of the link or notification in the Teak dashboard.</summary>
     public ulong CreativeId { get; set; }
 
     /// <summary>

@@ -28,13 +28,13 @@ public partial class TeakNotification {
     /// <summary>The name of the schedule for the notification on the Teak Dashboard, or ``null`` if it was not a scheduled notification.</summary>
     public string ScheduleName { get; set; }
 
-    /// <summary>The id of the schedule in the Teak CMS, or ``null`` if it was not a scheduled notification.</summary>
+    /// <summary>The id of the schedule in the Teak dashboard, or ``null`` if it was not a scheduled notification.</summary>
     public ulong ScheduleId { get; set; }
 
     /// <summary>The name of the notification on the Teak Dashboard.</summary>
     public string CreativeName { get; set; }
 
-    /// <summary>The id of the notification in the Teak CMS.</summary>
+    /// <summary>The id of the notification in the Teak dashboard.</summary>
     public ulong CreativeId { get; set; }
 
     /// <summary>
@@ -161,8 +161,8 @@ public partial class TeakNotification {
     ///
     /// \note The maximum delay for scheduling a notification is 30 days.
     /// </remarks>
-    /// <param name="scheduleName">A value used to identify the message creative in the Teak CMS e.g. "daily_bonus".</param>
-    /// <param name="defaultMessage">The text to use in the notification if there are no modifications in the Teak CMS.</param>
+    /// <param name="scheduleName">A value used to identify the message creative in the Teak dashboard e.g. "daily_bonus".</param>
+    /// <param name="defaultMessage">The text to use in the notification if there are no modifications in the Teak dashboard.</param>
     /// <param name="delayInSeconds">The number of seconds from the current time before the notification should be sent.</param>
     /// <param name="callback">The callback to be called after the notification is scheduled.</param>
     /// \deprecated Please use <see cref="Teak.Notification.Schedule"/> instead.
@@ -226,7 +226,7 @@ public partial class TeakNotification {
     ///
     /// \note The maximum delay for scheduling a notification is 30 days.
     /// </remarks>
-    /// <param name="scheduleName">The name of the existing schedule to send in the Teak CMS e.g. "daily_bonus"</param>
+    /// <param name="scheduleName">The name of the existing schedule to send in the Teak dashboard e.g. "daily_bonus"</param>
     /// <param name="delayInSeconds">The number of seconds from the current time before the notification should be sent.</param>
     /// <param name="userIds">An array of user ids to which the notification should be delivered.</param>
     /// <param name="callback">The callback to be called after the notification is scheduled.</param>
