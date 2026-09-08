@@ -1,0 +1,2 @@
+bug:
+  - "Android: Purchase tracking now works across Google Play Billing Library 6 through 9."
