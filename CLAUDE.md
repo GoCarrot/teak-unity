@@ -156,38 +156,6 @@ The changelog is published to the documentation site. Source of truth is YAML fi
 - `develop` — active development (default PR target)
 - `X.Y-stable` — maintenance branches (e.g. `4.3-stable`)
 
-## Commit Message Format
-
-Every commit must include a full human-Claude interaction log. Placeholders
-below are in angle brackets — replace them with actual content, do not include
-the brackets. The interaction log only covers prompts since the previous commit,
-not the entire session.
-
-```
-Brief description of what was done
-
-Technical description of changes made
-
-## Human-Claude Interaction Log
-
-### Human prompts (VERBATIM - include typos, informal language, COMPLETE text):
-**Include EVERY prompt since last commit - even short ones, corrections, clarifications**
-1. "<copy-paste ENTIRE first prompt since last commit>"
-   → Claude: <what Claude did in response>
-
-2. "<copy-paste ENTIRE second prompt>"
-   → Claude: <how Claude adjusted>
-
-<continue numbering ALL prompts - don't skip any or judge importance>
-
-### Key decisions made:
-- Human guided: <specific guidance provided>
-- Claude discovered: <patterns found>
-
-🤖 Generated with Claude Code
-Co-Authored-By: Claude <noreply@anthropic.com>
-```
-
 ## How We Work
 
 If given a GitHub project, identify an issue that you can work on independently. Prefer to work on the smallest, most tightly-scoped issue.
