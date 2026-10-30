@@ -2,15 +2,41 @@ version: 2.1
 
 references:
   RUBY_IMAGE: &RUBY_IMAGE
-    cimg/ruby:3.2.2
+    cimg/ruby:3.4.12
   MACOS_CACHE_KEY: &MACOS_CACHE_KEY
-    v3-{{ checksum "setup" }}-{{ checksum "Gemfile.lock" }}
+    v4-{{ checksum "setup" }}-{{ checksum ".ruby-version" }}-{{ checksum "Gemfile.lock" }}
   RUBY_CACHE_KEY: &RUBY_CACHE_KEY
-    v1-{{ checksum "Gemfile.lock" }}
+    v2-{{ checksum ".ruby-version" }}-{{ checksum "Gemfile.lock" }}
 
 orbs:
   teak: teak/sdk-utils@1
   buildomat: teak/buildomat@0.1
+
+commands:
+  # Installs the Ruby named in .ruby-version when the image doesn't ship it, then
+  # fails the job unless that is the Ruby actually running.
+  ruby_setup:
+    description: "Run the Ruby pinned in .ruby-version"
+    steps:
+      - run:
+          name: Ruby Setup
+          command: |
+            want=$(sed 's/^ruby-//' .ruby-version)
+            if ! ruby -v | grep -q "^ruby ${want} "; then
+              if command -v rbenv >/dev/null; then
+                brew upgrade ruby-build || true
+                rbenv install -s "${want}"
+                echo 'eval "$(rbenv init -)"' >> "$BASH_ENV"
+                eval "$(rbenv init -)"
+              else
+                ruby-install --no-reinstall ruby "${want}"
+                echo "source /opt/homebrew/share/chruby/chruby.sh; chruby ruby-${want}" >> "$BASH_ENV"
+                source /opt/homebrew/share/chruby/chruby.sh
+                chruby "ruby-${want}"
+              fi
+            fi
+            ruby -v
+            ruby -v | grep -q "^ruby ${want} "
 
 jobs:
   build:
@@ -20,6 +46,7 @@ jobs:
     shell: /bin/bash --login -eo pipefail
     steps:
       - checkout
+      - ruby_setup
       - run: git fetch --tags
       - restore_cache:
           key: *MACOS_CACHE_KEY
