@@ -13,36 +13,45 @@ orbs:
   buildomat: teak/buildomat@0.1
 
 commands:
-  # Installs the Ruby named in .ruby-version when the image doesn't ship it, then
-  # fails the job unless that is the Ruby actually running.
+  # Runs the Ruby named in .ruby-version. The image's rbenv doesn't have it, so it is built
+  # once per image and cached; the job fails unless that is the Ruby actually running.
   ruby_setup:
     description: "Run the Ruby pinned in .ruby-version"
+    parameters:
+      xcode-version:
+        type: string
+        default: "14.3.1"
     steps:
+      - restore_cache:
+          key: v1-ruby-<< parameters.xcode-version >>-{{ checksum ".ruby-version" }}
       - run:
           name: Ruby Setup
           command: |
             want=$(sed 's/^ruby-//' .ruby-version)
-            if ! ruby -v 2>/dev/null | grep -q "^ruby ${want} "; then
+            versions="$(rbenv root)/versions"
+            cache="$HOME/ruby-cache"
+            if [ -d "${cache}/${want}" ]; then
+              mkdir -p "${versions}"
+              cp -R "${cache}/${want}" "${versions}/${want}"
+            else
               brew update --quiet || true
-              if command -v rbenv >/dev/null; then
-                brew upgrade ruby-build || true
-                rbenv install -s "${want}"
-                # Shims on PATH rather than `rbenv init` in BASH_ENV, which forks
-                # rbenv from every shell startup and recurses.
-                shims="$(rbenv root)/shims"
-                echo "export RBENV_VERSION=${want}; export PATH=${shims}:\$PATH" >> "$BASH_ENV"
-                export RBENV_VERSION="${want}" PATH="${shims}:${PATH}"
-              else
-                brew upgrade ruby-install || brew install ruby-install
-                ruby-install --no-reinstall ruby "${want}"
-                echo "source /opt/homebrew/share/chruby/chruby.sh; chruby ruby-${want}" >> "$BASH_ENV"
-                source /opt/homebrew/share/chruby/chruby.sh
-                chruby "ruby-${want}"
-              fi
+              brew upgrade ruby-build || true
+              rbenv install -s "${want}"
+              mkdir -p "${cache}"
+              cp -R "${versions}/${want}" "${cache}/${want}"
             fi
+            # Shims on PATH rather than `rbenv init` in BASH_ENV, which forks
+            # rbenv from every shell startup and recurses.
+            shims="$(rbenv root)/shims"
+            echo "export RBENV_VERSION=${want}; export PATH=${shims}:\$PATH" >> "$BASH_ENV"
+            export RBENV_VERSION="${want}" PATH="${shims}:${PATH}"
+            rbenv rehash
             ruby -v
             ruby -v | grep -q "^ruby ${want} "
-
+      - save_cache:
+          paths:
+            - ~/ruby-cache
+          key: v1-ruby-<< parameters.xcode-version >>-{{ checksum ".ruby-version" }}
 jobs:
   build:
     macos:
