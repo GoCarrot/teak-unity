@@ -17,7 +17,7 @@ script/worktree feat/my-feature --from develop ~/path   # custom path
 ```
 Default path is `../teak-unity-<branch-with-slashes-as-dashes>`. Use `script/worktree` to create worktrees — do NOT use the `EnterWorktree` tool.
 
-The build system uses **Ruby Rake** (Ruby 3.1.6 via rbenv).
+The build system uses **Ruby Rake** (Ruby 3.4.12 via rbenv).
 
 ```bash
 # Install Ruby dependencies

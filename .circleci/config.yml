@@ -2,16 +2,59 @@ version: 2.1
 
 references:
   RUBY_IMAGE: &RUBY_IMAGE
-    cimg/ruby:3.2.2
+    cimg/ruby:3.4.12
   MACOS_CACHE_KEY: &MACOS_CACHE_KEY
-    v3-{{ checksum "setup" }}-{{ checksum "Gemfile.lock" }}
+    v4-{{ checksum "setup" }}-{{ checksum ".ruby-version" }}-{{ checksum "Gemfile.lock" }}
   RUBY_CACHE_KEY: &RUBY_CACHE_KEY
-    v1-{{ checksum "Gemfile.lock" }}
+    v2-{{ checksum ".ruby-version" }}-{{ checksum "Gemfile.lock" }}
 
 orbs:
   teak: teak/sdk-utils@1
   buildomat: teak/buildomat@0.1
 
+commands:
+  # Runs the Ruby named in .ruby-version. The image's rbenv doesn't have it, so it is built
+  # once per image and cached; the job fails unless that is the Ruby actually running.
+  ruby_setup:
+    description: "Run the Ruby pinned in .ruby-version"
+    parameters:
+      xcode-version:
+        type: string
+        default: "14.3.1"
+    steps:
+      - restore_cache:
+          key: v2-ruby-<< parameters.xcode-version >>-{{ checksum ".ruby-version" }}
+      - run:
+          name: Ruby Setup
+          command: |
+            want=$(sed 's/^ruby-//' .ruby-version)
+            versions="$(rbenv root)/versions"
+            cache="$HOME/ruby-cache"
+            if [ -d "${cache}/${want}" ]; then
+              mkdir -p "${versions}"
+              cp -R "${cache}/${want}" "${versions}/${want}"
+            else
+              brew update --quiet || true
+              brew upgrade ruby-build || true
+              # Link the image's own openssl: ruby-build would otherwise link the newest
+              # brew openssl, which a cache-restored Ruby won't find on a fresh image.
+              brew list openssl@3 >/dev/null 2>&1 || brew install openssl@3
+              RUBY_CONFIGURE_OPTS="--with-openssl-dir=$(brew --prefix openssl@3)" rbenv install -s "${want}"
+              mkdir -p "${cache}"
+              cp -R "${versions}/${want}" "${cache}/${want}"
+            fi
+            # Later steps pick this Ruby up through BASH_ENV.
+            shims="$(rbenv root)/shims"
+            echo "export RBENV_VERSION=${want}; export PATH=${shims}:\$PATH" >> "$BASH_ENV"
+            export RBENV_VERSION="${want}" PATH="${shims}:${PATH}"
+            rbenv rehash
+            ruby -v
+            ruby -v | grep -q "^ruby ${want} "
+            ruby -ropenssl -ryaml -e 1
+      - save_cache:
+          paths:
+            - ~/ruby-cache
+          key: v2-ruby-<< parameters.xcode-version >>-{{ checksum ".ruby-version" }}
 jobs:
   build:
     macos:
@@ -20,6 +63,7 @@ jobs:
     shell: /bin/bash --login -eo pipefail
     steps:
       - checkout
+      - ruby_setup
       - run: git fetch --tags
       - restore_cache:
           key: *MACOS_CACHE_KEY
