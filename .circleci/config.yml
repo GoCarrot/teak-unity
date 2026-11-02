@@ -20,7 +20,7 @@ commands:
     parameters:
       xcode-version:
         type: string
-        default: "14.3.1"
+        default: "16.4.0"
     steps:
       - restore_cache:
           key: v2-ruby-<< parameters.xcode-version >>-{{ checksum ".ruby-version" }}
@@ -58,7 +58,7 @@ commands:
 jobs:
   build:
     macos:
-      xcode: "14.3.1"
+      xcode: "16.4.0"
     resource_class: m4pro.medium
     shell: /bin/bash --login -eo pipefail
     steps:
