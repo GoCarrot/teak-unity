@@ -551,22 +551,19 @@ namespace MiniJSON.Teak {
             }
 
             void SerializeOther(object value) {
-                if (value is float
-                    || value is int
+                if (value is float || value is double) {
+                    builder.Append(((IFormattable) value).ToString("R", CultureInfo.InvariantCulture));
+                }
+                else if (value is int
                     || value is uint
                     || value is long
-                    || value is double
                     || value is sbyte
                     || value is byte
                     || value is short
                     || value is ushort
                     || value is ulong
                     || value is decimal) {
-                    if (value is double || value is float) {
-                        builder.Append(((IFormattable) value).ToString("R", CultureInfo.InvariantCulture));
-                    } else {
-                        builder.Append(Convert.ToString(value, CultureInfo.InvariantCulture));
-                    }
+                    builder.Append(Convert.ToString(value, CultureInfo.InvariantCulture));
                 }
                 else {
                     SerializeString(value.ToString());
