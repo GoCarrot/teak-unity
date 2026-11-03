@@ -64,14 +64,6 @@ public class TeakMiniJsonTests {
     }
 
     [TeakTest]
-    public void DoubleRoundTripsAcrossCultures() {
-        InCulture("de-DE", () => {
-            var json = Json.Serialize(new Dictionary<string, object> {{"v", 0.1d}});
-            TeakAssert.AreEqual(0.1d, ((Dictionary<string, object>) Json.Deserialize(json))["v"]);
-        });
-    }
-
-    [TeakTest]
     public void DoubleRoundTripsExactly() {
         foreach (var culture in Cultures) {
             InCulture(culture, () => {
