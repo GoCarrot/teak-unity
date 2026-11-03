@@ -70,4 +70,15 @@ public class TeakMiniJsonTests {
             TeakAssert.AreEqual(0.1d, ((Dictionary<string, object>) Json.Deserialize(json))["v"]);
         });
     }
+
+    [TeakTest]
+    public void DoubleRoundTripsExactly() {
+        foreach (var culture in Cultures) {
+            InCulture(culture, () => {
+                var value = 0.1d + 0.2d;
+                var json = Json.Serialize(new Dictionary<string, object> {{"v", value}});
+                TeakAssert.AreEqual(value, ((Dictionary<string, object>) Json.Deserialize(json))["v"], culture);
+            });
+        }
+    }
 }

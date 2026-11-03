@@ -562,7 +562,11 @@ namespace MiniJSON.Teak {
                     || value is ushort
                     || value is ulong
                     || value is decimal) {
-                    builder.Append(Convert.ToString(value, CultureInfo.InvariantCulture));
+                    if (value is double || value is float) {
+                        builder.Append(((IFormattable) value).ToString("R", CultureInfo.InvariantCulture));
+                    } else {
+                        builder.Append(Convert.ToString(value, CultureInfo.InvariantCulture));
+                    }
                 }
                 else {
                     SerializeString(value.ToString());
