@@ -1,0 +1,1 @@
+  - "Fixed JSON numbers from Teak, such as reward quantities, being misread on devices whose language uses a comma as the decimal separator (for example German or French). `0.1` could arrive as `1`. Numbers with an exponent, such as `1e3`, now also parse as doubles instead of `0`."
