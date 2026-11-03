@@ -29,6 +29,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Text;
 
@@ -113,6 +114,7 @@ namespace MiniJSON.Teak {
         sealed class Parser : IDisposable {
             const string WHITE_SPACE = " \t\n\r";
             const string WORD_BREAK = " \t\n\r{}[],:\"";
+            static readonly char[] FRACTION_OR_EXPONENT = { '.', 'e', 'E' };
 
             enum TOKEN {
                 NONE,
@@ -309,14 +311,14 @@ namespace MiniJSON.Teak {
             object ParseNumber() {
                 string number = NextWord;
 
-                if (number.IndexOf('.') == -1) {
+                if (number.IndexOfAny(FRACTION_OR_EXPONENT) == -1) {
                     long parsedInt;
-                    Int64.TryParse(number, out parsedInt);
+                    Int64.TryParse(number, NumberStyles.Integer, CultureInfo.InvariantCulture, out parsedInt);
                     return parsedInt;
                 }
 
                 double parsedDouble;
-                Double.TryParse(number, out parsedDouble);
+                Double.TryParse(number, NumberStyles.Float, CultureInfo.InvariantCulture, out parsedDouble);
                 return parsedDouble;
             }
 
@@ -560,7 +562,7 @@ namespace MiniJSON.Teak {
                     || value is ushort
                     || value is ulong
                     || value is decimal) {
-                    builder.Append(value.ToString());
+                    builder.Append(Convert.ToString(value, CultureInfo.InvariantCulture));
                 }
                 else {
                     SerializeString(value.ToString());
