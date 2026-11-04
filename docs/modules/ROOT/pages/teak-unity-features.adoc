@@ -203,6 +203,8 @@ This callback will be concurrent with the xref:server-api::page$rewards/endpoint
 .Example Reward Listener
 [source]
 ----
+using System.Globalization;
+
 void MyRewardListener(TeakReward reward)
 {
     switch (reward.Status) {
@@ -210,8 +212,9 @@ void MyRewardListener(TeakReward reward)
             // The user has been issued this reward by Teak
             foreach(KeyValuePair<string, object> entry in reward.Reward)
             {
+                decimal amount = Convert.ToDecimal(entry.Value, CultureInfo.InvariantCulture);
                 Debug.Log("[Teak Unity Cleanroom] OnReward -- Give the user " +
-                    entry.Value + " instances of " + entry.Key);
+                    amount + " instances of " + entry.Key);
             }
         }
         break;
@@ -251,6 +254,12 @@ void MyRewardListener(TeakReward reward)
     }
 }
 ----
+
+Reward values are `long` for whole numbers and `double` for fractions. Convert them with `Convert.ToDecimal(entry.Value, CultureInfo.InvariantCulture)` rather than casting with `(long)entry.Value`.
+
+Fractional rewards require SDK 4.4 or later. Unity SDKs before 4.4 misread fractions on devices with a comma decimal separator: de-DE `0.1` reads as `1`, and fr-FR `0.1` reads as `0`.
+
+Values arrive as doubles, so large or long values can lose precision before the conversion runs. Converting to `decimal` afterward does not recover the lost digits.
 
 And then adding it to the `Teak.Instance.OnReward` event during `Awake()` in any `MonoBehaviour`:
 
