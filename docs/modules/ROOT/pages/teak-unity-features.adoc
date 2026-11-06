@@ -208,6 +208,7 @@ void MyRewardListener(TeakReward reward)
     switch (reward.Status) {
         case TeakReward.RewardStatus.GrantReward: {
             // The user has been issued this reward by Teak
+            // e.g. {"coins": 50, "gems": 2.5}
             foreach(KeyValuePair<string, object> entry in reward.Reward)
             {
                 Debug.Log("[Teak Unity Cleanroom] OnReward -- Give the user " +
@@ -251,6 +252,12 @@ void MyRewardListener(TeakReward reward)
     }
 }
 ----
+
+Whole numbers arrive as `long` and fractions as `double`.
+
+We recommend SDK 4.4 or later for fractional rewards. Unity SDKs before 4.4 misread fractions on devices with a comma decimal separator: de-DE `0.1` reads as `1`, and fr-FR `0.1` reads as `0`.
+
+Fractional values arrive as doubles, so long or high-precision values can lose precision before the conversion runs. Converting to `decimal` afterward does not recover the lost digits.
 
 And then adding it to the `Teak.Instance.OnReward` event during `Awake()` in any `MonoBehaviour`:
 
