@@ -203,8 +203,6 @@ This callback will be concurrent with the xref:server-api::page$rewards/endpoint
 .Example Reward Listener
 [source]
 ----
-using System.Globalization;
-
 void MyRewardListener(TeakReward reward)
 {
     switch (reward.Status) {
@@ -213,9 +211,8 @@ void MyRewardListener(TeakReward reward)
             // e.g. {"coins": 50, "gems": 2.5}
             foreach(KeyValuePair<string, object> entry in reward.Reward)
             {
-                decimal amount = Convert.ToDecimal(entry.Value, CultureInfo.InvariantCulture);
                 Debug.Log("[Teak Unity Cleanroom] OnReward -- Give the user " +
-                    amount + " instances of " + entry.Key);
+                    entry.Value + " instances of " + entry.Key);
             }
         }
         break;
@@ -256,7 +253,7 @@ void MyRewardListener(TeakReward reward)
 }
 ----
 
-Reward values are `long` for whole numbers and `double` for fractions. Convert them with `Convert.ToDecimal(entry.Value, CultureInfo.InvariantCulture)` rather than casting with `(long)entry.Value`.
+Whole numbers arrive as `long` and fractions as `double`.
 
 We recommend SDK 4.4 or later for fractional rewards. Unity SDKs before 4.4 misread fractions on devices with a comma decimal separator: de-DE `0.1` reads as `1`, and fr-FR `0.1` reads as `0`.
 
