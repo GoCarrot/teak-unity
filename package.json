@@ -4,7 +4,7 @@
     "changelog": "doxygen2adoc --config .doxygen2adoc.yml changelog"
   },
   "dependencies": {
-    "doxygen2adoc": "https://github.com/GoCarrot/doxygen2adoc.git#commit=5dd8531cf009c61a42afc2622f6de6ee3d7a573f"
+    "doxygen2adoc": "https://github.com/GoCarrot/doxygen2adoc.git#commit=2062143658c824868109c9d39e0eecc471d558e7"
   },
   "packageManager": "yarn@4.13.0"
 }
