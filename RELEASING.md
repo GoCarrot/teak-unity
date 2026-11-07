@@ -79,12 +79,13 @@ lead-owned, so it commits directly too.
 
 ## Step 1 — Changelog finalization (per repo)   ⚠️ ESCALATE curation to lead
 
-Each repo keeps `docs/modules/changelog/unreleased.yaml` (working entries) and
+Each repo keeps unreleased entries as one fragment per change in
+`docs/modules/changelog/unreleased/` (e.g. `c-834.yaml`) and
 `versions/<ver>.yaml` (that release's notes; created at the first beta).
 
-- Roll each `unreleased.yaml` entry into `versions/<ver>.yaml`, then leave a
-  **fresh empty** `unreleased.yaml`. (Never put `unreleased.yaml` under
-  `versions/` — `doxygen2adoc` requires semver filenames and will break.)
+- `yarn changelog roll <ver>` appends every fragment to `versions/<ver>.yaml`
+  (creating it if needed) and deletes the fragments. It refuses to run if any
+  fragment fails `yarn changelog check`. Rolling again at a later beta/rc appends.
 - **ESCALATE to lead**: whether an entry belongs in this release at all, and
   cross-platform parity — if iOS and Android shipped the *same* fix, they should
   read consistently (e.g. in 4.3.14, iOS carried no separate line for a shared
