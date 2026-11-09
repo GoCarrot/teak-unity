@@ -35,7 +35,7 @@ BUILD_TYPE = ENV.fetch('BUILD_TYPE', 'Release')
 
 UPM_BUILD_TEMP = ENV.fetch('UPM_BUILD_TEMP', 'temp-upm-build')
 UPM_PACKAGE_REPO = ENV.fetch('UPM_PACKAGE_REPO', '../upm-package-teak')
-# Dry runs do every local step but only `git push --dry-run`, which still proves the key can write.
+# Makes upm:deploy_versioned and upm:deploy_dev run every local step but push with --dry-run.
 UPM_DRY_RUN = ENV['UPM_DRY_RUN'] == '1'
 
 TEMPLATE_PARAMETERS = {
@@ -227,6 +227,24 @@ namespace :build do
   end
 end
 
+# Clones the package repo if needed and restores its `build` branch files, then lays the built
+# package over them. The optional block runs after `build` is checked out, to switch branches.
+def stage_upm_build
+  sh "git clone git@github.com:GoCarrot/upm-package-teak.git #{UPM_PACKAGE_REPO}" unless Dir.exist? UPM_PACKAGE_REPO
+
+  cd UPM_PACKAGE_REPO do
+    sh "git config user.email \"team@teak.io\""
+    sh "git config user.name \"Teak CI\""
+
+    sh "git checkout build" # Start on the 'build' branch
+    yield if block_given?
+    sh "rm -fr *" # Delete all files
+    sh "git ls-tree --name-only -r build | xargs git checkout --" # Restore files which exist in the 'build' branch
+  end
+
+  sh "cp -RT #{UPM_BUILD_TEMP} #{UPM_PACKAGE_REPO}" # Copy in all the files
+end
+
 namespace :upm do
   task :build do
     FileUtils.rm_rf(UPM_BUILD_TEMP)
@@ -263,40 +281,30 @@ namespace :upm do
   end
 
   task :deploy_versioned do
-    # Ensure repo exists
-    unless Dir.exist? UPM_PACKAGE_REPO
-      `git clone git@github.com:GoCarrot/upm-package-teak.git #{UPM_PACKAGE_REPO}`
-    end
-
     # Construct our version.
     version_parts = TEAK_SDK_VERSION.split('-')
     version = version_parts[0]
     version_suffix = version_parts[1..-1].join('-')
     major, minor, patch = version.split('.').map(&:to_i)
 
-    cd UPM_PACKAGE_REPO do
-      sh "git config user.email \"team@teak.io\""
-      sh "git config user.name \"Teak CI\""
-
-      sh "git checkout build" # Start on the 'build' branch
+    stage_upm_build do
       sh "git checkout #{major}.#{minor} || " +  # If the current minor version branch exists, check it out
          "(git checkout #{major}.#{minor - 1} && git checkout -b #{major}.#{minor}) || " + # Check out the previous minor revision and then create a new minor version branch off that
          "(git checkout #{major} && git checkout -b #{major}.#{minor}) || " + # If there is no previous minor version branch, check out the major version and create one
          "(git checkout #{major - 1} ; (git checkout -b #{major} && git checkout -b #{major}.#{minor}))" # New major version based on previous major version, or 'build'
-      sh "rm -fr *" # Delete all files
-      sh "git ls-tree --name-only -r build | xargs git checkout --" # Restore files which exist in the 'build' branch
     end
-
-    sh "cp -RT #{UPM_BUILD_TEMP} #{UPM_PACKAGE_REPO}" # Copy in all the files
 
     cd UPM_PACKAGE_REPO do
       sh "git add -A" # Add all files present
       sh "git commit -am \"#{TEAK_SDK_VERSION}\"" # Commit with message set to full version
-      sh "git tag #{TEAK_SDK_VERSION}" # Create a tag of the full version
+      # A dry run may find the tag already in the clone (a release commit's tag beats this job
+      # to it), so it moves the local tag instead of failing.
+      sh "git tag#{UPM_DRY_RUN ? ' -f' : ''} #{TEAK_SDK_VERSION}" # Create a tag of the full version
 
       # Push versioned
       sh "git push#{UPM_DRY_RUN ? ' --dry-run' : ''} origin #{major}.#{minor}"
-      sh "git push#{UPM_DRY_RUN ? ' --dry-run' : ''} --tags"
+      # A dry run skips the tag push: an already-pushed tag would reject it and fail the job.
+      sh "git push --tags" unless UPM_DRY_RUN
 
       # puts "git switch #{major} # Checkout branch '#{major}' or create it if it doesn't exist"
       # puts "git reset --hard #{TEAK_SDK_VERSION} # Reset the HEAD of the '#{major}' branch to the tag we just created"
@@ -309,20 +317,7 @@ namespace :upm do
   # Package Manager. Never tags and never touches main or the version branches; every branch's
   # build overwrites `dev`, last writer wins.
   task :deploy_dev do
-    unless Dir.exist? UPM_PACKAGE_REPO
-      `git clone git@github.com:GoCarrot/upm-package-teak.git #{UPM_PACKAGE_REPO}`
-    end
-
-    cd UPM_PACKAGE_REPO do
-      sh "git config user.email \"team@teak.io\""
-      sh "git config user.name \"Teak CI\""
-
-      sh "git checkout build"
-      sh "rm -fr *"
-      sh "git ls-tree --name-only -r build | xargs git checkout --"
-    end
-
-    sh "cp -RT #{UPM_BUILD_TEMP} #{UPM_PACKAGE_REPO}"
+    stage_upm_build
 
     cd UPM_PACKAGE_REPO do
       sh "git add -A"

@@ -227,6 +227,10 @@ workflows:
           filters:
             tags:
               ignore: /.*/
+      - docs:
+          filters:
+            tags:
+              ignore: /.*/
       # Dry runs of the release steps after build. Parallel to tag_build and not required by
       # it: a failure turns the workflow red but doesn't block promote-tag creation.
       - deploy_dev:
@@ -234,10 +238,6 @@ workflows:
             - AWS-OIDC-Role
           requires:
             - build
-          filters:
-            tags:
-              ignore: /.*/
-      - docs:
           filters:
             tags:
               ignore: /.*/
