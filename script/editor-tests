@@ -6,8 +6,8 @@
 # Unity: $UNITY_EXE, else `unity-editor` on PATH (the unityci images), else the newest
 # Unity Hub install on macOS ($UNITY_HOME overrides the Hub folder).
 # On CI ($CI=true) the license is activated with $UNITY_SERIAL/$UNITY_EMAIL/$UNITY_PASSWORD
-# in a separate Unity call and returned on exit, however the run ends. Unity logs its command
-# line, so the credentials only ever appear on those calls, whose logs never leave a temp file.
+# in separate Unity calls and returned on exit, however the run ends. Credentials stay off the
+# logged test call; the activation and return logs go to a temp file that is never uploaded.
 set -euo pipefail
 
 cd "$(dirname "$0")/.."

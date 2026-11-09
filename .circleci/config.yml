@@ -159,9 +159,7 @@ jobs:
             yarn install --immutable
             yarn changelog check
 
-  # Editor tests need a licensed Unity: UNITY_SERIAL/UNITY_EMAIL/UNITY_PASSWORD come from the
-  # Unity context. script/editor-tests returns the seat on exit and keeps the credentials out of
-  # the uploaded log.
+  # Editor tests need a licensed Unity; credentials come from the Unity context.
   test:
     docker:
       - image: *UNITY_EDITOR_IMAGE
