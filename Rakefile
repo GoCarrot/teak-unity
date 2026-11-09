@@ -35,6 +35,15 @@ BUILD_TYPE = ENV.fetch('BUILD_TYPE', 'Release')
 
 UPM_BUILD_TEMP = ENV.fetch('UPM_BUILD_TEMP', 'temp-upm-build')
 UPM_PACKAGE_REPO = ENV.fetch('UPM_PACKAGE_REPO', '../upm-package-teak')
+# CI branch => UPM branch that tracks its latest build. Add a line to publish a new stable line
+# (e.g. '4.4-stable' => 'dev-4.4'). Hyphenated: git can't hold both `dev` and `dev/<x>`.
+UPM_DEV_BRANCHES = {
+  'develop' => 'dev-develop',
+  '4.3-stable' => 'dev-4.3'
+}.freeze
+UPM_DEV_PUSH_ATTEMPTS = 3
+# Makes upm:deploy_versioned and upm:deploy_dev run every local step but push with --dry-run.
+UPM_DRY_RUN = ENV['UPM_DRY_RUN'] == '1'
 
 TEMPLATE_PARAMETERS = {
   teak_sdk_version: TEAK_SDK_VERSION
@@ -225,6 +234,59 @@ namespace :build do
   end
 end
 
+# Clones the package repo if needed and restores its `build` branch files, then lays the built
+# package over them. The optional block runs after `build` is checked out, to switch branches.
+def stage_upm_build
+  sh "git clone git@github.com:GoCarrot/upm-package-teak.git #{UPM_PACKAGE_REPO}" unless Dir.exist? UPM_PACKAGE_REPO
+
+  cd UPM_PACKAGE_REPO do
+    sh "git config user.email \"team@teak.io\""
+    sh "git config user.name \"Teak CI\""
+
+    sh "git checkout build" # Start on the 'build' branch
+    yield if block_given?
+    sh "rm -fr *" # Delete all files
+    sh "git ls-tree --name-only -r build | xargs git checkout --" # Restore files which exist in the 'build' branch
+  end
+
+  sh "cp -RT #{UPM_BUILD_TEMP} #{UPM_PACKAGE_REPO}" # Copy in all the files
+end
+
+# Force-pushes HEAD to the UPM dev branch, but only over the head we last saw. If someone else
+# moved it, compare their source commit with ours: theirs older means retry over it, theirs
+# newer means our build is already superseded, anything else is an error.
+def push_upm_dev(dev_branch, source)
+  ref = "refs/heads/#{dev_branch}"
+  UPM_DEV_PUSH_ATTEMPTS.times do
+    observed = `git ls-remote origin #{ref}`.split.first
+    dry = UPM_DRY_RUN ? ' --dry-run' : ''
+    return if system("git push#{dry} --force-with-lease=#{ref}:#{observed} origin HEAD:#{ref}")
+
+    sh "git fetch origin #{ref}"
+    current = `git rev-parse FETCH_HEAD`.strip
+    raise "Push to #{dev_branch} failed and it has not moved from #{observed || 'absent'}" if current == observed.to_s
+
+    theirs = `git log -1 --format=%B FETCH_HEAD`[/^Source-Commit: ([0-9a-f]{40})$/, 1]
+    raise "#{dev_branch} head #{current} has no Source-Commit; refusing to overwrite it" unless theirs
+
+    unless system("git -C #{Shellwords.escape(PROJECT_PATH)} cat-file -e #{theirs}^{commit} 2>/dev/null") ||
+           system("git -C #{Shellwords.escape(PROJECT_PATH)} fetch -q origin #{theirs}")
+      raise "Cannot find #{theirs} to compare against"
+    end
+
+    project = "git -C #{Shellwords.escape(PROJECT_PATH)} merge-base --is-ancestor"
+    if system("#{project} #{theirs} #{source}")
+      puts "#{dev_branch} moved to older #{theirs[0, 8]}; retrying over it"
+    elsif system("#{project} #{source} #{theirs}")
+      puts "#{dev_branch} already at newer #{theirs[0, 8]}; skipping #{source[0, 8]}"
+      return
+    else
+      raise "#{dev_branch} head #{theirs} and #{source} have diverged"
+    end
+  end
+  raise "Gave up pushing #{dev_branch} after #{UPM_DEV_PUSH_ATTEMPTS} attempts"
+end
+
 namespace :upm do
   task :build do
     FileUtils.rm_rf(UPM_BUILD_TEMP)
@@ -261,45 +323,59 @@ namespace :upm do
   end
 
   task :deploy_versioned do
-    # Ensure repo exists
-    unless Dir.exist? UPM_PACKAGE_REPO
-      `git clone git@github.com:GoCarrot/upm-package-teak.git #{UPM_PACKAGE_REPO}`
-    end
-
     # Construct our version.
     version_parts = TEAK_SDK_VERSION.split('-')
     version = version_parts[0]
     version_suffix = version_parts[1..-1].join('-')
     major, minor, patch = version.split('.').map(&:to_i)
 
-    cd UPM_PACKAGE_REPO do
-      sh "git config user.email \"team@teak.io\""
-      sh "git config user.name \"Teak CI\""
-
-      sh "git checkout build" # Start on the 'build' branch
+    stage_upm_build do
       sh "git checkout #{major}.#{minor} || " +  # If the current minor version branch exists, check it out
          "(git checkout #{major}.#{minor - 1} && git checkout -b #{major}.#{minor}) || " + # Check out the previous minor revision and then create a new minor version branch off that
          "(git checkout #{major} && git checkout -b #{major}.#{minor}) || " + # If there is no previous minor version branch, check out the major version and create one
          "(git checkout #{major - 1} ; (git checkout -b #{major} && git checkout -b #{major}.#{minor}))" # New major version based on previous major version, or 'build'
-      sh "rm -fr *" # Delete all files
-      sh "git ls-tree --name-only -r build | xargs git checkout --" # Restore files which exist in the 'build' branch
     end
-
-    sh "cp -RT #{UPM_BUILD_TEMP} #{UPM_PACKAGE_REPO}" # Copy in all the files
 
     cd UPM_PACKAGE_REPO do
       sh "git add -A" # Add all files present
       sh "git commit -am \"#{TEAK_SDK_VERSION}\"" # Commit with message set to full version
-      sh "git tag #{TEAK_SDK_VERSION}" # Create a tag of the full version
+      # A dry run may find the tag already in the clone (a release commit's tag beats this job
+      # to it), so it moves the local tag instead of failing.
+      sh "git tag#{UPM_DRY_RUN ? ' -f' : ''} #{TEAK_SDK_VERSION}" # Create a tag of the full version
 
       # Push versioned
-      sh "git push origin #{major}.#{minor}"
-      sh "git push --tags"
+      sh "git push#{UPM_DRY_RUN ? ' --dry-run' : ''} origin #{major}.#{minor}"
+      # A dry run skips the tag push: an already-pushed tag would reject it and fail the job.
+      sh "git push --tags" unless UPM_DRY_RUN
 
       # puts "git switch #{major} # Checkout branch '#{major}' or create it if it doesn't exist"
       # puts "git reset --hard #{TEAK_SDK_VERSION} # Reset the HEAD of the '#{major}' branch to the tag we just created"
       # puts "git push --all origin # Push all branches and commits"
       # puts "git push --tags # Push tags"
+    end
+  end
+
+  # Publishes the current build to this CI branch's UPM dev branch (see UPM_DEV_BRANCHES) so it
+  # can be tried through Package Manager. Branches not in the table are skipped. Never tags and
+  # never touches main or the version branches.
+  #
+  # Each dev commit records the teak-unity commit it was built from. Concurrent jobs race on the
+  # push with force-with-lease; on a lost race the newer source commit wins.
+  task :deploy_dev do
+    ci_branch = ENV['CIRCLE_BRANCH']
+    dev_branch = UPM_DEV_BRANCHES[ci_branch]
+    unless dev_branch
+      puts "No UPM dev branch for '#{ci_branch}' (known: #{UPM_DEV_BRANCHES.keys.join(', ')}); skipping."
+      next
+    end
+
+    source = `git rev-parse HEAD`.strip
+    stage_upm_build
+
+    cd UPM_PACKAGE_REPO do
+      sh "git add -A"
+      sh "git commit -m \"#{TEAK_SDK_VERSION}\" -m \"Source-Commit: #{source}\""
+      push_upm_dev(dev_branch, source)
     end
   end
 
