@@ -160,7 +160,8 @@ jobs:
             yarn changelog check
 
   # Editor tests need a licensed Unity: UNITY_SERIAL/UNITY_EMAIL/UNITY_PASSWORD come from the
-  # Unity context. script/editor-tests returns the seat on exit.
+  # Unity context. script/editor-tests returns the seat on exit and keeps the credentials out of
+  # the uploaded log.
   test:
     docker:
       - image: *UNITY_EDITOR_IMAGE
@@ -173,9 +174,6 @@ jobs:
           no_output_timeout: 30m
       - store_artifacts:
           path: unity.test.log
-          when: always
-      - store_artifacts:
-          path: unity.returnlicense.log
           when: always
 
   tag_build:

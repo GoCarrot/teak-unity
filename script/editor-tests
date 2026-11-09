@@ -6,7 +6,8 @@
 # Unity: $UNITY_EXE, else `unity-editor` on PATH (the unityci images), else the newest
 # Unity Hub install on macOS ($UNITY_HOME overrides the Hub folder).
 # On CI ($CI=true) the license is activated with $UNITY_SERIAL/$UNITY_EMAIL/$UNITY_PASSWORD
-# and returned on exit, however the run ends.
+# in a separate Unity call and returned on exit, however the run ends. Unity logs its command
+# line, so the credentials only ever appear on those calls, whose logs never leave a temp file.
 set -euo pipefail
 
 cd "$(dirname "$0")/.."
@@ -30,21 +31,30 @@ unity=$(unity_exe)
 [ -x "$unity" ] || { echo "Unity not executable: $unity" >&2; exit 1; }
 echo "[editor-tests] unity: $unity"
 
-license_args=()
 if [ "${CI:-}" = "true" ]; then
   for v in UNITY_SERIAL UNITY_EMAIL UNITY_PASSWORD; do
     [ -n "${!v:-}" ] || { echo "[editor-tests] $v is not set; the CI license can't be activated" >&2; exit 1; }
   done
-  license_args=(-serial "$UNITY_SERIAL" -username "$UNITY_EMAIL" -password "$UNITY_PASSWORD")
-  echo "[editor-tests] license: serial activation"
+  license_log=$(mktemp)
 
   return_license() {
     echo "[editor-tests] returning license"
     "$unity" -batchmode -nographics -quit -returnlicense \
       -username "$UNITY_EMAIL" -password "$UNITY_PASSWORD" \
-      -logFile "$PWD/unity.returnlicense.log" || echo "[editor-tests] license return failed" >&2
+      -logFile "$license_log" || echo "[editor-tests] license return failed" >&2
+    rm -f "$license_log"
   }
   trap return_license EXIT
+
+  echo "[editor-tests] license: serial activation"
+  if ! "$unity" -batchmode -nographics -quit \
+    -serial "$UNITY_SERIAL" -username "$UNITY_EMAIL" -password "$UNITY_PASSWORD" \
+    -logFile "$license_log"; then
+    # Step output is masked by CircleCI; artifacts are not, so this log only goes to stdout.
+    cat "$license_log" >&2
+    echo "[editor-tests] FAILED: license activation" >&2
+    exit 1
+  fi
 fi
 
 rm -f "$log"
@@ -54,8 +64,15 @@ runner=()
 command -v timeout >/dev/null 2>&1 && runner=(timeout "$timeout_secs")
 ${runner[@]+"${runner[@]}"} "$unity" -batchmode -nographics -quit \
   -logFile "$log" -projectPath "$PWD" \
-  -executeMethod TeakTestRunner.RunAll \
-  ${license_args[@]+"${license_args[@]}"} || status=$?
+  -executeMethod TeakTestRunner.RunAll || status=$?
+
+# The log is uploaded as a CI artifact. Fail closed if it holds a credential.
+if [ "${CI:-}" = "true" ] && [ -f "$log" ] &&
+  { grep -qF -e "$UNITY_PASSWORD" "$log" || grep -qF -e "$UNITY_SERIAL" "$log"; }; then
+  rm -f "$log"
+  echo "[editor-tests] FAILED: the Unity log contained a license credential; removed it" >&2
+  exit 1
+fi
 
 if [ -f "$log" ]; then
   grep -m1 '^Unity Editor version:' "$log" || true
