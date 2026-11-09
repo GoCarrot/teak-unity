@@ -512,7 +512,7 @@ before using them in targeting. Only Player Properties set to permit client upda
 through the xref:server-api::other/v2_player_properties.adoc[Server API, window=_blank].
 
 === Numeric Property
-To set a numeric property, use::
+To set a numeric property, use:
 
 doxygen2adoc:SetNumericAttribute(string,double)[]
 
