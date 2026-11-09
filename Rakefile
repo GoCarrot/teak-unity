@@ -35,6 +35,8 @@ BUILD_TYPE = ENV.fetch('BUILD_TYPE', 'Release')
 
 UPM_BUILD_TEMP = ENV.fetch('UPM_BUILD_TEMP', 'temp-upm-build')
 UPM_PACKAGE_REPO = ENV.fetch('UPM_PACKAGE_REPO', '../upm-package-teak')
+# Dry runs do every local step but only `git push --dry-run`, which still proves the key can write.
+UPM_DRY_RUN = ENV['UPM_DRY_RUN'] == '1'
 
 TEMPLATE_PARAMETERS = {
   teak_sdk_version: TEAK_SDK_VERSION
@@ -293,13 +295,39 @@ namespace :upm do
       sh "git tag #{TEAK_SDK_VERSION}" # Create a tag of the full version
 
       # Push versioned
-      sh "git push origin #{major}.#{minor}"
-      sh "git push --tags"
+      sh "git push#{UPM_DRY_RUN ? ' --dry-run' : ''} origin #{major}.#{minor}"
+      sh "git push#{UPM_DRY_RUN ? ' --dry-run' : ''} --tags"
 
       # puts "git switch #{major} # Checkout branch '#{major}' or create it if it doesn't exist"
       # puts "git reset --hard #{TEAK_SDK_VERSION} # Reset the HEAD of the '#{major}' branch to the tag we just created"
       # puts "git push --all origin # Push all branches and commits"
       # puts "git push --tags # Push tags"
+    end
+  end
+
+  # Publishes the current build to the package repo's `dev` branch so it can be tried through
+  # Package Manager. Never tags and never touches main or the version branches; every branch's
+  # build overwrites `dev`, last writer wins.
+  task :deploy_dev do
+    unless Dir.exist? UPM_PACKAGE_REPO
+      `git clone git@github.com:GoCarrot/upm-package-teak.git #{UPM_PACKAGE_REPO}`
+    end
+
+    cd UPM_PACKAGE_REPO do
+      sh "git config user.email \"team@teak.io\""
+      sh "git config user.name \"Teak CI\""
+
+      sh "git checkout build"
+      sh "rm -fr *"
+      sh "git ls-tree --name-only -r build | xargs git checkout --"
+    end
+
+    sh "cp -RT #{UPM_BUILD_TEMP} #{UPM_PACKAGE_REPO}"
+
+    cd UPM_PACKAGE_REPO do
+      sh "git add -A"
+      sh "git commit -m \"#{TEAK_SDK_VERSION}\""
+      sh "git push#{UPM_DRY_RUN ? ' --dry-run' : ''} --force origin HEAD:refs/heads/dev"
     end
   end
 
