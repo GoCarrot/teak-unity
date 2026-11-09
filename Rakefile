@@ -35,6 +35,13 @@ BUILD_TYPE = ENV.fetch('BUILD_TYPE', 'Release')
 
 UPM_BUILD_TEMP = ENV.fetch('UPM_BUILD_TEMP', 'temp-upm-build')
 UPM_PACKAGE_REPO = ENV.fetch('UPM_PACKAGE_REPO', '../upm-package-teak')
+# CI branch => UPM branch that tracks its latest build. Add a line to publish a new stable line
+# (e.g. '4.4-stable' => 'dev-4.4'). Hyphenated: git can't hold both `dev` and `dev/<x>`.
+UPM_DEV_BRANCHES = {
+  'develop' => 'dev-develop',
+  '4.3-stable' => 'dev-4.3'
+}.freeze
+UPM_DEV_PUSH_ATTEMPTS = 3
 # Makes upm:deploy_versioned and upm:deploy_dev run every local step but push with --dry-run.
 UPM_DRY_RUN = ENV['UPM_DRY_RUN'] == '1'
 
@@ -245,6 +252,41 @@ def stage_upm_build
   sh "cp -RT #{UPM_BUILD_TEMP} #{UPM_PACKAGE_REPO}" # Copy in all the files
 end
 
+# Force-pushes HEAD to the UPM dev branch, but only over the head we last saw. If someone else
+# moved it, compare their source commit with ours: theirs older means retry over it, theirs
+# newer means our build is already superseded, anything else is an error.
+def push_upm_dev(dev_branch, source)
+  ref = "refs/heads/#{dev_branch}"
+  UPM_DEV_PUSH_ATTEMPTS.times do
+    observed = `git ls-remote origin #{ref}`.split.first
+    dry = UPM_DRY_RUN ? ' --dry-run' : ''
+    return if system("git push#{dry} --force-with-lease=#{ref}:#{observed} origin HEAD:#{ref}")
+
+    sh "git fetch origin #{ref}"
+    current = `git rev-parse FETCH_HEAD`.strip
+    raise "Push to #{dev_branch} failed and it has not moved from #{observed || 'absent'}" if current == observed.to_s
+
+    theirs = `git log -1 --format=%B FETCH_HEAD`[/^Source-Commit: ([0-9a-f]{40})$/, 1]
+    raise "#{dev_branch} head #{current} has no Source-Commit; refusing to overwrite it" unless theirs
+
+    unless system("git -C #{Shellwords.escape(PROJECT_PATH)} cat-file -e #{theirs}^{commit} 2>/dev/null") ||
+           system("git -C #{Shellwords.escape(PROJECT_PATH)} fetch -q origin #{theirs}")
+      raise "Cannot find #{theirs} to compare against"
+    end
+
+    project = "git -C #{Shellwords.escape(PROJECT_PATH)} merge-base --is-ancestor"
+    if system("#{project} #{theirs} #{source}")
+      puts "#{dev_branch} moved to older #{theirs[0, 8]}; retrying over it"
+    elsif system("#{project} #{source} #{theirs}")
+      puts "#{dev_branch} already at newer #{theirs[0, 8]}; skipping #{source[0, 8]}"
+      return
+    else
+      raise "#{dev_branch} head #{theirs} and #{source} have diverged"
+    end
+  end
+  raise "Gave up pushing #{dev_branch} after #{UPM_DEV_PUSH_ATTEMPTS} attempts"
+end
+
 namespace :upm do
   task :build do
     FileUtils.rm_rf(UPM_BUILD_TEMP)
@@ -313,16 +355,27 @@ namespace :upm do
     end
   end
 
-  # Publishes the current build to the package repo's `dev` branch so it can be tried through
-  # Package Manager. Never tags and never touches main or the version branches; every branch's
-  # build overwrites `dev`, last writer wins.
+  # Publishes the current build to this CI branch's UPM dev branch (see UPM_DEV_BRANCHES) so it
+  # can be tried through Package Manager. Branches not in the table are skipped. Never tags and
+  # never touches main or the version branches.
+  #
+  # Each dev commit records the teak-unity commit it was built from. Concurrent jobs race on the
+  # push with force-with-lease; on a lost race the newer source commit wins.
   task :deploy_dev do
+    ci_branch = ENV['CIRCLE_BRANCH']
+    dev_branch = UPM_DEV_BRANCHES[ci_branch]
+    unless dev_branch
+      puts "No UPM dev branch for '#{ci_branch}' (known: #{UPM_DEV_BRANCHES.keys.join(', ')}); skipping."
+      next
+    end
+
+    source = `git rev-parse HEAD`.strip
     stage_upm_build
 
     cd UPM_PACKAGE_REPO do
       sh "git add -A"
-      sh "git commit -m \"#{TEAK_SDK_VERSION}\""
-      sh "git push#{UPM_DRY_RUN ? ' --dry-run' : ''} --force origin HEAD:refs/heads/dev"
+      sh "git commit -m \"#{TEAK_SDK_VERSION}\" -m \"Source-Commit: #{source}\""
+      push_upm_dev(dev_branch, source)
     end
   end
 

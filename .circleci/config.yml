@@ -184,7 +184,7 @@ jobs:
 
   # Dry run of deploy_versioned: same UPM branch handling, but every push is `git push
   # --dry-run` and the S3 prefix is a literal unity/dev/ (expired by a bucket lifecycle rule
-  # after 7 days). Also publishes the build to the UPM `dev` branch, never a tag.
+  # after 7 days). Also publishes the build to the UPM dev branch for CIRCLE_BRANCH (see UPM_DEV_BRANCHES), never a tag.
   deploy_dev:
     docker:
       - image: *RUBY_IMAGE
