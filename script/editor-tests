@@ -1,0 +1,76 @@
+#!/usr/bin/env bash
+# Runs the editor tests (Assets/Tests/Editor) in a headless Unity.
+#
+#   script/editor-tests
+#
+# Unity: $UNITY_EXE, else `unity-editor` on PATH (the unityci images), else the newest
+# Unity Hub install on macOS ($UNITY_HOME overrides the Hub folder).
+# On CI ($CI=true) the license is activated with $UNITY_SERIAL/$UNITY_EMAIL/$UNITY_PASSWORD
+# and returned on exit, however the run ends.
+set -euo pipefail
+
+cd "$(dirname "$0")/.."
+log="$PWD/unity.test.log"
+timeout_secs="${UNITY_TEST_TIMEOUT:-1500}"
+
+unity_exe() {
+  if [ -n "${UNITY_EXE:-}" ]; then
+    echo "$UNITY_EXE"
+  elif command -v unity-editor >/dev/null 2>&1; then
+    command -v unity-editor
+  else
+    local home="${UNITY_HOME:-}"
+    [ -n "$home" ] || home=$(ls -d /Applications/Unity/Hub/Editor/* 2>/dev/null | tail -n 1 || true)
+    [ -n "$home" ] || { echo "Unity not found. Set UNITY_EXE or UNITY_HOME." >&2; exit 1; }
+    echo "$home/Unity.app/Contents/MacOS/Unity"
+  fi
+}
+
+unity=$(unity_exe)
+[ -x "$unity" ] || { echo "Unity not executable: $unity" >&2; exit 1; }
+echo "[editor-tests] unity: $unity"
+
+license_args=()
+if [ "${CI:-}" = "true" ]; then
+  for v in UNITY_SERIAL UNITY_EMAIL UNITY_PASSWORD; do
+    [ -n "${!v:-}" ] || { echo "[editor-tests] $v is not set; the CI license can't be activated" >&2; exit 1; }
+  done
+  license_args=(-serial "$UNITY_SERIAL" -username "$UNITY_EMAIL" -password "$UNITY_PASSWORD")
+  echo "[editor-tests] license: serial activation"
+
+  return_license() {
+    echo "[editor-tests] returning license"
+    "$unity" -batchmode -nographics -quit -returnlicense \
+      -username "$UNITY_EMAIL" -password "$UNITY_PASSWORD" \
+      -logFile "$PWD/unity.returnlicense.log" || echo "[editor-tests] license return failed" >&2
+  }
+  trap return_license EXIT
+fi
+
+rm -f "$log"
+status=0
+# A wedged Unity is killed by timeout (absent on stock macOS) so the EXIT trap still returns the seat.
+runner=()
+command -v timeout >/dev/null 2>&1 && runner=(timeout "$timeout_secs")
+${runner[@]+"${runner[@]}"} "$unity" -batchmode -nographics -quit \
+  -logFile "$log" -projectPath "$PWD" \
+  -executeMethod TeakTestRunner.RunAll \
+  ${license_args[@]+"${license_args[@]}"} || status=$?
+
+if [ -f "$log" ]; then
+  grep -m1 '^Unity Editor version:' "$log" || true
+  grep '\[TeakTest\]' "$log" || true
+fi
+
+if [ "$status" -ne 0 ]; then
+  echo "[editor-tests] FAILED: Unity exited $status" >&2
+  exit "$status"
+fi
+
+# An empty run reports "0 passed, 0 failed" and exits 0, which must not count as green.
+passed=$(sed -n 's/.*\[TeakTest\] ---- Results: \([0-9][0-9]*\) passed, 0 failed ----.*/\1/p' "$log" | tail -n 1)
+if [ -z "$passed" ] || [ "$passed" -eq 0 ]; then
+  echo "[editor-tests] FAILED: no passing results line with at least one test in $log" >&2
+  exit 1
+fi
+echo "[editor-tests] OK: $passed passed"
