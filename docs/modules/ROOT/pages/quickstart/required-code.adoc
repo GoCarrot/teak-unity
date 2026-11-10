@@ -118,7 +118,7 @@ At this point, Teak is ready to to be tested on device.
 
 === See Your Active User
 
-* Open the https://app.teak.io/login[Teak Dashboard] and navigate to your game.
+* Open the https://app.teak.io/login[Teak dashboard] and navigate to your game.
 ** If the Teak integration is working and `identifyUser` is being called, you will see yourself in the **active user** chart on the dashboard.
 
 .The lone tester, playing the game.

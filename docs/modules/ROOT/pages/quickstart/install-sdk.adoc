@@ -41,9 +41,9 @@ Alternatively, you can download the **https://sdks.teakcdn.com/unity/Teak.unityp
 
 == Configure Teak in the Unity Editor
 
-Next, we need to copy our settings from your https://app.teak.io/[Teak Dashboard] and enter them in our Unity project. If you don't have an app in Teak, you need to create a new game.
+Next, we need to copy our settings from your https://app.teak.io/[Teak dashboard] and enter them in our Unity project. If you don't have an app in Teak, you need to create a new game.
 
-. On your Teak Dashboard, navigate to menu:Settings[General].
+. On your Teak dashboard, navigate to menu:Settings[General].
 . In the Unity Editor select menu:Edit[Teak] to open the *Teak Settings* in the *Inspector*. (Note: Make sure the Inspector Tab is visible.)
 +
 We'll be copying the *_Teak App ID_*, *_Teak API Key_*, and *_ShortLink Domain_* into Unity.
