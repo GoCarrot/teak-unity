@@ -92,7 +92,7 @@ namespace UnityEditor.iOS.Xcode {
         public static string GetRelativePathTo(this FileSystemInfo from, FileSystemInfo to) {
             Func<FileSystemInfo, string> getPath = fsi => {
                 var d = fsi as DirectoryInfo;
-                return d == null ? fsi.FullName : d.FullName.TrimEnd('\\') + "\\";
+                return d == null ? fsi.FullName : d.FullName.TrimEnd(Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar;
             };
 
             var fromPath = getPath(from);
