@@ -46,9 +46,11 @@ if [ "${CI:-}" = "true" ]; then
   trap 'rm -f "$ulf_path"' EXIT
   grep -q '<root' "$ulf_path" || { echo "[editor-tests] UNITY_LICENSE did not decode to a ULF" >&2; exit 1; }
   # Every long attribute value in the ULF (serial, developer data, ...), to check the log against.
+  # Timestamps are skipped: Unity's own log may print them.
   while IFS= read -r value; do
     ulf_values+=("$value")
-  done < <(grep -oE 'Value="[^"]{16,}"' "$ulf_path" | sed -e 's/^Value="//' -e 's/"$//')
+  done < <(grep -oE 'Value="[^"]{16,}"' "$ulf_path" | sed -e 's/^Value="//' -e 's/"$//' |
+    grep -vE '^[0-9]{4}-[0-9]{2}-[0-9]{2}T' || true)
   echo "[editor-tests] license: ULF installed"
 fi
 
