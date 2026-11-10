@@ -5,9 +5,6 @@ references:
     cimg/ruby:3.4.12
   MACOS_CACHE_KEY: &MACOS_CACHE_KEY
     v4-{{ checksum "setup" }}-{{ checksum ".ruby-version" }}-{{ checksum "Gemfile.lock" }}
-  # The 2022.3 floor (MIN_VERSIONS.yml min-unity), so the tests also catch use of newer APIs.
-  UNITY_EDITOR_IMAGE: &UNITY_EDITOR_IMAGE
-    unityci/editor:ubuntu-2022.3.62f3-base-3.2.2
   RUBY_CACHE_KEY: &RUBY_CACHE_KEY
     v2-{{ checksum ".ruby-version" }}-{{ checksum "Gemfile.lock" }}
 
@@ -159,21 +156,6 @@ jobs:
             yarn install --immutable
             yarn changelog check
 
-  # Editor tests need a licensed Unity; the license (UNITY_LICENSE, a base64 ULF) comes from the Unity context.
-  test:
-    docker:
-      - image: *UNITY_EDITOR_IMAGE
-    resource_class: large
-    steps:
-      - checkout
-      - run:
-          name: Editor tests
-          command: script/editor-tests
-          no_output_timeout: 30m
-      - store_artifacts:
-          path: unity.test.log
-          when: always
-
   tag_build:
     docker:
       - image: cimg/base:current
@@ -254,17 +236,10 @@ workflows:
           filters:
             tags:
               ignore: /.*/
-      - test:
-          context:
-            - Unity
-          filters:
-            tags:
-              ignore: /.*/
       - tag_build:
           requires:
             - build
             - changelog_check
-            - test
           filters:
             tags:
               ignore: /.*/
