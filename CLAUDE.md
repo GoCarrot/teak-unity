@@ -53,7 +53,7 @@ yarn docs
 ```bash
 bundle exec rake test     # or script/editor-tests; needs a licensed Unity
 ```
-Runs `TeakTestRunner.RunAll` in a headless Unity (newest Hub install, or `UNITY_EXE`/`UNITY_HOME`) and fails if no tests ran. CI runs the same script in the `test` job on the `unityci/editor` image pinned to the 2022.3 floor, activating the license from the `Unity` context and returning it on exit. `tag_build` requires it.
+Runs `TeakTestRunner.RunAll` in a headless Unity (newest Hub install, or `UNITY_EXE`/`UNITY_HOME`) and fails if no tests ran. CI runs the same script in the `test` job on the `unityci/editor` image pinned to the 2022.3 floor, installing the Personal license from `UNITY_LICENSE` (a base64 `Unity_lic.ulf`) in the `Unity` context for the run. `tag_build` requires it.
 
 Tests use a custom runner (`Assets/Tests/Editor/TeakTestRunner.cs`) with `[TeakTestFixture]` / `[TeakTest]` attributes and `TeakAssert` helpers. Test files live in `Assets/Tests/Editor/` and compile into the predefined `Assembly-CSharp-Editor` assembly. Teak runtime code is in `Teak.asmdef`; editor-only build tools are in `Teak.Editor.asmdef` (`includePlatforms: ["Editor"]`). `Teak.Editor` declares `[assembly: InternalsVisibleTo("Assembly-CSharp-Editor")]` (in `TeakEditorAssemblyInfo.cs`) so tests can still access `internal` members like `TeakAndroidAssetLibBuilder.BuildTeakResourcesXml`.
 

@@ -159,7 +159,7 @@ jobs:
             yarn install --immutable
             yarn changelog check
 
-  # Editor tests need a licensed Unity; credentials come from the Unity context.
+  # Editor tests need a licensed Unity; the license (UNITY_LICENSE, a base64 ULF) comes from the Unity context.
   test:
     docker:
       - image: *UNITY_EDITOR_IMAGE
