@@ -51,12 +51,10 @@ yarn docs
 
 **Running tests:**
 ```bash
-# Via Unity CLI (project version: see ProjectSettings/ProjectVersion.txt)
-/Applications/Unity/Hub/Editor/<VERSION>/Unity.app/Contents/MacOS/Unity \
-  -executeMethod TeakTestRunner.RunAll \
-  -logFile unity.test.log -quit -nographics -batchmode \
-  -projectPath .
+bundle exec rake test
+UNITY_HOME=/Applications/Unity/Hub/Editor/<version> bundle exec rake test   # pick the editor
 ```
+Generates `TeakVersion.cs`, then runs `TeakTestRunner.RunAll` in a headless Unity (newest Hub install, or `UNITY_EXE`/`UNITY_HOME`) and fails if no tests ran. Local only: it needs a Unity Hub install with a license on the machine, and CI doesn't run it. The default is the newest Hub folder, which can be an alpha, so set `UNITY_HOME` to a stable editor. Opening the project in a newer editor makes Unity rewrite `Packages`, `ProjectSettings` and some `.meta` files; check `git status` after a run and don't commit those.
 
 Tests use a custom runner (`Assets/Tests/Editor/TeakTestRunner.cs`) with `[TeakTestFixture]` / `[TeakTest]` attributes and `TeakAssert` helpers. Test files live in `Assets/Tests/Editor/` and compile into the predefined `Assembly-CSharp-Editor` assembly. Teak runtime code is in `Teak.asmdef`; editor-only build tools are in `Teak.Editor.asmdef` (`includePlatforms: ["Editor"]`). `Teak.Editor` declares `[assembly: InternalsVisibleTo("Assembly-CSharp-Editor")]` (in `TeakEditorAssemblyInfo.cs`) so tests can still access `internal` members like `TeakAndroidAssetLibBuilder.BuildTeakResourcesXml`.
 

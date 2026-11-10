@@ -99,29 +99,41 @@ end
 
 task default: ['build:android', 'build:ios', 'build:package']
 
-def unity_path
+def unity_exe
+  return ENV['UNITY_EXE'] if ENV['UNITY_EXE']
+
   home = ENV.fetch('UNITY_HOME') { Dir.glob('/Applications/Unity/Hub/Editor/*').last }
-  fail 'Unity not found. Set UNITY_HOME or install Unity via Unity Hub.' if home.nil?
+  fail 'Unity not found. Set UNITY_EXE or UNITY_HOME, or install Unity via Unity Hub.' if home.nil?
   File.join(home, 'Unity.app', 'Contents', 'MacOS', 'Unity')
 end
 
-task :test do
+task test: 'build:teak_version' do
+  unity = unity_exe
+  fail "Unity not executable: #{unity}" unless File.executable?(unity)
+  puts "[test] unity: #{unity}"
+
   log_file = File.join(PROJECT_PATH, 'unity.test.log')
   FileUtils.rm_f(log_file)
 
-  success = system(unity_path, '-batchmode', '-nographics', '-quit',
-                   '-logFile', log_file,
-                   '-projectPath', PROJECT_PATH,
-                   '-executeMethod', 'TeakTestRunner.RunAll')
+  command = [unity, '-batchmode', '-nographics', '-quit',
+             '-logFile', log_file,
+             '-projectPath', PROJECT_PATH,
+             '-executeMethod', 'TeakTestRunner.RunAll']
+  # timeout is absent on stock macOS, so it's optional.
+  command.unshift('timeout', ENV.fetch('UNITY_TEST_TIMEOUT', '1500')) if system('command -v timeout >/dev/null 2>&1')
+  success = system(*command)
 
-  # Surface test output from the log
-  if File.exist?(log_file)
-    File.readlines(log_file).each do |line|
-      puts line if line.include?('[TeakTest]')
-    end
-  end
+  lines = File.exist?(log_file) ? File.readlines(log_file) : []
+  version = lines.find { |line| line.start_with?('Unity Editor version:') }
+  puts version if version
+  lines.each { |line| puts line if line.include?('[TeakTest]') }
 
-  fail 'Tests failed' unless success
+  fail "Unity exited with an error (see #{log_file})" unless success
+
+  # An empty run reports "0 passed, 0 failed" and exits 0, which must not count as green.
+  passed = lines.filter_map { |line| line[/\[TeakTest\] ---- Results: (\d+) passed, 0 failed ----/, 1] }.last.to_i
+  fail "No passing tests reported in #{log_file}" if passed.zero?
+  puts "[test] OK: #{passed} passed"
 end
 
 task :format do
@@ -209,15 +221,16 @@ namespace :build do
     File.write(File.join(PROJECT_PATH, 'Assets', 'Teak', 'Plugins', 'iOS', 'teak_version.m'), Mustache.render(template, TEMPLATE_PARAMETERS))
   end
 
-  task :package do
+  task :teak_version do
+    template = File.read(File.join(PROJECT_PATH, 'Templates', 'TeakVersion.cs.template'))
+    File.write(File.join(PROJECT_PATH, 'Assets', 'Teak', 'TeakVersion.cs'), Mustache.render(template, TEMPLATE_PARAMETERS))
+  end
+
+  task package: :teak_version do
     project_path = File.expand_path('./')
     package_path = File.expand_path('./Teak.unitypackage')
 
     FileUtils.rm_f(package_path)
-
-    # TeakVersion.cs
-    template = File.read(File.join(PROJECT_PATH, 'Templates', 'TeakVersion.cs.template'))
-    File.write(File.join(PROJECT_PATH, 'Assets', 'Teak', 'TeakVersion.cs'), Mustache.render(template, TEMPLATE_PARAMETERS))
 
     package = UnityPackage::UnityPackage.new
     package << Dir['Assets/Teak/**/*']
