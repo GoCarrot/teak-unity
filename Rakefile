@@ -99,7 +99,7 @@ end
 
 task default: ['build:android', 'build:ios', 'build:package']
 
-task :test do
+task test: 'build:teak_version' do
   sh 'script/editor-tests'
 end
 
@@ -188,15 +188,16 @@ namespace :build do
     File.write(File.join(PROJECT_PATH, 'Assets', 'Teak', 'Plugins', 'iOS', 'teak_version.m'), Mustache.render(template, TEMPLATE_PARAMETERS))
   end
 
-  task :package do
+  task :teak_version do
+    template = File.read(File.join(PROJECT_PATH, 'Templates', 'TeakVersion.cs.template'))
+    File.write(File.join(PROJECT_PATH, 'Assets', 'Teak', 'TeakVersion.cs'), Mustache.render(template, TEMPLATE_PARAMETERS))
+  end
+
+  task package: :teak_version do
     project_path = File.expand_path('./')
     package_path = File.expand_path('./Teak.unitypackage')
 
     FileUtils.rm_f(package_path)
-
-    # TeakVersion.cs
-    template = File.read(File.join(PROJECT_PATH, 'Templates', 'TeakVersion.cs.template'))
-    File.write(File.join(PROJECT_PATH, 'Assets', 'Teak', 'TeakVersion.cs'), Mustache.render(template, TEMPLATE_PARAMETERS))
 
     package = UnityPackage::UnityPackage.new
     package << Dir['Assets/Teak/**/*']

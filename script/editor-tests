@@ -1,13 +1,9 @@
 #!/usr/bin/env bash
-# Runs the editor tests (Assets/Tests/Editor) in a headless Unity.
+# Runs the editor tests (Assets/Tests/Editor) in a headless Unity. Needs a licensed editor.
 #
 #   script/editor-tests
 #
-# Unity: $UNITY_EXE, else `unity-editor` on PATH (the unityci images), else the newest
-# Unity Hub install on macOS ($UNITY_HOME overrides the Hub folder).
-# On CI ($CI=true) the license is $UNITY_LICENSE, a base64 Unity_lic.ulf (Personal, activated once in
-# Unity Hub). It is written to Unity's license path for the run and removed on exit. No credentials
-# are ever passed to Unity, and the test log is rejected if it echoes anything from the ULF.
+# Unity: $UNITY_EXE, else the newest Unity Hub install on macOS ($UNITY_HOME overrides the Hub folder).
 set -euo pipefail
 
 cd "$(dirname "$0")/.."
@@ -17,8 +13,6 @@ timeout_secs="${UNITY_TEST_TIMEOUT:-1500}"
 unity_exe() {
   if [ -n "${UNITY_EXE:-}" ]; then
     echo "$UNITY_EXE"
-  elif command -v unity-editor >/dev/null 2>&1; then
-    command -v unity-editor
   else
     local home="${UNITY_HOME:-}"
     [ -n "$home" ] || home=$(ls -d /Applications/Unity/Hub/Editor/* 2>/dev/null | tail -n 1 || true)
@@ -31,48 +25,14 @@ unity=$(unity_exe)
 [ -x "$unity" ] || { echo "Unity not executable: $unity" >&2; exit 1; }
 echo "[editor-tests] unity: $unity"
 
-ulf_path=""
-ulf_values=()
-if [ "${CI:-}" = "true" ]; then
-  [ -n "${UNITY_LICENSE:-}" ] || { echo "[editor-tests] UNITY_LICENSE is not set; the CI license can't be installed" >&2; exit 1; }
-  if [ "$(uname)" = "Darwin" ]; then
-    ulf_path="$HOME/Library/Application Support/Unity/Unity_lic.ulf"
-  else
-    ulf_path="${XDG_DATA_HOME:-$HOME/.local/share}/unity3d/Unity/Unity_lic.ulf"
-  fi
-  mkdir -p "$(dirname "$ulf_path")"
-  (umask 077; printf '%s' "$UNITY_LICENSE" | base64 -d > "$ulf_path") ||
-    { rm -f "$ulf_path"; echo "[editor-tests] UNITY_LICENSE is not valid base64" >&2; exit 1; }
-  trap 'rm -f "$ulf_path"' EXIT
-  grep -q '<root' "$ulf_path" || { echo "[editor-tests] UNITY_LICENSE did not decode to a ULF" >&2; exit 1; }
-  # Every long attribute value in the ULF (serial, developer data, ...), to check the log against.
-  # Timestamps are skipped: Unity's own log may print them.
-  while IFS= read -r value; do
-    ulf_values+=("$value")
-  done < <(grep -oE 'Value="[^"]{16,}"' "$ulf_path" | sed -e 's/^Value="//' -e 's/"$//' |
-    grep -vE '^[0-9]{4}-[0-9]{2}-[0-9]{2}T' || true)
-  echo "[editor-tests] license: ULF installed"
-fi
-
 rm -f "$log"
 status=0
-# A wedged Unity is killed by timeout (absent on stock macOS) so the EXIT trap still removes the ULF.
+# timeout is absent on stock macOS, so it's optional.
 runner=()
 command -v timeout >/dev/null 2>&1 && runner=(timeout "$timeout_secs")
 ${runner[@]+"${runner[@]}"} "$unity" -batchmode -nographics -quit \
   -logFile "$log" -projectPath "$PWD" \
   -executeMethod TeakTestRunner.RunAll || status=$?
-
-# The log is uploaded as a CI artifact. Fail closed if it holds anything from the license.
-if [ -f "$log" ]; then
-  for value in ${ulf_values[@]+"${ulf_values[@]}"}; do
-    if grep -qF -e "$value" "$log"; then
-      rm -f "$log"
-      echo "[editor-tests] FAILED: the Unity log contained license data; removed it" >&2
-      exit 1
-    fi
-  done
-fi
 
 if [ -f "$log" ]; then
   grep -m1 '^Unity Editor version:' "$log" || true
