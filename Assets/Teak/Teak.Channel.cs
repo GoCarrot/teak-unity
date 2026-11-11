@@ -152,7 +152,6 @@ public partial class Teak {
         }
         );
 
-        // Immutable lookup tables; automatic cleanup is invalid for readonly fields with initializers.
 #if UNITY_6000_7_OR_NEWER
         [global::Unity.Scripting.LifecycleManagement.NoAutoStaticsCleanup]
 #endif
