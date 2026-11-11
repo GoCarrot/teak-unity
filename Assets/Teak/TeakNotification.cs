@@ -20,6 +20,9 @@ using System.Text;
 /// <summary>
 /// Interface for manipulating notifications from Teak.
 /// </summary>
+#if UNITY_6000_7_OR_NEWER
+[global::Unity.Scripting.LifecycleManagement.AutoStaticsCleanup]
+#endif
 public partial class TeakNotification {
 
     /// <summary>``true`` if the notification was incentivized, ``false`` otherwise.</summary>

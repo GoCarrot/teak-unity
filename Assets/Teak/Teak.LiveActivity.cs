@@ -26,6 +26,9 @@ public partial class Teak {
     public partial class LiveActivity {
 
         /// <summary>Result of a call to a Live Activity API.</summary>
+#if UNITY_6000_7_OR_NEWER
+        [global::Unity.Scripting.LifecycleManagement.NoAutoStaticsCleanup]
+#endif
         public class Reply : IToJson {
             /// <summary>True if the call resulted in an error.</summary>
             public bool Error {

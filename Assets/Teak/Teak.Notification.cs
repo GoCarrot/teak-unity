@@ -21,6 +21,9 @@ public partial class Teak {
     /// </summary>
     public class Notification {
         /// <summary>Result of a function call working with notifications from the Teak server.</summary>
+#if UNITY_6000_7_OR_NEWER
+        [global::Unity.Scripting.LifecycleManagement.NoAutoStaticsCleanup]
+#endif
         public class Reply : IToJson {
             /// <summary>True if the call resulted in an error.</summary>
             public bool Error {
