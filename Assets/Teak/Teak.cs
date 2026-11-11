@@ -17,6 +17,9 @@ using System.Collections.Generic;
 /// A MonoBehaviour which can be attached to a Unity GameObject to
 /// provide access to Teak functionality.
 /// </summary>
+#if UNITY_6000_7_OR_NEWER
+[global::Unity.Scripting.LifecycleManagement.AutoStaticsCleanup]
+#endif
 public partial class Teak : MonoBehaviour {
     /// <summary>
     /// Gets the Teak singleton.
@@ -36,7 +39,9 @@ public partial class Teak : MonoBehaviour {
     /// simply use Teak.Instance (which calls this method).
     public static Teak Init() {
         if (mInstance == null) {
-#if UNITY_2023_1_OR_NEWER
+#if UNITY_6000_7_OR_NEWER
+            mInstance = FindAnyObjectByType(typeof(Teak)) as Teak;
+#elif UNITY_2023_1_OR_NEWER
             mInstance = FindFirstObjectByType(typeof(Teak)) as Teak;
 #else
             mInstance = FindObjectOfType(typeof(Teak)) as Teak;

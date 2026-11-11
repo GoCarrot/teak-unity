@@ -1,3 +1,4 @@
 bug:
   - "Fixed the iOS build failing with \"There is no XCFramework found\" on Unity 7 when the Teak SDK is installed from the .unitypackage."
   - "Fixed JSON numbers from Teak, such as reward quantities, being misread on devices whose language uses a comma as the decimal separator (for example German or French). ``0.1`` could arrive as ``1``. Numbers with an exponent, such as ``1e3``, now also parse as doubles instead of ``0``. Decimal numbers that game code sends to Teak were also written with a comma on these devices, producing invalid JSON; they are now written with a period."
+  - "Unity 6.7: Teak no longer uses the deprecated ``FindFirstObjectByType`` and declares its static state with 6.7's lifecycle attributes. With domain reload disabled, Teak's session state now resets each time you enter Play mode."

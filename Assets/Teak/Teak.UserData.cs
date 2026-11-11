@@ -11,6 +11,9 @@ public partial class Teak {
     /// <summary>
     ///
     /// </summary>
+#if UNITY_6000_7_OR_NEWER
+    [global::Unity.Scripting.LifecycleManagement.NoAutoStaticsCleanup]
+#endif
     public class UserData {
         /// <summary>Arbitrary, per-user, information sent from the Teak server.</summary>
         public Dictionary<string, object> AdditionalData { get; private set; }

@@ -12,6 +12,9 @@ using UnityEditor;
 #if UNITY_EDITOR
 [InitializeOnLoad]
 #endif
+#if UNITY_6000_7_OR_NEWER
+[global::Unity.Scripting.LifecycleManagement.NoAutoStaticsCleanup]
+#endif
 public class TeakSettings : ScriptableObject {
     const string teakSettingsAssetName = "TeakSettings";
     const string teakSettingsPath = "Resources";

@@ -18,6 +18,9 @@ public partial class Teak {
     /// <summary>
     /// Teak Marketing Channel Functionality
     /// </summary>
+#if UNITY_6000_7_OR_NEWER
+    [global::Unity.Scripting.LifecycleManagement.AutoStaticsCleanup]
+#endif
     public partial class Channel {
         /// <summary>The id, name and description of a Teak marketing channel category</summary>
         public class Category {
@@ -134,6 +137,10 @@ public partial class Teak {
         }
 
         /// @cond hide_from_doxygen
+        // Immutable lookup tables; automatic cleanup is invalid for readonly fields with initializers.
+#if UNITY_6000_7_OR_NEWER
+        [global::Unity.Scripting.LifecycleManagement.NoAutoStaticsCleanup]
+#endif
         internal static readonly ReadOnlyCollection<string> TypeToName = new ReadOnlyCollection<string>(
         new string[] {
             "push",
@@ -145,6 +152,9 @@ public partial class Teak {
         }
         );
 
+#if UNITY_6000_7_OR_NEWER
+        [global::Unity.Scripting.LifecycleManagement.NoAutoStaticsCleanup]
+#endif
         internal static readonly ReadOnlyCollection<string> StateToName = new ReadOnlyCollection<string>(
         new string[] {
             "opt_out",
@@ -224,6 +234,9 @@ public partial class Teak {
         }
 
         /// <summary>Reply to a <see cref="Teak.SetChannelState"/> call.</summary>
+#if UNITY_6000_7_OR_NEWER
+        [global::Unity.Scripting.LifecycleManagement.NoAutoStaticsCleanup]
+#endif
         public class Reply : IToJson {
             /// <summary>True if the call resulted in an error.</summary>
             public bool Error {
