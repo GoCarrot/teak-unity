@@ -582,7 +582,7 @@ Teak.Instance.IncrementEvent("coin_source", "slot", "Happy Land Slots", 1000000)
 
 Teak will automatically collect information for in-app purchases made using the platform app store on iOS, Android, and Amazon Fire devices.
 
-On iOS, Teak doesn't collect purchases made through StoreKit 2, which Unity IAP 5 uses on iOS 15 and later, automatically. Report each one with:
+On iOS, Teak doesn't automatically collect purchases made through StoreKit 2, which Unity IAP 5 uses on iOS 15 and later. Report each one with:
 
 doxygen2adoc:ReportStoreKit2Transaction(string)[]
 
