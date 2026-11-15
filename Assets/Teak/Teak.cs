@@ -896,8 +896,8 @@ public partial class Teak : MonoBehaviour {
 #endif
 
     /// <summary>
-    /// Report an iOS purchase made with Unity IAP 5 or StoreKit 2, which Teak doesn't track
-    /// automatically.
+    /// Report an iOS purchase made through StoreKit 2, which Unity IAP 5 uses on iOS 15 and
+    /// later. Teak doesn't track these automatically.
     /// </summary>
     /// <remarks>
     /// Call it from Unity IAP's <code>OnPurchaseConfirmed</code> with the order's
