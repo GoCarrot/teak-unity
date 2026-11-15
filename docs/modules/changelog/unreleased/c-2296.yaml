@@ -1,0 +1,2 @@
+enhancement:
+  - "Added ``ReportStoreKit2Transaction`` for reporting iOS purchases made with Unity IAP 5 or StoreKit 2. Pass the order's ``Info.Apple.jwsRepresentation``."

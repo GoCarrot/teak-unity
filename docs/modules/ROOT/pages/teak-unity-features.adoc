@@ -582,6 +582,20 @@ Teak.Instance.IncrementEvent("coin_source", "slot", "Happy Land Slots", 1000000)
 
 Teak will automatically collect information for in-app purchases made using the platform app store on iOS, Android, and Amazon Fire devices.
 
+On iOS, Teak doesn't collect purchases made with Unity IAP 5 or StoreKit 2 automatically. Report each one with:
+
+doxygen2adoc:ReportStoreKit2Transaction(string)[]
+
+.Example
+[source]
+----
+storeController.OnPurchaseConfirmed += (Order order) => {
+    Teak.Instance.ReportStoreKit2Transaction(order.Info.Apple?.jwsRepresentation);
+};
+----
+
+This is safe to call on every platform: it does nothing outside iOS, or when there's no JWS.
+
 On Facebook Canvas, if you are using https://developers.facebook.com/docs/games/acquire/login-for-gaming[Facebook Login for Gaming, window=_blank], you will need to report purchases manually with:
 
 doxygen2adoc:ReportCanvasPurchase(string)[]
