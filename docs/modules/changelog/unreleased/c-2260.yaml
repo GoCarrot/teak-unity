@@ -1,0 +1,2 @@
+bug:
+  - "Unity 6.7: Teak no longer uses the deprecated ``FindFirstObjectByType`` and declares its static state with 6.7's lifecycle attributes. With domain reload disabled, Teak's session state now resets each time you enter Play mode."

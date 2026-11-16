@@ -1,0 +1,2 @@
+bug:
+  - "Fixed the iOS build failing with \"There is no XCFramework found\" on Unity 7 when the Teak SDK is installed from the .unitypackage."
