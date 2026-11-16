@@ -589,6 +589,8 @@ Teak.Instance.IncrementEvent("coin_source", "slot", "Happy Land Slots", 1000000)
 
 Teak will automatically collect information for in-app purchases made using the platform app store on iOS, Android, and Amazon Fire devices.
 
+NOTE: On Android, Teak SDK 4.3.17 with R8/minify enabled needs extra rules to track Google Play purchases. Add them to your Custom Proguard File under *Player Settings > Publishing Settings*. See xref:android::page$play-billing-r8.adoc[Purchase Tracking with R8 on 4.3.17] for the rules.
+
 On Facebook Canvas, if you are using https://developers.facebook.com/docs/games/acquire/login-for-gaming[Facebook Login for Gaming, window=_blank], you will need to report purchases manually with:
 
 doxygen2adoc:ReportCanvasPurchase(string)[]
