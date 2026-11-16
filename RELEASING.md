@@ -86,6 +86,8 @@ Each repo keeps unreleased entries as one fragment per change in
 - `yarn changelog roll <ver>` appends every fragment to `versions/<ver>.yaml`
   (creating it if needed) and deletes the fragments. It refuses to run if any
   fragment fails `yarn changelog check`. Rolling again at a later beta/rc appends.
+- CI fails a `Promote to: X.Y.Z` or `X.Y.Z.rcN` commit unless `versions/X.Y.Z.yaml`
+  is committed and `unreleased/` has no fragments left. Alpha promotes skip this.
 - **ESCALATE to lead**: whether an entry belongs in this release at all, and
   cross-platform parity — if iOS and Android shipped the *same* fix, they should
   read consistently (e.g. in 4.3.14, iOS carried no separate line for a shared
