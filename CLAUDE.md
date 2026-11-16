@@ -108,8 +108,8 @@ All platform-specific code uses `#if UNITY_EDITOR / UNITY_ANDROID / UNITY_IPHONE
 
 ```
 # 1. Update VERSION file to new version (e.g. 4.3.10)
-# 2. Move docs/modules/changelog/unreleased.yaml → versions/X.Y.Z.yaml
-# 3. Create fresh unreleased.yaml
+# 2. yarn changelog roll X.Y.Z   (merges docs/modules/changelog/unreleased/* into versions/X.Y.Z.yaml)
+# 3. Curate versions/X.Y.Z.yaml
 # 4. Inline relevant native SDK changes as regular bug/enhancement/new entries
 git commit -m "Promote to: X.Y.Z.rc0"
 git push
@@ -145,10 +145,11 @@ Public documentation is built with **Antora** and lives under `docs/`. API docs 
 
 The changelog is published to the documentation site. Source of truth is YAML files in `docs/modules/changelog/versions/`. AsciiDoc partials and the main changelog page are **generated** by `doxygen2adoc` (via `yarn docs`) and gitignored — never edit `.adoc` files under `docs/modules/changelog/`.
 
-- **Adding entries:** Edit `docs/modules/changelog/unreleased.yaml`. When a user-facing change is made, add a line under the appropriate category.
-- **Important:** `unreleased.yaml` lives in `docs/modules/changelog/`, NOT in `versions/`. The `versions/` directory is read by `doxygen2adoc` which requires valid semver filenames — `unreleased.yaml` in that directory will break `yarn docs`.
-- **At release time:** Move `unreleased.yaml` into `versions/<version>.yaml` and create a fresh `unreleased.yaml`.
-- **YAML categories:** `new`, `bug`, `enhancement`, `breaking`, `deprecation`, `upgrade_note`, `known_issue`, `android` (native version), `ios` (native version)
+- **Adding entries:** When a user-facing change is made, add a fragment named for its issue, e.g. `docs/modules/changelog/unreleased/c-834.yaml`, with the entry under the appropriate category. One file per change, so parallel PRs don't conflict. Never edit someone else's fragment to add yours.
+- **Important:** fragments live in `unreleased/`, NOT in `versions/`. `doxygen2adoc` requires version file names in `versions/`.
+- **Check:** `yarn changelog check` validates every fragment and version file (CI runs it). Unknown categories would silently not render, so it rejects them.
+- **At release time:** `yarn changelog roll <version>` appends every fragment to `versions/<version>.yaml` (creating it if needed) and deletes the fragments.
+- **YAML categories:** `new`, `bug`, `enhancement`, `breaking`, `deprecation`, `upgrade_note`, `known_issue`. `android`/`ios` (native version) go only in `versions/` files, set at release time.
 - **Format:** Each category is a list of strings. Use backticks for code references (doubled in YAML: ` `` `).
 
 ## Branching
