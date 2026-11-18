@@ -895,6 +895,33 @@ public partial class Teak : MonoBehaviour {
     }
 #endif
 
+    /// <summary>
+    /// Report an iOS purchase made through StoreKit 2, which Unity IAP 5 uses on iOS 15 and
+    /// later. Teak doesn't track these automatically.
+    /// </summary>
+    /// <remarks>
+    /// Call it from Unity IAP's <code>OnPurchaseConfirmed</code> with the order's
+    /// <code>Info.Apple?.jwsRepresentation</code>. Reporting the same transaction more than once
+    /// is safe, and Teak never finishes the transaction. On other platforms, and when
+    /// <code>jwsRepresentation</code> is null or empty, this does nothing.
+    /// </remarks>
+    /// <param name="jwsRepresentation">The signed transaction (JWS) for the purchase.</param>
+    public void ReportStoreKit2Transaction(string jwsRepresentation) {
+        if (string.IsNullOrEmpty(jwsRepresentation)) return;
+
+        if (this.Trace) {
+            Debug.Log("[Teak] ReportStoreKit2Transaction(): " + jwsRepresentation.Length + " characters");
+        }
+
+#if !UNITY_EDITOR && UNITY_IPHONE
+        TeakReportStoreKit2Transaction(jwsRepresentation);
+#else
+        if (this.Trace) {
+            Debug.Log("[Teak] ReportStoreKit2Transaction() is iOS only; ignored");
+        }
+#endif
+    }
+
     /// @cond hide_from_doxygen
     private static Teak mInstance;
     private Dictionary<string, Action<Dictionary<string, object>>> mDeepLinkRoutes = new Dictionary<string, Action<Dictionary<string, object>>>();
@@ -971,6 +998,9 @@ public partial class Teak : MonoBehaviour {
 #elif UNITY_IPHONE
     [DllImport ("__Internal")]
     private static extern IntPtr TeakGetAppConfiguration();
+
+    [DllImport ("__Internal")]
+    private static extern void TeakReportStoreKit2Transaction(string jwsRepresentation);
 
     [DllImport ("__Internal")]
     private static extern IntPtr TeakGetDeviceConfiguration();
