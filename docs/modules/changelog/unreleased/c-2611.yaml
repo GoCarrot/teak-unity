@@ -1,0 +1,2 @@
+bug:
+  - "Fixed WebGL sending the notification launch callback to Unity again when a user is identified again with a changed email or Facebook ID."
