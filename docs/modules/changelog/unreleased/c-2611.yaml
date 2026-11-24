@@ -1,0 +1,2 @@
+bug:
+  - "Fixed WebGL sending a second notification launch callback to Unity when the identify callback runs again for the same notification."
